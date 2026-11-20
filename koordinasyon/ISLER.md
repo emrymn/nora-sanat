@@ -323,7 +323,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Tuzaklar:**
   - Yerli sekme seçiliyken site görünmez ama yüklü ve çalışır kalır. WKWebView kaldırılmamalı (Z2'ye kadar köprüler ona bağlı).
   - `Gecis.tasinanlar`'a bir sekme eklemek o sekmenin bütün yollarını (alt sayfalar dahil: `#/sanatci/…`, `#/akim/…`) yerliye bağlar: `SiteRotalari.sekme`.
-- **CI:** gönderimden sonra yazılacak.
+- **CI:** 9892ece yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44821824720): iOS derlemesi, çekirdek testleri ve sekiz ekran görüntüsünün hepsi alındı (`7-tema.png`, `8-yerli-sekme.png` yeni). Görüntüleri oturumdan açamadım; denetçi `ekranlar` yükünden 1–6'nın bugünküyle aynı olduğuna, 7'de Gece/Gündüz örneklerine ve yazı tiplerinin ✓ olduğuna, 8'de sitenin gizlenip yerli çubuğun Galeri seçili göründüğüne baksın.
 
 ### G1 · Tam ekran görüntüleyici (Gemini)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.
