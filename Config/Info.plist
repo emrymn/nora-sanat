@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- "App-Bound Domains": sitenin önbellek sistemi (service worker) uygulamanın içinde de çalışsın,
+	     böylece Nora Sanat internetsiz de açılır. En çok 10 alan adı. -->
+	<key>WKAppBoundDomains</key>
+	<array>
+		<string>sanat-atlasi.pages.dev</string>
+		<string>gorsel.noracloud.ai</string>
+		<string>upload.wikimedia.org</string>
+		<string>commons.wikimedia.org</string>
+		<string>www.wikidata.org</string>
+		<string>query.wikidata.org</string>
+		<string>fonts.googleapis.com</string>
+		<string>fonts.gstatic.com</string>
+		<string>www.artic.edu</string>
+	</array>
+	<key>NSMotionUsageDescription</key>
+	<string>Telefonu eğince tablonun hafifçe hareket etmesi için.</string>
+</dict>
+</plist>

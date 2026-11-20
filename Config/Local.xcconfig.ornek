@@ -1,0 +1,4 @@
+// Bu dosyayı Local.xcconfig adıyla kopyala ya da ./kur.sh çalıştır.
+// Local.xcconfig git'e girmez.
+DEVELOPMENT_TEAM = ABCDE12345
+PAKET_KIMLIGI = com.abcde12345.norasanat
