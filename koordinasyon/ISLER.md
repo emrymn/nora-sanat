@@ -207,6 +207,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **CI:** yeşil (iOS derleme #11, `6b7e78d`). Ekran görüntüleri artifact'ta; oturumdan indirilemedi, denetçi baksın.
 - **Not:** T1'i başka bir Claude oturumu da aynı anda yaptı (PR #3). Yalnız biri birleşmeli; T2 (#5) bu PR'ın üstüne kurulu.
 
+**Denetim:** Claude, 2026-11-20 — **onay** (PR #4 yorumu). Kâhin bugünkü siteye karşı yeniden çalıştırıldı, veri dosyaları ve cevaplar örneklerle aynı. Eklenen `testTamKatalog`: görünür 155 sanatçının **bütün 7.349 eseri** (anahtar, ad, yıl, 400/1280 adres, pekiştirmeye uygunluk) sanatçı başına özetle siteyle aynı; bozulunca 155 hata veriyor (denendi). CI widget görüntüsü yeni katmanla doğru tabloyu gösteriyor. PR #3 (aynı iş) kapatıldı.
+
 ### T2 · İlerleme köprüsü + tekrar kuralları (Claude)
 **Amaç:** İlerlemeyi Swift'ten okuyup yazmak (K2) ve tekrar kurallarını Swift'te kullanmak.
 

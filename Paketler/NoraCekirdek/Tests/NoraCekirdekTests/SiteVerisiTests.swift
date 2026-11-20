@@ -75,6 +75,31 @@ final class SiteVerisiTests: XCTestCase {
         for s in k.sanatcilar { XCTAssertEqual(k.adParcalari(s), c.bilinenAdlar[s.id], s.id) }
     }
 
+    /// Denetim: görünür bütün sanatçıların bütün eserleri (7000+), sanatçı başına eser sayısı ve özet.
+    /// Satır biçimi kâhindekiyle aynı: anahtar, görünen ad, yıl, 400 ve 1280 adresleri, pekiştirmeye uygun (1/0).
+    func testTamKatalog() throws {
+        let (_, k) = try hazirla()
+        let kok = try XCTUnwrap(JSONSerialization.jsonObject(with: Self.dosya("cevaplar.json")) as? [String: Any])
+        let katalog = try XCTUnwrap(kok["katalog"] as? [String: [Any]], "kâhin çıktısında katalog yok")
+        XCTAssertEqual(Set(katalog.keys), Set(k.sanatcilar.map(\.id)))
+        var toplam = 0
+        for s in k.sanatcilar {
+            let beklenen = try XCTUnwrap(katalog[s.id], s.id)
+            let l = k.eserler(s.id)
+            let satirlar = l.map { e -> String in
+                let g = GorselAdresleri.secilen(e)
+                return [e.anahtar, e.gorunenAd, e.yil.map(String.init) ?? "",
+                        g.map { k.gorsel.url($0, genislik: 400) } ?? "",
+                        g.map { k.gorsel.url($0, genislik: 1280) } ?? "",
+                        GorselAdresleri.pekistirmeyeUygun(e) ? "1" : "0"].joined(separator: "\t")
+            }
+            XCTAssertEqual(l.count, (beklenen[0] as? NSNumber)?.intValue, "\(s.id): eser sayısı")
+            XCTAssertEqual(SiteYazisi.md5(satirlar.joined(separator: "\n")), beklenen[1] as? String, "\(s.id): eserler")
+            toplam += l.count
+        }
+        XCTAssertGreaterThan(toplam, 7000)
+    }
+
     func testSanatciEserleri() throws {
         let (c, k) = try hazirla()
         XCTAssertEqual(c.eserler.count, 20)

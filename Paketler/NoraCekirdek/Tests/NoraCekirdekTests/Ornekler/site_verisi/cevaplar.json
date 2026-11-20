@@ -1,5 +1,627 @@
 {
  "surum": "1.90.3",
+ "katalog": {
+  "bonaventura-berlinghieri": [
+   5,
+   "57ecdcd6de8170c888ed19b49d2f720b"
+  ],
+  "cimabue": [
+   28,
+   "1aff28455f976aa5a41d0ad455f891dc"
+  ],
+  "duccio-di-buoninsegna": [
+   41,
+   "9e81a410fe4f6a2c305a5a7931b2c751"
+  ],
+  "simone-martini": [
+   39,
+   "fa6a8e61b3864d71668a409713b0c062"
+  ],
+  "pietro-lorenzetti": [
+   41,
+   "62d740d843666ec93eefb9badddbcce3"
+  ],
+  "ambrogio-lorenzetti": [
+   28,
+   "ae8b653170a290d3a216a1703df14540"
+  ],
+  "giotto-di-bondone": [
+   48,
+   "c0ea1aa7766c2118ed56d89b0f20e9bd"
+  ],
+  "limbourg-kardesler": [
+   25,
+   "4443b15122750f2aee958b342396945c"
+  ],
+  "gentile-da-fabriano": [
+   37,
+   "217c7b42e8f4fb59d4f7d8d5c01d11be"
+  ],
+  "domenico-di-michelino": [
+   9,
+   "5b169e29d23a8289831dd952d1d2e90a"
+  ],
+  "masaccio": [
+   29,
+   "b867fb9d09989e66532997976ded55a8"
+  ],
+  "andrea-mantegna": [
+   56,
+   "3b5a57e4381962c70cea9855a18b60d2"
+  ],
+  "piero-della-francesca": [
+   36,
+   "6148b5c3845432f4bbd178665d2fb18b"
+  ],
+  "fra-angelico": [
+   43,
+   "e5336a9794d7be6545af775f868b6f7b"
+  ],
+  "paolo-uccello": [
+   34,
+   "240e800c8d9dd4170854dcb89a91d722"
+  ],
+  "sandro-botticelli": [
+   44,
+   "40c709e3caa6f174c42d026acda16035"
+  ],
+  "pietro-perugino": [
+   48,
+   "b76c08e4afb77434c4bc34d885f8bb49"
+  ],
+  "albrecht-durer": [
+   55,
+   "077c4f5529c8369962b831050fea2f69"
+  ],
+  "robert-campin": [
+   27,
+   "217bda75e3dca5c9218c0b8b508723dd"
+  ],
+  "jan-van-eyck": [
+   38,
+   "7e4d2d6be01d3fef7605d432d69b1ef8"
+  ],
+  "petrus-christus": [
+   33,
+   "f67b7d046ad470f843530d750ca0ffb6"
+  ],
+  "quentin-metsys": [
+   36,
+   "dd77efcd5ea8371c5b4097bbebf5fff5"
+  ],
+  "rogier-van-der-weyden": [
+   41,
+   "a51003107d07fa95b3f27b84a7d9c3c9"
+  ],
+  "hans-baldung-grien": [
+   58,
+   "b66715c489cd9977231434e336e033f3"
+  ],
+  "lucas-cranach-yasl": [
+   60,
+   "e844828a33b681e90dffb998fb58d313"
+  ],
+  "hans-holbein-genc": [
+   59,
+   "d21e1f372f589cde0cc8250608ef7665"
+  ],
+  "hieronymus-bosch": [
+   40,
+   "4ac45f6ff9d75c7734fd7f13e09354bf"
+  ],
+  "pieter-bruegel-yasl": [
+   51,
+   "0054efa692061d005e909a071d6a604e"
+  ],
+  "leonardo-da-vinci": [
+   47,
+   "b6311ccd5af31cd7a681d6856d7e3385"
+  ],
+  "michelangelo": [
+   47,
+   "24cc55ad5caefb38e7182256a999a820"
+  ],
+  "raphael": [
+   48,
+   "c67f225aa7ffb87e8438d50c2013ecfb"
+  ],
+  "donato-bramante": [
+   12,
+   "6d69a758b8b691e0a90a967ecbc4da13"
+  ],
+  "correggio": [
+   47,
+   "2c2b2aa575e65b9d4f66652ab6cef369"
+  ],
+  "marcantonio-raimondi": [
+   54,
+   "c7294bd5e9bef5093e4a22d5f3a3ba4c"
+  ],
+  "titian": [
+   49,
+   "f8ca5d257b498c6509ffa1c803a97cc5"
+  ],
+  "giovanni-bellini": [
+   51,
+   "23601e362914c2c34831d0c26100cd6d"
+  ],
+  "giorgione": [
+   38,
+   "ef1fca0b791bc9f4fc7c0b8ed7344be3"
+  ],
+  "tintoretto": [
+   53,
+   "cd7644f3b382cc6d49370e2458508bab"
+  ],
+  "paolo-veronese": [
+   49,
+   "835c8c743d1251f46fa353c6a6e1c778"
+  ],
+  "jacopo-pontormo": [
+   41,
+   "69fa7cd1a26a42e6166b0d347b91ec1d"
+  ],
+  "francesco-salviati": [
+   49,
+   "f76a66ad78e9b6f7178b979ed9abc859"
+  ],
+  "sofonisba-anguissola": [
+   38,
+   "510992aebefaa39969c726f84e5aaba3"
+  ],
+  "daniele-da-volterra": [
+   16,
+   "ef5c9ab1d9ce40dcd0d6c5f9df6437ac"
+  ],
+  "parmigianino": [
+   57,
+   "b52062bf5ed03bfe12dc9b6f8b7196ae"
+  ],
+  "agnolo-bronzino": [
+   44,
+   "dbddb08e098eec2985a8de08377d1a80"
+  ],
+  "el-greco": [
+   46,
+   "cdc8c663f0771be2d842e9b196a70419"
+  ],
+  "rosso-fiorentino": [
+   33,
+   "e96c5fb914461a401131a851416448bc"
+  ],
+  "giulio-romano": [
+   49,
+   "93f03850e10a02c5a0e865921a3aae22"
+  ],
+  "annibale-carracci": [
+   60,
+   "a8c33d172ac6e40c94223fe98b82c49d"
+  ],
+  "guido-reni": [
+   57,
+   "468f23b8d6a354b153ee1f8ef1b980a7"
+  ],
+  "guercino": [
+   60,
+   "eb2c1965d1b2e0016bcd1506c9652421"
+  ],
+  "caravaggio": [
+   44,
+   "36680925d6d383da577b1883060742d0"
+  ],
+  "georges-de-la-tour": [
+   37,
+   "8fa8f29b9356a731f058ebe0aa77012a"
+  ],
+  "bartolomeo-manfredi": [
+   24,
+   "e9c2971a472fef6734218a19f2fa9240"
+  ],
+  "hendrick-ter-brugghen": [
+   38,
+   "e665daaf23ce5147284124c2e3fcfed0"
+  ],
+  "gerrit-van-honthorst": [
+   43,
+   "86c18efef1e7f0d463d0a2c2161e62d8"
+  ],
+  "dirck-van-baburen": [
+   31,
+   "52d83ff362fc62b083f91d64fc9eb62c"
+  ],
+  "valentin-de-boulogne": [
+   32,
+   "fa4e68e340916dadc8692220009c9ef9"
+  ],
+  "jusepe-de-ribera": [
+   51,
+   "92691937efe3e2f54fe3cd7349c95036"
+  ],
+  "artemisia-gentileschi": [
+   41,
+   "646b0a358f2e7ac4f17b92f743151773"
+  ],
+  "orazio-gentileschi": [
+   38,
+   "5a8dcf34935ff37ded875396da25c58d"
+  ],
+  "diego-velazquez": [
+   47,
+   "d4e92dc8b21e008c7dbafdb233809a08"
+  ],
+  "francisco-de-zurbaran": [
+   43,
+   "92c2efe77e6ae690803cd962798ae06f"
+  ],
+  "peter-paul-rubens": [
+   60,
+   "ae8ea74c419266b7a6336413054fba71"
+  ],
+  "anthony-van-dyck": [
+   60,
+   "985e98d2ad0477538a43594da36dc828"
+  ],
+  "rembrandt-van-rijn": [
+   59,
+   "243204071711be74eac3e932b9178df3"
+  ],
+  "frans-hals": [
+   56,
+   "94bc08d8b814398a2bca83aed2beadef"
+  ],
+  "johannes-vermeer": [
+   36,
+   "89c67640039d76383749e261ff0453bc"
+  ],
+  "jan-steen": [
+   40,
+   "79e981f0ce4d2543a5d5d13b4e3520d7"
+  ],
+  "jacob-van-ruisdael": [
+   58,
+   "4469f6c1a869216550fdf70d15282e1c"
+  ],
+  "charles-le-brun": [
+   47,
+   "c484a8bf01e7539bd4754fc5e5ca358d"
+  ],
+  "hyacinthe-rigaud": [
+   41,
+   "f5b9bc1c0bd9c13adb4029c683e70cec"
+  ],
+  "nicolas-poussin": [
+   58,
+   "a366644526d6b6e4bd514e39f6301d08"
+  ],
+  "claude-lorrain": [
+   60,
+   "0f804b4a8b25a8ffaa36f6b2c646183e"
+  ],
+  "jean-antoine-watteau": [
+   60,
+   "c0cbf0414252c300cffc8f22e468992e"
+  ],
+  "francois-boucher": [
+   60,
+   "2e07f4d9c4a79f40c2e4b2844934c69a"
+  ],
+  "jean-honore-fragonard": [
+   60,
+   "2a1dd7e6bb444e84e18bed4524203733"
+  ],
+  "salvator-rosa": [
+   59,
+   "dd0c66585ff3d33438a72ee0fe7d19cb"
+  ],
+  "mattia-preti": [
+   36,
+   "9f02e72c487849a8d9bbbf33f720852e"
+  ],
+  "luca-giordano": [
+   44,
+   "fc0d581a8b2a1ed5a04fd9f1e4db9513"
+  ],
+  "giovanni-battista-gaulli": [
+   39,
+   "d3eef6b6b63d158a46a4b9f1c5119fe1"
+  ],
+  "andrea-pozzo": [
+   8,
+   "613ec710bbb1ee8c0b1eccff9b1e5e61"
+  ],
+  "francesco-solimena": [
+   41,
+   "a55f57ffb0eff0ad23ecd861453d0ed6"
+  ],
+  "giuseppe-maria-crespi": [
+   31,
+   "87200c8452b7ff332a6c36465aa851c1"
+  ],
+  "sebastiano-ricci": [
+   29,
+   "7d3f49147864d8dba454c888f8cd4c9a"
+  ],
+  "giovanni-battista-piazzetta": [
+   49,
+   "92da9c0629a1f132d5926ca8cba4cd1f"
+  ],
+  "alessandro-magnasco": [
+   45,
+   "08fdc65d5e2b696ab7d6f88c08db44c0"
+  ],
+  "giovanni-battista-tiepolo": [
+   59,
+   "73208c9563b5e55ae52eb139861c1f08"
+  ],
+  "jean-baptiste-simeon-chardin": [
+   37,
+   "09c1ab155ea4d610ed2c28e9673924a3"
+  ],
+  "jean-baptiste-greuze": [
+   59,
+   "75b2e13b94ddd82ac8d8960a0bc3c1c0"
+  ],
+  "william-hogarth": [
+   60,
+   "787427e0c063d628a2c02ec64587110f"
+  ],
+  "canaletto": [
+   59,
+   "d0dda92ccd3d0e5a8b10ec027d8c8210"
+  ],
+  "thomas-gainsborough": [
+   60,
+   "9a5f249d8c80e472f0ad28f0acfb4368"
+  ],
+  "benjamin-west": [
+   56,
+   "be7f7ec2d518fc9fb7942a48f4ac5a89"
+  ],
+  "jacques-louis-david": [
+   59,
+   "85d85daaa4a445ba9f304f3fa5522085"
+  ],
+  "angelica-kauffman": [
+   56,
+   "bd57338a5b7eaf8ece707172b95d48cb"
+  ],
+  "elisabeth-vigee-le-brun": [
+   45,
+   "e5cf0464b1d2238e3cab1d6b8c2d7507"
+  ],
+  "william-blake": [
+   58,
+   "24ec6182aa973b22a3d44922c2164c4e"
+  ],
+  "henry-fuseli": [
+   58,
+   "c774f2d29b84d3a7551c189b28ac0c31"
+  ],
+  "caspar-david-friedrich": [
+   49,
+   "9b30494775328473ad5cb6d8cdd33668"
+  ],
+  "john-constable": [
+   59,
+   "10d81b93a81491e0da069f4de26661ad"
+  ],
+  "eugene-delacroix": [
+   60,
+   "513d6ed9b9c8b0f420da133d835d061a"
+  ],
+  "francisco-de-goya": [
+   60,
+   "fee516d477ff1f6cd7ef50aef94427d6"
+  ],
+  "j-m-w-turner": [
+   59,
+   "949c7b757976c04466659609d411f0ad"
+  ],
+  "theodore-gericault": [
+   60,
+   "7759a6d57cd8a92b0da286d056d3d896"
+  ],
+  "dante-gabriel-rossetti": [
+   52,
+   "0a21c2b448659836e5b5d60b615cce82"
+  ],
+  "john-everett-millais": [
+   57,
+   "2e236ac1605a2e96ab03236e56d66dd8"
+  ],
+  "william-holman-hunt": [
+   46,
+   "656a90aacdf1737d20cbd92cc0490907"
+  ],
+  "jean-auguste-dominique-ingres": [
+   59,
+   "a22f1f9a18baa9c102a89632c8531b8d"
+  ],
+  "jean-leon-gerome": [
+   59,
+   "0afa0103e119007033c18713efa85e4d"
+  ],
+  "william-adolphe-bouguereau": [
+   50,
+   "be284ccdfc464977444c88e18d21f71a"
+  ],
+  "alexandre-cabanel": [
+   45,
+   "e3e89ef5f2aebe792f94ae985dfb4d91"
+  ],
+  "honore-daumier": [
+   60,
+   "e8922b7647d1502bd47373d99e4db289"
+  ],
+  "gustave-courbet": [
+   60,
+   "4d031e35b84b5a78d2e5c95e86620947"
+  ],
+  "camille-corot": [
+   60,
+   "08f198f2e95a7ea3e87c17b98dc163e0"
+  ],
+  "jean-francois-millet": [
+   60,
+   "f282199144f1916d62ad92b2ae587547"
+  ],
+  "theodore-rousseau": [
+   60,
+   "b50691e41155ee36b47c4bda173c2147"
+  ],
+  "gustave-caillebotte": [
+   45,
+   "8aae48534bc5851813fdc4009e8e2a8c"
+  ],
+  "edouard-manet": [
+   60,
+   "09a7cd08e11d59eeecdd74dfb7bfb700"
+  ],
+  "edgar-degas": [
+   60,
+   "04e3074d97a3e86e52f165916e93d32e"
+  ],
+  "mary-cassatt": [
+   60,
+   "988618d1ff237cced5909044ddc7c327"
+  ],
+  "berthe-morisot": [
+   60,
+   "e2846c015968affdfa41304966c3bfe0"
+  ],
+  "claude-monet": [
+   60,
+   "4596e61e5c590aff6cf48625dfab5d74"
+  ],
+  "pierre-auguste-renoir": [
+   60,
+   "3288ef3c90feef82c99030eef2f6eb51"
+  ],
+  "camille-pissarro": [
+   60,
+   "b368296a9d8b21b54e622b4264a511bb"
+  ],
+  "alfred-sisley": [
+   60,
+   "9fd118f858c51d607a76acfa5e7ec7ce"
+  ],
+  "utagawa-hiroshige": [
+   60,
+   "58c43a11319cda057d1144b40dbfb74c"
+  ],
+  "katsushika-hokusai": [
+   58,
+   "20d11a9902fbfcb70a61aa0c9320fc40"
+  ],
+  "paul-cezanne": [
+   60,
+   "c636542190514bdca0e20af2d12f150e"
+  ],
+  "georges-seurat": [
+   59,
+   "6c4113b5d9d03347469c949b754f1a18"
+  ],
+  "paul-signac": [
+   59,
+   "4b4bba187584c6263b26184034704dc8"
+  ],
+  "vincent-van-gogh": [
+   60,
+   "606cff17ff2b920013cb8939fddaec21"
+  ],
+  "henri-de-toulouse-lautrec": [
+   59,
+   "d0b8fd7deab8de73b25e928b004efed1"
+  ],
+  "paul-gauguin": [
+   60,
+   "71a7a830ccec801fdf4663e27eb4de72"
+  ],
+  "gustave-moreau": [
+   47,
+   "bac5f3b7c1a490a0fdba5591d78cb0ad"
+  ],
+  "odilon-redon": [
+   59,
+   "ef4e7bb473a1e80b0fc92ea23e459718"
+  ],
+  "pierre-puvis-de-chavannes": [
+   60,
+   "ec8e5bce4d1cf82bf15dbab542a70d38"
+  ],
+  "arnold-bocklin": [
+   39,
+   "d96a92a74562f7721d0bbae3dbfa872d"
+  ],
+  "fernand-khnopff": [
+   38,
+   "cb290710a4dad3f954a97eaa12237d54"
+  ],
+  "gustav-klimt": [
+   60,
+   "3fa773f02b84b6a6b0ebc7c352ff1076"
+  ],
+  "edvard-munch": [
+   59,
+   "ce3a2e075d50b56de0916cca74d44e19"
+  ],
+  "ernst-ludwig-kirchner": [
+   58,
+   "5ba5de61dc8abfe1f0e04f34ff3af1cc"
+  ],
+  "emil-nolde": [
+   25,
+   "1f9b3818490d450f63584a2d8161d192"
+  ],
+  "wassily-kandinsky": [
+   46,
+   "ec7254659102deeddc4b28aca664edf8"
+  ],
+  "franz-marc": [
+   52,
+   "67d480be0076e1f3c7958c3cb1c38c6c"
+  ],
+  "pablo-picasso": [
+   53,
+   "245bcd45335310169db67016d0e9100c"
+  ],
+  "marcel-duchamp": [
+   44,
+   "94035eaa0dc940dd3b66558722beef19"
+  ],
+  "hannah-hoch": [
+   17,
+   "b9f75e9064bd80de04f69e956e881f92"
+  ],
+  "jean-arp": [
+   38,
+   "2fb8d70d5b35cf8d07b05904591d4667"
+  ],
+  "man-ray": [
+   34,
+   "73156d351b07e2ebe69ae64be7579bdf"
+  ],
+  "salvador-dali": [
+   44,
+   "866e879572bde8a3265cff6d3b509709"
+  ],
+  "max-ernst": [
+   40,
+   "01dc69348a9edcd0ec013f8ef3b06ece"
+  ],
+  "rene-magritte": [
+   39,
+   "814ec8b44c430af0fa62daeb6e53f485"
+  ],
+  "joan-miro": [
+   40,
+   "b1d06ba08be7ec97421af2f068e44d83"
+  ],
+  "francis-bacon": [
+   37,
+   "30ce3551ffa529300d7ab41424d0965f"
+  ]
+ },
  "tumSanatcilar": [
   [
    "phidias",
