@@ -16,6 +16,18 @@
 		<string>fonts.gstatic.com</string>
 		<string>www.artic.edu</string>
 	</array>
+	<!-- Widget'a dokununca uygulamanın açılması: norasanat://bugun -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>norasanat</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>norasanat</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSMotionUsageDescription</key>
 	<string>Telefonu eğince tablonun hafifçe hareket etmesi için.</string>
 </dict>

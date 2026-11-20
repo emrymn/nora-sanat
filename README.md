@@ -10,6 +10,9 @@ Uygulama, Sanat Atlası'nı (`sanat-atlasi.pages.dev`) Safari'nin çubukları ol
 - "Silinsin mi?" gibi sorular iOS'un kendi pencereleriyle gelir.
 - Wikipedia, müze sayfaları gibi dış linkler Safari'de açılır.
 - Kenardan kaydırarak geri gidebilirsin.
+- **Ana ekran widget'ı "Günün tablosu":** Bugün ekranındaki tablonun aynısı, her gece yenilenir. Dokununca Nora Sanat açılır.
+- **Tekrar hatırlatması:** Tekrarı gelen sanatçı varsa her gün seçtiğin saatte "Bugün 12 sanatçı tekrarını bekliyor" bildirimi.
+- **Simge rozeti:** Sitedeki Ayarlar → *Simge rozeti* artık Nora Sanat'ın simgesinde çalışır.
 
 ## Mac'te ilk kurulum (bir kere)
 
@@ -30,6 +33,24 @@ open NoraSanat.xcodeproj
 iPhone'u bağla, üstten iPhone'unu seç ve **▶**'a bas. İlk açılışta telefon "güvenilmeyen geliştirici" derse: **Ayarlar → Genel → VPN ve Aygıt Yönetimi** → Apple Development … → **Güven**.
 
 > **Ücretsiz Apple ID ile en çok 3 uygulama** yüklenebilir ve her biri 7 günde bir Xcode'dan yeniden yüklenmelidir (▶). Verilerin silinmez.
+> Widget, uygulamanın içinde gelir; ayrı bir uygulama sayılmaz. Ama Apple'da ayrı bir kimlik (App ID) açar. Ücretsiz hesapta haftada en çok 10 kimlik açılabilir; Podcast + Nora Sanat + widget bunun içinde rahat kalır.
+
+## Widget'ı ekleme
+
+1. Ana ekranda boş bir yere basılı tut → sol üstte **Düzenle** → **Widget Ekle**.
+2. Listede **Nora Sanat**'ı bul. Küçük, orta ya da büyük boyutu seç → **Widget Ekle**.
+3. İlk açılışta internet gerekir: tabloyu ve görselini siteden kendisi indirir. Sonra her gece yarısı yenilenir.
+
+Widget, Bugün ekranındaki tabloyla aynı kuralla seçer. Uygulamada "başka bir sanatçı getir" dersen widget yine günün asıl tablosunu gösterir.
+
+## Tekrar hatırlatması
+
+- İlk açılışta, tekrarı gelen bir sanatçın varsa iPhone **bildirim izni** sorar: **İzin Ver**.
+- Bildirim her gün **20:00**'de gelir, yalnızca o gün tekrar bekleyen sanatçı varsa. Turu bitirdiysen o günün bildirimi kendiliğinden kalkar.
+- Saati değiştirmek ya da kapatmak için: iPhone **Ayarlar → Uygulamalar → Nora Sanat → Tekrar hatırlatması**.
+- Bildirime dokununca Nora Sanat **Çalış** sekmesinde açılır.
+- Sayılar Sanat Atlası'nın kendi ilerlemenden hesaplanır (sitenin "tekrar bekliyor" sayısıyla aynı). Sitenin koduna dokunulmadı.
+- Simgede sayı görmek istersen: Nora Sanat'ta **Ayarlar → Simge rozeti**'ni aç.
 
 ## İlerlemeni Safari'deki Atlas'tan taşıma
 
@@ -60,12 +81,23 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] Bir sanatçının Wikipedia linki Safari'de açılıyor.
 - [ ] Uçak modunu aç, uygulamayı yukarı kaydırıp kapat, tekrar aç. Yine açılıyor.
 - [ ] Yedek geri yükleme sonrası ilerleme görünüyor.
+- [ ] Widget galerisinde **Nora Sanat → Günün tablosu** var. Üç boyutta da tablo, adı, ressamı ve yılı görünüyor. Bugün ekranındakiyle aynı tablo.
+- [ ] Widget'a dokununca Nora Sanat Bugün ekranında açılıyor.
+- [ ] Bildirim izni soruldu. iPhone Ayarlar → Uygulamalar → Nora Sanat'ta **Tekrar hatırlatması** (Hatırlat, Saat) var.
+- [ ] Saati bir sonraki saat başına al (örneğin şimdi 20:40 ise 21:00), Nora Sanat'ı aç ve kapat: o saatte "Bugün N sanatçı tekrarını bekliyor" geliyor. N, Çalış'taki sayıyla aynı.
+- [ ] Bildirime dokununca Çalış sekmesi açılıyor.
+- [ ] Nora Sanat'ta Ayarlar → **Simge rozeti** açılabiliyor ve simgede sayı çıkıyor.
 
 ## Geliştirme
 
 ```
 NoraSanat.xcodeproj/    Xcode projesi (NoraSanat/ klasörü senkronize: yeni dosyalar kendiliğinden girer)
 Config/                 Base.xcconfig, Info.plist (App-Bound Domains), Local.xcconfig (git'e girmez)
-NoraSanat/              NoraSanatApp.swift (giriş), WebKabugu.swift (WKWebView çerçevesi)
+NoraSanat/              NoraSanatApp.swift (giriş), WebKabugu.swift (WKWebView çerçevesi),
+                        TekrarKoprusu.swift (site ↔ uygulama betiği), Hatirlatici.swift (bildirim, rozet, sayfaya gitme),
+                        Settings.bundle (iOS Ayarlar'daki hatırlatma ayarları)
+NoraSanatWidget/        "Günün tablosu" widget'ı
+Paketler/NoraCekirdek/  Arayüzden bağımsız mantık + testler (Linux'ta: swift test --package-path Paketler/NoraCekirdek)
+Testler/                Köprü betiğinin testleri (node --test Testler/tekrarTakvimi.test.mjs)
 .github/workflows/      Her PR'da: derleme + simülatörde açılış ekran görüntüsü
 ```
