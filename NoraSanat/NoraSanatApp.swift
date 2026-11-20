@@ -30,6 +30,12 @@ struct NoraSanatApp: App {
                     KokGorunum()
                     IlerlemeOzeti(yaz: CommandLine.arguments.contains("-ilerlemeYaz"))
                 }
+            } else if Self.arguman("-ekran") == "pekistir" {
+                ZStack {
+                    KokGorunum().accessibilityHidden(true)
+                    PekistirmeEkrani(ilkTur: .sanatci(.karisik))
+                        .environment(TemaDeposu.shared)
+                }
             } else if Self.arguman("-ekran") == "tema" {
                 // Site arkada yüklenir (canlı tema için), örnekler üstte
                 ZStack {
