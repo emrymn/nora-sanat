@@ -82,7 +82,19 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -widgetOnizleme
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/3-widget.png
-          # Widget'a dokunma: norasanat://bugun uygulamayı açmalı
+          # T2: ilerleme köprüsü. Önce Swift'ten okuyup bir deneme yazar (7-8. konular, bugüne 12 kart)...
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -ekran ilerleme -ilerlemeYaz
+          sleep 30
+          xcrun simctl io "$UDID" screenshot ekranlar/5-ilerleme-ozeti.png
+          # ...sonra site kendi #/ilerleme sayfasında bunu göstermeli (kayıt kalıcı)
+          sleep 3
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -adres "#/ilerleme"
+          sleep 20
+          xcrun simctl io "$UDID" screenshot ekranlar/6-site-ilerleme.png
+          # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
+          # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET"
           sleep 10

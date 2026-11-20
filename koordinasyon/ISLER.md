@@ -22,15 +22,17 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
 ## Oturum kuralları
 
 ### Başlarken
+0. **Hangi işi yapacağını kullanıcı söyler** ("T3'ü yap", "G1'i yap"). Mesajda iş adı yoksa kendin seçme; kullanıcıya hangisini istediğini sor. (Önceden "sıradaki işi al" deniyordu: iki oturum aynı anda başlayınca ikisi de T1'i yaptı, biri boşa gitti.)
 1. `git checkout main && git pull`. Sonra `CLAUDE.md`'yi, bu dosyanın tamamını ve işinin bölümünü oku.
 2. **Bağımlılıklar** sütunundaki işler `bitti` değilse başlama. Kullanıcıya hangi işin beklendiğini söyle.
-3. Sanat Atlası'nı salt okunur indir ve işinin kaynak dosyalarını oku. Commit'ini not et (`git -C <yol> rev-parse --short HEAD`):
+3. **Açık PR'lara bak** (GitHub'da Pull requests, ya da `gh pr list`). Başlığında aynı iş kimliği (ör. "T3") olan açık PR varsa **başlama**: kullanıcıya o PR'ı söyle.
+4. Sanat Atlası'nı salt okunur indir ve işinin kaynak dosyalarını oku. Commit'ini not et (`git -C <yol> rev-parse --short HEAD`):
    ```bash
    git clone --depth 1 https://github.com/emrymn/sanat-atlasi /tmp/sa
    ```
-4. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
-5. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
-6. Hemen **taslak PR** aç. Öbür araçlar ne yapıldığını açık PR'lardan görür.
+5. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
+6. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
+7. Hemen **taslak PR** aç; başlığı iş kimliğiyle başlasın (ör. "T3 · Kabuk"). Öbür araçlar ne yapıldığını açık PR'lardan görür.
 
 ### Bitirirken
 1. CI yeşil olmalı. Ekran görüntülerine bak: ekran sitedekine benziyor mu?
@@ -130,15 +132,15 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 ## İş listesi
 
 **Şeritler:**
-- Her araç **kendi şeridindeki** sıradaki işi alır: Claude K, Gemini G, ChatGPT C.
+- Her araç **kendi şeridindeki** işleri yapar: Claude K, Gemini G, ChatGPT C. Hangi işi yapacağını kullanıcı mesajında adıyla verir.
 - Bağımlılığı bitmemiş işe başlanmaz. G ve C, temel (T1–T3) birleşene kadar bekler. Sadece G1, T1'den sonra başlayabilir.
-- Claude'un iki hesabı T1 ve T2'yi aynı anda yapabilir.
+- Aynı anda yürüyebilecek işler tablodaki bağımlılıklardan okunur. İki oturuma aynı iş verilmez.
 - Tahmini süreler "oturum" cinsindendir. Bir oturum bir PR demektir.
 
 | ID | İş | Şerit | Bağımlılık | Oturum | Durum |
 |----|----|-------|------------|--------|-------|
-| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | PR açık (#4) |
-| T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bekliyor |
+| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
+| T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
@@ -231,7 +233,31 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - DEBUG ekranında (`-ekran ilerleme`) okunan ilerleme özeti görünüyor.
 - Bir test yazması siteye yansıyor: CI'da sitede `#/ilerleme` ekran görüntüsü.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-20 — PR #5, dal `is/T2-ilerleme`. **T1'in (#4) üstüne kurulu** (sıralı JSON okuyucu ve `Sanatci`/`Akim`/`Eser` modelleri oradan); PR'ın tabanı T1 dalı, #4 birleşince GitHub tabanı main'e çevirir. #4'ten önce birleştirilmemeli.
+- **Kaynak:** `sanat-atlasi` @ `a866b86` (site 1.90.3). Taşınan: `js/leitner.js` (hepsi), `js/gecmis.js` (hepsi), `js/seviye.js` (hepsi), `js/ogrenme.js` (tanışma, karıştırılanlar), `js/kilit.js` (`acikSanatcilar`, `akimDurumlari`, `yeniAcilanlar`), `js/birlesme.js` `seviyeleriBirlestir`, `js/depo.js`'ten `gunlukGuncelle`, `sonCalisilanEkle` ve şema. Okuma/yazma yolu: `js/ekranlar/ortak.js` (`d`, `kaydet`), `js/depo.js` (`kayitKilitliMi`).
+- **Yapılan:**
+  - `NoraCekirdek/Ilerleme/`: `Ilerleme` (ham JSON üstünde tipli alanlar: `islenen`, `skorlar`, `skorlarKonu`, `gecmis`, `seviyeler`, `karisanlar`, `ekSanatcilar`, `sonCalisilanlar`, `kotuGorseller`, `gunluk`, `ayar(_:)`, `kayitNo`; bilinmeyen alanlar ve anahtar sırası korunur), `Skor`/`SkorKaydi`/`GunKaydi`/`SeviyeKaydi`/`Karisan`, kurallar `Leitner`, `Gecmis`, `Seviye`, `Ogrenme`, `Kilit`. `JSONYazici`: `JSON.stringify` ile aynı çıktı.
+  - `NoraSanat/Kabuk/IlerlemeKoprusu.swift` (`@MainActor`, `IlerlemeKoprusu.shared`): `oku()`, `yaz(_:)`, `degistir { … }`. Site yüklenmediyse bekler (30 sn). Yazma `Object.assign(o.d.ilerleme, yeni); o.kaydet()`; okunduğundan beri sitede kayıt olduysa (`kayitNo` farklı) yazmaz → `.cakisma`; `degistir` taze kayıtla 3 kez dener. Site kaydı kilitlediyse `.kilitli`.
+  - DEBUG `-ekran ilerleme` (`NoraSanat/Kabuk/IlerlemeOzeti.swift`): okunan ilerlemenin özeti (kayıt no, işlenen, açık sanatçı, seri, bugün/yarın vade, 14 günlük yük, seviyeler, karıştırılanlar); site arkada yüklü. `-ilerlemeYaz` ile önce deneme yazar. DEBUG `-adres "#/…"`: site o sayfada açılır.
+  - CI: `5-ilerleme-ozeti.png` (Swift'in okuduğu + yazdığı), ardından uygulama yeniden açılıp `6-site-ilerleme.png` (sitenin `#/ilerleme`'si yazılanı göstermeli: 7-8. konular işlendi, bugün 12 kart).
+- **Kâhin:**
+  - `Testler/kahin/ilerleme.mjs` → `Ornekler/ilerleme/cevaplar.json` (3 MB): tohumlu rastgele 200 ilerleme; `vadeSayisi`, `yarinVade`, `gelecekYuk` (tüm ve açık sanatçılarla), `cevapla` (1000+ skor), `zayifMi`, `vadesiGeldiMi`, `tekrarAraligi`, `gecmisDogrula`, `seri`, `takvim`, `haftalikOran`, `acikSanatcilar`, `yeniAcilanlar`, `akimDurumlari`, `tanismaGerekirMi`, `karisanlarDogrula`, `enCokKarisanlar`, `seviyelerDogrula`, `seviyeleriBirlestir`, `seviyeCevapla`, `seviyeDurumu`, `seviyeKisa`, `ustaMi`, `oran`. Bir de **yazma vakası**: sitenin gerçek ilerlemesine sitenin işlemleri uygulanınca çıkan JSON metni, Swift'in aynı işlemlerden sonra yazdığıyla **birebir aynı**. Linux'ta 12 yeni test geçiyor (kuralı bilerek bozunca yakalıyor).
+  - `Testler/kahin/ilerleme_koprusu.mjs`: köprü betiklerini (Swift dosyasındaki metin aynen) canlı sitede çalıştırır: site yüklenirken okuma bekliyor, yazma kaydediyor ve kayıt no artıyor, eski numarayla yazma reddediliyor, yeniden açınca site Swift'in yazdığını okuyor ve `#/ilerleme` gösteriyor. Geçti (bulutta, Chromium). CI'da (macOS) Playwright olmadığı için orada çalışmaz; denetçi elle çalıştırır.
+- **Kalan:**
+  - `ilerlemeDogrula`'nın tamamı taşınmadı: site kaydı açılışta doğruluyor, Swift onun doğruladığını okuyor. Z2'de (kayıt Swift'e geçince) gerekecek; `bolumlerDogrula`, `derslerDogrula`, `koleksiyonDogrula`, `bildirimlerDogrula`, `gorulenDogrula` ve ayar düzeltmeleri dahil.
+  - Swift yazınca sitede o an açık olan sayfa kendiliğinden yeniden çizilmez (`kaydet` bellekteki sayfaları eskitir; sekmeye dönünce yenilenir). Swift ekranları siteyle aynı anda görünmeyeceği için şimdilik sorun değil.
+  - Sitedeki değişiklikler Swift'e bildirilmiyor: Swift ekranı görünür olduğunda `oku()` ile tazelemeli (T3/C işleri).
+  - `TekrarKoprusu` betiği aynen duruyor (rozet ve bildirim sayıları); Z2'de `Gecmis.gelecekYuk`/`vadeSayisi`'ne geçer.
+- **Tuzaklar:**
+  - Okumadan sonra site açılışta bir kez `kaydet()` çağırır (kayıt no artar): açılışta okunan kayıtla yazmak `.cakisma` verir. Hep `degistir` kullan.
+  - Skorlar sitenin kendi nesneleri: `Skor`/`SkorKaydi`'nin bilmediği alanlar `ham`'da korunur; yeni alan eklemek için `Ilerleme[alan:]`.
+  - Gün dizgeleri cihazın yerel günüdür (`GunTarihi.gun(Date())` = sitenin `bugunStr()`).
+- **Sonraki işe ipucu (C1, C2, C4):** `let il = try await IlerlemeKoprusu.shared.oku()`; kart cevabı: `try await IlerlemeKoprusu.shared.degistir { il in var sk = il.skorlar; sk[id, default: SkorKaydi()].sanatci = Leitner.cevapla(sk[id]?.sanatci, dogru: d, bugun: gun); il.skorlar = sk; il.gecmisEkle(…); il.sonCalisilanEkle(id) }`. Açık sanatçılar: `il.acikSanatcilar(katalog.sanatcilar)`. 14 günlük yük grafiği (C2): `Gecmis.gelecekYuk`. Seviye (C1): `Seviye.isle`, `Seviye.eserSeviyesi`.
+- **Site değişirse (K7):** `git -C /tmp/sa log a866b86..HEAD -- js/leitner.js js/gecmis.js js/seviye.js js/ogrenme.js js/kilit.js js/depo.js js/ekranlar/ortak.js`; `node Testler/kahin/ilerleme.mjs > …/Ornekler/ilerleme/cevaplar.json` ve `node Testler/kahin/ilerleme_koprusu.mjs`.
+- **CI:** yeşil (iOS derleme #15, `f984b27`): köprü ve DEBUG ekranı derlendi, simülatör adımları geçti. `5-ilerleme-ozeti.png` ve `6-site-ilerleme.png` artifact'ta; oturumdan indirilemedi, denetçi baksın (6'da 7-8. konular işlendi ve bugün 12 kart görünmeli).
+
+
+**Denetim:** Claude, 2026-11-20 — **onay** (PR #5 yorumu). Linux'ta 38 test geçti. `ilerleme_koprusu.mjs` canlı sitede yeniden çalıştırıldı: okuma, yazma, çakışma reddi ve yeniden açılışta sitenin Swift'in yazdığını okuması geçti. `ilerleme.mjs` yeniden çalıştırıldı: cevaplar aynı (yalnız `yazma` vakasındaki `olusturma` zaman damgası farklı, beklenen). CI görüntüleri: Swift özeti "siteye yazıldı · kayıt 5", sitenin `#/ilerleme` sayfası yazılanı gösteriyor. Düzeltme: CI'da `norasanat://` denemesi en sona alındı (simülatörün onay penceresi sonraki görüntülerin üstüne biniyordu).
 
 ### T3 · Kabuk (Claude)
 **Amaç:** Yerli sekme çubuğu (K1). Sekmeler şimdilik siteyi gösterir; uygulama bugünküyle aynı çalışır.
