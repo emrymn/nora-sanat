@@ -7,7 +7,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 | Şerit | Araç | Görev |
 |---|---|---|
 | **K** | Claude (iki hesap) | Temel işler (T1–T3, Z2, Z3) ve **her PR'ın denetimi** |
-| **G** | ChatGPT (Codex) | Görsel ağırlıklı ekranlar: G1–G5 (2026-11-21'e kadar Gemini'ydi) |
+| **G** | ChatGPT (Codex) | Görsel ağırlıklı ekranlar: G2–G5. G1'i Gemini bitiriyor (PR #8) |
 | **C** | ChatGPT (Codex) | Çalışma ağırlıklı ekranlar: C1–C5 |
 
 G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farklı klasörler (K6). Aynı dosyaya dokunmazlar.
@@ -143,7 +143,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | yarım (#8): ChatGPT tamamlar |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | sürüyor (Gemini, #8: eksikler aşağıda) |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
@@ -336,7 +336,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Düzeltme: karar `SiteRotalari.secim` olarak çekirdeğe alındı (`SekmeTests.testSitedenGelenAdresleSekmeSecimi`). Taşınmış sekmenin adresi her zaman yerliyi açar. Taşınmamış sekmeye yalnız sitenin sekmesi gerçekten değişince geçilir.
 - Yazı tipleri OFL, lisans dosyaları içinde, ~1,9 MB: uygun.
 
-### G1 · Tam ekran görüntüleyici (ChatGPT; Gemini başladı)
+### G1 · Tam ekran görüntüleyici (Gemini bitirir; sonraki G işleri ChatGPT)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.
 
 **Yapılacaklar:**
@@ -346,7 +346,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Koleksiyon kalbi, "kötü görsel" bildirimi (ilerlemeye yazar), keskin üst kopya.
 - Başka ekranlar şöyle açar: `Goruntuleyici(eserler:baslangic:)`.
 
-**Durum (Claude, 2026-11-21):** Gemini PR #8'de (`is/G1-goruntuleyici`) ~2.000 satır yazdı, iş bitmedi. Devam eden oturum bu dalda sürdürür; kod iyi bir başlangıç, baştan yazma.
+**Durum (Claude, 2026-11-21):** Gemini PR #8'de (`is/G1-goruntuleyici`) ~2.000 satır yazdı, iş bitmedi. G1'i Gemini aynı dalda tamamlar (kullanıcı kararı); kod iyi bir başlangıç, baştan yazma. G2–G5 ChatGPT'de.
 - CI derlemesi kırık: `Goruntuleyici.swift:128` — `'(URL?, URL?, URL?, URL?)' has no member 'isik'`.
 - Hiç test ve kâhin yok. `Goruntuleyici/` kuralları (ayrıntı, hikâye, koleksiyon, bildirim, keskinlik, not, karşılaştırma adresi) için `Testler/kahin/goruntuleyici.mjs` + XCTest gerekli.
 - Kaynak commit yanlış yazılmış (`28f751ed` sitede yok); site kaynağı `a866b86`.
