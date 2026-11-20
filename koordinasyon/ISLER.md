@@ -1,16 +1,17 @@
 # Nora Sanat → tamamen Swift: iş dağılımı
 
-Bu dosya Claude, Gemini ve ChatGPT'nin ortak iş listesi ve raporudur. Oturumlar birbirini görmez; **her şey burada yazılıdır.**
+Bu dosya Claude ve ChatGPT'nin ortak iş listesi ve raporudur. Oturumlar birbirini görmez; **her şey burada yazılıdır.**
 Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin durumunu ve devir notunu yazar** (rapor budur).
 
 **Kim ne yapar:**
 | Şerit | Araç | Görev |
 |---|---|---|
 | **K** | Claude (iki hesap) | Temel işler (T1–T3, Z2, Z3) ve **her PR'ın denetimi** |
-| **G** | Gemini (Jules ya da Gemini CLI) | Görsel ağırlıklı ekranlar: G1–G5 |
+| **G** | ChatGPT (Codex) | Görsel ağırlıklı ekranlar: G1–G5 (2026-11-21'e kadar Gemini'ydi) |
 | **C** | ChatGPT (Codex) | Çalışma ağırlıklı ekranlar: C1–C5 |
 
 G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farklı klasörler (K6). Aynı dosyaya dokunmazlar.
+İkisi de artık ChatGPT'de; iki ayrı ChatGPT oturumunda aynı anda yürüyebilirler.
 
 **Hedef.** Sanat Atlası'nın (`emrymn/sanat-atlasi`, yayında `sanat-atlasi.pages.dev`) bütün ekranlarını Swift ile yeniden yazmak.
 - Geçiş **sekme sekme** olur. Taşınmamış sekmeler o güne kadar sitenin kendisini (WKWebView) gösterir. Uygulama her an kullanılabilir kalır.
@@ -31,7 +32,7 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
    git clone --depth 1 https://github.com/emrymn/sanat-atlasi /tmp/sa
    ```
 5. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
-6. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
+6. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (ChatGPT, 2026-11-21)`.
 7. Hemen **taslak PR** aç; başlığı iş kimliğiyle başlasın (ör. "T3 · Kabuk"). Öbür araçlar ne yapıldığını açık PR'lardan görür.
 
 ### Bitirirken
@@ -49,7 +50,7 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
    3. Kullanıcı "birleştir" der.
 5. Birleşince durumu `bitti (#n)` yap. Bunu bir sonraki oturum da yapabilir.
 
-### Bilgisayarında Xcode yoksa (Gemini, ChatGPT ve Claude için aynı)
+### Bilgisayarında Xcode yoksa (ChatGPT ve Claude için aynı)
 - Oturumlar bulutta (Linux) çalışır. iOS orada derlenemez, derlemeyi GitHub Actions yapar (`.github/workflows/ios-derle.yml`).
 - Paket testleri Linux'ta çalışabilir: `swift test --package-path Paketler/NoraCekirdek` (Swift kuruluysa).
 - CI sonucunu göremiyorsan PR'ı öyle bırak ve devir notuna "CI sonucu görülmedi" yaz. Denetçi Claude CI'ı okur.
@@ -132,7 +133,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 ## İş listesi
 
 **Şeritler:**
-- Her araç **kendi şeridindeki** işleri yapar: Claude K, Gemini G, ChatGPT C. Hangi işi yapacağını kullanıcı mesajında adıyla verir.
+- Her araç **kendi şeridindeki** işleri yapar: Claude K; ChatGPT G ve C. Hangi işi yapacağını kullanıcı mesajında adıyla verir.
 - Bağımlılığı bitmemiş işe başlanmaz. G ve C, temel (T1–T3) birleşene kadar bekler. Sadece G1, T1'den sonra başlayabilir.
 - Aynı anda yürüyebilecek işler tablodaki bağımlılıklardan okunur. İki oturuma aynı iş verilmez.
 - Tahmini süreler "oturum" cinsindendir. Bir oturum bir PR demektir.
@@ -142,8 +143,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | yarım (#8): ChatGPT tamamlar |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
@@ -335,7 +336,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Düzeltme: karar `SiteRotalari.secim` olarak çekirdeğe alındı (`SekmeTests.testSitedenGelenAdresleSekmeSecimi`). Taşınmış sekmenin adresi her zaman yerliyi açar. Taşınmamış sekmeye yalnız sitenin sekmesi gerçekten değişince geçilir.
 - Yazı tipleri OFL, lisans dosyaları içinde, ~1,9 MB: uygun.
 
-### G1 · Tam ekran görüntüleyici (Gemini)
+### G1 · Tam ekran görüntüleyici (ChatGPT; Gemini başladı)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.
 
 **Yapılacaklar:**
@@ -344,6 +345,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Rehberli ayrıntı noktaları.
 - Koleksiyon kalbi, "kötü görsel" bildirimi (ilerlemeye yazar), keskin üst kopya.
 - Başka ekranlar şöyle açar: `Goruntuleyici(eserler:baslangic:)`.
+
+**Durum (Claude, 2026-11-21):** Gemini PR #8'de (`is/G1-goruntuleyici`) ~2.000 satır yazdı, iş bitmedi. Devam eden oturum bu dalda sürdürür; kod iyi bir başlangıç, baştan yazma.
+- CI derlemesi kırık: `Goruntuleyici.swift:128` — `'(URL?, URL?, URL?, URL?)' has no member 'isik'`.
+- Hiç test ve kâhin yok. `Goruntuleyici/` kuralları (ayrıntı, hikâye, koleksiyon, bildirim, keskinlik, not, karşılaştırma adresi) için `Testler/kahin/goruntuleyici.mjs` + XCTest gerekli.
+- Kaynak commit yanlış yazılmış (`28f751ed` sitede yok); site kaynağı `a866b86`.
+- `KoleksiyonKurallari.degistir` çıkarırken listeyi `dogrula` ile yeniden süzüyor; site süzmüyor (yalnız ekler/çıkarır). Kâhinle düzelt.
+- Görseller `AsyncImage` ile; T3 birleşti, `UzakGorsel` / `GorselDeposu`'na geç.
+- Ekran CI'da hiç görülmedi: DEBUG açılış argümanı (ör. `-ekran goruntuleyici`) ve `ios-derle.yml`'e ekran görüntüsü adımı ekle (4-url-calis hep en sonda kalır).
 
 **Devir notu:** –
 
@@ -360,9 +369,27 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Sonuçlar `IlerlemeKoprusu` ile yazılır.
 - İki oturum önerilir: **C1a** mantık + kâhin, **C1b** ekranlar.
 
-**Devir notu:** –
+**Devir notu:** ChatGPT, 2026-11-21 — C1a, PR #7 (`is/C1a-pekistir-mantik`).
+- Kaynak: `sanat-atlasi` @ `a866b86`; `js/oturum.js`, `celdirici.js`, `turlar.js`, `bolum.js`, `eserler.js`, `ters.js`, `soruTurlari.js`, `ekranlar/{pekistir,soruTurlari}.js`.
+- `TurPlani.kur` karışık, dönem, konu, harita bölümü ve hatalar turlarını kurar. `PekistirmeKarti.hazirla` eser, zorluk ve seçenekleri seçer. `PekistirmeOturumu.cevapla` tamamlanan kartın T2 skor, seviye, günlük ve geçmiş değişikliklerini birlikte uygular. Yanlış kart başına en çok üç geri dönüş vardır. Ek kurs bölümü ve ikonografi sorularının ayrı skorları `SoruTuru` içindedir.
+- Yedi yeni XCTest geçti. Sabit kaynak sürümünün JS modülleriyle üretilen cevaplar `Ornekler/pekistir/cevaplar.json` içinde. Çevrimdışı üretim: `node Testler/kahin/pekistir.mjs /tmp/sa`. Canlı tarayıcı karşılaştırması: **kâhin denetçide** (yerelde Playwright paketi yok).
+- C1b: kart cevap yaprağı, yarım oturumun saklanması/sürdürülmesi ve köprüye yazma. Köprü yeniden denerse oturum kopyasına aynı cevabı uygula; yalnız başarılı yazmadan sonra ekranın oturumunu ilerlet. Telefonda yeni deneme adımı C1b ekranıyla gelecek.
 
-### G2 · Galeri (Gemini)
+**Denetim (C1a):** Claude, 2026-11-21 — **onay** (PR #7 yorumu).
+- `pekistir.mjs` canlı sitede çalıştırıldı, cevaplar örneklerle aynı. Site a866b86'dan beri bu dosyalarda değişmedi.
+- Kurallar sitenin kaynağıyla satır satır karşılaştırıldı.
+- Eklenen uçtan uca kâhin `pekistir_turlari.mjs` → `PekistirTurlariTests`:
+  - Gerçek katalog, 60 rastgele ilerleme, altı tur türü, 510 kart.
+  - Tur planı, eser, şıklar, akım şıkları, ters soru, tekrar kuyruğu, rastgele sayıların sırası ve sayısı, ilerlemenin yedi alanı sitenin yaptığıyla aynı.
+  - Rastgelelik sitenin `rastgeleYap`'ı; Swift'e `SiteRastgelesi` olarak test içinde taşındı.
+- Düzeltme: `konu` kapanışı artık `(eser, sanatçıId)` alıyor. Sitede QID'si olmayan eserin konusu `sanatçıId|başlık` ile bulunuyor; eski imzayla bulunamazdı.
+- `pekistir.mjs` Playwright'ı diğer kâhinler gibi `createRequire` ile yüklüyor.
+- C1b için notlar:
+  - `cevapla(seciliSeviye:)` ekranda seçilen alt seviyedir, kartın seviyesi değil. Alt seviye seçilmediyse `nil` verilir.
+  - Kart sitedeki gibi cevaptan önce hazırlanmalı. `hazirla` `sonEserler`'i ilerlemeye yazar.
+  - `SoruTuru` (kurs bölümü ve ikonografi turları) yalnız okuyarak karşılaştırıldı. C1b ekranlarıyla birlikte kâhine eklenmeli.
+
+### G2 · Galeri (ChatGPT)
 **Site kaynakları:**
 - `js/ekranlar/gozat.js`, `js/ekranlar/akim.js` + `js/akim.js`, `js/ekranlar/arama.js` + `js/arama.js`
 - `js/ekranlar/koleksiyon.js`
@@ -383,7 +410,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G3 · Başyapıtlar (Gemini)
+### G3 · Başyapıtlar (ChatGPT)
 **Site kaynakları:** `js/basyapit.js`, `js/basyapitSayfa.js`, `js/ekranlar/basyapit.js`.
 
 **Kapsam:** Liste (dönem sekmeleri), yakın okuma sayfası, yan yana karşılaştırma.
@@ -398,7 +425,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G4 · Bugün (Gemini)
+### G4 · Bugün (ChatGPT)
 **Site kaynakları:**
 - `js/ekranlar/bugun.js`, `js/yuruyus.js`, `js/egim.js`, `js/gunduzRenk.js`, `js/renk.js`, `js/gunun.js`
 - Seçim kuralı Swift'te zaten var: `NoraCekirdek/GununSanatcisi.swift`.
@@ -421,7 +448,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G5 · Yolculuk + Zaman (Gemini)
+### G5 · Yolculuk + Zaman (ChatGPT)
 **Site kaynakları:**
 - `js/harita.js`, `js/bolum.js`, `js/ekranlar/harita.js`, `js/surukleKapat.js`, `js/sallanma.js`
 - `js/zaman.js`, `js/ekranlar/zaman.js`

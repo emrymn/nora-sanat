@@ -19,3 +19,9 @@ node Testler/kahin/kabuk.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Orn
 # Swift dosyalarındaki köprü betikleri (Gecis.adresBetigi, TemaKoprusu.betik) canlı sitede; cevap dosyası yazmaz, geçer ya da kalır
 node Testler/kahin/kabuk_koprusu.mjs
 ```
+
+## Pekiştirme (C1a)
+
+Uçtan uca örnek: `pekistir_turlari.mjs`. Sitenin ekran yapıştırıcısını (tur kurma, kart hazırlama, cevap yazma) aynen
+kopyalar, tohumlu rastgeleyle 60 durum üretir. Swift testi aynı tohumla aynı sayıları çekmek zorunda; sayı ve sıra da
+karşılaştırılır.
