@@ -141,7 +141,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 |----|----|-------|------------|--------|-------|
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
-| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
+| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | sürüyor (Claude, 2026-11-20) |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
