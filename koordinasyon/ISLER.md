@@ -142,7 +142,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | sürüyor (Gemini, 2026-11-21) |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | PR açık (#8) |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
@@ -283,7 +283,25 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Koleksiyon kalbi, "kötü görsel" bildirimi (ilerlemeye yazar), keskin üst kopya.
 - Başka ekranlar şöyle açar: `Goruntuleyici(eserler:baslangic:)`.
 
-**Devir notu:** –
+**Devir notu:** Gemini, 2026-11-21 — PR #8, dal `is/G1-goruntuleyici`.
+- **Kaynak:** `sanat-atlasi` @ `28f751ed`. Taşınan dosyalar: `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js` (ve `js/ikonografi.js`'teki `eserKonusu`).
+- **Yapılan:**
+  - `Paketler/NoraCekirdek/Sources/NoraCekirdek/Goruntuleyici/`:
+    - `Ayrinti.swift`: `AyrintiNoktasi`, `AyrintiKaydi`, `NoktaOdagi`, `AyrintiKurallari` (`noktaGecerliMi`, `ayrintilariAl`, `ayrintiAnahtari`, `ayrintiBul`, `eserinAyrintisi`, `noktaOdagi`, `noktaYeri`, `yakinlasmaSiniri`).
+    - `Hikaye.swift`: `HikayeKarakteri`, `HikayeKaydi`, `HikayeKurallari` (`hikayeleriAl`, `eserinHikayesi`, `karakterKaydi`).
+    - `Koleksiyon.swift`: `KoleksiyonKaydi`, `KoleksiyonKurallari` (`dogrula`, `koleksiyondaMi`, `degistir`, `sinir = 500`).
+    - `Bildirim.swift`: `BildirimKaydi`, `BildirimKurallari` (`nedenler`, `dogrula`, `eseriBildir`, `kotuIsaretle`, `sinir = 300`).
+    - `GoruntuleyiciKurallari.swift`: `kaynakYazisi`, `notlariAl`, `eserNotu`, `taninmaMetni`, `karsilastirmaAdresi`, `karsilastirmaRotasi`, `benzerSanatcilar`, `ikonografiKonuHaritasi`, `eserKonusu`, `keskinlik`, `commonsUstu`, `keskinUstAdres`.
+    - `GoruntuleyiciBaglami.swift`: `SiteVerisi` üzerinden `SiteKatalogu`, `eser_notlari.json`, `eser_ayrintilari.json`, `eser_hikayeleri.json` ve `ikonografi.json` verilerini yükleyip T1'in `GorselAdresleri` ve `SiteKatalogu` ile birleştiren veri bağlamı.
+  - `NoraSanat/Ekranlar/Goruntuleyici/`:
+    - `Goruntuleyici.swift`: `Goruntuleyici(eserler:baslangic:)` tam ekran görüntüleyici ekranı. İki parmakla yakınlaştırma (1x–6x), çift dokunuşla 2.5x ↔ 1x, kaydırma, tek dokunuşla sade görünüm, eserler arası geçiş (yatay kaydırma veya ok düğmeleri), aşağı çekince küçülüp şeffaflaşarak kapanma, ilk eserde sağa çekince kapanma, künye/not/konu bağlantısı/kaynak sayfası, koleksiyon işareti ve `⋯` bildirim menüsü (`IlerlemeKoprusu.shared.degistir` ile ilerlemeye yazar).
+    - `GoruntuleyiciGorseli.swift`: T3'ün görsel bileşeni henüz olmadığı için geçici `AsyncImage` tabanlı keskin görsel bileşeni (önce 1280/800 px birincil kopya, hata olursa yedek adres, yüklendikten sonra arkada 4096 px `devasaUrl` üst kopya indirip sarsıntısız geçiş) ve `TabloIsigiGorunumu` (400 px bulanık arka plan ışığı).
+    - `AyrintiGorunumu.swift`: `AyrintiNoktalariKatmani` (tablo üzerinde numaralı ayrıntı noktaları) ve `AyrintiIncelemePaneli` (Önceki / Sonraki / Bitir).
+    - `HikayePaneliGorunumu.swift`: alttan açılan "Hikâyesi" paneli ("Ne oluyor?", "Kim kimdir?", "Ressamla bağı", "Gözden kaçanlar" ve "Karakterleri resimde gör").
+- **Kalan / Tuzaklar:**
+  - Yalnız `NoraSanat/Ekranlar/Goruntuleyici/` ve `Paketler/NoraCekirdek/Sources/NoraCekirdek/Goruntuleyici/` klasörlerine dokunuldu (`NoraSanatApp.swift`, `.github/workflows/ios-derle.yml` ve `Tests/` klasörlerine dokunulmadı). Kâhin denetçide, CI sonucu görülmedi.
+  - T3 birleştiğinde `GoruntuleyiciGorseli` içindeki `AsyncImage` yapısı T3'ün disk önbellekli `Gorsel` bileşenine geçirilebilir.
+- **Sonraki işe ipucu (G2, G3, G4, C3):** Başka ekranlardan `Goruntuleyici(eserler: eserListesi, baslangic: indeks)` ile doğrudan tam ekran (`fullScreenCover`) açılabilir; doğrudan inceleme veya hikâye kipinde açmak için `incelemeyeBasla: true` / `hikayeyeBasla: true` verilebilir.
 
 ### C1 · Pekiştirme oturumu (ChatGPT)
 **Site kaynakları:**
