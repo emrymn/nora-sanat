@@ -1,0 +1,245 @@
+{
+ "surum": "1.90.3",
+ "sekmeler": [
+  [
+   "",
+   "bugun"
+  ],
+  [
+   "#/",
+   "bugun"
+  ],
+  [
+   "#",
+   "bugun"
+  ],
+  [
+   "#/gozat",
+   "gozat"
+  ],
+  [
+   "#/ara",
+   "gozat"
+  ],
+  [
+   "#/zaman",
+   "gozat"
+  ],
+  [
+   "#/akim/Gotik",
+   "gozat"
+  ],
+  [
+   "#/sanatci/bonaventura-berlinghieri",
+   "gozat"
+  ],
+  [
+   "#/sanatci/bonaventura-berlinghieri/eserler",
+   "gozat"
+  ],
+  [
+   "#/karsilastir/bonaventura-berlinghieri/cimabue",
+   null
+  ],
+  [
+   "#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans",
+   null
+  ],
+  [
+   "#/basyapitlar",
+   "gozat"
+  ],
+  [
+   "#/konular",
+   "gozat"
+  ],
+  [
+   "#/konular/yeni_ahit",
+   "gozat"
+  ],
+  [
+   "#/konu/madonna-and-child",
+   "gozat"
+  ],
+  [
+   "#/basyapit/Q1212937",
+   "gozat"
+  ],
+  [
+   "#/basyapit/Q1212937/ders",
+   "gozat"
+  ],
+  [
+   "#/pekistir",
+   "pekistir"
+  ],
+  [
+   "#/pekistir/donem",
+   "pekistir"
+  ],
+  [
+   "#/pekistir/ders/1",
+   "pekistir"
+  ],
+  [
+   "#/pekistir/ders/1/sina",
+   "pekistir"
+  ],
+  [
+   "#/ilerleme",
+   "bugun"
+  ],
+  [
+   "#/ayarlar",
+   "bugun"
+  ],
+  [
+   "#/koleksiyon",
+   "gozat"
+  ],
+  [
+   "#/harita",
+   "harita"
+  ],
+  [
+   "#/gunun",
+   "bugun"
+  ],
+  [
+   "#/gunun/bonaventura-berlinghieri",
+   "bugun"
+  ],
+  [
+   "#/olmayan-sayfa",
+   "bugun"
+  ],
+  [
+   "#/HARITA",
+   "bugun"
+  ],
+  [
+   "#/pekistir/ders/1/gor",
+   null
+  ],
+  [
+   "#/pekistir/karisik",
+   null
+  ],
+  [
+   "#/pekistir/hatalar",
+   null
+  ],
+  [
+   "#/pekistir/konu/1",
+   null
+  ],
+  [
+   "#/pekistir/bolum",
+   null
+  ],
+  [
+   "#/pekistir/ikonografi",
+   null
+  ],
+  [
+   "#/pekistir/bolum/3-1/kolay",
+   null
+  ],
+  [
+   "#/pekistir/donem/Gotik",
+   null
+  ]
+ ],
+ "tema": {
+  "gece": {
+   "dataTema": "gece",
+   "themeColor": "#121110",
+   "degiskenler": {
+    "--bg": "#121110",
+    "--surface": "#1c1a18",
+    "--border": "#2e2b28",
+    "--ink": "#ebe5da",
+    "--ink-2": "#aca498",
+    "--ink-3": "#8a8379",
+    "--ink-soluk": "#645e57",
+    "--right": "#6fb487",
+    "--right-ikon": "#8fd0a2",
+    "--right-bg": "rgba(111, 180, 135, 0.14)",
+    "--wrong": "#d66854",
+    "--wrong-ikon": "#f09a86",
+    "--wrong-bg": "rgba(214, 104, 84, 0.14)",
+    "--tab-bg": "rgba(24, 22, 20, 0.8)",
+    "--overlay-btn": "rgba(18, 17, 16, 0.6)",
+    "--vurgu": "#866f5a",
+    "--vurgu-yazi": "#FFFFFF",
+    "--vurgu-acik": "#b19d8b",
+    "--vurgu-acik-yazi": "#0B0A0B",
+    "--vurgu-koyu": "#372f27",
+    "--notr-kenar": "rgba(244, 239, 230, 0.14)",
+    "--notr-yuzey": "rgba(244, 239, 230, 0.05)",
+    "--pirinc": "#c9a45c",
+    "--pirinc-yazi": "#121110"
+   }
+  },
+  "gunduz": {
+   "dataTema": "gunduz",
+   "themeColor": "#ECE8E1",
+   "degiskenler": {
+    "--bg": "#ece8e1",
+    "--surface": "#f7f5f1",
+    "--border": "#d6d0c6",
+    "--ink": "#1f1b17",
+    "--ink-2": "#4c463f",
+    "--ink-3": "#5f5850",
+    "--ink-soluk": "#8e867c",
+    "--right": "#2a6644",
+    "--right-ikon": "#2a6644",
+    "--right-bg": "rgba(42, 102, 68, 0.12)",
+    "--wrong": "#9a3726",
+    "--wrong-ikon": "#9a3726",
+    "--wrong-bg": "rgba(154, 55, 38, 0.1)",
+    "--tab-bg": "rgba(247, 245, 241, 0.84)",
+    "--overlay-btn": "rgba(247, 245, 241, 0.85)",
+    "--vurgu": "#866f5a",
+    "--vurgu-yazi": "#FFFFFF",
+    "--vurgu-acik": "#776350",
+    "--vurgu-acik-yazi": "#FFFFFF",
+    "--vurgu-koyu": "#dfd8cf",
+    "--notr-kenar": "rgba(31, 27, 23, 0.14)",
+    "--notr-yuzey": "rgba(31, 27, 23, 0.035)",
+    "--pirinc": "#8a651c",
+    "--pirinc-yazi": "#f7f5f1"
+   }
+  },
+  "gunduzLapis": {
+   "dataTema": "gunduz",
+   "themeColor": "#e6dcc4",
+   "degiskenler": {
+    "--bg": "#e6dcc4",
+    "--surface": "#faf5e8",
+    "--border": "#d3c6a6",
+    "--ink": "#1a2138",
+    "--ink-2": "#424862",
+    "--ink-3": "#555a72",
+    "--ink-soluk": "#8a8778",
+    "--right": "#2a6644",
+    "--right-ikon": "#2a6644",
+    "--right-bg": "rgba(42, 102, 68, 0.12)",
+    "--wrong": "#9a3726",
+    "--wrong-ikon": "#9a3726",
+    "--wrong-bg": "rgba(154, 55, 38, 0.1)",
+    "--tab-bg": "rgba(250, 245, 232, 0.84)",
+    "--overlay-btn": "rgba(250, 245, 232, 0.85)",
+    "--vurgu": "#866f5a",
+    "--vurgu-yazi": "#FFFFFF",
+    "--vurgu-acik": "#715e4c",
+    "--vurgu-acik-yazi": "#FFFFFF",
+    "--vurgu-koyu": "#d9cdb6",
+    "--notr-kenar": "rgba(31, 55, 104, 0.2)",
+    "--notr-yuzey": "rgba(31, 55, 104, 0.06)",
+    "--pirinc": "#7a510e",
+    "--pirinc-yazi": "#faf5e8"
+   }
+  }
+ }
+}

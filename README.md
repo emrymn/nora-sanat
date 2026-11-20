@@ -89,6 +89,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] Saati bir sonraki saat başına al (örneğin şimdi 20:40 ise 21:00), Nora Sanat'ı aç ve kapat: o saatte "Bugün N sanatçı tekrarını bekliyor" geliyor. N, Çalış'taki sayıyla aynı.
 - [ ] Bildirime dokununca Çalış sekmesi açılıyor.
 - [ ] Nora Sanat'ta Ayarlar → **Simge rozeti** açılabiliyor ve simgede sayı çıkıyor.
+- [ ] (T3) Uygulama eskisi gibi açılıyor: sekmeler, titreşim, Gece/Gündüz geçişi, saat çubuğunun rengi aynı. Gündüz'e geçince saat/pil çubuğu koyu yazıya dönüyor.
 
 ## Geliştirme
 

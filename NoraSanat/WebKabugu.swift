@@ -12,10 +12,12 @@ import WebKit
 /// - `navigator.vibrate` iPhone'un titreşim motoruna bağlanır (doğru: tek, yanlış: çift titreşim).
 /// - Başka sitelere giden linkler Safari'de açılır.
 /// - Tekrar hatırlatmaları ve simge rozeti için `TekrarKoprusu` betiği eklenir (bkz. `Hatirlatici`).
+/// - Sitenin adresi (`Gecis.adresBetigi`) ve teması (`TemaKoprusu`) kabuğa bildirilir (T3).
+/// Uygulamada tek örneği vardır; `KokGorunum` onu hep yüklü tutar.
 struct WebKabugu: UIViewRepresentable {
     static let adres = URL(string: "https://sanat-atlasi.pages.dev/")!
 
-    let tema: SiteTemasi
+    let tema: TemaDeposu
 
     func makeCoordinator() -> Koordinator { Koordinator(tema: tema) }
 
@@ -35,6 +37,10 @@ struct WebKabugu: UIViewRepresentable {
                                           forMainFrameOnly: true))
         icerik.add(context.coordinator, name: "tekrarTakvimi")
         icerik.add(context.coordinator, name: "rozet")
+        icerik.addUserScript(WKUserScript(source: Gecis.adresBetigi, injectionTime: .atDocumentStart, forMainFrameOnly: true))
+        icerik.add(context.coordinator, name: "adres")
+        icerik.addUserScript(WKUserScript(source: TemaKoprusu.betik, injectionTime: .atDocumentStart, forMainFrameOnly: true))
+        icerik.add(context.coordinator, name: "tema")
         icerik.addScriptMessageHandler(IzinKoprusu(), contentWorld: .page, name: "bildirimIzni")
         ayar.userContentController = icerik
 
@@ -60,18 +66,18 @@ struct WebKabugu: UIViewRepresentable {
 @MainActor
 final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
 
-    private let tema: SiteTemasi
+    private let tema: TemaDeposu
     private weak var webView: WKWebView?
     private var renkGozlemi: NSKeyValueObservation?
     private var arkaPlanGozlemi: NSObjectProtocol?
 
-    init(tema: SiteTemasi) {
+    init(tema: TemaDeposu) {
         self.tema = tema
     }
 
     func baglan(_ w: WKWebView) {
         webView = w
-        renkUygula(tema.renk)
+        renkUygula(tema.siteRengi)
         renkGozlemi = w.observe(\.themeColor, options: [.new]) { [weak self] w, _ in
             let renk = w.themeColor
             Task { @MainActor in
@@ -88,7 +94,7 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     }
 
     private func renkUygula(_ renk: UIColor) {
-        tema.renk = renk
+        tema.siteRengiGeldi(renk)
         webView?.backgroundColor = renk
         webView?.underPageBackgroundColor = renk
         webView?.scrollView.backgroundColor = renk
@@ -214,15 +220,15 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
         case "rozet":
             Hatirlatici.shared.rozet((message.body as? NSNumber)?.intValue ?? 0)
             return
+        case "adres":
+            if let a = message.body as? String { KabukDurumu.shared.siteAdresiGeldi(a) }
+        case "tema":
+            tema.siteBildirdi(message.body)
         case "titresim":
-            break
+            Titresim.desen((message.body as? [Any])?.compactMap { ($0 as? NSNumber)?.doubleValue } ?? [1])
         default:
             return
         }
-        let desen = (message.body as? [Any])?.compactMap { ($0 as? NSNumber)?.doubleValue } ?? [1]
-        guard desen.contains(where: { $0 > 0 }) else { return }   // vibrate(0): titreşimi durdur
-        let ureteci = UINotificationFeedbackGenerator()
-        ureteci.notificationOccurred(desen.count > 1 ? .error : .success)
     }
 
     // MARK: Bağlantı yok
