@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/bildirim.js @ 28f751ed
+// Kaynak: sanat-atlasi js/bildirim.js @ a866b86
 import Foundation
 
 /// "Bu görsel hatalı" bildirimi (`ilerleme.bildirimler` öğesi: `{ a, s, baslik, neden, g, t }`).

@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/ayrinti.js @ 28f751ed
+// Kaynak: sanat-atlasi js/ayrinti.js @ a866b86
 import Foundation
 
 /// Rehberli eser incelemesi noktası (`data/eser_ayrintilari.json` veya `data/eser_hikayeleri.json` karakterleri).

@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/goruntuleyici.js @ 28f751ed
+// Kaynak: sanat-atlasi js/goruntuleyici.js @ a866b86
 import Foundation
 
 /// Bir görselin görüntüleyicide kullanılan adresleri (400 px ışık, 1280/800 px birincil, yedek, 4096 px devasa).

@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/goruntuleyici.js, js/keskin.js @ 28f751ed
+// Kaynak: sanat-atlasi js/goruntuleyici.js, js/keskin.js @ a866b86
 import SwiftUI
 import NoraCekirdek
 

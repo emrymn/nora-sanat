@@ -284,7 +284,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Başka ekranlar şöyle açar: `Goruntuleyici(eserler:baslangic:)`.
 
 **Devir notu:** Gemini, 2026-11-21 — PR #8, dal `is/G1-goruntuleyici`.
-- **Kaynak:** `sanat-atlasi` @ `28f751ed`. Taşınan dosyalar: `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js` (ve `js/ikonografi.js`'teki `eserKonusu`).
+- **Kaynak:** `sanat-atlasi` @ `a866b86`. Taşınan dosyalar: `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js` (ve `js/ikonografi.js`'teki `eserKonusu`).
 - **Yapılan:**
   - `Paketler/NoraCekirdek/Sources/NoraCekirdek/Goruntuleyici/`:
     - `Ayrinti.swift`: `AyrintiNoktasi`, `AyrintiKaydi`, `NoktaOdagi`, `AyrintiKurallari` (`noktaGecerliMi`, `ayrintilariAl`, `ayrintiAnahtari`, `ayrintiBul`, `eserinAyrintisi`, `noktaOdagi`, `noktaYeri`, `yakinlasmaSiniri`; JS `Math.round` ile birebir uyumlu `jsRound`).
@@ -305,7 +305,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - JS `Math.round(-x.5)` negatif yarımları `+∞` yönüne (`-x`) yuvarlarken Swift `.rounded()` `-∞` yönüne (`-(x+1)`) yuvarlıyor; `noktaOdagi`'nda birebir uyum için `floor(x + 0.5)` (`jsRound`) kullanıldı.
   - T3 birleştiğinde `GoruntuleyiciGorseli` içindeki `AsyncImage` yapısı T3'ün disk önbellekli `Gorsel` bileşenine geçirilebilir.
 - **Sonraki işe ipucu (G2, G3, G4, C3):** Başka ekranlardan `Goruntuleyici(eserler: eserListesi, baslangic: indeks)` ile doğrudan tam ekran (`fullScreenCover`) açılabilir; doğrudan inceleme veya hikâye kipinde açmak için `incelemeyeBasla: true` / `hikayeyeBasla: true` verilebilir.
-- **Site değişirse (K7):** `git -C /tmp/sa log 28f751ed..HEAD -- js/goruntuleyici.js js/ayrinti.js js/hikaye.js js/keskin.js js/koleksiyon.js js/bildirim.js js/karsilastir.js js/ikonografi.js`; kâhini yeniden çalıştır: `node Testler/kahin/goruntuleyici.mjs`.
+- **Site değişirse (K7):** `git -C /tmp/sa log a866b86..HEAD -- js/goruntuleyici.js js/ayrinti.js js/hikaye.js js/keskin.js js/koleksiyon.js js/bildirim.js js/karsilastir.js js/ikonografi.js`; kâhini yeniden çalıştır: `node Testler/kahin/goruntuleyici.mjs`.
 
 ### C1 · Pekiştirme oturumu (ChatGPT)
 **Site kaynakları:**

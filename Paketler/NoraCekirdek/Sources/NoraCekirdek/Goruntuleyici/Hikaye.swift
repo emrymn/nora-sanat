@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/hikaye.js @ 28f751ed
+// Kaynak: sanat-atlasi js/hikaye.js @ a866b86
 import Foundation
 
 /// Resmin hikâyesindeki bir karakter veya önemli nesne (`data/eser_hikayeleri.json` `kim` dizisi).

@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/goruntuleyici.js, js/ayrinti.js, js/hikaye.js, js/keskin.js, js/koleksiyon.js, js/bildirim.js, js/karsilastir.js @ 28f751ed
+// Kaynak: sanat-atlasi js/goruntuleyici.js, js/ayrinti.js, js/hikaye.js, js/keskin.js, js/koleksiyon.js, js/bildirim.js, js/karsilastir.js @ a866b86
 import SwiftUI
 import NoraCekirdek
 

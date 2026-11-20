@@ -233,7 +233,7 @@ final class GoruntuleyiciTests: XCTestCase {
         }
 
         var il = try Ilerleme(json: .nesne([
-            ("koleksiyon", .dizi([])),
+            ("koleksiyon", c["baslangicKoleksiyon"] ?? .dizi([])),
             ("kotuGorseller", .nesne(.bos)),
             ("bildirimler", .dizi([])),
         ]))

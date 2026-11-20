@@ -10,13 +10,7 @@ import { createRequire } from 'node:module';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-let playwrightMod;
-try {
-  playwrightMod = createRequire(import.meta.url)('playwright');
-} catch {
-  playwrightMod = createRequire(new URL('../../../Desktop/sanat-atlasi/package.json', import.meta.url))('playwright');
-}
-const { chromium } = playwrightMod;
+const { chromium } = createRequire(import.meta.url)('playwright');
 
 const klasor = process.argv[2] || 'Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/goruntuleyici';
 const DOSYALAR = [
@@ -167,7 +161,9 @@ const sonuc = await sayfa.evaluate(async ({ DOSYALAR }) => {
     ornekEserler.push(...l.slice(0, 3));
   }
 
-  const il = { koleksiyon: [], kotuGorseller: {}, bildirimler: [] };
+  // Denetim: eski, eksik alanlı bir kayıt. Site listeyi süzmeden değiştirir; kayıt olduğu gibi kalmalı
+  const baslangicKoleksiyon = [{ a: 'eski-kayit', s: 'eski-sanatci' }];
+  const il = { koleksiyon: JSON.parse(JSON.stringify(baslangicKoleksiyon)), kotuGorseller: {}, bildirimler: [] };
   const koleksiyonAdimlari = [];
   const tarihler = ['2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21'];
   for (const [idx, e] of [ornekEserler[0], ornekEserler[1], ornekEserler[2], ornekEserler[0], ornekEserler[3], ornekEserler[1]].entries()) {
@@ -219,6 +215,7 @@ const sonuc = await sayfa.evaluate(async ({ DOSYALAR }) => {
     eserKunyeVakalar,
     benzerVakalar,
     rotaTestleri,
+    baslangicKoleksiyon,
     koleksiyonAdimlari,
     bildirimAdimlari,
     dosyalar,

@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/koleksiyon.js @ 28f751ed
+// Kaynak: sanat-atlasi js/koleksiyon.js @ a866b86
 import Foundation
 
 /// Kullanıcının işaretlediği eser (`ilerleme.koleksiyon` öğesi: `{ a: eserAnahtarı, s: sanatçıId, t: "YYYY-MM-DD" }`).
@@ -60,17 +60,17 @@ public enum KoleksiyonKurallari {
     @discardableResult
     public static func degistir(_ ilerleme: inout Ilerleme, eser: Eser?, tarih: String) -> Bool {
         guard let eser, !eser.sid.isEmpty else { return false }
-        var k = dogrula(ilerleme[alan: "koleksiyon"])
-        if let i = k.firstIndex(where: { $0.a == eser.anahtar }) {
+        // Site listeyi süzmeden değiştirir (yalnız ekler ya da çıkarır); süzme `dogrula`'da, kayıt okunurken
+        var k = ilerleme[alan: "koleksiyon"]?.dizi ?? []
+        if let i = k.firstIndex(where: { $0["a"]?.metin == eser.anahtar }) {
             k.remove(at: i)
-            ilerleme[alan: "koleksiyon"] = .dizi(k.map(\.json))
+            ilerleme[alan: "koleksiyon"] = .dizi(k)
             return false
         }
-        k.insert(KoleksiyonKaydi(a: eser.anahtar, s: eser.sid, t: tarih), at: 0)
-        if k.count > sinir {
-            k = Array(k.prefix(sinir))
-        }
-        ilerleme[alan: "koleksiyon"] = .dizi(k.map(\.json))
+        k.insert(KoleksiyonKaydi(a: eser.anahtar, s: eser.sid, t: tarih).json, at: 0)
+        if k.count > sinir { k = Array(k.prefix(sinir)) }
+        ilerleme[alan: "koleksiyon"] = .dizi(k)
         return true
     }
+
 }

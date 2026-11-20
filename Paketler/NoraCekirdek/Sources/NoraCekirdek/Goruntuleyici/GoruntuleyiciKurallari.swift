@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/karsilastir.js, js/goruntuleyici.js, js/keskin.js, js/ikonografi.js @ 28f751ed
+// Kaynak: sanat-atlasi js/karsilastir.js, js/goruntuleyici.js, js/keskin.js, js/ikonografi.js @ a866b86
 import Foundation
 
 /// Görüntüleyicideki "Konu:" bağlantısı için ikonografi konusu özeti (`js/ikonografi.js`).
