@@ -137,7 +137,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 | ID | İş | Şerit | Bağımlılık | Oturum | Durum |
 |----|----|-------|------------|--------|-------|
-| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | sürüyor (Claude, 2026-11-20) |
+| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | PR açık (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bekliyor |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
@@ -185,7 +185,25 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Bitti sayılır:** Kâhin testleri geçiyor ve widget yeni katmanla aynı tabloyu buluyor.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-20 — PR #4 (dal `claude/quirky-turing-o4raim`: oturum ortamı bu dalı şart koştu, `is/T1-…` değil).
+- **Kaynak:** `sanat-atlasi` @ `a866b86` (site 1.90.3). Taşınan: `js/app.js` `basla()` (dosya listesi ve sıra), `birlesme.js` (`sanatcilariBirlestir`, `akimlariBirlestir`), `resim.js`, `eserler.js` (`onbellekEseri`, `kopyalariAyikla`, `cikarilanlariAyikla`, `duzeltmeleriUygula`, ortak atıflar, `yilSupheliMi`, `eserAdiBul`, `sanatciEserleri`), `gorsel.js` (`gorselUrl`, `yerelUrl`, `commonsKucuk`, `gorselYedek`, `devasaUrl`, `devasaKaynagi`, `gorselOrani`, `ustKopya`, `yuruyusAdresleri`, `secilenGorsel`, `pekistirmeyeUygunMu`, `gorselSayfasi`, `gorselKaynakYazisi`), `kurs.js` (`kursKonulari`), `adlar.js` (`adParcala`, `bilinenAd`), `yardimci.js` (`dosyaNormal`, `notTemizle`, `baslikNormal`, `yilYaz`, `yillarYaz`), `md5.js`.
+- **Yapılan** (`Paketler/NoraCekirdek/Sources/NoraCekirdek/SiteVerisi/`):
+  - `SiteVerisi` (actor): `data/*.json` indirir, Caches'te saklar (varsayılan ömür 6 saat), internet yoksa son ineni verir. `veri(_:)`, `veriler(_:)`, `katalog()`.
+  - `SiteKatalogu`: sitenin `d`'si. `tumSanatcilar`, `sanatcilar`, `akimlar`, `konular`, `kursKonulari`, `harita`, `kisaAdlar`, `akimRenk`, `akimSira`, `dikeyler`, `eserler(sanatciId)`, `gorselAdresi(eser, genislik:, kotuler:)`, `bilinenAd`, `adParcalari`.
+  - `GorselAdresleri` (`k.gorsel`): bütün görsel adres kuralları; adresler **mutlak** döner (`gorseller/k/…` site köküne çözülür).
+  - Modeller: `Sanatci` (+ `ham` JSON: modelde olmayan alanlar), `KursEseri`, `Akim`, `Konu` (+ `kapak`), `Eser`, `Gorsel`, `KisaAd`, `AdParcalari`.
+  - `JSONDeger`/`SiraliNesne`: anahtar sırasını koruyan JSON okuyucu (aşağıda neden).
+  - Widget: `TabloYukleyici` indirmeyi `SiteVerisi` ile yapıyor (kendi klasörü; önbellek dosya adları değişti, ilk açılışta bir kez yeniden iner), `GununTablosuCozucu.gorselAdresi` `GorselAdresleri`'ne bağlandı.
+- **Kâhin:** `Testler/kahin/site_verisi.mjs` → `Ornekler/site_verisi/` (cevaplar + aynı anda alınmış veri dosyaları, ~4,9 MB). Sınananlar: kimlik listeleri (tüm/görünür sanatçı, birleşen akım), akımlar (sıra, komşu, renk), 57 kurs konusunun kapağı, 155 sanatçının ad parçaları, 20 sanatçının `sanatciEserleri` sonucu (851 eser: anahtar, başlık, Türkçe ad, tarih, yıl, müze, kaynak, ortak atıf, görsel 400/1280, en büyük kopya, `ustKopya`, oran, pekiştirmeye uygunluk), yerel kopyası olmayan 40 görselin Commons/müze/WikiArt adresleri, widget ↔ katalog aynı günün tablosu (100 gün). `SiteVerisiTests`, `SiteYazisiTests`; Linux'ta 26 test geçiyor. `CANLI=1 swift test …` canlı indirmeyi de sınar (CI'da atlanır).
+- **Kalan / bilinçli farklar:**
+  - Eser önbelleği (`eserler_onbellek.json`) 30 günden eskiyse site canlı Wikidata'daki yeni eserleri listenin sonuna ekler; Swift eklemez (kâhin `canli: false`). Bugünkü dosya 2026-11-13 tarihli: **2026-12-13'ten sonra** site yeniden üretmezse listelerin sonu farklılaşabilir. Önbellekte kaydı olmayan sanatçıda da yalnız kurs resimleri döner.
+  - Taşınmayanlar (ilgili işe kalır): odak noktaları (`gorsel_odak*.json`, `yuruyus_odak.json`, `kaplamaKaymasi`) → G1/G4; günün resmi seçimleri (`gunun_resimleri.json`) → G4; `eser_notlari.json`, palet → G1; `eserSec`/`zorlukDilimi`/`kolaylikAl`, `akimOrtaYillari` → C1; `telefonAdresleri`/`devasaAdresleri` → C5; `akimBilgisiBirlestir`, `ozellikleriBirlestir` (akim_bilgi/akim_ozellikleri) → G2; `seviyeleriBirlestir` → T2.
+- **Tuzaklar:**
+  - Site `Object.entries` sırasına dayanıyor (ör. ortak atıfların sırası `eserler_onbellek.json`'daki sanatçı sırası; `sanatcilar.json` sırasından farklı). `JSONSerialization` sırayı kaybeder; veri dosyalarını `JSONDeger.coz` ile oku.
+  - Swift `String` karşılaştırması Unicode eşdeğerliğine bakar (NFC = NFD), JS bakmaz. Verideki anahtarlarda böyle çakışma yok (denetlendi) ama yeni bir sözlükte akılda tut.
+  - Kullanıcının "kötü görsel" işaretleri `GorselAdresleri.secilen(e, kotuler:)`'e verilmeli (ilerlemedeki `kotuler`, T2'den).
+- **Sonraki işe ipucu:** `let k = try await SiteVerisi().katalog()`; `k.eserler(id)` sitedeki sanatçı sayfası listesiyle aynı sırada; ekranda `e.gorunenAd`, `e.tarih`; ızgara için `k.gorselAdresi(e, genislik: 400)`, kart/görüntüleyici için 1280, yakınlaştırmada `k.gorsel.ustKopya(…, buyuk: true)` ya da `devasaUrl`. Uygulamada tek `SiteVerisi` örneği tutulmalı (T3 Kabuk'ta ortama koyar).
+- **Site değişirse (K7):** `git -C /tmp/sa log a866b86..HEAD -- js/app.js js/birlesme.js js/resim.js js/eserler.js js/gorsel.js js/kurs.js js/adlar.js js/yardimci.js`; kâhini yeniden çalıştır: `node Testler/kahin/site_verisi.mjs`.
 
 ### T2 · İlerleme köprüsü + tekrar kuralları (Claude)
 **Amaç:** İlerlemeyi Swift'ten okuyup yazmak (K2) ve tekrar kurallarını Swift'te kullanmak.
