@@ -253,6 +253,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **CI:** yeşil (iOS derleme #15, `f984b27`): köprü ve DEBUG ekranı derlendi, simülatör adımları geçti. `5-ilerleme-ozeti.png` ve `6-site-ilerleme.png` artifact'ta; oturumdan indirilemedi, denetçi baksın (6'da 7-8. konular işlendi ve bugün 12 kart görünmeli).
 
 
+**Denetim:** Claude, 2026-11-20 — **onay** (PR #5 yorumu). Linux'ta 38 test geçti. `ilerleme_koprusu.mjs` canlı sitede yeniden çalıştırıldı: okuma, yazma, çakışma reddi ve yeniden açılışta sitenin Swift'in yazdığını okuması geçti. `ilerleme.mjs` yeniden çalıştırıldı: cevaplar aynı (yalnız `yazma` vakasındaki `olusturma` zaman damgası farklı, beklenen). CI görüntüleri: Swift özeti "siteye yazıldı · kayıt 5", sitenin `#/ilerleme` sayfası yazılanı gösteriyor. Düzeltme: CI'da `norasanat://` denemesi en sona alındı (simülatörün onay penceresi sonraki görüntülerin üstüne biniyordu).
+
 ### T3 · Kabuk (Claude)
 **Amaç:** Yerli sekme çubuğu (K1). Sekmeler şimdilik siteyi gösterir; uygulama bugünküyle aynı çalışır.
 

@@ -82,13 +82,6 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -widgetOnizleme
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/3-widget.png
-          # Widget'a dokunma: norasanat://bugun uygulamayı açmalı
-          xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET"
-          sleep 10
-          xcrun simctl openurl "$UDID" "norasanat://calis"
-          sleep 6
-          xcrun simctl io "$UDID" screenshot ekranlar/4-url-calis.png
           # T2: ilerleme köprüsü. Önce Swift'ten okuyup bir deneme yazar (7-8. konular, bugüne 12 kart)...
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -ekran ilerleme -ilerlemeYaz
@@ -100,6 +93,14 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -adres "#/ilerleme"
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/6-site-ilerleme.png
+          # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
+          # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET"
+          sleep 10
+          xcrun simctl openurl "$UDID" "norasanat://calis"
+          sleep 6
+          xcrun simctl io "$UDID" screenshot ekranlar/4-url-calis.png
 
       - uses: actions/upload-artifact@v4
         if: always()
