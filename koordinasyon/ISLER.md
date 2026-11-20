@@ -141,7 +141,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 |----|----|-------|------------|--------|-------|
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
-| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | PR açık (#6) |
+| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
@@ -324,6 +324,16 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Yerli sekme seçiliyken site görünmez ama yüklü ve çalışır kalır. WKWebView kaldırılmamalı (Z2'ye kadar köprüler ona bağlı).
   - `Gecis.tasinanlar`'a bir sekme eklemek o sekmenin bütün yollarını (alt sayfalar dahil: `#/sanatci/…`, `#/akim/…`) yerliye bağlar: `SiteRotalari.sekme`.
 - **CI:** 9892ece yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44821824720): iOS derlemesi, çekirdek testleri ve sekiz ekran görüntüsünün hepsi alındı (`7-tema.png`, `8-yerli-sekme.png` yeni). Görüntüleri oturumdan açamadım; denetçi `ekranlar` yükünden 1–6'nın bugünküyle aynı olduğuna, 7'de Gece/Gündüz örneklerine ve yazı tiplerinin ✓ olduğuna, 8'de sitenin gizlenip yerli çubuğun Galeri seçili göründüğüne baksın.
+
+**Denetim:** Claude, 2026-11-21 — **onay, bir düzeltmeyle** (PR #6 yorumu).
+- Linux'ta 48 test geçti.
+- `kabuk.mjs` canlı sitede yeniden çalıştırıldı: sekmeler ve sabit renkler aynı. Yalnız `--vurgu` ailesi farklı; site onu günün tablosundan üretiyor, test bu yüzden onu bilerek hariç tutuyor.
+- `kabuk_koprusu.mjs` canlı sitede geçti.
+- CI görüntüleri: 1–6 bugünküyle aynı. 7'de Gece/Gündüz ve üç yazı tipi ✓.
+- **Hata:** 8'de yerli çubuk yoktu; görüntü 1 ile aynıydı.
+  - Neden: `-adres`, widget ya da bildirim yerli Galeri'yi açıyordu, ama site açılışta kendi adresini (`#/`) bildirince seçim Bugün'e dönüyordu.
+  - Düzeltme: karar `SiteRotalari.secim` olarak çekirdeğe alındı (`SekmeTests.testSitedenGelenAdresleSekmeSecimi`). Taşınmış sekmenin adresi her zaman yerliyi açar. Taşınmamış sekmeye yalnız sitenin sekmesi gerçekten değişince geçilir.
+- Yazı tipleri OFL, lisans dosyaları içinde, ~1,9 MB: uygun.
 
 ### G1 · Tam ekran görüntüleyici (Gemini)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.

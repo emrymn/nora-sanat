@@ -71,10 +71,10 @@ final class KabukDurumu {
 
     /// Site bir adrese gitti
     func siteAdresiGeldi(_ adres: String) {
+        let onceki = siteAdresi
         siteAdresi = SiteRotalari.hash(adres)
-        guard let s = SiteRotalari.sekme(siteAdresi) else { return }   // sekmesiz sayfa: açıldığı sekmede kalır
-        if Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
-        if secili != s { secili = s }
+        if let s = SiteRotalari.sekme(siteAdresi), Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
+        if let s = SiteRotalari.secim(onceki: onceki, yeni: siteAdresi, secili: secili, yerli: Gecis.yerli) { secili = s }
     }
 
     /// Widget, bildirim, `-adres`: hedef yerli bir sekmedeyse orada açılır (true); değilse site gider (false)

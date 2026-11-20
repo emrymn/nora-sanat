@@ -1,6 +1,6 @@
 // Kaynak: sanat-atlasi js/ekranlar/yonlendirme.js `rotalar`, js/ekranlar/ortak.js `SEKMELER` @ a866b86 (site 1.90.3)
 // Uygulamanın sekmeleri (ISLER.md K1) ve sitenin adreslerinin hangi sekmeye ait olduğu.
-// Kâhin: Testler/kahin/sekmeler.mjs (sitenin sekme çubuğunda hangi sekmenin seçili olduğu).
+// Kâhin: Testler/kahin/kabuk.mjs (sitenin sekme çubuğunda hangi sekmenin seçili olduğu).
 import Foundation
 
 /// Uygulamanın sekmeleri. İlk dördü sitenin sekme çubuğundakiler; Ben (İlerleme, Ayarlar) sitede Bugün'ün sağ üstündeki
@@ -108,5 +108,15 @@ public enum SiteRotalari {
         let h = hash(adres)
         if h == "#/ilerleme" || h == "#/ayarlar" { return .ben }
         return siteSekmesi(h).flatMap(Sekme.init(siteKimligi:))
+    }
+
+    /// Site yeni bir adres bildirince uygulamanın geçeceği sekme (nil: seçim değişmez). `KabukDurumu.siteAdresiGeldi`.
+    /// - Taşınmış (yerli) bir sekmenin adresi her zaman o sekmeyi açar: sitenin bağlantısı yerli ekrana götürür.
+    /// - Taşınmamış sekmeye yalnız sitenin sekmesi gerçekten değiştiyse geçilir. Sitenin açılışta ya da yeniden
+    ///   yüklenince bildirdiği aynı sekmenin adresi (ör. "#/") widget'la, bildirimle açılmış yerli sekmeyi kapatmaz.
+    /// - Sekmesiz sayfa (pekiştirme kartı, karşılaştırma) açıldığı sekmede kalır.
+    public static func secim(onceki: String, yeni: String, secili: Sekme, yerli: (Sekme) -> Bool) -> Sekme? {
+        guard let s = sekme(yeni), s != secili else { return nil }
+        return yerli(s) || s != sekme(onceki) ? s : nil
     }
 }

@@ -49,6 +49,21 @@ final class SekmeTests: XCTestCase {
             if let k = s.siteKimligi { XCTAssertEqual(Sekme(siteKimligi: k), s) }
         }
     }
+
+    /// Denetimde bulundu: site açılışta "#/" bildirince `-adres`/widget ile açılan yerli Galeri kapanıyordu
+    func testSitedenGelenAdresleSekmeSecimi() {
+        let galeri: (Sekme) -> Bool = { $0 == .galeri }
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/", yeni: "#/", secili: .galeri, yerli: galeri))
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/", yeni: "", secili: .galeri, yerli: galeri))
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/sanatci/rembrandt", secili: .bugun, yerli: galeri), .galeri)
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/harita", secili: .galeri, yerli: galeri), .yolculuk)
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/gozat", yeni: "#/", secili: .galeri, yerli: galeri), .bugun)
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/pekistir", yeni: "#/pekistir/karisik", secili: .calis, yerli: galeri))
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/", yeni: "#/gozat", secili: .galeri, yerli: galeri))
+        // Hiç sekme taşınmamışken seçim sitenin sekmesini izler
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/ilerleme", secili: .bugun, yerli: { _ in false }), .ben)
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/ilerleme", yeni: "#/", secili: .ben, yerli: { _ in false }), .bugun)
+    }
 }
 
 final class TemaTests: XCTestCase {
