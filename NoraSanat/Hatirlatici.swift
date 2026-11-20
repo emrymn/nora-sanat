@@ -113,7 +113,10 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
     /// Sitenin `navigator.setAppBadge(n)` / `clearAppBadge()`'i
     func rozet(_ n: Int) {
         Task {
-            guard n == 0 || (await izinVar(sor: true)) else { return }
+            if n > 0 {
+                let izin = await izinVar(sor: true)
+                guard izin else { return }
+            }
             try? await merkez.setBadgeCount(max(0, n))
         }
     }
