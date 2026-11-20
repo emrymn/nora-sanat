@@ -2,8 +2,11 @@
 
 Sanat Atlası PWA'sının (`emrymn/sanat-atlasi`, yayında: https://sanat-atlasi.pages.dev/) iPhone çerçeve uygulaması. SwiftUI + WKWebView, iOS 17+. Tek kullanıcı: depo sahibi. Metinler, yorumlar, commit ve PR'lar **Türkçe**.
 
+## Swift'e geçiş (iki Claude hesabı, iş iş)
+Sanat Atlası'nın ekranları sekme sekme Swift'e taşınıyor. **Her oturum önce `koordinasyon/ISLER.md`'yi okur**: iş listesi, şeritler (A/B), mimari kararlar, "başlarken/bitirirken" kuralları. İşi bitiren o dosyada kendi işinin durumunu ve devir notunu yazar. Birleştirme yalnız kullanıcı açıkça isteyince.
+
 ## Kurallar
-- Uygulamanın içeriği bu depoda değil: özellik ve tasarım değişiklikleri `sanat-atlasi` deposunda yapılır. Burada yalnız çerçeve (yerel köprüler, izinler, açılış, simge) değişir.
+- Özellik ve içerik geliştirmesi hâlâ `sanat-atlasi` deposunda sürer; burada o ekranların Swift karşılıkları yazılır (kaynak dosya ve commit'i yorumda, davranış kâhin testiyle: `Testler/kahin/README.md`). Taşınmamış sekmeler siteyi gösterir.
 - `Config/Info.plist` → `WKAppBoundDomains` (en çok 10). Service worker'ın çalışması ve sitenin yüklediği dış kaynaklar için gerekli; sitenin yeni bir alan adından kaynak yüklemesi gerekirse buraya eklenir.
 - Yerel köprüler `WebKabugu.swift`'teki `Koordinator`'da: `navigator.vibrate` → titreşim, JS `alert/confirm/prompt` → `UIAlertController`, hareket izni, dış linkler → Safari.
 - `NoraSanat/` ve `NoraSanatWidget/` Xcode 16 senkronize klasör; yeni dosya için `project.pbxproj`'a dokunma. İmzalama `Config/Local.xcconfig`'te (`./kur.sh`), pbxproj'a yazma.
