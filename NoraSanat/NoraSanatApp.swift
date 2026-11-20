@@ -5,14 +5,32 @@ import UIKit
 struct NoraSanatApp: App {
     @State private var tema = SiteTemasi()
 
+    init() {
+        Hatirlatici.shared.baslat()   // bildirime dokununca açılacak sayfa için, açılışta kurulmalı
+    }
+
     var body: some Scene {
         WindowGroup {
-            WebKabugu(tema: tema)
-                .ignoresSafeArea()
-                .background(Color(uiColor: tema.renk).ignoresSafeArea())
-                // Saat/pil çubuğu sitenin rengine uysun (koyu zeminde açık yazı).
-                .preferredColorScheme(tema.koyu ? .dark : .light)
+            #if DEBUG
+            if CommandLine.arguments.contains("-widgetOnizleme") {
+                WidgetOnizleme()
+            } else {
+                kabuk
+            }
+            #else
+            kabuk
+            #endif
         }
+    }
+
+    private var kabuk: some View {
+        WebKabugu(tema: tema)
+            .ignoresSafeArea()
+            .background(Color(uiColor: tema.renk).ignoresSafeArea())
+            // Saat/pil çubuğu sitenin rengine uysun (koyu zeminde açık yazı).
+            .preferredColorScheme(tema.koyu ? .dark : .light)
+            // Widget'a dokununca: norasanat://bugun
+            .onOpenURL { Gezgin.shared.ac($0) }
     }
 }
 

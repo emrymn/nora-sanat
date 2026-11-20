@@ -6,16 +6,53 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E2B00000000000000000001E /* NoraSanatWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E2B000000000000000000014 /* NoraSanatWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E2B000000000000000000025 /* NoraCekirdek in Frameworks */ = {isa = PBXBuildFile; productRef = E2B000000000000000000023 /* NoraCekirdek */; };
+		E2B000000000000000000026 /* NoraCekirdek in Frameworks */ = {isa = PBXBuildFile; productRef = E2B000000000000000000024 /* NoraCekirdek */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E2B000000000000000000020 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2B00000000000000000000E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E2B000000000000000000017;
+			remoteInfo = NoraSanatWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E2B00000000000000000001F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E2B00000000000000000001E /* NoraSanatWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		E2B000000000000000000002 /* NoraSanat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoraSanat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2B000000000000000000003 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		E2B000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2B000000000000000000014 /* NoraSanatWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NoraSanatWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2B000000000000000000015 /* Widget-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Widget-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E2B000000000000000000005 /* NoraSanat */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = NoraSanat;
+			sourceTree = "<group>";
+		};
+		E2B000000000000000000016 /* NoraSanatWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NoraSanatWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -25,6 +62,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2B000000000000000000025 /* NoraCekirdek in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2B00000000000000000001C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2B000000000000000000026 /* NoraCekirdek in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				E2B000000000000000000005 /* NoraSanat */,
+				E2B000000000000000000016 /* NoraSanatWidget */,
 				E2B000000000000000000008 /* Config */,
 				E2B000000000000000000009 /* Products */,
 			);
@@ -45,6 +92,7 @@
 			children = (
 				E2B000000000000000000003 /* Base.xcconfig */,
 				E2B000000000000000000004 /* Info.plist */,
+				E2B000000000000000000015 /* Widget-Info.plist */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -53,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				E2B000000000000000000002 /* NoraSanat.app */,
+				E2B000000000000000000014 /* NoraSanatWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,18 +116,46 @@
 				E2B00000000000000000000C /* Sources */,
 				E2B000000000000000000006 /* Frameworks */,
 				E2B00000000000000000000D /* Resources */,
+				E2B00000000000000000001F /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E2B000000000000000000021 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E2B000000000000000000005 /* NoraSanat */,
+			);
+			name = NoraSanat;
+			packageProductDependencies = (
+				E2B000000000000000000023 /* NoraCekirdek */,
+			);
+			productName = NoraSanat;
+			productReference = E2B000000000000000000002 /* NoraSanat.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E2B000000000000000000017 /* NoraSanatWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2B000000000000000000018 /* Build configuration list for PBXNativeTarget "NoraSanatWidget" */;
+			buildPhases = (
+				E2B00000000000000000001B /* Sources */,
+				E2B00000000000000000001C /* Frameworks */,
+				E2B00000000000000000001D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				E2B000000000000000000005 /* NoraSanat */,
+				E2B000000000000000000016 /* NoraSanatWidget */,
 			);
-			name = NoraSanat;
-			productName = NoraSanat;
-			productReference = E2B000000000000000000002 /* NoraSanat.app */;
-			productType = "com.apple.product-type.application";
+			name = NoraSanatWidget;
+			packageProductDependencies = (
+				E2B000000000000000000024 /* NoraCekirdek */,
+			);
+			productName = NoraSanatWidget;
+			productReference = E2B000000000000000000014 /* NoraSanatWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -93,6 +170,9 @@
 					E2B00000000000000000000A = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					E2B000000000000000000017 = {
+						CreatedOnToolsVersion = 16.0;
+					};
 				};
 			};
 			buildConfigurationList = E2B00000000000000000000F /* Build configuration list for PBXProject "NoraSanat" */;
@@ -104,18 +184,29 @@
 			);
 			mainGroup = E2B000000000000000000007;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E2B000000000000000000022 /* XCLocalSwiftPackageReference "Paketler/NoraCekirdek" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E2B000000000000000000009 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				E2B00000000000000000000A /* NoraSanat */,
+				E2B000000000000000000017 /* NoraSanatWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E2B00000000000000000000D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2B00000000000000000001D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -132,7 +223,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2B00000000000000000001B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E2B000000000000000000021 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E2B000000000000000000017 /* NoraSanatWidget */;
+			targetProxy = E2B000000000000000000020 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E2B000000000000000000010 /* Debug */ = {
@@ -209,7 +315,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -236,8 +342,56 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E2B000000000000000000019 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2B000000000000000000003 /* Base.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Widget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Nora Sanat";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PAKET_KIMLIGI).widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E2B00000000000000000001A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2B000000000000000000003 /* Base.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Widget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Nora Sanat";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PAKET_KIMLIGI).widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -265,7 +419,34 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		E2B000000000000000000018 /* Build configuration list for PBXNativeTarget "NoraSanatWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2B000000000000000000019 /* Debug */,
+				E2B00000000000000000001A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E2B000000000000000000022 /* XCLocalSwiftPackageReference "Paketler/NoraCekirdek" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Paketler/NoraCekirdek;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E2B000000000000000000023 /* NoraCekirdek */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NoraCekirdek;
+		};
+		E2B000000000000000000024 /* NoraCekirdek */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NoraCekirdek;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 	};
 	rootObject = E2B00000000000000000000E /* Project object */;

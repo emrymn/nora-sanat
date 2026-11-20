@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import NoraCekirdek
 import WebKit
 
 /// Sanat Atlası'nı tam ekran, Safari çubukları olmadan gösteren pencere.
@@ -10,6 +11,7 @@ import WebKit
 /// - `confirm()` / `alert()` / `prompt()` iOS'un kendi pencereleriyle gösterilir.
 /// - `navigator.vibrate` iPhone'un titreşim motoruna bağlanır (doğru: tek, yanlış: çift titreşim).
 /// - Başka sitelere giden linkler Safari'de açılır.
+/// - Tekrar hatırlatmaları ve simge rozeti için `TekrarKoprusu` betiği eklenir (bkz. `Hatirlatici`).
 struct WebKabugu: UIViewRepresentable {
     static let adres = URL(string: "https://sanat-atlasi.pages.dev/")!
 
@@ -28,6 +30,12 @@ struct WebKabugu: UIViewRepresentable {
                                           injectionTime: .atDocumentStart,
                                           forMainFrameOnly: true))
         icerik.add(context.coordinator, name: "titresim")
+        icerik.addUserScript(WKUserScript(source: TekrarKoprusu.betik,
+                                          injectionTime: .atDocumentStart,
+                                          forMainFrameOnly: true))
+        icerik.add(context.coordinator, name: "tekrarTakvimi")
+        icerik.add(context.coordinator, name: "rozet")
+        icerik.addScriptMessageHandler(IzinKoprusu(), contentWorld: .page, name: "bildirimIzni")
         ayar.userContentController = icerik
 
         let w = WKWebView(frame: .zero, configuration: ayar)
@@ -41,6 +49,7 @@ struct WebKabugu: UIViewRepresentable {
         if #available(iOS 16.4, *) { w.isInspectable = true }   // Mac'te Safari → Geliştir ile incelenebilir
         #endif
         context.coordinator.baglan(w)
+        Gezgin.shared.webView = w
         w.load(URLRequest(url: Self.adres))
         return w
     }
@@ -54,6 +63,7 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     private let tema: SiteTemasi
     private weak var webView: WKWebView?
     private var renkGozlemi: NSKeyValueObservation?
+    private var arkaPlanGozlemi: NSObjectProtocol?
 
     init(tema: SiteTemasi) {
         self.tema = tema
@@ -67,6 +77,11 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
             Task { @MainActor in
                 if let renk { self?.renkUygula(renk) }
             }
+        }
+        // Arka plana geçerken tekrar takvimini bir kez daha iste (sayfanın visibilitychange'ine ek güvence)
+        arkaPlanGozlemi = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak w] _ in
+            w?.evaluateJavaScript("window.__noraKopru && window.__noraKopru.gonder();", completionHandler: nil)
         }
     }
 
@@ -106,6 +121,10 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
             }
         }
         return nil
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        Gezgin.shared.yuklemeBitti()
     }
 
     /// İlk açılışta internet yoksa (önbellek henüz dolmadıysa) sade bir bilgi sayfası.
@@ -186,7 +205,18 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     """
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard message.name == "titresim" else { return }
+        switch message.name {
+        case "tekrarTakvimi":
+            if let t = TekrarTakvimi(ileti: message.body) { Hatirlatici.shared.takvimGeldi(t) }
+            return
+        case "rozet":
+            Hatirlatici.shared.rozet((message.body as? NSNumber)?.intValue ?? 0)
+            return
+        case "titresim":
+            break
+        default:
+            return
+        }
         let desen = (message.body as? [Any])?.compactMap { ($0 as? NSNumber)?.doubleValue } ?? [1]
         guard desen.contains(where: { $0 > 0 }) else { return }   // vibrate(0): titreşimi durdur
         let ureteci = UINotificationFeedbackGenerator()
@@ -211,4 +241,14 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
       <a href="https://sanat-atlasi.pages.dev/">Tekrar dene</a>
     </body></html>
     """
+}
+
+/// Sitenin `Notification.requestPermission()`'ı → iOS bildirim izni (cevap bekleyen ileti)
+final class IzinKoprusu: NSObject, WKScriptMessageHandlerWithReply {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage,
+                               replyHandler: @escaping (Any?, String?) -> Void) {
+        Task { @MainActor in
+            replyHandler(await Hatirlatici.shared.izinIste(), nil)
+        }
+    }
 }

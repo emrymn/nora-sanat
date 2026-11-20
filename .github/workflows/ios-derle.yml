@@ -22,6 +22,12 @@ jobs:
       - name: Xcode sürümü
         run: xcodebuild -version
 
+      - name: Çekirdek testleri (günün tablosu, hatırlatma planı)
+        run: swift test --package-path Paketler/NoraCekirdek
+
+      - name: Köprü betiği testleri (tekrar takvimi)
+        run: node --test Testler/tekrarTakvimi.test.mjs
+
       - name: Simülatör için derle
         run: |
           set -o pipefail
@@ -31,6 +37,15 @@ jobs:
             -derivedDataPath build CODE_SIGNING_ALLOWED=NO \
             | tee derleme.log | grep -E "error:|warning:|BUILD (SUCCEEDED|FAILED)" || true
           grep -q "BUILD SUCCEEDED" derleme.log
+
+      - name: Uygulamanın içi (widget, Ayarlar sayfası, URL şeması)
+        run: |
+          APP=build/Build/Products/Debug-iphonesimulator/NoraSanat.app
+          ls "$APP/PlugIns/NoraSanatWidget.appex"
+          ls "$APP/Settings.bundle/Root.plist"
+          /usr/libexec/PlistBuddy -c "Print CFBundleURLTypes:0:CFBundleURLSchemes:0" "$APP/Info.plist" | grep -qx norasanat
+          /usr/libexec/PlistBuddy -c "Print NSExtension:NSExtensionPointIdentifier" "$APP/PlugIns/NoraSanatWidget.appex/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" "$APP/PlugIns/NoraSanatWidget.appex/Info.plist"
 
       - name: Simülatörde aç ve ekran görüntüsü al
         run: |
@@ -62,6 +77,18 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET"
           sleep 12
           xcrun simctl io "$UDID" screenshot ekranlar/2-ikinci-acilis.png
+          # Widget'ın üç boyutu, gerçek veriyle (yalnız Debug'da olan önizleme ekranı)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -widgetOnizleme
+          sleep 20
+          xcrun simctl io "$UDID" screenshot ekranlar/3-widget.png
+          # Widget'a dokunma: norasanat://bugun uygulamayı açmalı
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET"
+          sleep 10
+          xcrun simctl openurl "$UDID" "norasanat://calis"
+          sleep 6
+          xcrun simctl io "$UDID" screenshot ekranlar/4-url-calis.png
 
       - uses: actions/upload-artifact@v4
         if: always()
