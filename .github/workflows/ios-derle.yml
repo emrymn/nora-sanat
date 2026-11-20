@@ -1,0 +1,72 @@
+# Her PR'da ve main'e her gönderimde: uygulamayı iOS Simulator için derler,
+# sonra simülatörde açıp Sanat Atlası'nın gerçekten yüklendiğini ekran görüntüsüyle gösterir.
+name: iOS derleme
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: derle-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  derle:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode sürümü
+        run: xcodebuild -version
+
+      - name: Simülatör için derle
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project NoraSanat.xcodeproj -scheme NoraSanat -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO \
+            | tee derleme.log | grep -E "error:|warning:|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" derleme.log
+
+      - name: Simülatörde aç ve ekran görüntüsü al
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json,sys,re
+          d=json.load(sys.stdin)["devices"]
+          aday=[]
+          for rt,devs in d.items():
+              m=re.search(r"iOS-(\d+)-(\d+)",rt)
+              if not m: continue
+              for x in devs:
+                  if "iPhone" in x["name"]:
+                      aday.append(((int(m.group(1)),int(m.group(2))),"Pro Max" in x["name"],x["name"],x["udid"]))
+          aday.sort()
+          print(aday[-1][3])')
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          APP=build/Build/Products/Debug-iphonesimulator/NoraSanat.app
+          xcrun simctl install "$UDID" "$APP"
+          PAKET=$(/usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" "$APP/Info.plist")
+          mkdir -p ekranlar
+          /usr/libexec/PlistBuddy -c "Print" "$APP/Info.plist" > ekranlar/Info.plist.txt
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
+          xcrun simctl launch "$UDID" "$PAKET"
+          sleep 25
+          xcrun simctl io "$UDID" screenshot ekranlar/1-acilis.png
+          # İkinci açılış: önbellekten (service worker) gelmeli
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET"
+          sleep 12
+          xcrun simctl io "$UDID" screenshot ekranlar/2-ikinci-acilis.png
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ekranlar
+          path: |
+            ekranlar
+            derleme.log

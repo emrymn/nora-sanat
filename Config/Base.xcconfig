@@ -1,0 +1,11 @@
+// Nora Sanat — ortak derleme ayarları.
+// İmzalama bilgileri (Team ID, paket kimliği) git'e girmeyen Local.xcconfig'te durur;
+// onu Mac'te ./kur.sh yazar. Böylece `git pull` hiç çakışma vermez.
+
+PAKET_KIMLIGI = com.kisisel.norasanat
+DEVELOPMENT_TEAM =
+
+#include? "Local.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = $(PAKET_KIMLIGI)
+CODE_SIGN_STYLE = Automatic
