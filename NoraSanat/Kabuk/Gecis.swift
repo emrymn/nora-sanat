@@ -17,8 +17,9 @@ enum Gecis {
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
     static let yerliSekmeler: Set<Sekme> = {
         #if DEBUG
-        if let a = NoraSanatApp.arguman("-yerliSekme") {
-            return tasinanlar.union(a.split(separator: ",").compactMap { Sekme(rawValue: String($0)) })
+        let l = CommandLine.arguments
+        if let i = l.firstIndex(of: "-yerliSekme"), i + 1 < l.count {
+            return tasinanlar.union(l[i + 1].split(separator: ",").compactMap { Sekme(rawValue: String($0)) })
         }
         #endif
         return tasinanlar
