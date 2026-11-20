@@ -1,7 +1,16 @@
 # Nora Sanat → tamamen Swift: iş dağılımı
 
-Bu dosya iki Claude hesabının (Hesap A, Hesap B) ortak iş listesidir. Oturumlar birbirini görmez; **her şey burada yazılıdır.**
-Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin durumunu ve devir notunu yazar.**
+Bu dosya Claude, Gemini ve ChatGPT'nin ortak iş listesi ve raporudur. Oturumlar birbirini görmez; **her şey burada yazılıdır.**
+Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin durumunu ve devir notunu yazar** (rapor budur).
+
+**Kim ne yapar:**
+| Şerit | Araç | Görev |
+|---|---|---|
+| **K** | Claude (iki hesap) | Temel işler (T1–T3, Z2, Z3) ve **her PR'ın denetimi** |
+| **G** | Gemini (Jules ya da Gemini CLI) | Görsel ağırlıklı ekranlar: G1–G5 |
+| **C** | ChatGPT (Codex) | Çalışma ağırlıklı ekranlar: C1–C5 |
+
+G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farklı klasörler (K6). Aynı dosyaya dokunmazlar.
 
 **Hedef.** Sanat Atlası'nın (`emrymn/sanat-atlasi`, yayında `sanat-atlasi.pages.dev`) bütün ekranlarını Swift ile yeniden yazmak.
 - Geçiş **sekme sekme** olur. Taşınmamış sekmeler o güne kadar sitenin kendisini (WKWebView) gösterir. Uygulama her an kullanılabilir kalır.
@@ -20,8 +29,8 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
    git clone --depth 1 https://github.com/emrymn/sanat-atlasi /tmp/sa
    ```
 4. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
-5. İlk commit'te tablodaki durumunu `sürüyor (Hesap X, tarih)` yap.
-6. Hemen **taslak PR** aç. Öbür hesap ne yapıldığını açık PR'lardan görür.
+5. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
+6. Hemen **taslak PR** aç. Öbür araçlar ne yapıldığını açık PR'lardan görür.
 
 ### Bitirirken
 1. CI yeşil olmalı. Ekran görüntülerine bak: ekran sitedekine benziyor mu?
@@ -31,15 +40,42 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 3. Kullanıcıya şunları yaz:
    - PR linki.
    - Telefonda neyi deneyeceği (README'deki deneme listesine de ekle).
-   - "Birleştir dersen birleştiririm."
-   - **Birleştirmeyi yalnız kullanıcı açıkça isterse yap.**
-4. Birleşince durumu `bitti (#n)` yap. Bunu bir sonraki oturum da yapabilir.
+   - G ya da C işiyse: "Şimdi Claude'a denetlet."
+4. **Hiçbir araç kendi PR'ını birleştirmez.** Sıra şöyle:
+   1. CI yeşil.
+   2. Claude denetimi (aşağıda) "onay".
+   3. Kullanıcı "birleştir" der.
+5. Birleşince durumu `bitti (#n)` yap. Bunu bir sonraki oturum da yapabilir.
+
+### Bilgisayarında Xcode yoksa (Gemini, ChatGPT ve Claude için aynı)
+- Oturumlar bulutta (Linux) çalışır. iOS orada derlenemez, derlemeyi GitHub Actions yapar (`.github/workflows/ios-derle.yml`).
+- Paket testleri Linux'ta çalışabilir: `swift test --package-path Paketler/NoraCekirdek` (Swift kuruluysa).
+- CI sonucunu göremiyorsan PR'ı öyle bırak ve devir notuna "CI sonucu görülmedi" yaz. Denetçi Claude CI'ı okur.
+- Kâhin (`Testler/kahin`) tarayıcı ister. Çalıştıramıyorsan beklenen değer dosyasını boş bırakma: devir notuna "kâhin denetçide" yaz. Denetçi Claude üretir.
 
 ### Çakışmasız çalışma
 - Her iş **yalnız kendi klasörlerine** dokunur (bkz. K6).
-- Ortak dosyalara (Kabuk, Tema, `IlerlemeKoprusu`, `Package.swift`, `project.pbxproj`) yalnız **Temel** işleri dokunur.
+- Ortak dosyalara (Kabuk, Tema, `IlerlemeKoprusu`, `Package.swift`, `project.pbxproj`) yalnız **Temel** işleri (Claude) dokunur.
+- G işleri `NoraSanat/Ekranlar/{Galeri,Bugun,Yolculuk,Goruntuleyici}/`, C işleri `NoraSanat/Ekranlar/{Calis,Ben}/` altında çalışır. Mantık için `NoraCekirdek/<Konu>/` alt klasörleri de aynı biçimde ayrılır.
 - Bir şerit işi ortak dosyada küçük bir değişikliğe ihtiyaç duyarsa önce `main`'i çeker. Değişikliği küçük tutar ve devir notunda yazar.
 - Bu dosyada yalnız **kendi satırını ve kendi bölümünü** değiştir. Böylece iki PR aynı satıra dokunmaz.
+
+## Denetim (Claude)
+Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki denetim kurallarıyla PR #n'i denetle"*. Denetçi:
+1. PR'ı ve işin bu dosyadaki bölümünü okur. Sitenin karşılık gelen kaynak dosyalarını açar.
+2. CI'ı okur. Kırmızıysa kökünü bulur ve düzeltmeyi aynı dala gönderir.
+3. Davranışı sitenin davranışıyla karşılaştırır:
+   - Eksik özellik var mı?
+   - Yanlış kural var mı? (çeldirici, vade, adlar, yıl, görsel adresi)
+   - Site ilerlemesine yanlış yazma var mı? (K2: bilinmeyen alanlar korunmalı)
+   - Kâhin testi eksikse yazar.
+4. Ekran görüntülerini sitedeki aynı ekranla yan yana koyar.
+5. Sonucu iki yere yazar:
+   - **PR'a yorum:** maddeler halinde bulgular.
+   - **Bu dosyada, işin bölümüne bir satır:** `Denetim: Claude, tarih — onay | düzeltme istendi (n madde) — yorum linki`.
+6. Küçük ve kesin düzeltmeleri kendisi gönderir. Büyük olanları PR yorumunda bırakır; işi yapan araç aynı dalda düzeltir.
+7. Onay verdiyse kullanıcıya "birleştir dersen birleştiririm" der. **Birleştirmeyi yalnız kullanıcı açıkça isterse yapar.**
+
 
 ---
 
@@ -94,40 +130,41 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 ## İş listesi
 
 **Şeritler:**
-- Hesap A **A** şeridindeki sıradaki işi alır, Hesap B **B** şeridindekini.
-- Temel işleri iki şeride dağıtılmıştır: T1 B'de, T2 ve T3 A'da.
+- Her araç **kendi şeridindeki** sıradaki işi alır: Claude K, Gemini G, ChatGPT C.
+- Bağımlılığı bitmemiş işe başlanmaz. G ve C, temel (T1–T3) birleşene kadar bekler. Sadece G1, T1'den sonra başlayabilir.
+- Claude'un iki hesabı T1 ve T2'yi aynı anda yapabilir.
 - Tahmini süreler "oturum" cinsindendir. Bir oturum bir PR demektir.
 
 | ID | İş | Şerit | Bağımlılık | Oturum | Durum |
 |----|----|-------|------------|--------|-------|
-| T1 | Site verisi ve görsel adresleri | B | – | 1–2 | bekliyor |
-| T2 | İlerleme köprüsü + tekrar kuralları | A | – | 1–2 | bekliyor |
-| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | A | T1, T2 | 1 | bekliyor |
-| B1 | Tam ekran görüntüleyici | B | T1 | 1–2 | bekliyor |
-| A1 | Pekiştirme oturumu (kartlar, sorular) | A | T2, T3 | 2 | bekliyor |
-| B2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | B | T3, B1 | 2–3 | bekliyor |
-| A2 | Çalış ana ekranı | A | A1 | 1 | bekliyor |
-| B3 | Başyapıtlar: liste ve yakın okuma | B | B2 | 1 | bekliyor |
-| A3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | A | A2, B1 | 2 | bekliyor |
-| B4 | Bugün (Tuval) + resmin içinde yürüyüş | B | T3, B1 | 2 | bekliyor |
-| A4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | A | T3 | 1–2 | bekliyor |
-| B5 | Yolculuk haritası + Zaman | B | T3, A1 | 2 | bekliyor |
-| Z1 | Çevrimdışı görseller (321 MB) | A | A4 | 1 | bekliyor |
-| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | A | hepsi | 1 | bekliyor |
-| Z3 | Cila + sitedeki son değişikliklere yetişme | B | Z2 | 1 | bekliyor |
+| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bekliyor |
+| T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bekliyor |
+| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
+| G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
+| C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
+| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
+| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
+| G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
+| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bekliyor |
+| G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
+| C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
+| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
+| Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 
 **Sekmeler ne zaman yerli olur:**
-- Galeri: B1 + B2 + B3
-- Bugün: B4
-- Yolculuk: B5
-- Çalış: A1 + A2 + A3
-- Ben/Ayarlar: A4
+- Galeri: G1 + G2 + G3
+- Bugün: G4
+- Yolculuk: G5
+- Çalış: C1 + C2 + C3
+- Ben/Ayarlar: C4
 
 ---
 
 ## İşler
 
-### T1 · Site verisi ve görsel adresleri (B)
+### T1 · Site verisi ve görsel adresleri (Claude)
 **Amaç:** Swift'te sitenin verisini sitenin gördüğü gibi görmek: hangi sanatçılar, hangi akımlar, bir sanatçının eser listesi, her eserin görsel adresi.
 
 **Site kaynakları:**
@@ -150,7 +187,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### T2 · İlerleme köprüsü + tekrar kuralları (A)
+### T2 · İlerleme köprüsü + tekrar kuralları (Claude)
 **Amaç:** İlerlemeyi Swift'ten okuyup yazmak (K2) ve tekrar kurallarını Swift'te kullanmak.
 
 **Site kaynakları:**
@@ -174,7 +211,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### T3 · Kabuk (A)
+### T3 · Kabuk (Claude)
 **Amaç:** Yerli sekme çubuğu (K1). Sekmeler şimdilik siteyi gösterir; uygulama bugünküyle aynı çalışır.
 
 **Yapılacaklar:**
@@ -188,7 +225,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### B1 · Tam ekran görüntüleyici (B)
+### G1 · Tam ekran görüntüleyici (Gemini)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.
 
 **Yapılacaklar:**
@@ -200,7 +237,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### A1 · Pekiştirme oturumu (A)
+### C1 · Pekiştirme oturumu (ChatGPT)
 **Site kaynakları:**
 - `js/oturum.js`, `js/celdirici.js`, `js/ters.js`, `js/turlar.js`, `js/soruTurlari.js`, `js/devam.js`, `js/titresim.js`
 - `js/ekranlar/pekistir.js`, `js/ekranlar/soruTurlari.js`
@@ -211,11 +248,11 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 - Cevap yaprağı.
 - Yarım oturumu sürdürme.
 - Sonuçlar `IlerlemeKoprusu` ile yazılır.
-- İki oturum önerilir: **A1a** mantık + kâhin, **A1b** ekranlar.
+- İki oturum önerilir: **C1a** mantık + kâhin, **C1b** ekranlar.
 
 **Devir notu:** –
 
-### B2 · Galeri (B)
+### G2 · Galeri (Gemini)
 **Site kaynakları:**
 - `js/ekranlar/gozat.js`, `js/ekranlar/akim.js` + `js/akim.js`, `js/ekranlar/arama.js` + `js/arama.js`
 - `js/ekranlar/koleksiyon.js`
@@ -229,21 +266,21 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### A2 · Çalış ana ekranı (A)
+### C2 · Çalış ana ekranı (ChatGPT)
 **Site kaynakları:** `js/ekranlar/calisma.js`, `js/deste.js`.
 
 **Kapsam:** Bugünün dersi kartı, günlük tekrar, başka turlar, 14 günlük yük grafiği.
 
 **Devir notu:** –
 
-### B3 · Başyapıtlar (B)
+### G3 · Başyapıtlar (Gemini)
 **Site kaynakları:** `js/basyapit.js`, `js/basyapitSayfa.js`, `js/ekranlar/basyapit.js`.
 
 **Kapsam:** Liste (dönem sekmeleri), yakın okuma sayfası, yan yana karşılaştırma.
 
 **Devir notu:** –
 
-### A3 · Dersler (A)
+### C3 · Dersler (ChatGPT)
 **Site kaynakları:**
 - `js/ders.js`, `js/dersIcerik.js`, `js/eserDersi.js`, `js/kamera.js`
 - `js/ekranlar/ders.js`, `js/ekranlar/dersVerisi.js`, `js/ekranlar/eserDersi.js`
@@ -251,7 +288,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### B4 · Bugün (B)
+### G4 · Bugün (Gemini)
 **Site kaynakları:**
 - `js/ekranlar/bugun.js`, `js/yuruyus.js`, `js/egim.js`, `js/gunduzRenk.js`, `js/renk.js`, `js/gunun.js`
 - Seçim kuralı Swift'te zaten var: `NoraCekirdek/GununSanatcisi.swift`.
@@ -263,7 +300,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### A4 · Ben (A)
+### C4 · Ben (ChatGPT)
 **Site kaynakları:** `js/ekranlar/ilerleme.js`, `js/ekranlar/ayarlar.js`, `js/ekranlar/hizliAyar.js`, `js/kurs.js`, `js/yenilikler.js`, `js/rozet.js`.
 
 **Kapsam:**
@@ -274,21 +311,21 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### B5 · Yolculuk + Zaman (B)
+### G5 · Yolculuk + Zaman (Gemini)
 **Site kaynakları:**
 - `js/harita.js`, `js/bolum.js`, `js/ekranlar/harita.js`, `js/surukleKapat.js`, `js/sallanma.js`
 - `js/zaman.js`, `js/ekranlar/zaman.js`
 
 **Devir notu:** –
 
-### Z1 · Çevrimdışı görseller (A)
+### C5 · Çevrimdışı görseller (ChatGPT)
 **Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "Görselleri çevrimdışı indir".
 
 **Kapsam:** Arka planda indirme, boyut ve ilerleme göstergesi, iptal.
 
 **Devir notu:** –
 
-### Z2 · Swift'e devir (A)
+### Z2 · Swift'e devir (Claude)
 **Kapsam:**
 - İlerleme tek seferlik Swift deposuna taşınır (Application Support'ta JSON; şema aynı kalır, yedek uyumlu).
 - WKWebView ve `WebKabugu` kalkar.
@@ -297,7 +334,7 @@ Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin 
 
 **Devir notu:** –
 
-### Z3 · Cila + yetişme (B)
+### Z3 · Cila + yetişme (Claude)
 **Kapsam:**
 - K7'ye göre sitedeki değişikliklerin taşınması.
 - Erişilebilirlik (VoiceOver, Dinamik Yazı).
