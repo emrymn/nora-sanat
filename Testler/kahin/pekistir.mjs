@@ -2,6 +2,7 @@
 // Varsayılan canlı site. Çevrimdışı karşılaştırma için ilk argüman site deposunun yoludur.
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 
 async function cevaplar(kok) {
   const { kartlariSec, Oturum } = await import(kok + '/oturum.js');
@@ -36,7 +37,7 @@ let sonuc;
 if (process.argv[2]) {
   sonuc = await cevaplar(pathToFileURL(resolve(process.argv[2], 'js')).href);
 } else {
-  const { chromium } = await import('playwright');
+  const { chromium } = createRequire(import.meta.url)('playwright');
   const tarayici = await chromium.launch({ headless: true });
   try {
     const sayfa = await tarayici.newPage();

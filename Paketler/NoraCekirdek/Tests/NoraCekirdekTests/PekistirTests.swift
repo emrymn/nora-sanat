@@ -143,7 +143,7 @@ final class PekistirTests: XCTestCase {
         XCTAssertFalse(KartEseri.tersSorulur(.karisik, seviye: 1, rastgele: { 0.25 }))
         let ters = KartEseri.tersSecenekleri(dogru: ("a", eser("1")),
             adaylar: [("b", [ortak, eser("2")]), ("c", [eser("3")]), ("d", [eser("4")])],
-            kotuler: [:], konu: { _ in nil }, rastgele: rng)
+            kotuler: [:], konu: { _, _ in nil }, rastgele: rng)
         XCTAssertEqual(Set(ters?.map { $0.eser.anahtar } ?? []), ["1", "2", "3", "4"])
     }
 }

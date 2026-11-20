@@ -18,10 +18,13 @@ public struct PekistirmeKarti {
     public let ters: [KartEseri.Secenek]?
 
     /// Yalnız kart başarıyla kurulunca son sekiz eseri tazeler.
+    /// - `kolaylik`: `data/eser_zorluk.json`'un `kolaylik` sözlüğü (anahtar QID ya da `sanatçıId|başlık`).
+    /// - `konu(eser, sanatçıId)`: sitenin `eserKonusu`'u (ikonografi haritasında önce QID, yoksa `sanatçıId|başlık`);
+    ///   ters soruda yanlış eserler mümkünse doğru eserle aynı konudan seçilir.
     public static func hazirla(_ kart: PekistirmeOturumu.Kart, tur: PekistirmeTuru, plan: TurPlani,
                                katalog: SiteKatalogu, ilerleme: inout Ilerleme, seciliSeviye: Int? = nil,
                                kolaylik: [String: Double] = [:], tanismadaGorulen: [String] = [],
-                               konu: (Eser) -> String? = { _ in nil },
+                               konu: (Eser, String) -> String? = { _, _ in nil },
                                rastgele: PekistirmeRastgele = { Double.random(in: 0..<1) }) -> Self? {
         guard let s = katalog.harita[kart.id] else { return nil }
         let sv: Int

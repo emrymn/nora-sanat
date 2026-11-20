@@ -47,15 +47,15 @@ public enum KartEseri {
     public typealias Secenek = (id: String, eser: Eser)
 
     public static func tersSecenekleri(dogru: Secenek, adaylar: [(id: String, eserler: [Eser])],
-                                       kotuler: [String: [String]], konu: (Eser) -> String?,
+                                       kotuler: [String: [String]], konu: (Eser, String) -> String?,
                                        rastgele: PekistirmeRastgele = { Double.random(in: 0..<1) }) -> [Secenek]? {
         var sonuc = [dogru]
-        let dogruKonu = konu(dogru.eser)
+        let dogruKonu = konu(dogru.eser, dogru.id)
         for aday in adaylar where !sonuc.contains(where: { $0.id == aday.id }) {
             var liste = havuz(aday.eserler, kotuler).filter { !$0.ortak.contains(dogru.id) }
             guard !liste.isEmpty else { continue }
             if let dogruKonu {
-                let ayni = liste.filter { konu($0) == dogruKonu }
+                let ayni = liste.filter { konu($0, aday.id) == dogruKonu }
                 if !ayni.isEmpty { liste = ayni }
             }
             sonuc.append((aday.id, liste[Int(rastgele() * Double(liste.count))]))
