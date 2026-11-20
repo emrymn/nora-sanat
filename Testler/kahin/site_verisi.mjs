@@ -88,8 +88,22 @@ const sonuc = await sayfa.evaluate(async ({ OZEL, DOSYALAR }) => {
           if (uzaklar.length >= 40) break outer;
         }
 
+  // Tam katalog (denetim): görünür her sanatçının bütün eserleri, sanatçı başına [eser sayısı, md5].
+  // Satır: anahtar \t görünen ad \t yıl \t 400'lük adres \t 1280'lik adres \t pekiştirmeye uygun (1/0); satırlar \n ile.
+  const { md5 } = await import('/js/md5.js');
+  const katalog = {};
+  for (const id of ids) {
+    const l = await es.sanatciEserleri(d.harita.get(id), { canli: false });
+    const satirlar = l.map((e) => {
+      const g = gr.secilenGorsel(e, {});
+      return [e.anahtar, es.eserBaslik(e), e.yil ?? '', tam(gr.gorselUrl(g, 400)), tam(gr.gorselUrl(g, 1280)), gr.pekistirmeyeUygunMu(e, {}) ? 1 : 0].join('\t');
+    });
+    katalog[id] = [l.length, md5(satirlar.join('\n'))];
+  }
+
   return {
     surum: (await import('/js/surum.js')).SURUM || '',
+    katalog,
     tumSanatcilar: d.tumSanatcilar.map((s) => [s.id, s.akim, s.birlesen || null]),
     sanatcilar: ids,
     akimlar: d.akimlar.map((a) => ({ ad: a.ad, sira: a.sira, komsular: a.komsular, renk: a.renk })),
