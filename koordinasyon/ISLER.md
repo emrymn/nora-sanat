@@ -137,7 +137,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 | ID | İş | Şerit | Bağımlılık | Oturum | Durum |
 |----|----|-------|------------|--------|-------|
-| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bekliyor |
+| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | sürüyor (Claude, 2026-11-20) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bekliyor |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
