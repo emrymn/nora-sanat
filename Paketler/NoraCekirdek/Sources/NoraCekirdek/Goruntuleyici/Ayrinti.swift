@@ -140,6 +140,12 @@ public enum AyrintiKurallari {
         return a.isEmpty ? nil : ayrintiBul(liste, anahtar: a)
     }
 
+    /// JS `Math.round(x)`: yarımları (`-0.5`, `+0.5`) `+∞` yönüne yuvarlar (`floor(x + 0.5)`).
+    static func jsRound(_ x: Double) -> Double {
+        let r = floor(x + 0.5)
+        return r == 0 ? 0 : r
+    }
+
     /// `noktaOdagi(nokta, taban, sahne, { pay = 0.78, enAz = 1.15, enCok = 6 })`
     public static func noktaOdagi(
         _ nokta: AyrintiNoktasi?,
@@ -164,20 +170,20 @@ public enum AyrintiKurallari {
         let sy = max(0.0, (taban.h * olcek - sahne.h) / 2.0)
         tx = min(sx, max(-sx, tx))
         ty = min(sy, max(-sy, ty))
-        let yuvarlaOlcek = (olcek * 1000.0).rounded() / 1000.0
-        let yuvarlaTx = tx.rounded()
-        let yuvarlaTy = ty.rounded()
+        let yuvarlaOlcek = jsRound(olcek * 1000.0) / 1000.0
+        let yuvarlaTx = jsRound(tx)
+        let yuvarlaTy = jsRound(ty)
         return NoktaOdagi(
             olcek: yuvarlaOlcek,
-            tx: yuvarlaTx == 0 ? 0 : yuvarlaTx,
-            ty: yuvarlaTy == 0 ? 0 : yuvarlaTy
+            tx: yuvarlaTx,
+            ty: yuvarlaTy
         )
     }
 
     /// `noktaYeri(n)`: noktanın işaretinin yeri (görselin kutusuna göre yüzde: kutunun ortası)
     public static func noktaYeri(_ n: AyrintiNoktasi) -> (x: Double, y: Double) {
-        let x = ((n.x + n.w / 2.0) * 10000.0).rounded() / 100.0
-        let y = ((n.y + n.h / 2.0) * 10000.0).rounded() / 100.0
+        let x = jsRound((n.x + n.w / 2.0) * 10000.0) / 100.0
+        let y = jsRound((n.y + n.h / 2.0) * 10000.0) / 100.0
         return (x, y)
     }
 
@@ -193,6 +199,6 @@ public enum AyrintiKurallari {
         guard kaynak > 0, taban > 0 else { return enCok }
         let gecerliDpr = dpr.isFinite && dpr > 0 ? max(1.0, dpr) : 1.0
         let olcek = (kaynak * pay) / (taban * gecerliDpr)
-        return (min(enCok, max(enAz, olcek)) * 100.0).rounded() / 100.0
+        return jsRound(min(enCok, max(enAz, olcek)) * 100.0) / 100.0
     }
 }

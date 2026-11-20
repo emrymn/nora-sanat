@@ -118,7 +118,7 @@ public struct Goruntuleyici: View {
 
                 if let eser = simdikiEser {
                     let gorsel = simdikiGorsel
-                    let adresler = gorsel.map(etkinBaglam.adresler) ?? (nil, nil, nil, nil)
+                    let adresler = gorsel.map { etkinBaglam.adresler($0) } ?? GoruntuleyiciGorselAdresleri()
                     let oran = gorsel.flatMap { etkinBaglam.gorselAdresleri.oran($0) } ?? 1.0
                     let tabanBoyutu = sigdirBoyutu(sahne: sahneBoyutu, oran: oran)
 

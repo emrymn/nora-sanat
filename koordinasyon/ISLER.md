@@ -287,21 +287,25 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Kaynak:** `sanat-atlasi` @ `28f751ed`. Taşınan dosyalar: `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js` (ve `js/ikonografi.js`'teki `eserKonusu`).
 - **Yapılan:**
   - `Paketler/NoraCekirdek/Sources/NoraCekirdek/Goruntuleyici/`:
-    - `Ayrinti.swift`: `AyrintiNoktasi`, `AyrintiKaydi`, `NoktaOdagi`, `AyrintiKurallari` (`noktaGecerliMi`, `ayrintilariAl`, `ayrintiAnahtari`, `ayrintiBul`, `eserinAyrintisi`, `noktaOdagi`, `noktaYeri`, `yakinlasmaSiniri`).
+    - `Ayrinti.swift`: `AyrintiNoktasi`, `AyrintiKaydi`, `NoktaOdagi`, `AyrintiKurallari` (`noktaGecerliMi`, `ayrintilariAl`, `ayrintiAnahtari`, `ayrintiBul`, `eserinAyrintisi`, `noktaOdagi`, `noktaYeri`, `yakinlasmaSiniri`; JS `Math.round` ile birebir uyumlu `jsRound`).
     - `Hikaye.swift`: `HikayeKarakteri`, `HikayeKaydi`, `HikayeKurallari` (`hikayeleriAl`, `eserinHikayesi`, `karakterKaydi`).
     - `Koleksiyon.swift`: `KoleksiyonKaydi`, `KoleksiyonKurallari` (`dogrula`, `koleksiyondaMi`, `degistir`, `sinir = 500`).
     - `Bildirim.swift`: `BildirimKaydi`, `BildirimKurallari` (`nedenler`, `dogrula`, `eseriBildir`, `kotuIsaretle`, `sinir = 300`).
     - `GoruntuleyiciKurallari.swift`: `kaynakYazisi`, `notlariAl`, `eserNotu`, `taninmaMetni`, `karsilastirmaAdresi`, `karsilastirmaRotasi`, `benzerSanatcilar`, `ikonografiKonuHaritasi`, `eserKonusu`, `keskinlik`, `commonsUstu`, `keskinUstAdres`.
-    - `GoruntuleyiciBaglami.swift`: `SiteVerisi` üzerinden `SiteKatalogu`, `eser_notlari.json`, `eser_ayrintilari.json`, `eser_hikayeleri.json` ve `ikonografi.json` verilerini yükleyip T1'in `GorselAdresleri` ve `SiteKatalogu` ile birleştiren veri bağlamı.
+    - `GoruntuleyiciBaglami.swift`: `GoruntuleyiciGorselAdresleri` ve `GoruntuleyiciBaglami` (`SiteVerisi` üzerinden `SiteKatalogu`, `eser_notlari.json`, `eser_ayrintilari.json`, `eser_hikayeleri.json` ve `ikonografi.json` verilerini yükleyip T1'in `GorselAdresleri` ve `SiteKatalogu` ile birleştiren veri bağlamı).
   - `NoraSanat/Ekranlar/Goruntuleyici/`:
     - `Goruntuleyici.swift`: `Goruntuleyici(eserler:baslangic:)` tam ekran görüntüleyici ekranı. İki parmakla yakınlaştırma (1x–6x), çift dokunuşla 2.5x ↔ 1x, kaydırma, tek dokunuşla sade görünüm, eserler arası geçiş (yatay kaydırma veya ok düğmeleri), aşağı çekince küçülüp şeffaflaşarak kapanma, ilk eserde sağa çekince kapanma, künye/not/konu bağlantısı/kaynak sayfası, koleksiyon işareti ve `⋯` bildirim menüsü (`IlerlemeKoprusu.shared.degistir` ile ilerlemeye yazar).
     - `GoruntuleyiciGorseli.swift`: T3'ün görsel bileşeni henüz olmadığı için geçici `AsyncImage` tabanlı keskin görsel bileşeni (önce 1280/800 px birincil kopya, hata olursa yedek adres, yüklendikten sonra arkada 4096 px `devasaUrl` üst kopya indirip sarsıntısız geçiş) ve `TabloIsigiGorunumu` (400 px bulanık arka plan ışığı).
     - `AyrintiGorunumu.swift`: `AyrintiNoktalariKatmani` (tablo üzerinde numaralı ayrıntı noktaları) ve `AyrintiIncelemePaneli` (Önceki / Sonraki / Bitir).
     - `HikayePaneliGorunumu.swift`: alttan açılan "Hikâyesi" paneli ("Ne oluyor?", "Kim kimdir?", "Ressamla bağı", "Gözden kaçanlar" ve "Karakterleri resimde gör").
+- **Kâhin ve Testler:**
+  - `Testler/kahin/goruntuleyici.mjs` → `Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/goruntuleyici/` (`cevaplar.json` + veri dosyaları): 154 başyapıtın bütün ayrıntı noktaları, 3 farklı sahne boyutunda `noktaOdagi` ve `yakinlasmaSiniri`, 5 hikâye ve karakter kutuları, 155 görünür sanatçının tanıma metinleri ve `benzerSanatcilar` listesi, 293 eserin künye `kaynakYazisi`, `devasaKaynagi`, `sayfa`, `eserNotu`, `ayrinti`, `hikaye` ve ikonografi `konu` eşleşmeleri, koleksiyon ve bildirim adımları.
+  - `Paketler/NoraCekirdek/Tests/NoraCekirdekTests/GoruntuleyiciTests.swift`: 7 yeni XCTest eklendi; toplam 45 paket testi ve iOS Simulator `xcodebuild` derlemesi hatasız geçiyor.
 - **Kalan / Tuzaklar:**
-  - Yalnız `NoraSanat/Ekranlar/Goruntuleyici/` ve `Paketler/NoraCekirdek/Sources/NoraCekirdek/Goruntuleyici/` klasörlerine dokunuldu (`NoraSanatApp.swift`, `.github/workflows/ios-derle.yml` ve `Tests/` klasörlerine dokunulmadı). Kâhin denetçide, CI sonucu görülmedi.
+  - JS `Math.round(-x.5)` negatif yarımları `+∞` yönüne (`-x`) yuvarlarken Swift `.rounded()` `-∞` yönüne (`-(x+1)`) yuvarlıyor; `noktaOdagi`'nda birebir uyum için `floor(x + 0.5)` (`jsRound`) kullanıldı.
   - T3 birleştiğinde `GoruntuleyiciGorseli` içindeki `AsyncImage` yapısı T3'ün disk önbellekli `Gorsel` bileşenine geçirilebilir.
 - **Sonraki işe ipucu (G2, G3, G4, C3):** Başka ekranlardan `Goruntuleyici(eserler: eserListesi, baslangic: indeks)` ile doğrudan tam ekran (`fullScreenCover`) açılabilir; doğrudan inceleme veya hikâye kipinde açmak için `incelemeyeBasla: true` / `hikayeyeBasla: true` verilebilir.
+- **Site değişirse (K7):** `git -C /tmp/sa log 28f751ed..HEAD -- js/goruntuleyici.js js/ayrinti.js js/hikaye.js js/keskin.js js/koleksiyon.js js/bildirim.js js/karsilastir.js js/ikonografi.js`; kâhini yeniden çalıştır: `node Testler/kahin/goruntuleyici.mjs`.
 
 ### C1 · Pekiştirme oturumu (ChatGPT)
 **Site kaynakları:**

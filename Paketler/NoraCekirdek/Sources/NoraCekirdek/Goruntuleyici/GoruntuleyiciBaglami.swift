@@ -1,6 +1,21 @@
 // Kaynak: sanat-atlasi js/goruntuleyici.js @ 28f751ed
 import Foundation
 
+/// Bir görselin görüntüleyicide kullanılan adresleri (400 px ışık, 1280/800 px birincil, yedek, 4096 px devasa).
+public struct GoruntuleyiciGorselAdresleri: Equatable, Sendable {
+    public var isik: URL?
+    public var birincil: URL?
+    public var yedek: URL?
+    public var devasa: URL?
+
+    public init(isik: URL? = nil, birincil: URL? = nil, yedek: URL? = nil, devasa: URL? = nil) {
+        self.isik = isik
+        self.birincil = birincil
+        self.yedek = yedek
+        self.devasa = devasa
+    }
+}
+
 /// Görüntüleyicinin veri katmanı: `SiteVerisi` üzerinden katalog, eser notları, rehberli ayrıntılar,
 /// hikâyeler ve ikonografi konularını yükler; künye, görsel adresleri ve yakınlaşma hesaplarını sunar.
 public struct GoruntuleyiciBaglami: Sendable {
@@ -66,13 +81,13 @@ public struct GoruntuleyiciBaglami: Sendable {
     }
 
     /// Görselin ışık (400 px), birincil (1280/800 px), yedek ve en büyük (devasa 4096 px) adresleri.
-    public func adresler(_ gorsel: Gorsel) -> (isik: URL?, birincil: URL?, yedek: URL?, devasa: URL?) {
+    public func adresler(_ gorsel: Gorsel) -> GoruntuleyiciGorselAdresleri {
         let isik = GorselAdresleri.url(gorselAdresleri.url(gorsel, genislik: 400))
         let birincil = GorselAdresleri.url(gorselAdresleri.url(gorsel, genislik: 800))
         let yedek = GorselAdresleri.url(gorselAdresleri.yedek(gorsel))
         let devasaStr = gorselAdresleri.devasaUrl(gorsel)
         let devasa = devasaStr.isEmpty ? nil : GorselAdresleri.url(devasaStr)
-        return (isik, birincil, yedek, devasa)
+        return GoruntuleyiciGorselAdresleri(isik: isik, birincil: birincil, yedek: yedek, devasa: devasa)
     }
 
     public func eserNotu(_ eser: Eser) -> String {
