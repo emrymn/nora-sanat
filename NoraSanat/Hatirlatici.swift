@@ -55,8 +55,8 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
         set { ayarlar.set(newValue.flatMap { try? JSONEncoder().encode($0) }, forKey: Anahtar.sonTakvim) }
     }
 
+    /// Her açılış ve kapanışta gelir; izin ya da ayar sonradan değişmiş olabileceği için her seferinde yeniden kurulur.
     func takvimGeldi(_ t: TekrarTakvimi) {
-        guard t != sonTakvim else { return }
         sonTakvim = t
         Task { await planla() }
     }

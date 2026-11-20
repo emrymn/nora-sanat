@@ -81,7 +81,9 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
         // Arka plana geçerken tekrar takvimini bir kez daha iste (sayfanın visibilitychange'ine ek güvence)
         arkaPlanGozlemi = NotificationCenter.default.addObserver(
             forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak w] _ in
-            w?.evaluateJavaScript("window.__noraKopru && window.__noraKopru.gonder();", completionHandler: nil)
+            Task { @MainActor in
+                w?.evaluateJavaScript("window.__noraKopru && window.__noraKopru.gonder();", completionHandler: nil)
+            }
         }
     }
 

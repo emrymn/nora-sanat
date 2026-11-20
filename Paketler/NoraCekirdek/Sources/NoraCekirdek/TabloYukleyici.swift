@@ -32,7 +32,8 @@ public actor TabloYukleyici {
 
     public func yukle(tarih: String) async throws -> Sonuc {
         let veriler = try await veriDosyalari()
-        let tablo = try GununTablosuCozucu.coz(tarih: tarih, yuruyus: veriler[0], sanatcilar: veriler[1],
+        guard let yuruyus = veriler[0], let sanatcilar = veriler[1] else { throw URLError(.notConnectedToInternet) }
+        let tablo = try GununTablosuCozucu.coz(tarih: tarih, yuruyus: yuruyus, sanatcilar: sanatcilar,
                                                adlar: veriler[2], kaynak: veriler[3])
         return Sonuc(tablo: tablo, gorsel: await gorsel(tablo))
     }
