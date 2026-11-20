@@ -141,7 +141,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 |----|----|-------|------------|--------|-------|
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
-| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | sürüyor (Claude, 2026-11-20) |
+| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | PR açık (#6) |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
@@ -271,7 +271,59 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI ekran görüntüleri bugünkünden farksız.
 - `-ekran tema` ile renk ve yazı örnekleri görünüyor (gece ve gündüz).
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-20 · PR #6 · dal `claude/busy-cray-8z3g7e` (oturumun zorunlu dalı; `is/T3-…` açılamadı).
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/yonlendirme.js` `rotalar` (adres → sekme)
+  - `js/ekranlar/ortak.js` `SEKMELER`, `TEMA_RENK`
+  - `css/app.css` `:root` renk değişkenleri (gece, gündüz; Gündüz'ün koyu pirinci dosyanın sonunda) ve ölçüler
+  - `js/titresim.js` (doğru tek, yanlış çift darbe)
+  - yazı tipleri: `index.html`'deki Google Fonts
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/yonlendirme.js js/ekranlar/ortak.js css/app.css js/titresim.js js/gunduzRenk.js index.html`
+- **Seçilen çözüm (K1'in önerdiğiyle aynı, yarım geçiş için tamamlandı):**
+  - Hiç sekme taşınmadıysa yerli çubuk hiç kurulmuyor; site tam ekran, uygulama bugünküyle birebir aynı.
+  - Taşınmış bir sekmeye gelince site gizleniyor (opaklık 0; yüklü kalıyor), yerli ekran ve **yerli sekme çubuğu** görünüyor. Bu sekmeye nasıl gelindiği fark etmez: sitenin çubuğu, sitenin bir bağlantısı, widget, bildirim.
+  - Yerli çubukta taşınmamış bir sekmeye dokununca site geri geliyor ve sitenin kendi sekme düğmesine basılıyor (kullanıcı dokunmuş gibi; ana ekran kalınan kaydırma yerinde).
+  - Ben (İlerleme, Ayarlar) uygulamada 5. sekme. Sitede `#/ilerleme` ve `#/ayarlar` Bugün'ün altında görünür.
+- **Yapılanlar:**
+  - `NoraCekirdek/Gecis/Sekme.swift`: `Sekme` (bugun, yolculuk, galeri, calis, ben; `kokAdres`, `baslik`, `siteKimligi`) ve `SiteRotalari.siteSekmesi(_:)` / `sekme(_:)`. Sekmesiz sayfalar (pekiştirme kartı, karşılaştırma) nil döner, açıldıkları sekmede kalır.
+  - `NoraCekirdek/Tema/TemaRenkleri.swift`: `RGBA` (CSS renk ayrıştırma), `TemaRenkleri.gece` / `.gunduz` (24 değişken, Türkçe adlarla; CSS adı yorumda), `TemaRenkleri(degiskenler:yedek:)` (sitenin canlı değerleri), `TemaOlcu`, `TemaAyari`.
+  - `NoraCekirdek/Gorsel/GorselDeposu.swift`: görsellerin disk önbelleği (`Caches/Gorseller`, adresin MD5'i). Aynı adres için tek indirme yapılıyor; 400 MB'ı aşınca en uzun süredir kullanılmayanlar siliniyor.
+  - `NoraSanat/Kabuk/KokGorunum.swift`: kök görünüm (tek WKWebView ve yerli TabView), `SekmeYeri` (yazılmamış yerli ekranın yeri).
+  - `NoraSanat/Kabuk/Gecis.swift`:
+    - `Gecis.tasinanlar`: **bir sekme bitince adı buraya eklenir**.
+    - `KabukDurumu` (`secili`, `siteAdresi`, `yerliAdres[sekme]`).
+    - Adres köprüsü (sitenin `hashchange`'i).
+    - `Gezgin.git` (widget, bildirim) hedef sekme yerliyse yerli ekranı açıyor.
+  - `NoraSanat/Kabuk/Tema.swift`:
+    - `TemaDeposu` (`renkler`, `ayar`, `siteRengi`; eski `SiteTemasi`'nın yerine).
+    - `TemaKoprusu`: sitenin `<html>` teması ve stili değişince hesaplanmış değişkenleri gönderiyor. Renkli Gündüz paleti ve tablonun vurgusu dahil.
+    - `Yazi.serif` / `sans` / `okuma`: Bodoni Moda, Archivo, Newsreader. Değişken yazı tipleri; ağırlık ve optik boyut eksenlerle veriliyor, boyut Dinamik Yazı'yla ölçekleniyor.
+    - Yazı tipleri `NoraSanat/YaziTipleri/` altında (OFL lisanslı, ~1,9 MB, açılışta kaydediliyor).
+  - `NoraSanat/Kabuk/Gorsel.swift`: `UzakGorsel(url:icerik:yedek:)`. Görsel kutunun piksel boyuna küçültülerek çözülüyor, bellekte tutuluyor, yüklenince yumuşakça beliriyor. Adı bilerek `Gorsel` değil: `Gorsel` T1'in görsel modeli.
+  - `NoraSanat/Kabuk/Titresim.swift`: `dogru`, `yanlis`, `secim`, `dokunus`, `desen` (sitenin `navigator.vibrate`'i) ve `Titresim.acik(il)` (sitenin titreşim ayarı).
+  - `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`: beş sekmenin iskeleti. Şerit işleri gövdeyi değiştirir; böylece ortak dosyaya dokunmaları gerekmez.
+  - DEBUG açılış argümanları:
+    - `-ekran tema`: Gece ve Gündüz örnekleri, altta sitenin canlı teması, yazı tiplerinin yüklendiği (✓).
+    - `-yerliSekme galeri,ben`: yarım ekranları denemek için o sekmeleri yerli sayar.
+  - CI'a iki ekran görüntüsü eklendi: `7-tema.png`, `8-yerli-sekme.png` (`-yerliSekme galeri -adres "#/gozat"`: yerli çubuk ve Galeri yeri).
+- **Kâhin:**
+  - `Testler/kahin/kabuk.mjs` → `Ornekler/kabuk/cevaplar.json`. 37 adreste sitenin sekme çubuğunda seçili sekme; gece, nötr gündüz ve renkli gündüzde (lapis) hesaplanmış değişkenler. Testler (`KabukTests.swift`) sabit tablonun Gündüz'ün koyu pirincini kaçırdığını yakaladı, düzeltildi.
+  - `Testler/kahin/kabuk_koprusu.mjs`: Swift dosyalarındaki adres ve tema betikleri canlı sitede çalıştırıldı; adres, tema geçişleri ve sitenin sekme düğmesi geçti. Belge başında `<html>` yokken tema betiğinin kırıldığını yakaladı, düzeltildi. CI'da (macOS) Playwright olmadığı için orada çalışmaz; denetçi elle çalıştırır.
+  - Linux'ta paket testleri: 47 test, 1'i yalnız canlı modda (atlanıyor).
+- **Kalan / sonraki işler için:**
+  - Yerli ekran `@Environment(TemaDeposu.self)` ve `@Environment(KabukDurumu.self)` okur. İkisi `KokGorunum`'un altında hazır; dışında (ör. DEBUG ekranı) `.environment(TemaDeposu.shared)` verilmeli.
+  - `UzakGorsel` ve `SekmeYeri` de `TemaDeposu`'nu ortamdan bekler.
+  - Renkler: `Color(tema.renkler.murekkep)`, zemin `tema.renkler.zemin`. Site açılmadan önce sabit tablo kullanılır.
+  - `--vurgu` ailesi sitede tablonun renginden üretilir (`renkleriYaz`); sabit tablodaki değer yalnız başlangıç değeri. Swift ekranı kendi tablosunun vurgusunu isterse `js/renk.js`'i taşıması gerekir (G4).
+  - Yerli ekran sitenin adresine göre derin bağlantı açacaksa `durum.yerliAdres[.galeri]`'yi okur, sonra `durum.adresIslendi(.galeri)` çağırır.
+  - Hareket ayarı: `tema.ayar.hareketAzaltilmis`.
+  - Görsel: `UzakGorsel(url: katalog.gorselAdresi(e, genislik: 400, kotuler: il.kotuGorseller))`. Görüntüleyici (G1) büyük kopyayı `GorselDeposu.shared.veri(url)` ile kendisi çözebilir.
+  - Yerli çubuğun simgeleri SF Symbols (sitenin çizimlerine en yakın). Sitenin kendi simgeleri istenirse Z3'te SVG'den taşınır.
+  - Sitenin `history.replaceState` ile yaptığı adres değişimleri `hashchange` vermez, köprüye gelmez. Bugün yalnız yarım oturumda `#/pekistir`'e dönüşte var; sekme aynı kaldığı için etkisi yok.
+- **Tuzaklar:**
+  - Yerli sekme seçiliyken site görünmez ama yüklü ve çalışır kalır. WKWebView kaldırılmamalı (Z2'ye kadar köprüler ona bağlı).
+  - `Gecis.tasinanlar`'a bir sekme eklemek o sekmenin bütün yollarını (alt sayfalar dahil: `#/sanatci/…`, `#/akim/…`) yerliye bağlar: `SiteRotalari.sekme`.
+- **CI:** gönderimden sonra yazılacak.
 
 ### G1 · Tam ekran görüntüleyici (Gemini)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.
