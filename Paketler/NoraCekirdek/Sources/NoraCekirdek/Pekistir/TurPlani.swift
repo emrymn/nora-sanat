@@ -133,7 +133,8 @@ public struct TurPlani {
         var yeniKalan = max(0, kota)
         var bilgi = adaylar.map { s -> (s: Sanatci, k: Int, kutu: Int, son: String) in
             let sk = skorlar[s.id]
-            let ilgili = (karisik ? [sk?.sanatci, sk?.akim] : [sk?.sanatci]).compactMap { $0 }.filter(Leitner.goruldu)
+            let adaySkorlar: [Skor?] = karisik ? [sk?.sanatci, sk?.akim] : [sk?.sanatci]
+            let ilgili: [Skor] = adaySkorlar.compactMap { $0 }.filter { Leitner.goruldu($0) }
             let k: Int
             if ilgili.isEmpty { k = 2 }
             else if ilgili.contains(where: { Leitner.vadesiGeldi($0, bugun) }) { k = 0 }
