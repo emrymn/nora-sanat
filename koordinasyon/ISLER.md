@@ -219,7 +219,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Izgaralar için: `atlas.gorsel.url(GorselKaynagi.secilen(e, kotuler: k), genislik: 400)`. Kart ve görüntüleyici için `genislik: 1280`.
   - Görüntüleyicinin keskin kopyası: `ustKopya(adres, buyuk: true)` ya da `devasaUrl`. Adres açılmazsa: `yedek`.
   - Uygulama atlası henüz kullanmıyor. İlk kullanan T3/G1 olacak.
-- **CI:** macOS derlemesi bu commit için yeniden çalışıyor; sonucu bu satıra yazılacak.
+- **CI:** yeşil (b47ac75, [koşu 14](https://github.com/emrymn/nora-sanat/actions/runs/44810786341)). macOS'ta 29 paket testi geçti, iOS derlemesi yeni uyarı vermedi, widget önizlemesi dahil simülatör adımları tamam. Ekran görüntülerini oturumdan açamadım (yapıtı indirme erişimi yok); arayüz değişmediği için öncekiyle aynı olmalı, denetçi baksın.
 
 ### T2 · İlerleme köprüsü + tekrar kuralları (Claude)
 **Amaç:** İlerlemeyi Swift'ten okuyup yazmak (K2) ve tekrar kurallarını Swift'te kullanmak.
