@@ -150,15 +150,29 @@ final class Gezgin {
     private(set) var bekleyen: String?
     var yuklendi = false
 
-    /// adres: "#/", "#/pekistir" …
+    /// adres: "#/", "#/pekistir" … Hedef sekme Swift'e taşındıysa orada açılır (Kabuk, T3).
     func git(_ adres: String) {
         guard adres.hasPrefix("#/") else { return }
+        if KabukDurumu.shared.yerliyeGit(adres) { return }
         if yuklendi, let w = webView {
             let js = "location.hash = \(Self.jsDizge(adres));"
             w.evaluateJavaScript(js, completionHandler: nil)
         } else {
             bekleyen = adres
         }
+    }
+
+    /// Sitenin kendi sekme düğmesine basar (kullanıcı dokunmuş gibi); çubuk gizliyse sekmenin ana sayfasına gider
+    func sekmeyeGec(_ s: Sekme) {
+        guard let kimlik = s.siteKimligi else { return git(s.kokAdres) }
+        guard yuklendi, let w = webView else { return git(s.kokAdres) }
+        let js = """
+        (function () {
+          var a = document.querySelector('#sekmeler a[data-sekme=' + \(Self.jsDizge(kimlik)) + ']');
+          if (a && !document.getElementById('sekmeler').hidden) a.click(); else location.hash = \(Self.jsDizge(s.kokAdres));
+        })();
+        """
+        w.evaluateJavaScript(js, completionHandler: nil)
     }
 
     func yuklemeBitti() {

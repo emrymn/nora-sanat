@@ -3,10 +3,9 @@ import UIKit
 
 @main
 struct NoraSanatApp: App {
-    @State private var tema = SiteTemasi()
-
     init() {
         Hatirlatici.shared.baslat()   // bildirime dokununca açılacak sayfa için, açılışta kurulmalı
+        Yazi.kaydet()                 // sitenin yazı tipleri (NoraSanat/YaziTipleri)
         #if DEBUG
         // -adres "#/ilerleme": site o sayfada açılır (CI ekran görüntüleri için)
         if let adres = Self.arguman("-adres") { Gezgin.shared.git(adres) }
@@ -28,38 +27,21 @@ struct NoraSanatApp: App {
             } else if Self.arguman("-ekran") == "ilerleme" {
                 // Site arkada yüklenir (köprü onu kullanır), özet üstte
                 ZStack {
-                    kabuk
+                    KokGorunum()
                     IlerlemeOzeti(yaz: CommandLine.arguments.contains("-ilerlemeYaz"))
                 }
+            } else if Self.arguman("-ekran") == "tema" {
+                // Site arkada yüklenir (canlı tema için), örnekler üstte
+                ZStack {
+                    KokGorunum()
+                    TemaOrnekleri().environment(TemaDeposu.shared)
+                }
             } else {
-                kabuk
+                KokGorunum()
             }
             #else
-            kabuk
+            KokGorunum()
             #endif
         }
-    }
-
-    private var kabuk: some View {
-        WebKabugu(tema: tema)
-            .ignoresSafeArea()
-            .background(Color(uiColor: tema.renk).ignoresSafeArea())
-            // Saat/pil çubuğu sitenin rengine uysun (koyu zeminde açık yazı).
-            .preferredColorScheme(tema.koyu ? .dark : .light)
-            // Widget'a dokununca: norasanat://bugun
-            .onOpenURL { Gezgin.shared.ac($0) }
-    }
-}
-
-/// Sitenin `theme-color` rengi; zemin ve durum çubuğu buna göre ayarlanır.
-@Observable
-final class SiteTemasi {
-    /// Sanat Atlası'nın varsayılan gece zemini (#121110): site yüklenene kadar beyaz parlama olmasın.
-    var renk = UIColor(red: 0x12 / 255.0, green: 0x11 / 255.0, blue: 0x10 / 255.0, alpha: 1)
-
-    var koyu: Bool {
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        renk.getRed(&r, green: &g, blue: &b, alpha: &a)
-        return 0.299 * r + 0.587 * g + 0.114 * b < 0.5
     }
 }

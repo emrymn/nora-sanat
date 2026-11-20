@@ -1,16 +1,17 @@
 # Nora Sanat → tamamen Swift: iş dağılımı
 
-Bu dosya Claude, Gemini ve ChatGPT'nin ortak iş listesi ve raporudur. Oturumlar birbirini görmez; **her şey burada yazılıdır.**
+Bu dosya Claude ve ChatGPT'nin ortak iş listesi ve raporudur. Oturumlar birbirini görmez; **her şey burada yazılıdır.**
 Her iş ayrı bir oturumda yapılır. **İşi bitiren, bu dosyada kendi işinin durumunu ve devir notunu yazar** (rapor budur).
 
 **Kim ne yapar:**
 | Şerit | Araç | Görev |
 |---|---|---|
 | **K** | Claude (iki hesap) | Temel işler (T1–T3, Z2, Z3) ve **her PR'ın denetimi** |
-| **G** | Gemini (Jules ya da Gemini CLI) | Görsel ağırlıklı ekranlar: G1–G5 |
+| **G** | ChatGPT (Codex) | Görsel ağırlıklı ekranlar: G2–G5. G1'i Gemini bitiriyor (PR #8) |
 | **C** | ChatGPT (Codex) | Çalışma ağırlıklı ekranlar: C1–C5 |
 
 G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farklı klasörler (K6). Aynı dosyaya dokunmazlar.
+İkisi de artık ChatGPT'de; iki ayrı ChatGPT oturumunda aynı anda yürüyebilirler.
 
 **Hedef.** Sanat Atlası'nın (`emrymn/sanat-atlasi`, yayında `sanat-atlasi.pages.dev`) bütün ekranlarını Swift ile yeniden yazmak.
 - Geçiş **sekme sekme** olur. Taşınmamış sekmeler o güne kadar sitenin kendisini (WKWebView) gösterir. Uygulama her an kullanılabilir kalır.
@@ -31,7 +32,7 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
    git clone --depth 1 https://github.com/emrymn/sanat-atlasi /tmp/sa
    ```
 5. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
-6. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
+6. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (ChatGPT, 2026-11-21)`.
 7. Hemen **taslak PR** aç; başlığı iş kimliğiyle başlasın (ör. "T3 · Kabuk"). Öbür araçlar ne yapıldığını açık PR'lardan görür.
 
 ### Bitirirken
@@ -49,7 +50,7 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
    3. Kullanıcı "birleştir" der.
 5. Birleşince durumu `bitti (#n)` yap. Bunu bir sonraki oturum da yapabilir.
 
-### Bilgisayarında Xcode yoksa (Gemini, ChatGPT ve Claude için aynı)
+### Bilgisayarında Xcode yoksa (ChatGPT ve Claude için aynı)
 - Oturumlar bulutta (Linux) çalışır. iOS orada derlenemez, derlemeyi GitHub Actions yapar (`.github/workflows/ios-derle.yml`).
 - Paket testleri Linux'ta çalışabilir: `swift test --package-path Paketler/NoraCekirdek` (Swift kuruluysa).
 - CI sonucunu göremiyorsan PR'ı öyle bırak ve devir notuna "CI sonucu görülmedi" yaz. Denetçi Claude CI'ı okur.
@@ -132,7 +133,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 ## İş listesi
 
 **Şeritler:**
-- Her araç **kendi şeridindeki** işleri yapar: Claude K, Gemini G, ChatGPT C. Hangi işi yapacağını kullanıcı mesajında adıyla verir.
+- Her araç **kendi şeridindeki** işleri yapar: Claude K; ChatGPT G ve C. Hangi işi yapacağını kullanıcı mesajında adıyla verir.
 - Bağımlılığı bitmemiş işe başlanmaz. G ve C, temel (T1–T3) birleşene kadar bekler. Sadece G1, T1'den sonra başlayabilir.
 - Aynı anda yürüyebilecek işler tablodaki bağımlılıklardan okunur. İki oturuma aynı iş verilmez.
 - Tahmini süreler "oturum" cinsindendir. Bir oturum bir PR demektir.
@@ -141,8 +142,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 |----|----|-------|------------|--------|-------|
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
-| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
+| T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | sürüyor (Gemini, #8: eksikler aşağıda) |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
@@ -271,9 +272,71 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI ekran görüntüleri bugünkünden farksız.
 - `-ekran tema` ile renk ve yazı örnekleri görünüyor (gece ve gündüz).
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-20 · PR #6 · dal `claude/busy-cray-8z3g7e` (oturumun zorunlu dalı; `is/T3-…` açılamadı).
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/yonlendirme.js` `rotalar` (adres → sekme)
+  - `js/ekranlar/ortak.js` `SEKMELER`, `TEMA_RENK`
+  - `css/app.css` `:root` renk değişkenleri (gece, gündüz; Gündüz'ün koyu pirinci dosyanın sonunda) ve ölçüler
+  - `js/titresim.js` (doğru tek, yanlış çift darbe)
+  - yazı tipleri: `index.html`'deki Google Fonts
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/yonlendirme.js js/ekranlar/ortak.js css/app.css js/titresim.js js/gunduzRenk.js index.html`
+- **Seçilen çözüm (K1'in önerdiğiyle aynı, yarım geçiş için tamamlandı):**
+  - Hiç sekme taşınmadıysa yerli çubuk hiç kurulmuyor; site tam ekran, uygulama bugünküyle birebir aynı.
+  - Taşınmış bir sekmeye gelince site gizleniyor (opaklık 0; yüklü kalıyor), yerli ekran ve **yerli sekme çubuğu** görünüyor. Bu sekmeye nasıl gelindiği fark etmez: sitenin çubuğu, sitenin bir bağlantısı, widget, bildirim.
+  - Yerli çubukta taşınmamış bir sekmeye dokununca site geri geliyor ve sitenin kendi sekme düğmesine basılıyor (kullanıcı dokunmuş gibi; ana ekran kalınan kaydırma yerinde).
+  - Ben (İlerleme, Ayarlar) uygulamada 5. sekme. Sitede `#/ilerleme` ve `#/ayarlar` Bugün'ün altında görünür.
+- **Yapılanlar:**
+  - `NoraCekirdek/Gecis/Sekme.swift`: `Sekme` (bugun, yolculuk, galeri, calis, ben; `kokAdres`, `baslik`, `siteKimligi`) ve `SiteRotalari.siteSekmesi(_:)` / `sekme(_:)`. Sekmesiz sayfalar (pekiştirme kartı, karşılaştırma) nil döner, açıldıkları sekmede kalır.
+  - `NoraCekirdek/Tema/TemaRenkleri.swift`: `RGBA` (CSS renk ayrıştırma), `TemaRenkleri.gece` / `.gunduz` (24 değişken, Türkçe adlarla; CSS adı yorumda), `TemaRenkleri(degiskenler:yedek:)` (sitenin canlı değerleri), `TemaOlcu`, `TemaAyari`.
+  - `NoraCekirdek/Gorsel/GorselDeposu.swift`: görsellerin disk önbelleği (`Caches/Gorseller`, adresin MD5'i). Aynı adres için tek indirme yapılıyor; 400 MB'ı aşınca en uzun süredir kullanılmayanlar siliniyor.
+  - `NoraSanat/Kabuk/KokGorunum.swift`: kök görünüm (tek WKWebView ve yerli TabView), `SekmeYeri` (yazılmamış yerli ekranın yeri).
+  - `NoraSanat/Kabuk/Gecis.swift`:
+    - `Gecis.tasinanlar`: **bir sekme bitince adı buraya eklenir**.
+    - `KabukDurumu` (`secili`, `siteAdresi`, `yerliAdres[sekme]`).
+    - Adres köprüsü (sitenin `hashchange`'i).
+    - `Gezgin.git` (widget, bildirim) hedef sekme yerliyse yerli ekranı açıyor.
+  - `NoraSanat/Kabuk/Tema.swift`:
+    - `TemaDeposu` (`renkler`, `ayar`, `siteRengi`; eski `SiteTemasi`'nın yerine).
+    - `TemaKoprusu`: sitenin `<html>` teması ve stili değişince hesaplanmış değişkenleri gönderiyor. Renkli Gündüz paleti ve tablonun vurgusu dahil.
+    - `Yazi.serif` / `sans` / `okuma`: Bodoni Moda, Archivo, Newsreader. Değişken yazı tipleri; ağırlık ve optik boyut eksenlerle veriliyor, boyut Dinamik Yazı'yla ölçekleniyor.
+    - Yazı tipleri `NoraSanat/YaziTipleri/` altında (OFL lisanslı, ~1,9 MB, açılışta kaydediliyor).
+  - `NoraSanat/Kabuk/Gorsel.swift`: `UzakGorsel(url:icerik:yedek:)`. Görsel kutunun piksel boyuna küçültülerek çözülüyor, bellekte tutuluyor, yüklenince yumuşakça beliriyor. Adı bilerek `Gorsel` değil: `Gorsel` T1'in görsel modeli.
+  - `NoraSanat/Kabuk/Titresim.swift`: `dogru`, `yanlis`, `secim`, `dokunus`, `desen` (sitenin `navigator.vibrate`'i) ve `Titresim.acik(il)` (sitenin titreşim ayarı).
+  - `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`: beş sekmenin iskeleti. Şerit işleri gövdeyi değiştirir; böylece ortak dosyaya dokunmaları gerekmez.
+  - DEBUG açılış argümanları:
+    - `-ekran tema`: Gece ve Gündüz örnekleri, altta sitenin canlı teması, yazı tiplerinin yüklendiği (✓).
+    - `-yerliSekme galeri,ben`: yarım ekranları denemek için o sekmeleri yerli sayar.
+  - CI'a iki ekran görüntüsü eklendi: `7-tema.png`, `8-yerli-sekme.png` (`-yerliSekme galeri -adres "#/gozat"`: yerli çubuk ve Galeri yeri).
+- **Kâhin:**
+  - `Testler/kahin/kabuk.mjs` → `Ornekler/kabuk/cevaplar.json`. 37 adreste sitenin sekme çubuğunda seçili sekme; gece, nötr gündüz ve renkli gündüzde (lapis) hesaplanmış değişkenler. Testler (`KabukTests.swift`) sabit tablonun Gündüz'ün koyu pirincini kaçırdığını yakaladı, düzeltildi.
+  - `Testler/kahin/kabuk_koprusu.mjs`: Swift dosyalarındaki adres ve tema betikleri canlı sitede çalıştırıldı; adres, tema geçişleri ve sitenin sekme düğmesi geçti. Belge başında `<html>` yokken tema betiğinin kırıldığını yakaladı, düzeltildi. CI'da (macOS) Playwright olmadığı için orada çalışmaz; denetçi elle çalıştırır.
+  - Linux'ta paket testleri: 47 test, 1'i yalnız canlı modda (atlanıyor).
+- **Kalan / sonraki işler için:**
+  - Yerli ekran `@Environment(TemaDeposu.self)` ve `@Environment(KabukDurumu.self)` okur. İkisi `KokGorunum`'un altında hazır; dışında (ör. DEBUG ekranı) `.environment(TemaDeposu.shared)` verilmeli.
+  - `UzakGorsel` ve `SekmeYeri` de `TemaDeposu`'nu ortamdan bekler.
+  - Renkler: `Color(tema.renkler.murekkep)`, zemin `tema.renkler.zemin`. Site açılmadan önce sabit tablo kullanılır.
+  - `--vurgu` ailesi sitede tablonun renginden üretilir (`renkleriYaz`); sabit tablodaki değer yalnız başlangıç değeri. Swift ekranı kendi tablosunun vurgusunu isterse `js/renk.js`'i taşıması gerekir (G4).
+  - Yerli ekran sitenin adresine göre derin bağlantı açacaksa `durum.yerliAdres[.galeri]`'yi okur, sonra `durum.adresIslendi(.galeri)` çağırır.
+  - Hareket ayarı: `tema.ayar.hareketAzaltilmis`.
+  - Görsel: `UzakGorsel(url: katalog.gorselAdresi(e, genislik: 400, kotuler: il.kotuGorseller))`. Görüntüleyici (G1) büyük kopyayı `GorselDeposu.shared.veri(url)` ile kendisi çözebilir.
+  - Yerli çubuğun simgeleri SF Symbols (sitenin çizimlerine en yakın). Sitenin kendi simgeleri istenirse Z3'te SVG'den taşınır.
+  - Sitenin `history.replaceState` ile yaptığı adres değişimleri `hashchange` vermez, köprüye gelmez. Bugün yalnız yarım oturumda `#/pekistir`'e dönüşte var; sekme aynı kaldığı için etkisi yok.
+- **Tuzaklar:**
+  - Yerli sekme seçiliyken site görünmez ama yüklü ve çalışır kalır. WKWebView kaldırılmamalı (Z2'ye kadar köprüler ona bağlı).
+  - `Gecis.tasinanlar`'a bir sekme eklemek o sekmenin bütün yollarını (alt sayfalar dahil: `#/sanatci/…`, `#/akim/…`) yerliye bağlar: `SiteRotalari.sekme`.
+- **CI:** 9892ece yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44821824720): iOS derlemesi, çekirdek testleri ve sekiz ekran görüntüsünün hepsi alındı (`7-tema.png`, `8-yerli-sekme.png` yeni). Görüntüleri oturumdan açamadım; denetçi `ekranlar` yükünden 1–6'nın bugünküyle aynı olduğuna, 7'de Gece/Gündüz örneklerine ve yazı tiplerinin ✓ olduğuna, 8'de sitenin gizlenip yerli çubuğun Galeri seçili göründüğüne baksın.
 
-### G1 · Tam ekran görüntüleyici (Gemini)
+**Denetim:** Claude, 2026-11-21 — **onay, bir düzeltmeyle** (PR #6 yorumu).
+- Linux'ta 48 test geçti.
+- `kabuk.mjs` canlı sitede yeniden çalıştırıldı: sekmeler ve sabit renkler aynı. Yalnız `--vurgu` ailesi farklı; site onu günün tablosundan üretiyor, test bu yüzden onu bilerek hariç tutuyor.
+- `kabuk_koprusu.mjs` canlı sitede geçti.
+- CI görüntüleri: 1–6 bugünküyle aynı. 7'de Gece/Gündüz ve üç yazı tipi ✓.
+- **Hata:** 8'de yerli çubuk yoktu; görüntü 1 ile aynıydı.
+  - Neden: `-adres`, widget ya da bildirim yerli Galeri'yi açıyordu, ama site açılışta kendi adresini (`#/`) bildirince seçim Bugün'e dönüyordu.
+  - Düzeltme: karar `SiteRotalari.secim` olarak çekirdeğe alındı (`SekmeTests.testSitedenGelenAdresleSekmeSecimi`). Taşınmış sekmenin adresi her zaman yerliyi açar. Taşınmamış sekmeye yalnız sitenin sekmesi gerçekten değişince geçilir.
+- Yazı tipleri OFL, lisans dosyaları içinde, ~1,9 MB: uygun.
+
+### G1 · Tam ekran görüntüleyici (Gemini bitirir; sonraki G işleri ChatGPT)
 **Site kaynakları:** `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js`.
 
 **Yapılacaklar:**
@@ -282,6 +345,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Rehberli ayrıntı noktaları.
 - Koleksiyon kalbi, "kötü görsel" bildirimi (ilerlemeye yazar), keskin üst kopya.
 - Başka ekranlar şöyle açar: `Goruntuleyici(eserler:baslangic:)`.
+
+**Durum (Claude, 2026-11-21):** Gemini PR #8'de (`is/G1-goruntuleyici`) ~2.000 satır yazdı, iş bitmedi. G1'i Gemini aynı dalda tamamlar (kullanıcı kararı); kod iyi bir başlangıç, baştan yazma. G2–G5 ChatGPT'de.
+- CI derlemesi kırık: `Goruntuleyici.swift:128` — `'(URL?, URL?, URL?, URL?)' has no member 'isik'`.
+- Hiç test ve kâhin yok. `Goruntuleyici/` kuralları (ayrıntı, hikâye, koleksiyon, bildirim, keskinlik, not, karşılaştırma adresi) için `Testler/kahin/goruntuleyici.mjs` + XCTest gerekli.
+- Kaynak commit yanlış yazılmış (`28f751ed` sitede yok); site kaynağı `a866b86`.
+- `KoleksiyonKurallari.degistir` çıkarırken listeyi `dogrula` ile yeniden süzüyor; site süzmüyor (yalnız ekler/çıkarır). Kâhinle düzelt.
+- Görseller `AsyncImage` ile; T3 birleşti, `UzakGorsel` / `GorselDeposu`'na geç.
+- Ekran CI'da hiç görülmedi: DEBUG açılış argümanı (ör. `-ekran goruntuleyici`) ve `ios-derle.yml`'e ekran görüntüsü adımı ekle (4-url-calis hep en sonda kalır).
 
 **Devir notu:** –
 
@@ -318,7 +389,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Kart sitedeki gibi cevaptan önce hazırlanmalı. `hazirla` `sonEserler`'i ilerlemeye yazar.
   - `SoruTuru` (kurs bölümü ve ikonografi turları) yalnız okuyarak karşılaştırıldı. C1b ekranlarıyla birlikte kâhine eklenmeli.
 
-### G2 · Galeri (Gemini)
+### G2 · Galeri (ChatGPT)
 **Site kaynakları:**
 - `js/ekranlar/gozat.js`, `js/ekranlar/akim.js` + `js/akim.js`, `js/ekranlar/arama.js` + `js/arama.js`
 - `js/ekranlar/koleksiyon.js`
@@ -339,7 +410,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G3 · Başyapıtlar (Gemini)
+### G3 · Başyapıtlar (ChatGPT)
 **Site kaynakları:** `js/basyapit.js`, `js/basyapitSayfa.js`, `js/ekranlar/basyapit.js`.
 
 **Kapsam:** Liste (dönem sekmeleri), yakın okuma sayfası, yan yana karşılaştırma.
@@ -354,7 +425,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G4 · Bugün (Gemini)
+### G4 · Bugün (ChatGPT)
 **Site kaynakları:**
 - `js/ekranlar/bugun.js`, `js/yuruyus.js`, `js/egim.js`, `js/gunduzRenk.js`, `js/renk.js`, `js/gunun.js`
 - Seçim kuralı Swift'te zaten var: `NoraCekirdek/GununSanatcisi.swift`.
@@ -377,7 +448,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G5 · Yolculuk + Zaman (Gemini)
+### G5 · Yolculuk + Zaman (ChatGPT)
 **Site kaynakları:**
 - `js/harita.js`, `js/bolum.js`, `js/ekranlar/harita.js`, `js/surukleKapat.js`, `js/sallanma.js`
 - `js/zaman.js`, `js/ekranlar/zaman.js`

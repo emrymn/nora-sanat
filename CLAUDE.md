@@ -2,12 +2,12 @@
 
 Sanat Atlası PWA'sının (`emrymn/sanat-atlasi`, yayında: https://sanat-atlasi.pages.dev/) iPhone çerçeve uygulaması. SwiftUI + WKWebView, iOS 17+. Tek kullanıcı: depo sahibi. Metinler, yorumlar, commit ve PR'lar **Türkçe**.
 
-## Swift'e geçiş (Claude + Gemini + ChatGPT, iş iş)
+## Swift'e geçiş (Claude + ChatGPT, iş iş)
 Sanat Atlası'nın ekranları sekme sekme Swift'e taşınıyor. **Her oturum önce `koordinasyon/ISLER.md`'yi okur**: iş listesi, şeritler, mimari kararlar, "başlarken/bitirirken" kuralları.
-- Claude **K** şeridini (temel işler) yapar ve Gemini (**G**) ile ChatGPT'nin (**C**) her PR'ını **denetler**. Denetim kuralları ISLER.md'de.
+- Claude **K** şeridini (temel işler) yapar ve ChatGPT'nin (**G** ve **C** şeritleri) her PR'ını **denetler**. Denetim kuralları ISLER.md'de.
 - İşi bitiren o dosyada kendi işinin durumunu ve devir notunu yazar.
 - Birleştirme yalnız denetim onayından sonra ve kullanıcı açıkça isteyince.
-- Gemini ve ChatGPT `AGENTS.md`'yi okur.
+- ChatGPT `AGENTS.md`'yi okur. (Gemini 2026-11-21'de bırakıldı.)
 
 ## Kurallar
 - Özellik ve içerik geliştirmesi hâlâ `sanat-atlasi` deposunda sürer; burada o ekranların Swift karşılıkları yazılır (kaynak dosya ve commit'i yorumda, davranış kâhin testiyle: `Testler/kahin/README.md`). Taşınmamış sekmeler siteyi gösterir.

@@ -22,7 +22,7 @@ jobs:
       - name: Xcode sürümü
         run: xcodebuild -version
 
-      - name: Çekirdek testleri (site verisi, günün tablosu, hatırlatma planı)
+      - name: Çekirdek testleri (site verisi, ilerleme, kabuk, günün tablosu, hatırlatma planı)
         run: swift test --package-path Paketler/NoraCekirdek
 
       - name: Köprü betiği testleri (tekrar takvimi)
@@ -93,6 +93,16 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -adres "#/ilerleme"
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/6-site-ilerleme.png
+          # T3: temanın renk ve yazı örnekleri (Gece, Gündüz; altta sitenin canlı teması)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -ekran tema
+          sleep 20
+          xcrun simctl io "$UDID" screenshot ekranlar/7-tema.png
+          # T3: yerli sekme denemesi: Galeri yerli sayılır; #/gozat'a gidilince site gizlenir, yerli çubuk görünür
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
+          sleep 15
+          xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"
