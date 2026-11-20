@@ -22,15 +22,17 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
 ## Oturum kuralları
 
 ### Başlarken
+0. **Hangi işi yapacağını kullanıcı söyler** ("T3'ü yap", "G1'i yap"). Mesajda iş adı yoksa kendin seçme; kullanıcıya hangisini istediğini sor. (Önceden "sıradaki işi al" deniyordu: iki oturum aynı anda başlayınca ikisi de T1'i yaptı, biri boşa gitti.)
 1. `git checkout main && git pull`. Sonra `CLAUDE.md`'yi, bu dosyanın tamamını ve işinin bölümünü oku.
 2. **Bağımlılıklar** sütunundaki işler `bitti` değilse başlama. Kullanıcıya hangi işin beklendiğini söyle.
-3. Sanat Atlası'nı salt okunur indir ve işinin kaynak dosyalarını oku. Commit'ini not et (`git -C <yol> rev-parse --short HEAD`):
+3. **Açık PR'lara bak** (GitHub'da Pull requests, ya da `gh pr list`). Başlığında aynı iş kimliği (ör. "T3") olan açık PR varsa **başlama**: kullanıcıya o PR'ı söyle.
+4. Sanat Atlası'nı salt okunur indir ve işinin kaynak dosyalarını oku. Commit'ini not et (`git -C <yol> rev-parse --short HEAD`):
    ```bash
    git clone --depth 1 https://github.com/emrymn/sanat-atlasi /tmp/sa
    ```
-4. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
-5. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
-6. Hemen **taslak PR** aç. Öbür araçlar ne yapıldığını açık PR'lardan görür.
+5. Dal aç: `is/<ID>-<kısa-ad>`, örneğin `is/T2-ilerleme`.
+6. İlk commit'te tablodaki durumunu `sürüyor (Araç, tarih)` yap. Örnek: `sürüyor (Gemini, 2026-11-21)`.
+7. Hemen **taslak PR** aç; başlığı iş kimliğiyle başlasın (ör. "T3 · Kabuk"). Öbür araçlar ne yapıldığını açık PR'lardan görür.
 
 ### Bitirirken
 1. CI yeşil olmalı. Ekran görüntülerine bak: ekran sitedekine benziyor mu?
@@ -130,15 +132,15 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 ## İş listesi
 
 **Şeritler:**
-- Her araç **kendi şeridindeki** sıradaki işi alır: Claude K, Gemini G, ChatGPT C.
+- Her araç **kendi şeridindeki** işleri yapar: Claude K, Gemini G, ChatGPT C. Hangi işi yapacağını kullanıcı mesajında adıyla verir.
 - Bağımlılığı bitmemiş işe başlanmaz. G ve C, temel (T1–T3) birleşene kadar bekler. Sadece G1, T1'den sonra başlayabilir.
-- Claude'un iki hesabı T1 ve T2'yi aynı anda yapabilir.
+- Aynı anda yürüyebilecek işler tablodaki bağımlılıklardan okunur. İki oturuma aynı iş verilmez.
 - Tahmini süreler "oturum" cinsindendir. Bir oturum bir PR demektir.
 
 | ID | İş | Şerit | Bağımlılık | Oturum | Durum |
 |----|----|-------|------------|--------|-------|
-| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | PR açık (#4) |
-| T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | PR açık (#5) |
+| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
+| T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bekliyor |
