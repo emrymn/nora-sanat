@@ -22,7 +22,7 @@ jobs:
       - name: Xcode sürümü
         run: xcodebuild -version
 
-      - name: Çekirdek testleri (günün tablosu, hatırlatma planı)
+      - name: Çekirdek testleri (site verisi, günün tablosu, hatırlatma planı)
         run: swift test --package-path Paketler/NoraCekirdek
 
       - name: Köprü betiği testleri (tekrar takvimi)

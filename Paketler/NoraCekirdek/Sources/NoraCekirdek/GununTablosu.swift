@@ -30,7 +30,7 @@ public struct GununTablosu: Codable, Equatable, Sendable {
 /// - Yıl: sanatçının hayatıyla çelişmiyorsa (`yilSupheliMi`).
 /// - Görsel: `data/gorsel_kaynagi.json`'daki R2 adresinden 1280'lik kopya (`yuruyusAdresleri`).
 public enum GununTablosuCozucu {
-    public static let site = URL(string: "https://sanat-atlasi.pages.dev/")!
+    public static let site = SiteVerisi.site
 
     /// Widget'ın indirdiği dosyalar (siteye göre)
     public static let dosyalar = ["data/yuruyus.json", "data/sanatcilar.json",
@@ -95,30 +95,10 @@ public enum GununTablosuCozucu {
         return nil
     }
 
-    /// js/gorsel.js `yuruyusAdresleri(ad, buyuk).kucuk`
+    /// js/gorsel.js `yuruyusAdresleri(ad, buyuk).kucuk` (GorselKaynagi ile; ad da ayrı kopya da yoksa nil)
     public static func gorselAdresi(ad: String?, buyuk: String?, kaynak: Data?) -> URL? {
-        var adres = ""
-        var hepsiBuyuk = false
-        var surumler: [String: String] = [:]
-        if let kaynak, let k = (try? JSONSerialization.jsonObject(with: kaynak)) as? [String: Any],
-           let a = k["adres"] as? String, a.hasPrefix("https://") {
-            adres = a
-            while adres.hasSuffix("/") { adres.removeLast() }
-            hepsiBuyuk = (k["buyuk"] as? Bool) == true
-            for (ad, v) in (k["b_surumler"] as? [String: Any]) ?? [:] {
-                let s = "\(v)"
-                if s.range(of: "^[0-9a-f]{4,16}$", options: .regularExpression) != nil { surumler[ad] = s }
-            }
-        }
-        if !adres.isEmpty, let buyuk, !buyuk.isEmpty {
-            let kucuk = buyuk.hasSuffix(".jpg") ? String(buyuk.dropLast(4)) + "-1280.jpg" : buyuk
-            return URL(string: "\(adres)/\(kucuk)")
-        }
-        guard let ad, !ad.isEmpty else { return nil }
-        if !adres.isEmpty && hepsiBuyuk {
-            let ek = surumler[ad].map { "-\($0)" } ?? ""
-            return URL(string: "\(adres)/b/\(ad)\(ek).jpg")
-        }
-        return URL(string: "gorseller/k/\(ad).jpg", relativeTo: site)?.absoluteURL
+        let g = GorselKaynagi(yerelGorseller: nil, oranlar: nil, kaynak: kaynak, site: site)
+        if JS.dolu(ad) == nil && (JS.dolu(buyuk) == nil || !g.r2Var) { return nil }
+        return GorselKaynagi.url(g.yuruyusAdresleri(ad: ad, buyuk: buyuk).kucuk)
     }
 }

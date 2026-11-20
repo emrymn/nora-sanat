@@ -38,22 +38,11 @@ public actor TabloYukleyici {
         return Sonuc(tablo: tablo, gorsel: await gorsel(tablo))
     }
 
-    /// Sıra: GununTablosuCozucu.dosyalar. İlk ikisi zorunlu.
+    /// Sıra: GununTablosuCozucu.dosyalar. İlk ikisi zorunlu. İndirme ve önbellek SiteVerisi'nde (eski dosya adlarıyla aynı yer).
     func veriDosyalari() async throws -> [Data?] {
-        var sonuc: [Data?] = []
-        for yol in GununTablosuCozucu.dosyalar {
-            let yerel = klasor.appendingPathComponent(yol.replacingOccurrences(of: "/", with: "_"))
-            let yas = (try? yerel.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
-                .map { Date().timeIntervalSince($0) } ?? .infinity
-            var veri: Data? = nil
-            if yas > veriOmru, let url = URL(string: yol, relativeTo: GununTablosuCozucu.site),
-               let (d, yanit) = await indir(url),
-               (yanit as? HTTPURLResponse)?.statusCode == 200, (try? JSONSerialization.jsonObject(with: d)) != nil {
-                try? d.write(to: yerel, options: .atomic)
-                veri = d
-            }
-            sonuc.append(veri ?? (try? Data(contentsOf: yerel)))
-        }
+        let site = SiteVerisi(klasor: klasor, omur: veriOmru) { [oturum] in try await oturum.data(for: $0) }
+        let veri = await site.dosyalar(GununTablosuCozucu.dosyalar)
+        let sonuc = GununTablosuCozucu.dosyalar.map { veri[$0] }
         guard sonuc[0] != nil, sonuc[1] != nil else { throw URLError(.notConnectedToInternet) }
         return sonuc
     }

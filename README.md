@@ -83,6 +83,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] Yedek geri yükleme sonrası ilerleme görünüyor.
 - [ ] Widget galerisinde **Nora Sanat → Günün tablosu** var. Üç boyutta da tablo, adı, ressamı ve yılı görünüyor. Bugün ekranındakiyle aynı tablo.
 - [ ] Widget'a dokununca Nora Sanat Bugün ekranında açılıyor.
+- [ ] (T1) Ertesi gün widget yeni tabloya geçiyor. Uçak modunda telefonu yeniden başlatınca widget son indirilen tabloyu göstermeye devam ediyor.
 - [ ] Bildirim izni soruldu. iPhone Ayarlar → Uygulamalar → Nora Sanat'ta **Tekrar hatırlatması** (Hatırlat, Saat) var.
 - [ ] Saati bir sonraki saat başına al (örneğin şimdi 20:40 ise 21:00), Nora Sanat'ı aç ve kapat: o saatte "Bugün N sanatçı tekrarını bekliyor" geliyor. N, Çalış'taki sayıyla aynı.
 - [ ] Bildirime dokununca Çalış sekmesi açılıyor.
