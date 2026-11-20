@@ -143,7 +143,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a sürüyor (ChatGPT, 2026-11-21) |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a PR açık (#7), C1b bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
@@ -298,7 +298,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Sonuçlar `IlerlemeKoprusu` ile yazılır.
 - İki oturum önerilir: **C1a** mantık + kâhin, **C1b** ekranlar.
 
-**Devir notu:** –
+**Devir notu:** ChatGPT, 2026-11-21 — C1a, PR #7 (`is/C1a-pekistir-mantik`).
+- Kaynak: `sanat-atlasi` @ `a866b86`; `js/oturum.js`, `celdirici.js`, `turlar.js`, `bolum.js`, `eserler.js`, `ters.js`, `soruTurlari.js`, `ekranlar/{pekistir,soruTurlari}.js`.
+- `TurPlani.kur` karışık, dönem, konu, harita bölümü ve hatalar turlarını kurar. `PekistirmeKarti.hazirla` eser, zorluk ve seçenekleri seçer. `PekistirmeOturumu.cevapla` tamamlanan kartın T2 skor, seviye, günlük ve geçmiş değişikliklerini birlikte uygular. Yanlış kart başına en çok üç geri dönüş vardır. Ek kurs bölümü ve ikonografi sorularının ayrı skorları `SoruTuru` içindedir.
+- Yedi yeni XCTest geçti. Sabit kaynak sürümünün JS modülleriyle üretilen cevaplar `Ornekler/pekistir/cevaplar.json` içinde. Çevrimdışı üretim: `node Testler/kahin/pekistir.mjs /tmp/sa`. Canlı tarayıcı karşılaştırması: **kâhin denetçide** (yerelde Playwright paketi yok).
+- C1b: kart cevap yaprağı, yarım oturumun saklanması/sürdürülmesi ve köprüye yazma. Köprü yeniden denerse oturum kopyasına aynı cevabı uygula; yalnız başarılı yazmadan sonra ekranın oturumunu ilerlet. Telefonda yeni deneme adımı C1b ekranıyla gelecek.
 
 ### G2 · Galeri (Gemini)
 **Site kaynakları:**
