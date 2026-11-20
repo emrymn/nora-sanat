@@ -90,7 +90,8 @@ final class KabukDurumu {
         guard s != secili else { return }
         secili = s
         guard !Gecis.yerli(s) else { return }
-        // Site o sekmeye zaten geçmediyse sitenin kendi sekme düğmesine basılır: site sekmenin kalınan yerini açar
+        // Site o sekmeye zaten geçmediyse sitenin kendi sekme düğmesine basılır: site sekmenin ana ekranını kalınan
+        // kaydırma yerinde açar (kullanıcı sitenin çubuğuna dokunmuş gibi)
         if SiteRotalari.sekme(siteAdresi) != s { Gezgin.shared.sekmeyeGec(s) }
     }
 

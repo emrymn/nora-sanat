@@ -162,7 +162,7 @@ final class Gezgin {
         }
     }
 
-    /// Sitenin kendi sekme düğmesine basar (site o sekmenin kalınan yerini açar); düğme yoksa sekmenin ana sayfasına gider
+    /// Sitenin kendi sekme düğmesine basar (kullanıcı dokunmuş gibi); çubuk gizliyse sekmenin ana sayfasına gider
     func sekmeyeGec(_ s: Sekme) {
         guard let kimlik = s.siteKimligi else { return git(s.kokAdres) }
         guard yuklendi, let w = webView else { return git(s.kokAdres) }

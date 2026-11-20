@@ -63,9 +63,16 @@ enum TemaKoprusu {
           }
           var bekleyen = 0;
           function planla() { if (!bekleyen) bekleyen = setTimeout(function () { bekleyen = 0; gonder(); }, 120); }
-          new MutationObserver(planla).observe(document.documentElement,
-            { attributes: true, attributeFilter: ['data-tema', 'data-hareket', 'data-yazi', 'style'] });
-          addEventListener('DOMContentLoaded', planla);
+          // Belge başında <html> henüz olmayabilir: o zaman izleme DOMContentLoaded'da kurulur
+          var izlenen = false;
+          function izle() {
+            if (izlenen || !document.documentElement) return;
+            izlenen = true;
+            new MutationObserver(planla).observe(document.documentElement,
+              { attributes: true, attributeFilter: ['data-tema', 'data-hareket', 'data-yazi', 'style'] });
+          }
+          izle();
+          addEventListener('DOMContentLoaded', function () { izle(); planla(); });
           addEventListener('pageshow', planla);
         })();
         """
