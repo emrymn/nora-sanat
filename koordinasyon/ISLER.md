@@ -137,7 +137,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 | ID | İş | Şerit | Bağımlılık | Oturum | Durum |
 |----|----|-------|------------|--------|-------|
-| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | sürüyor (Claude, 2026-11-20) |
+| T1 | Site verisi ve görsel adresleri | K | – | 1–2 | PR açık (#3) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bekliyor |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bekliyor |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bekliyor |
@@ -185,7 +185,41 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Bitti sayılır:** Kâhin testleri geçiyor ve widget yeni katmanla aynı tabloyu buluyor.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-20 · PR #3 · dal `claude/busy-cray-8z3g7e` (oturumun zorunlu dalı; `is/T1-…` açılamadı).
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınan dosyalar: `js/app.js` (`basla`), `js/birlesme.js`, `js/resim.js`, `js/eserler.js`, `js/gorsel.js`, `js/kurs.js`, `js/adlar.js`, `js/yardimci.js`, `js/md5.js`. K7 farkı:
+  `git -C /tmp/sa log a866b86..HEAD -- js/app.js js/birlesme.js js/resim.js js/eserler.js js/gorsel.js js/kurs.js js/adlar.js js/yardimci.js js/md5.js`
+- **Yapılanlar** (`Paketler/NoraCekirdek/Sources/NoraCekirdek/Veri/`):
+  - `SiteVerisi`: `data/*.json`'u indirir, diskte saklar (`omur` içinde ağa çıkmaz, sonra ETag'le sorar, çevrimdışıysa son indirileni verir). `dosya(_:)`, `dosyalar(_:)`, `atlas()`.
+  - `SiteAtlasi`: sitenin açılıştaki `d`'si. Alanlar: `sanatcilar` (görünür), `tumSanatcilar`, `harita`, `akimlar` (görünür, sıralı), `konular`, `kursKonulari` (kapaklarıyla), `kisaAdlar`, `dikeyler`, `gorsel`. `eserler(_:)` sitenin `sanatciEserleri`'dir (bellekte tutulur). Ayrıca `bilinenAd`, `adParcalari`, `akimRengi`.
+  - `Modeller`: `Sanatci`, `Akim`, `Konu`, `Eser`, `Gorsel` (Codable, hoşgörülü çözücü).
+  - `EserKurallari`: `onbellekEseri`, kurs listesi, çıkarılan görseller, elle düzeltmeler, kopya kayıtlar, ortak atıflar, şüpheli yıl, Türkçe adlar, `resimSanatcisiMi`, akım birleşmesi.
+  - `GorselKaynagi`: `adres(_:genislik:)` (`gorselUrl`), `yerelUrl`, `ustKopya`, `devasaUrl`, `devasaKaynagi`, `oran`, `yedek`, `yuruyusAdresleri`, `sayfa`, `kaynakYazisi`, `secilen(_:kotuler:)`, `pekistirmeyeUygun`. Bütün adresler mutlak döner.
+  - `KursVeAdlar` (`konuKapagi`, `adParcala`), `Yardimci` (`notTemizle`, `dosyaNormal`, `yilYaz`…, `JS.encodeURIComponent`, `MD5`).
+- **Kâhin:** `Testler/kahin/site_verisi.mjs`. Örnekler `Ornekler/siteVerisi/` altında: sitenin aynı anda yüklediği 14 dosya ve `cevaplar.json`, yaklaşık 5 MB. Testler (`SiteVerisiTests.swift`, Linux'ta geçti) şunları sınıyor:
+  - 155 görünür sanatçının 7349 eserinin hepsi, 27 alanlık satırın MD5'iyle.
+  - 20 sanatçı alan alan.
+  - Kimlik listeleri, akımlar, kurs kapakları, ad parçaları.
+  - 145 yürüyüş görseli (widget dahil).
+  - Yapay görsellerle AIC, NGA, WikiArt, Met dalları.
+  - R2 kaynağı inmemişken adresler.
+  - İndirici: önbellek, 304, bozuk yanıt, çevrimdışı.
+  Bir kuralı bilerek bozunca testin yakaladığı denendi.
+- **Widget:** `TabloYukleyici` dosyaları artık `SiteVerisi` ile indiriyor. Önbellek klasörü ve dosya adları eskisiyle aynı, ETag de eklendi. `GununTablosuCozucu.gorselAdresi` `GorselKaynagi.yuruyusAdresleri`'ni kullanıyor. Testte günün tablosu ve 145 yürüyüş adresi siteyle aynı çıkıyor.
+- **Bilerek yapılmayanlar:**
+  1. Sitenin canlı Wikidata yolu Swift'te yok. Site bu yolu iki durumda kullanıyor: önbellek dosyası 30 günden eskiyse yeni eserleri sona ekler; önbellekte kaydı olmayan sanatçıya eserleri Wikidata'dan getirir. Uygulama ise yalnız sitenin yayımladığı `eserler_onbellek.json`'u kullanıyor. Önbellekte kaydı olmayan sanatçıda yalnız kurs resimleri çıkar; bugün 187 sanatçının hepsinin kaydı var. Kâhin de `canli: false` ile alındı.
+  2. T1'in kapsamı dışında kalan veriler: `gunun_resimleri`, odak dosyaları (`gorsel_odak*`, `yuruyus_odak`), `eser_zorluk` (kolaylık), `tanima_notlari`, `eser_notlari`, `konular_tr`, ikonografi. Bunlar, onları kullanan ekran işinde (G1, G2, G4, C1) eklenecek.
+  3. Çevrimdışı indirme listeleri (`devasaAdresleri`, `telefonAdresleri`): C5'in işi.
+- **Tuzaklar:**
+  - Swift sözlükleri JSON anahtar sırasını korumuyor. Site ise ortak atıflarda `Object.entries` sırasını kullanıyor; bunun için `SiraliJSON` yazıldı.
+  - Görsel adresi sitede bazen göreli (`gorseller/k/…`). Swift'te her adres sitenin köküne göre mutlak dönüyor.
+  - `Eser` bir değer tipi. Sitenin kopya kaydında nesneyi yerinde değiştirmesi Swift'te dizinle yapılıyor.
+  - `GorselKaynagi.secilen` "kötü görsel" listesini parametre olarak alıyor. Bu liste ilerlemedeki `kotuler`; T2'nin `Ilerleme`'sinden verilecek.
+- **Sonraki işe ipucu (T3, G1, G2):**
+  - Atlası şöyle kur: `let atlas = try await SiteVerisi().atlas()`. Uygulamada tek örnek tutulmalı; kurulurken yaklaşık 4 MB JSON çözülüyor.
+  - Izgaralar için: `atlas.gorsel.url(GorselKaynagi.secilen(e, kotuler: k), genislik: 400)`. Kart ve görüntüleyici için `genislik: 1280`.
+  - Görüntüleyicinin keskin kopyası: `ustKopya(adres, buyuk: true)` ya da `devasaUrl`. Adres açılmazsa: `yedek`.
+  - Uygulama atlası henüz kullanmıyor. İlk kullanan T3/G1 olacak.
+- **CI:** macOS derlemesi bu commit için yeniden çalışıyor; sonucu bu satıra yazılacak.
 
 ### T2 · İlerleme köprüsü + tekrar kuralları (Claude)
 **Amaç:** İlerlemeyi Swift'ten okuyup yazmak (K2) ve tekrar kurallarını Swift'te kullanmak.
