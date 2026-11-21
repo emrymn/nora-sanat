@@ -148,7 +148,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bitti (#11); görünüş G2b'de |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
-| G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | PR açık (#15) |
+| G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
@@ -547,6 +547,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Gezinme çubuğu gizli: geri hareketi için `UINavigationController` jest temsilcisi (GaleriGorunusu.swift sonu) bütün uygulamada geçerli.
   - Çark: şeridin konumu `PreferenceKey` ile okunur; çark çevrilirken konum parmaktan gelir ve şerit en yakın akıma kayarak izler.
   - Ben'de de `EserDuvari` var; Galeri'ninki `IkiSutunDuvar`.
+
+**Denetim (G2b):** Claude, 2026-11-21 — **onay** ([PR #15 yorumu](https://github.com/emrymn/nora-sanat/pull/15#issuecomment-7067177100)). 88 test geçti; `galeri.mjs` ve `temsil.mjs` canlı sitede örneklerle aynı. 13 yan yana görüntünün hepsi sitenin düzeninde. Küçük: sanatçıda "Notlarımdan" etiketi altın (sitede gri); `UINavigationController` eklentisi bütün uygulamayı etkiliyor (Z3). Yan bulgu: gizli site hareket izni penceresi açabiliyor (`WebKabugu` temsilcisi `.grant` dönmesine rağmen) → ayrı iş.
 
 ### C2 · Çalış ana ekranı (ChatGPT)
 **Site kaynakları:** `js/ekranlar/calisma.js`, `js/deste.js`.
