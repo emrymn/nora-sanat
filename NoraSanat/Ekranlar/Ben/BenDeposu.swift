@@ -87,17 +87,24 @@ final class BenDeposu {
             }
         } catch { hata(error) }
     }
-    func yap(_ islem: @escaping @MainActor () async throws -> Void) {
+    /// `bitti`: işlem ve yeniden okuma başarılıysa yeni ilerlemeyle çağrılır (C4b: Tanış kartı)
+    func yap(bitti: (@MainActor (Ilerleme) -> Void)? = nil, _ islem: @escaping @MainActor () async throws -> Void) {
         guard !mesgul else { return }
         mesgul = true
         Task {
             defer { mesgul = false }
-            do { try await islem() } catch { hata(error) }
-            do { il = try await kopru.oku() } catch { hata(error) }
+            var tamam = true
+            do { try await islem() } catch { hata(error); tamam = false }
+            do {
+                let yeni = try await kopru.oku()
+                il = yeni
+                if tamam { bitti?(yeni) }
+            } catch { hata(error) }
         }
     }
-    func degistir(sonra: String? = nil, _ islem: @escaping (inout Ilerleme) -> Void) {
-        yap {
+    func degistir(sonra: String? = nil, bitti: (@MainActor (Ilerleme) -> Void)? = nil,
+                  _ islem: @escaping (inout Ilerleme) -> Void) {
+        yap(bitti: bitti) {
             _ = try await self.kopru.degistir(islem)
             if let sonra { _ = try await self.kopru.benBetigi(sonra) }
         }

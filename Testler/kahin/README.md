@@ -25,3 +25,22 @@ node Testler/kahin/kabuk_koprusu.mjs
 Uçtan uca örnek: `pekistir_turlari.mjs`. Sitenin ekran yapıştırıcısını (tur kurma, kart hazırlama, cevap yazma) aynen
 kopyalar, tohumlu rastgeleyle 60 durum üretir. Swift testi aynı tohumla aynı sayıları çekmek zorunda; sayı ve sıra da
 karşılaştırılır.
+
+## Pekiştirme: tanışma ve eksik adımlar (C1c)
+
+`pekistir_tanisma.mjs` aynı kalıpla, sitenin `kartCiz` akışını da kopyalar: konu turunda turdan önceki tanışmalar
+(gösterilen eserler o turda sorulmaz), öbür turlarda yeni sanatçının kartından önceki tanışma, görseli açılmayan kartta
+başka eser, eseri bulunamayan kartın sayaçta kalması, karıştırma sayısı, seviye sonucu ve seviye atlayan dönemler.
+`PekistirTanismaTests` aynı akışı `TurKaydi` ile yürütür.
+
+```bash
+node Testler/kahin/pekistir_tanisma.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/pekistir/tanisma.json
+```
+
+## Temsil / küçük görsel (C4b)
+
+```bash
+# Her sanatçının sitedeki eser listesi ve sitenin `enBilinen` seçimi (küçük görseller, kitap kapakları, portreler),
+# kötü işaretli görsellerle seçim, TEMSIL_DISI ve `bilinirlikSirasi` (tablo düğmesinin yelpazesi). ~1,5 MB.
+node Testler/kahin/temsil.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/temsil/cevaplar.json
+```

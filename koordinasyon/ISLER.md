@@ -144,15 +144,15 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bitti (#8) |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bitti (#9), C1c bekliyor |
-| G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | PR açık (#11) |
-| C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bekliyor |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bitti: C1a (#7), C1b (#9), C1c (#14) |
+| G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bitti (#11); görünüş G2b'de |
+| C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
-| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bekliyor |
+| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
@@ -456,7 +456,31 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Görünüş (K5).** Kart ve cevap yaprağı sitenin kartına benzesin: tipografi, kart çerçevesi, şık düğmeleri, ilerleme çubuğu. CI'da aynı turun sitedeki görüntüsüyle yan yana karşılaştır.
 - Kâhin: tanışma eserleri ve `tanismadaGorulen` ile kart seçimi `pekistir_turlari.mjs` kalıbıyla.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · PR #14 · dal `claude/affectionate-bell-ognrcy` (oturumun zorunlu dalı). C şeridinin işi; kullanıcı Claude'a verdi. Aynı anda C4b başka bir Claude oturumunda sürdüğü için `Ekranlar/Ben/` ve `Gecis.swift`'e dokunulmadı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3; bu dosyalar o günden beri değişmedi). Taşınan: `js/ekranlar/pekistir.js` (`kartCiz`, `tanismaGoster`, `konuTanismaGoster`, `tanismaCiz`, `tanismaVitrin`, `gecDugme`, `baskaEser`, `ipucuMetni`, `akimiAciklarMi`, `karsiSeritHtml`, `kutuSatiri`, `seviyeSatiri`, `seviyeHaplari`, `seviyeSec`, `ozetCiz`, `gecenlerHtml`, `eylemKarti`, `kartGoster`, `tersGoster`, `kartpostalAc`), `js/ogrenme.js` (`tanismaGerekirMi`, `tanismaEserleri`), `js/bolum.js` (`bolumEserleri`), `js/karsilastir.js` (`notlariAl`, `taninmaMetni`). Görünüş: `css/app.css` (`.soru-ust`, `.ince-cubuk.parcali`, `.soru-sahne`, `.soru-isik`, `.hale-nefes`, `.secenek`, `.alt-yaprak`, `.tanisma*`, `.gec-*`); ölçüler sitenin hesaplanmış stillerinden (Playwright, iPhone 15 Pro).
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/pekistir.js js/ogrenme.js js/bolum.js js/karsilastir.js css/app.css`
+- **Çekirdek** (`NoraCekirdek/Pekistir/`):
+  - `TurKaydi`: kart tanışması (karışık, dönem, hatalar; `ayarlar.tanisma === false` ise yok), konu turunun turdan önceki tanışmaları (`tanisma`, `tanismaGec`, `tanismaGeri`); gösterilenler o turda sorulmaz (`tanismaGorulen` → `PekistirmeKarti.hazirla(tanismadaGorulen:)`). Bölüm turu için de tanışma eserleri seçiliyor (`bolumEserleri`), ama bölüm işaretleri (`tanitimGoruldu`, grup) G5'e kaldı.
+  - `baskaEser` (en çok dört kez), `seviyeHaplari` / `seviyeSec`, kart başına `seviye`, `karisan`, `seviyeSonucu`, `akimCevabi`; turda `gecenler`, `sonResim`, `gorunenKonum` (cevaptan sonra sayaç aynı kartta kalır), `bitti`.
+  - **Sayaç:** eseri bulunamayan kart artık kuyruktan silinmiyor; site gibi atlanıp sayaçta kalıyor (`simdikiniAtla`).
+  - Yeni alanların hepsi isteğe bağlı: C1b'nin sakladığı yarım tur çözülüyor (`testEskiKayitCozulur`).
+  - `PekistirmeVerileri`: `tanima_notlari.json`, `ipucu` (`ipucuMetni`), `konu`, `kolaylikFn`. `CevapYazilari`: yaprak, tanışma ve özet metinleri.
+- **Ekran** (`Ekranlar/Calis/Pekistir/`):
+  - `TanismaGorunumu`: kartela, vitrin + şerit, görüntüleyici, Nasıl tanırım?, ileri düğmesi; konu turunda çentikler ve geri.
+  - `KartGorunumu`: üst satır, parçalı çubuk, seviye hapları, eserin ışığı ve hale, harfli şıklar, Bilmiyorum, görsel açılmazsa başka eser. Ters soru: levha, kartpostallar, büyük görünümde "Bu eser". Cevap yaprağı: sonuç, bilgi, ipucu (Devamı/Kısalt), karıştırılan ikili şeridi, Karşılaştır, Ayrıntılar (tekrar kutusu, seviye, kaynak), Sanatçı ve Sonraki.
+  - Tur özeti: x / n, not, seviye atlayan dönemler, Bir tur daha, Tuval'e dön. `PekistirmeOgeleri`: ortak parçalar (`PkEtiket` vb.; C4b ile ad çakışmasın diye önekli).
+- **Kâhin:** `Testler/kahin/pekistir_tanisma.mjs` → `Ornekler/pekistir/tanisma.json`: 60 durum, 464 adım (66 kart tanışması, 10 konu tanışması, 70 başka eser, atlanan kart, 19 seviye atlama, ısınma, ters). `PekistirTanismaTests` akışı `TurKaydi` ile yürütüyor: tanışma eserleri, tanışmadan sonra kart seçimi, başka eser, sayaç ve kuyruk, karıştırma sayısı, seviye sonucu, gecenler, rastgele sayıların sayısı, ilerlemenin yedi alanı sitenin yaptığıyla aynı. Kural bilerek bozulunca yakalıyor (`tanismaGorulen` verilmezse 17 kartta, eski `simdikiniAtla` ile atlanan kartta). Linux'ta 80 test geçiyor.
+- **Bilinçli farklar / kalan:**
+  - Karışık kartta site seviye ve karıştırma sayısını birinci soruda yazar; burada (C1a'dan beri) kart bitince tek yazmada gider, yaprak için önceden hesaplanır. Sonuç aynı.
+  - Tanışmadaki "Dinle" (okunuş, `dinleEkle`) ve hareketler (geç animasyonu, yaldız yaprakları, sayarak yazma) yok → Z3.
+  - "Sanatçı", "Karşılaştır" ve "Tuval'e dön" `Gezgin.shared.git` ile sitenin adresine gider. Çalış yerli olunca (C2) bu adresler yerli değilse pekiştirmeden çıkılmalı.
+  - Bölüm turunun sergisi ve `seviyeTamamHtml` (yıldızlar, madalyon) yalnız harita bölümünde; bölüm turu henüz menüde yok → **G5**.
+  - Kurs bölümü ve ikonografi turlarının yaprağı sade (sitede ayrı ekran, `js/ekranlar/soruTurlari.js`) → C2.
+  - `PekistirmeEkrani` kendisi `.sekmeCubuguGizli` çağırmaz (DEBUG'da `KabukDurumu` ortamda yok). Onu yerleştiren ekran (C2), sitedeki gibi tur sürerken çubuğu gizlemeli.
+- **CI:** d941528 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44883231600): çekirdek testleri, iOS derlemesi, simülatör adımları. Yeni görüntüler: `10a-pekistirme-ilk.png` (tanışma), `10-pekistirme.png` (kart), `10c-pekistirme-yaprak.png` (yanlış şıktan sonra yaprak; açılışlar arası aynı tur sürüyor, yarım tur da sınanmış oluyor), `10s-site-pekistirme.png` (aynı adreste sitenin turu). Sitenin Playwright görüntüleriyle (tanışma, kart, yaprak) yan yana bakıldı: düzen, yazı tipleri, renkler, şıklar, yaprak ve tanışma düğmesi aynı. Düzeltilen: tanışma düğmesinin halkası taşıyordu.
+- **Telefonda:** README'deki C1c maddesi (`-ekran pekistir`). Çalış henüz yerli değil; telefonda değişen bir şey yok.
+
+**Denetim (C1c):** Claude, 2026-11-21 — **onay** ([PR #14 yorumu](https://github.com/emrymn/nora-sanat/pull/14#issuecomment-7060261746)). Linux'ta 85 test geçti (main ile birlikte). `pekistir_tanisma.mjs` canlı sitede yeniden çalıştırıldı: çıktı örnekle aynı (yalnız `olusturma` zaman damgası). CI görüntülerinde tanışma, kart ve yaprak sitenin düzeninde. Küçük eksik: tanışmadaki okunuş satırı (`IPA`) da yok, "Dinle" ile birlikte Z3'te.
 
 ### G2 · Galeri (ChatGPT)
 **Site kaynakları:**
@@ -476,6 +500,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Kâhin: `node Testler/kahin/galeri.mjs <site-deposu>`; argümansız çalıştırıldığında Playwright ile canlı siteyi kullanır. `GaleriTests` aynı katalogda arama gruplarını, sıraları, birleşen akım bilgisini, kapakları, dörtlüleri, konuları ve eser eşleşmelerini denetler.
 - Telefonda Debug: `-yerliSekme galeri -adres "#/gozat"`. Çarkı kaydır, açık salonda sanatçıya gir, ikinci eseri açıp kalbe dokun. Koleksiyonum'da aynı eseri açıp kalbi kaldır ve duvara dön. Aramada Türkçe ve özgün eser adını dene. CI: `-galeriSayfa "#/gozat"` ile gerçek yerli kabukta `galeri.png`; OCR açık salonun giriş düğmesini doğrular, `4-url-calis` son görüntüdür.
 - G3 için: Galeri’nin tamamını etkinleştirme kararı G3 sonunda. Başyapıt arama sonucu yakın okuma içeriğine bağlanır. G3 kendi liste ve yakın okuma ekranlarını getirince bu hedef ortaklaştırılabilir. Galeri üst şeridindeki Başyapıtlar ve Zaman, G3/G5 bağlanana kadar sitenin okuma sayfasını açar.
+
+**Denetim (G2):** Claude, 2026-11-21 — **davranış onay; görünüş G2b'ye** ([PR #11 yorumu](https://github.com/emrymn/nora-sanat/pull/11#issuecomment-7060261876)). `swift test` geçti. `galeri.mjs` hem site deposuyla hem canlı sitede çalıştırıldı: çıktı örnekle birebir aynı (canlı kip `playwright-core` arıyordu, `playwright` yapıldı). Görünüş sitedekinden belirgin farklı (çark kartı, yazılar, salon/konu/sanatçı sayfaları çoğunlukla iOS listeleri; CI'da yalnız çark görüntüsü). Galeri yerli olmadığı için telefonda değişen yok. GaleriKatalogu'ndaki temsil kopyaları G2b'de `Temsil.swift`'e geçmeli.
 
 ### C2 · Çalış ana ekranı (ChatGPT)
 **Site kaynakları:** `js/ekranlar/calisma.js`, `js/deste.js`.
@@ -551,7 +577,47 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Karşılaştırma görüntüsü: CI'da aynı adreste sitenin (`-yalnizSite`) ve yerli ekranın görüntüsü yan yana alınsın.
 - Bitince `Gecis.tasinanlar = BenGecisi.sekmeler`; ama T4 bitmeden değil.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · PR #13 · dal `claude/happy-euler-f36zti` (oturumun zorunlu dalı). C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/ilerleme.js`: `ilerlemeSayfasi`, `parcalar`, `eserDuvari`, `siradakiKonuHtml`, `kursBolumleriHtml`, `konuKarti`, `kitapKapagi`, `karisanlarBolumu`, `tanisKartiHtml`, `konuIsaretle`
+  - `js/ekranlar/calisma.js`: `takvimHtml`, `oranGrafigi`, `yukGrafigi`, `koleksiyonBagi`
+  - `js/ekranlar/pano.js`: `seviyeIziHtml`, `kutuPipHtml`; `js/ekranlar/ortak.js`: `ust`, `etiket`, `tabloDugme`, `akimNoktasi`
+  - `js/ekranlar/ayarlar.js`: `ayarlarSayfasi` ve bölümleri (sıra, yazılar); `js/tasarim.js`: `YOLLAR` (geri, ileri, işaret, kilit, doğru, karşılaştır, kapat, hareket, mühür, kum saati), `pgDisk`
+  - `css/app.css`: `.ilr-*`, `.duvar*`, `.etiket`, `.bolum-baslik`, `.ust*`, `.calisma-takvim`, `.tk`, `.grafik*`, `.satir`, `.siradaki*`, `.isle-ince`, `.kilitli-kare`, `.kurs-kip`, `.salon-raf*`, `.destek`, `.kitap*`, `.konu-karti*`, `.konu-portre`, `.akim-kart*`, `.cevapsiz-akimlar`, `.hatalar-satir`, `.zayif-*`, `.kutu-pip`, `.sv-iz`, `.secim-hap`, `.tanis-*`, `.eser-dugme`/`.ed-*`, `.ayar`, `.parcali`, `.adimlayici`, `.konu`, `.anahtar`, `.dugme`, `.dugme.ince`, `.pg-disk`
+  - Ölçüler canlı sitenin **hesaplanmış** stillerinden alındı (Playwright, 393 pt, Gece; css dosyasında aynı seçici birkaç kez eziliyor, son değer geçerli).
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/ilerleme.js js/ekranlar/calisma.js js/ekranlar/pano.js js/ekranlar/ayarlar.js js/ekranlar/ortak.js js/tasarim.js css/app.css`
+- **Yapılanlar** (hepsi `NoraSanat/Ekranlar/Ben/`):
+  - `BenGorunusu.swift`: ortak parçalar. `BenSimge`/`BenIkon` (sitenin SVG'leri), `Etiket` (11 px, 0.2em, Türkçe büyük harf), `BolumBasligi`, `BenUst` (yuvarlak geri, 48 px başlık, sağ düğme), `YuvarlakDugme`, `Ayrac`, `HapDugme` (`.dugme` / `ince`), `PigmentDisk`, `ParcaliSecim`, `AnahtarBicimi` (`.anahtar`; konu kartında mürekkep renkli), `AnahtarYazisi`, `KucukHap`, `OranCubugu`, `KutuPip`, `SeviyeIzi`, `AkimNoktasi`, `AyarBolumu`, `AyarAciklamasi`.
+  - `BenSekmesi.swift`: `List` yerine `ScrollView`. Sahne (kayan `EserDuvari`, üst, pano, `TabloDugme` "Tekrar bekliyor"), sonra takvim, grafikler, Koleksiyonum / Ayarlar satırları, sıradaki konu, kitaplık, akımlar, zayıflar. Ayarlar sitedeki gibi ayrı sayfa (yandan kayar). Açık sekmeye yeniden dokunma başa kaydırır, Ayarlar'dan Ben'e döner.
+  - `BenGrafikler.swift`: `CalismaTakvimi` (7×12, akım renkli kare, bugün çerçeveli), `CalismaEgrileri` (sitenin SVG'leri `Canvas`'la aynı ölçüde), `BenSatiri`.
+  - `BenKitaplik.swift`: `SiradakiKonu` (kilitli kareler, dolan "İşlendi yap"), `KursKitapligi` (kip, bölüm rafı, Roma rakamı, halka, kitaplar; sıradaki kitaba kayar), `KonuKarti` (portreler, İşlendi anahtarı, "1–n arası hepsi işlendi").
+  - `BenAkimlar.swift`: `AkimBolumu` (resimli kartlar, seviye etiketi, Sırayla/Zayıf önce, cevapsız haplar), `ZayifBolumu` (karıştırılanlar, Hatalarım turu, zayıflar), `TanisKarti` (Ö6; C4'te yoktu), `AkisDuzeni`.
+  - `BenAyarlari.swift` + `BenAraclari.swift` + `BenCevrimdisi.swift`: sitenin sırası ve yazıları. Değişken yazılar (günün sanatçısı, sürüm, yenilikler, hata sayısı, elle odaklar, yürüyüş sayısı, eğim izni, gündüz rengi örnekleri) sitenin modüllerinden tek betikle okunuyor (`AyarBilgisi.betik`). Çevrimdışı bölüm sitede varsa görünür (artık açılır kapanır değil).
+  - `BenDeposu.yap/degistir(bitti:)`: işlemden sonra yeni ilerlemeyle çağrılır (Tanış kartı için).
+  - Davranış, köprü betikleri (`benYedekAl`, `benGeriYukle`, `benGelistirici`) ve kâhin C4'teki gibi; `ben.mjs` değişmedi.
+- **Ortak dosyalarda küçük değişiklikler:**
+  - `Kabuk/Gecis.swift`: `tasinanlar = BenGecisi.sekmeler` (**Ben artık yerli**; DEBUG `-yalnizSite` site). `KabukDurumu.dilGizle(_:sekme:)` / `dilGorunur` (T4'ün önerisi).
+  - `Kabuk/YerliSekmeCubugu.swift`: dil `dilGorunur` değilse gizli.
+  - `NoraSanatApp.swift` (DEBUG): `BenKarsilastirma.siteyiKaydir()`.
+- **CI karşılaştırması:** `-benKaydir kurs|akim|yedek` (DEBUG) yerli ekranı ve siteyi (`-yalnizSite`) aynı bölüme kaydırır; yerli ekran hazır olunca `tmp/ben-hazir` yazar. CI her biri için `site-*.png`, `ben-*.png` ve ikisinin birleşimi `yan-yana-*.png` üretir (solda site, sağda yerli): ilerleme, ilerleme-kurs, ilerleme-akim, ayarlar, ayarlar-yedek.
+- **Denetim düzeltmeleri (PR #13 yorumları):**
+  1. Küçük görsel kuralı: `katalog.eserler(id).first` yerine sitenin `enBilinen` kuralı. Çekirdek `SiteVerisi/Temsil.swift`: `Temsil.disi` (`TEMSIL_DISI`), `olabilir` (`temsilOlabilir`), `enBilinen`, `kucukGorsel`, `bilinirlikSirasi`, `siradaki` (`eserKareleriDoldur`); `SiteKatalogu.kucukGorselAdresi` / `eserGorselAdresi`. Kitap kapakları, portreler, sıradaki konunun kareleri, Tanış kartı, zayıflar, akım kartları ve eser duvarı bunu kullanıyor; "Tekrar bekliyor" yelpazesi bilinirlik sırasıyla 0–2. eser, zemin `3 + gün % 7`.
+     Kâhin `Testler/kahin/temsil.mjs` → `Ornekler/temsil/cevaplar.json` (155 sanatçı; 43'ünde site ilk eseri değil başka bir eseri seçiyor; 25 "kötü görsel" durumu; Berlinghieri'nin temsil dışı panosu). `TemsilTests` (5 test).
+  2–4. Ayarlar: başlık 40 px (`.ust h1`; Ben'de 48). Bodoni Moda'nın kendi satır yüksekliği 1.525 em, sitede CSS `line-height` 1.2 → `cssSatir(aile, boyut, satir)` ile satır yükseklikleri CSS'e eşitlendi (ayar başlığı 26.4, açıklama 19.5 + 7.2 boşluk, anahtar yazıları 20.25 / 16.875). Gündüz rengi kutuları 72 pt, 13 px. "Nötr kâğıt" örneği sitedeki gibi iki renkli (`.renk-ornek.notr`). Yazı boyutu açıklaması vardı ama sekme çubuğunun altında kalıyordu; ölçek düzelince görünür.
+- **CI:** 84e605e yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44884426437); son ince ayar commit'i sonrası yeniden koşar.
+  - İlk koşular: `UIFont.TextStyle.caption` yok (`.caption1`); Ayarlar'da yerli koddan çağrılan `izinVarMi()` iOS hareket izni penceresini açıp ekranı kapattı → betikten çıkarıldı.
+  - `yan-yana-*.png` beşine de bakıldı: Ben'in başı, kitaplık, akımlar, Ayarlar ve Yedek bölümleri sitedekiyle aynı düzende, aynı yazı tipleri ve renklerde. Büyük rakamın boşluğu ve Ayarlar açıklamalarının satır aralığı sonradan sıkılaştırıldı.
+  - Bilinen küçük farklar: bazı kitap kapakları sitedekinden farklı eser (kapak dosyası yoksa ilk sanatçının en bilinen eseri; site aynı kuralı izliyor ama eser sırası farklı olabilir); "Nötr kâğıt" örneği düz daire (sitede ikiye bölünmüş); duvarın eserleri farklı (sitede sıra rastgele kayıyor).
+- **Kalan / sonraki işler için:**
+  - Sitedeki giriş hareketleri (kitapların rafa dizilmesi, sayıların sayarak gelmesi, kitap parıltısı, sıradaki konunun kayarak gelmesi) yok; yalnız duvar kayması, İşlendi dolması, kart açılması ve Tanış kartı hareketli. Z3'te.
+  - Sitede işaretlemeden sonra çıkan kısa bildirimler (`bildir`: "Açıldı: …") yok (C4'te de yoktu).
+  - Ayarlar'daki iletiler sitedeki gibi bölümün altında değil, iOS uyarısıyla (C4'teki gibi).
+  - Gündüz'de pano kartı ve gölgeler yaklaşık; CI görüntüleri yalnız Gece.
+- **Tuzaklar:**
+  - Ayarlar açılınca gizli site `#/ayarlar`'a gider (çevrimdışı indirme durumu sitenin sayfasından okunuyor). Bu yüzden yerli Ben'in adresi de `#/ayarlar` olur; sorun değil, ama C5'te indirme Swift'e geçince bu kalkmalı.
+  - `EserDuvari` `TimelineView` ile döner; Ben seçili değilken, Ayarlar açıkken ve hareket azaltılmışken durur.
+
+**Denetim (C4b):** Claude, 2026-11-21 — **onay, düzeltmelerden sonra** ([1](https://github.com/emrymn/nora-sanat/pull/13#issuecomment-7059887616), [2](https://github.com/emrymn/nora-sanat/pull/13#issuecomment-7060050613)). İlk CI kırmızıydı: Ayarlar açılışta `izinVarMi()` çağırıp iOS hareket izni penceresini açıyordu (C4b oturumu düzeltti). İstenen: küçük görseller sitenin `enBilinen` kuralıyla (`Temsil.swift`, `temsil.mjs` canlı sitede yeniden çalıştırıldı, 155 sanatçı aynı), yazı boyutu açıklaması, nötr kâğıt diski, Ayarlar ölçüleri. Son CI'ın yan yana görüntülerinde Ben, kitaplık, akımlar ve Ayarlar sitedekiyle aynı. **Ben, telefonda ilk yerli sekme.**
 
 ### T4 · Yerli sekme çubuğu sitenin çubuğu gibi (Claude)
 - `KokGorunum`'un yerli çubuğu sitenin yüzen, yuvarlak köşeli çubuğuna benzesin: aynı simgeler (SVG'den), aynı yerleşim, Çalış rozeti.
