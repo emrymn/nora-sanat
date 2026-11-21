@@ -226,9 +226,7 @@ struct BasyapitListesi: View {
     /// `.by-duvar.ritim`: iki sütun (12 / 20 aralık); 5n+1. kart iki sütun genişliğinde, 16:10 kapakla
     private func ritim(_ l: [Basyapit]) -> some View {
         // satırlar: [0] geniş, [1, 2], [3, 4], [5] geniş, …
-        let satirlar: [[Basyapit]] = stride(from: 0, to: l.count, by: 5).flatMap { i -> [[Basyapit]] in
-            [[l[i]]] + stride(from: i + 1, to: min(i + 5, l.count), by: 2).map { Array(l[$0..<min($0 + 2, i + 5, l.count)]) }
-        }
+        let satirlar = Self.ritimSatirlari(l)
         return VStack(alignment: .leading, spacing: 20) {
             ForEach(Array(satirlar.enumerated()), id: \.offset) { _, s in
                 if l.firstIndex(of: s[0]).map({ $0 % 5 == 0 }) == true {
@@ -241,6 +239,24 @@ struct BasyapitListesi: View {
                 }
             }
         }
+    }
+
+    /// Beşli öbekler: ilki tek (geniş), kalan dördü ikişer
+    private static func ritimSatirlari(_ l: [Basyapit]) -> [[Basyapit]] {
+        var satirlar: [[Basyapit]] = []
+        var i = 0
+        while i < l.count {
+            let oge = l[i]
+            if i % 5 == 0 {
+                satirlar.append([oge])
+                i += 1
+            } else {
+                let son: Int = min(i + 2, l.count, (i / 5 + 1) * 5)
+                satirlar.append(Array(l[i..<son]))
+                i = son
+            }
+        }
+        return satirlar
     }
 
     // MARK: Kart
