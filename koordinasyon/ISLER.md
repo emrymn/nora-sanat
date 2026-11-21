@@ -151,9 +151,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
-| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bekliyor |
+| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
+| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bekliyor |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
+| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bekliyor |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 
@@ -162,7 +164,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Bugün: G4
 - Yolculuk: G5
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3
-- Ben/Ayarlar: C4
+- Ben/Ayarlar: C4 + C4b (görünüş)
+- Herhangi bir sekme yerli olmadan önce: T4 (yerli sekme çubuğu)
 
 ---
 
@@ -449,6 +452,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Seviye atlayınca gösterim (`seviyeTamamHtml`).
 - **Tur özeti.** Sitedeki gibi: oran, sergi, geçilen seviyeler.
 - **Sayaç.** Eseri bulunamayan kart sitede `ilerle` ile atlanır ve sayaçta kalır; `simdikiniAtla` kartı kuyruktan siliyor. Sayaç sitedeki gibi olmalı.
+- **Görünüş (K5).** Kart ve cevap yaprağı sitenin kartına benzesin: tipografi, kart çerçevesi, şık düğmeleri, ilerleme çubuğu. CI'da aynı turun sitedeki görüntüsüyle yan yana karşılaştır.
 - Kâhin: tanışma eserleri ve `tanismadaGorulen` ile kart seçimi `pekistir_turlari.mjs` kalıbıyla.
 
 **Devir notu:** –
@@ -509,6 +513,43 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Akım doğruluk çubukları, en zayıflar.
 - Bütün ayarlar.
 - Yedekle ve geri yükle: **sitenin JSON biçimiyle aynı**, eski yedekler çalışmalı.
+
+**Devir notu:** ChatGPT, 2026-11-21 — PR #10, `is/C4-ben`.
+- Kaynak: `sanat-atlasi` @ `a866b86`; `js/ekranlar/{ilerleme,pano,ayarlar,hizliAyar}.js`, `js/{depo,devam,kurs,gunduzRenk,rozet,yenilikler}.js`.
+- Ben yerli sekmedir. İlerleme kurs konularını ve toplu işaretlemeyi, açık sanatçıları, kalıcıları, vadeyi, çalışma geçmişini, akım doğruluklarını, zayıfları ve karıştırılanları gösterir. Normal okumalar ve değişiklikler T2 köprüsünden geçer; renkler ve yazılar T3 temasındandır.
+- Ayarlar günlük kart, tanışma, tema, gündüz rengi, yazı boyutu, hareket, rozet, eğim, titreşim, günün sanatçısı, geliştirici modu ve cihaz araçlarını içerir. C5'e kadar çevrimdışı görsellerin indirme, durdurma ve silme işlemleri mevcut site deposunda yürür.
+- Yedek panoya veya JSON dosyasına alınır. Yapıştırılan ya da dosyadan seçilen eski/yeni yedeği sitenin `yedekCoz` işlevi doğrular. Konu ve skor sayıları gösterilip onay alınır. Onaydan beri kayıt değişmişse geri yükleme durur. Yarım oturum da sitenin doğrulamasından ve IndexedDB yolundan geçer.
+- `Testler/kahin/ben.mjs` geçici tarayıcı profilinde gerçek siteyi çalıştırır. Pano, zayıf sırası, konu/ayar değişiklikleri, eski ve zarflı yedek, yarım oturum, hatalı JSON yapısı, çakışma ve geliştirici modundan dönüş sınanır. `BenTests` aynı örnekleri Swift kurallarına uygular.
+- Telefonda: Ben'den bir konuyu işaretle; Ayarlar'dan gündüz rengini değiştir. Yedek al, bir ayarı değiştir, yedeği denetle ve onayla; önceki ayar ve konu sayısı geri gelmeli. DEBUG: `-adres "#/ilerleme"` veya `-adres "#/ayarlar" -benSayfa ayarlar`. CI görüntüleri: `ben-ilerleme.png`, `ben-ayarlar.png`. T2'nin web görüntüsü ayrı alınır ve `4-url-calis` en sondadır.
+
+**Denetim (C4):** Claude, 2026-11-21 — **onay; Ben henüz yerli değil, görünüş C4b'ye** (PR #10 yorumu).
+- Paket testleri geçti.
+- `ben.mjs` canlı sitede çalıştırıldı, cevaplar aynı. Kâhin Swift dosyasındaki yedek, geri yükleme ve geliştirici betiklerini sitenin içinde gerçekten çalıştırıyor.
+- Geri yükleme güvenli: yedeği sitenin `yedekCoz`'u çözüyor, onaydan beri `kayitNo` değiştiyse duruyor.
+- **Görünüş K5'e uymuyor.** CI görüntülerinde Ben standart iOS listesi: sistem başlığı, sitenin kolajı, büyük rakamları ve tipografisi yok. Telefonda Ben'e her girişte görünür bir gerileme olurdu.
+  - Bu yüzden `Gecis.tasinanlar` boş kaldı; yerli Ben yalnız DEBUG `-yerliSekme ben` ile açılıyor (CI görüntüleri böyle alınıyor).
+  - Görünüş **C4b**'de düzeltilecek.
+- Yerli sekme çubuğu (T3) sitenin yüzen çubuğuna benzemiyor → **T4** (Claude). Hiçbir sekme T4'ten önce yerli olmaz.
+
+### C4b · Ben: görünüş sitedeki gibi (ChatGPT)
+**Site kaynakları:** `js/ekranlar/{ilerleme,pano,ayarlar}.js`, `css/app.css` (Ben ve ayarlar bölümleri), sitede `TASARIM_DILI.md`.
+
+**Yapılacaklar:**
+- C4'ün ekranları (`NoraSanat/Ekranlar/Ben/`) sitenin Ben ve Ayarlar sayfalarına benzesin:
+  - üstte eser kolajı;
+  - "Kursun neresindesin" büyük serif rakamlar;
+  - Sanatçı / Kalıcı / Tekrar sütunları;
+  - son 12 hafta ızgarası;
+  - bölüm başlıkları sitenin küçük büyük harfli etiketleri gibi.
+- Yazılar `Yazi.serif/sans/okuma`, renkler `TemaDeposu`.
+- Karşılaştırma görüntüsü: CI'da aynı adreste sitenin (`-yalnizSite`) ve yerli ekranın görüntüsü yan yana alınsın.
+- Bitince `Gecis.tasinanlar = BenGecisi.sekmeler`; ama T4 bitmeden değil.
+
+**Devir notu:** –
+
+### T4 · Yerli sekme çubuğu sitenin çubuğu gibi (Claude)
+- `KokGorunum`'un yerli çubuğu sitenin yüzen, yuvarlak köşeli çubuğuna benzesin: aynı simgeler (SVG'den), aynı yerleşim, Çalış rozeti.
+- Siteden yerliye geçişte çubuk yerinde kalıyormuş gibi görünsün.
 
 **Devir notu:** –
 

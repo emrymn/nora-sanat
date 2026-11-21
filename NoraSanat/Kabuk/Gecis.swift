@@ -12,6 +12,8 @@ import SwiftUI
 ///   `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`'tedir.
 enum Gecis {
     /// Swift'e taşınmış sekmeler
+    /// Ben C4'te yazıldı ama görünüşü henüz sitedeki gibi değil (K5); C4b bitince buraya `BenGecisi.sekmeler` gelir.
+    /// O zamana kadar yerli Ben yalnız DEBUG'da: `-yerliSekme ben`.
     static let tasinanlar: Set<Sekme> = []
 
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
