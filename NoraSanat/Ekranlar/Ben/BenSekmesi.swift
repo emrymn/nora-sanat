@@ -241,7 +241,12 @@ struct BenSekmesi: View {
             if p.vade > 0 {
                 TabloDugme(baslik: "Tekrar bekliyor", alt: "karışık turu başlat", sayi: p.vade,
                            eserler: il.sonCalisilanlar.first.map { id in
-                               k.eserler(id).prefix(4).map { k.gorselAdresi($0, genislik: 400, kotuler: il.kotuGorseller) }
+                               // `eserKareleriDoldur`: yelpaze 0–2, zemin `zeminSirasi()` (3 + güne göre 0–6)
+                               // Eseri olmayan sanatçıda yelpaze çıkmaz (sitede tuval dolmadan görünmez)
+                               k.eserGorselAdresi(id, sira: 0, kotuler: il.kotuGorseller) == nil ? [] :
+                               [0, 1, 2, 3 + (GunTarihi.gunNo(depo.bugun) ?? 0) % 7].map {
+                                   k.eserGorselAdresi(id, sira: $0, genislik: 400, kotuler: il.kotuGorseller)
+                               }
                            } ?? []) { git("#/pekistir/karisik", .calis) }
                     .padding(.top, 16)
             }

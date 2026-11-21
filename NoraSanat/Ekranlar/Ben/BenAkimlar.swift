@@ -69,7 +69,7 @@ struct AkimBolumu: View {
                    a.kalici > 0 ? "\(a.kalici) kalıcı" : ""].filter { !$0.isEmpty }.joined(separator: " · ")
         let tl = il.acikSanatcilar(katalog.sanatcilar).filter { $0.akim == a.id }
         let tm = tl.first { $0.kaynak == "kurs" } ?? tl.first
-        let resim = tm.flatMap { katalog.eserler($0.id).first }.flatMap { katalog.gorselAdresi($0, genislik: 500, kotuler: il.kotuGorseller) }
+        let resim = tm.flatMap { katalog.kucukGorselAdresi($0.id, genislik: 500, kotuler: il.kotuGorseller) }
         return Button { ac(a.id) } label: {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {

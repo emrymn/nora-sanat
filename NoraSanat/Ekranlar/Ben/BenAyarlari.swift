@@ -107,7 +107,7 @@ struct BenAyarlari: View {
         ScrollViewReader { kaydir in
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                BenUst(baslik: "Ayarlar", geri: geri)
+                BenUst(baslik: "Ayarlar", boyut: 40, geri: geri)
                     .padding(.top, 12).padding(.bottom, 10)
                 if let il = depo.il { ayarlar(il) }
                 yedekle.id("yedek")
@@ -358,9 +358,18 @@ struct BenAyarlari: View {
                 Circle().strokeBorder(Color(p[2]), lineWidth: 2).padding(-2)
                 Circle().strokeBorder(Color(p[3]), lineWidth: 1).padding(-3)
             } else {
-                // `.renk-ornek.notr`: kâğıt rengi
-                Circle().fill(Color(RGBA(css: "#efe9de")!))
-                Circle().strokeBorder(Color(tema.renkler.kenar), lineWidth: 1).padding(-1)
+                // `.renk-ornek.notr`: linear-gradient(135deg, #4c463f 0 50%, #ece8e1 50% 100%),
+                // box-shadow 0 0 0 2px #f7f5f1, 0 0 0 3px #d6d0c6
+                Circle().fill(Color(RGBA(css: "#ece8e1")!))
+                Circle().fill(Color(RGBA(css: "#4c463f")!)).mask(
+                    GeometryReader { g in
+                        Path { y in
+                            y.move(to: .zero); y.addLine(to: CGPoint(x: g.size.width, y: 0))
+                            y.addLine(to: CGPoint(x: 0, y: g.size.height)); y.closeSubpath()
+                        }
+                    })
+                Circle().strokeBorder(Color(RGBA(css: "#f7f5f1")!), lineWidth: 2).padding(-2)
+                Circle().strokeBorder(Color(RGBA(css: "#d6d0c6")!), lineWidth: 1).padding(-3)
             }
         }
         .frame(width: 26, height: 26)

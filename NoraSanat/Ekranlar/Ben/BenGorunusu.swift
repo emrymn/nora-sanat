@@ -50,6 +50,27 @@ enum BenOlcu {
 
 private let turkce = Locale(identifier: "tr_TR")
 
+extension Yazi.Aile {
+    /// Yazı tipinin kendi satır yüksekliği (hhea: (ascent − descent + lineGap) / unitsPerEm). SwiftUI satırı bununla
+    /// çizer; sitede ise CSS `line-height` geçerli. Bodoni Moda 2250/−800/2000, Archivo 878/−210/1000, Newsreader 1470/−530/2000.
+    var satirOrani: CGFloat {
+        switch self {
+        case .serif: return 1.525
+        case .sans: return 1.088
+        case .okuma: return 1.0
+        }
+    }
+}
+
+extension View {
+    /// CSS `line-height`'ı uygular: satır arası ve ilk/son satırın yarım boşluğu sitedeki gibi olur
+    /// (ör. `.ayar > b`: 22 px Bodoni, 26.4 px satır → yazının üstü ve altı 3.6 pt daralır).
+    func cssSatir(_ aile: Yazi.Aile, _ boyut: CGFloat, _ satir: CGFloat) -> some View {
+        let fark = satir - boyut * aile.satirOrani
+        return lineSpacing(max(0, fark)).padding(.vertical, fark / 2)
+    }
+}
+
 // MARK: Yazılar
 
 /// `.etiket`: 600 11px Archivo, 0.2em aralık, büyük harf, `--ink-2`
@@ -92,6 +113,8 @@ struct BolumBasligi: View {
 struct BenUst<Sag: View>: View {
     let baslik: String
     let geri: () -> Void
+    /// Ben'de 48 (`.pk-ust .ust h1`), Ayarlar'da 40 (`.ust h1`); ikisinde de `line-height: 1`
+    var boyut: CGFloat = 48
     @ViewBuilder var sag: Sag
     @Environment(TemaDeposu.self) private var tema
 
@@ -101,7 +124,8 @@ struct BenUst<Sag: View>: View {
                 .buttonStyle(YuvarlakDugme())
                 .accessibilityLabel("Geri")
             Text(baslik)
-                .font(Yazi.serif(48, stil: .largeTitle))
+                .font(Yazi.serif(boyut, stil: .largeTitle))
+                .cssSatir(.serif, boyut, boyut)
                 .foregroundStyle(Color(tema.renkler.murekkep))
                 .shadow(color: Color(tema.renkler.zemin).opacity(0.6), radius: 12, y: 2)
                 .lineLimit(1).minimumScaleFactor(0.6)
@@ -116,8 +140,8 @@ struct BenUst<Sag: View>: View {
 }
 
 extension BenUst where Sag == EmptyView {
-    init(baslik: String, geri: @escaping () -> Void) {
-        self.init(baslik: baslik, geri: geri) { EmptyView() }
+    init(baslik: String, boyut: CGFloat = 48, geri: @escaping () -> Void) {
+        self.init(baslik: baslik, geri: geri, boyut: boyut) { EmptyView() }
     }
 }
 
@@ -223,13 +247,15 @@ struct ParcaliSecim<Deger: Hashable>: View {
                 let s = secenekler[i]
                 let acik = s.deger == secili
                 Button { sec(s.deger) } label: {
+                    // `.gunduz-renkleri span`: 72 yükseklik, 8/4 dolgu, 6 aralık, 13 px
                     VStack(spacing: 6) {
                         if let ornek { ornek(s.deger) }
-                        Text(s.ad).font(Yazi.sans(14, agirlik: acik ? 700 : 500, stil: .subheadline))
+                        Text(s.ad).font(Yazi.sans(ornek == nil ? 14 : 13, agirlik: acik ? 700 : 500, stil: .subheadline))
                             .lineLimit(1).minimumScaleFactor(0.8)
                     }
+                    .padding(.vertical, ornek == nil ? 0 : 8).padding(.horizontal, 4)
                     .foregroundStyle(Color(r.murekkep))
-                    .frame(maxWidth: .infinity, minHeight: ornek == nil ? 48 : 64)
+                    .frame(maxWidth: .infinity, minHeight: ornek == nil ? 48 : 72)
                     // seçili: `--surface` üstünde `--vurgu` (%55 Gece; sitede color-mix)
                     .background(RoundedRectangle(cornerRadius: ornek == nil ? 24 : 14, style: .continuous)
                         .fill(Color(r.yuzey))
@@ -294,7 +320,9 @@ struct AnahtarYazisi: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(baslik).font(Yazi.sans(15, agirlik: 600)).foregroundStyle(Color(tema.renkler.murekkep))
+                .cssSatir(.sans, 15, 20.25)
             Text(aciklama).font(Yazi.sans(12.5, stil: .footnote)).foregroundStyle(Color(tema.renkler.murekkep2))
+                .cssSatir(.sans, 12.5, 16.875)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -410,6 +438,7 @@ struct AyarBolumu<Icerik: View>: View {
             VStack(alignment: .leading, spacing: 0) {
                 if let baslik {
                     Text(baslik).font(Yazi.serif(22)).foregroundStyle(Color(tema.renkler.murekkep))
+                        .cssSatir(.serif, 22, 26.4)
                         .padding(.bottom, 4)
                         .accessibilityAddTraits(.isHeader)
                 }
@@ -429,9 +458,10 @@ struct AyarAciklamasi: View {
     init(_ metin: String) { self.metin = metin }
     @Environment(TemaDeposu.self) private var tema
     var body: some View {
-        Text(metin).font(Yazi.sans(13, stil: .footnote)).lineSpacing(3.5)
+        Text(metin).font(Yazi.sans(13, stil: .footnote))
+            .cssSatir(.sans, 13, 19.5)
             .foregroundStyle(Color(tema.renkler.murekkep2))
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.vertical, 3)
+            .padding(.vertical, 7.2)
     }
 }

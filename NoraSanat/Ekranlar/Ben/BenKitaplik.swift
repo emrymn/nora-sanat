@@ -23,9 +23,9 @@ struct KursBilgisi {
         return l.filter { $0.kaynak == "kurs" } + l.filter { $0.kaynak != "kurs" }
     }
 
-    /// Sanatçının en bilinen eserinin küçük görseli (`data-kucuk`)
+    /// Sanatçının en bilinen eserinin küçük görseli (`data-kucuk` → `enBilinen`; NoraCekirdek `Temsil`)
     func kucuk(_ id: String, genislik: Int = 400) -> URL? {
-        katalog.eserler(id).first.flatMap { katalog.gorselAdresi($0, genislik: genislik, kotuler: il.kotuGorseller) }
+        katalog.kucukGorselAdresi(id, genislik: genislik, kotuler: il.kotuGorseller)
     }
 
     /// `kitapKapagi`: konunun kapak dosyası; yoksa ilk sanatçısının en bilinen eseri
