@@ -23,7 +23,9 @@ jobs:
         run: xcodebuild -version
 
       - name: Çekirdek testleri (site verisi, ilerleme, kabuk, günün tablosu, hatırlatma planı)
-        run: swift test --package-path Paketler/NoraCekirdek
+        run: |
+          cp NoraSanat/Ekranlar/Calis/Pekistir/PekistirmeEkranAkisiTests.swift Paketler/NoraCekirdek/Tests/NoraCekirdekTests/
+          swift test --package-path Paketler/NoraCekirdek -Xswiftc -DPEKISTIRME_TESTI
 
       - name: Köprü betiği testleri (tekrar takvimi)
         run: node --test Testler/tekrarTakvimi.test.mjs
