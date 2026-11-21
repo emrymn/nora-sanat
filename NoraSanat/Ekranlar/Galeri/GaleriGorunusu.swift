@@ -346,8 +346,7 @@ struct GaleriSatir: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(kilitli)
-        .opacity(kilitli ? 0.7 : 1)
+        .allowsHitTesting(!kilitli)
     }
 }
 

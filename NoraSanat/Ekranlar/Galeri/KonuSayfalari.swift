@@ -350,7 +350,13 @@ struct KonuSayfasi: View {
                     Text(konu.ozet).font(Yazi.serif(22, italik: true, stil: .title2)).cssSatir(.serif, 22, 30.8)
                         .foregroundStyle(Color(r.murekkep))
                         .fixedSize(horizontal: false, vertical: true)
-                        .padding(.top, 18).padding(.top, 26)
+                        .padding(.top, 18)
+                        // `::before`: 64 px “ işareti, `--vurgu-acik` %70
+                        .overlay(alignment: .topLeading) {
+                            Text("\u{201C}").font(Yazi.serif(64)).foregroundStyle(Color(r.vurguAcik, 0.7))
+                                .offset(x: -4, y: -14 - 10).accessibilityHidden(true)
+                        }
+                        .padding(.top, 26)
                 }
                 hikaye
                 if !konu.tanima.isEmpty { tanima(eserler) }
@@ -372,13 +378,16 @@ struct KonuSayfasi: View {
         }
     }
 
-    /// `.konu-sahne`: 408 px kapak, sağ üstte künye hapı, sağ altta büyüt; alttan zemine silinir
+    /// `.konu-sahne { height: min(62vh, 520px) }`
+    private var sahneYuksekligi: CGFloat { min(520, UIScreen.main.bounds.height * 0.62) }
+
+    /// `.konu-sahne`: kapak, sağ üstte künye hapı, sağ altta büyüt; alttan zemine silinir
     @ViewBuilder private func sahne(_ kapak: Eser?, _ eserler: [Eser]) -> some View {
         let r = tema.renkler
         if let kapak {
             Button { eylem.ac(eserler, eserler.firstIndex(of: kapak) ?? 0) } label: {
                 ZStack(alignment: .topTrailing) {
-                    resim.gorsel(kapak, 1000).frame(height: 408.6).clipped()
+                    resim.gorsel(kapak, 1000).frame(height: sahneYuksekligi).clipped()
                     LinearGradient(stops: [.init(color: Color(r.zemin, 0), location: 0.55), .init(color: Color(r.zemin), location: 1)],
                                    startPoint: .top, endPoint: .bottom)
                     Text("\(resim.bilinenAd(kapak.sid)) · \(kapak.gorunenAd)" + (kapak.tarih.isEmpty ? "" : ", \(kapak.tarih)"))
@@ -395,7 +404,7 @@ struct KonuSayfasi: View {
                         .padding(.trailing, BenOlcu.yan).padding(.bottom, 44)
                         .frame(maxHeight: .infinity, alignment: .bottom)
                 }
-                .frame(height: 408.6)
+                .frame(height: sahneYuksekligi)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Resmi büyüt")

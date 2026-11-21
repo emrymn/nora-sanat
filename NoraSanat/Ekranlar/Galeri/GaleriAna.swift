@@ -28,6 +28,8 @@ struct AkimCarki: View {
     static let adim: CGFloat = kartGenisligi + aralik
     static let yaricap: Double = 700
     static let carkAdimi: Double = 12
+    /// `.cark-serit`: 8 üst + öğe 479.9 (sitede `.cark-oge` kemer ve yazıdan 46 px uzun) + 4 alt
+    static let seritYuksekligi: CGFloat = 8 + 479.9 + 4
 
     var body: some View {
         GeometryReader { g in
@@ -56,7 +58,7 @@ struct AkimCarki: View {
 
     /// Şerit (8 + 269.7 + 16 + yazı ≈ 148 + 4) + çark (150 − 30) + dizin düğmesi (44 − 42) + açık dizin
     private var yukseklik: CGFloat {
-        8 + 269.7 + 16 + 148.2 + 4 + 120 + 2 + (dizinAcik ? 28 + CGFloat(salonlar.count) * 61 : 0)
+        Self.seritYuksekligi + 120 + 2 + (dizinAcik ? 28 + CGFloat(salonlar.count) * 61 : 0)
     }
 
     // MARK: Şerit
@@ -92,7 +94,7 @@ struct AkimCarki: View {
         }
         .onChange(of: sira) { _, yeni in if secim != yeni && cevirme == nil { secim = yeni } }
         .onChange(of: secim) { _, yeni in if let yeni, cevirme == nil, yeni != sira { sira = yeni } }
-        .frame(height: 8 + 269.7 + 16 + 148.2 + 4)
+        .frame(height: Self.seritYuksekligi)
     }
 
     private func kart(_ i: Int, _ salon: AkimDurumu, w: CGFloat) -> some View {
@@ -266,7 +268,7 @@ struct AkimCarki: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .disabled(!a.acik)
+                .allowsHitTesting(a.acik)
                 Ayrac()
             }
         }
@@ -401,8 +403,9 @@ private struct CarkTekeri: View {
             let r = tema.renkler
             let renk: Color = a.acik ? Color(r.murekkep, 0.5) : Color(r.soluk)
             let radyan: Double = aci * Double.pi / 180
-            let x: CGFloat = w / 2 + CGFloat(740 * sin(radyan))
-            let y: CGFloat = CGFloat(748 - 740 * cos(radyan)) - 15
+            // sitede ad kutusunun üst ortası diskin merkezinde, `rotate(a) translateY(-740px)`: kutunun ortası 725 px yukarıda
+            let x: CGFloat = w / 2 + CGFloat(725 * sin(radyan))
+            let y: CGFloat = CGFloat(748 - 725 * cos(radyan))
             let opaklik: Double = 1 - max(0, abs(aci) - 10) / 12
             Text(a.ad)
                 .font(Yazi.sans(12, agirlik: 500, stil: .caption1)).cssSatir(.sans, 12, 13.8)
@@ -410,7 +413,7 @@ private struct CarkTekeri: View {
                 .multilineTextAlignment(.center).lineLimit(2)
                 .frame(width: 124, height: 30, alignment: .bottom)
                 .opacity(opaklik)
-                .rotationEffect(.degrees(aci), anchor: .bottom)
+                .rotationEffect(.degrees(aci))
                 .position(x: x, y: y)
         }
     }

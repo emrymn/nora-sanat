@@ -663,12 +663,17 @@ struct AkimKarsilastir: View {
             }
             .padding(.bottom, 16)
             // `.akim-ozellik li`: 15 px Newsreader, 7 px dikey boşluk, altta çizgi
-            ForEach(galeri.ozellikler[ad] ?? [], id: \.self) { m in
-                Text(m).font(Yazi.okuma(15, stil: .subheadline)).cssSatir(.okuma, 15, 21).foregroundStyle(Color(r.murekkep))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 7)
-                    .overlay(alignment: .bottom) { Ayrac() }
+            // `.akim-ozellik li::before`: sayaç (600 13 px, akımın rengi), 26 px sütun
+            ForEach(Array((galeri.ozellikler[ad] ?? []).enumerated()), id: \.offset) { i, m in
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text("\(i + 1)").font(Yazi.sans(13, agirlik: 600, stil: .footnote))
+                        .foregroundStyle(Color(renk)).frame(width: 20, alignment: .leading)
+                    Text(m).font(Yazi.okuma(15, stil: .subheadline)).cssSatir(.okuma, 15, 21).foregroundStyle(Color(r.murekkep))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.vertical, 7)
+                .overlay(alignment: .bottom) { Ayrac() }
             }
             // `.akim-konular a`: 34 px hap, 1 px `--ink` kenar, 13 px
             VStack(alignment: .leading, spacing: 8) {
