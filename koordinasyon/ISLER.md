@@ -509,7 +509,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Yapılacaklar:** G2'nin ekranları (`NoraSanat/Ekranlar/Galeri/`) sitenin sayfalarına benzesin (PR #11 denetimi). Ölçüler hesaplanmış stillerden; CI'da her ekran için site (`-yalnizSite`) ve yerli yan yana. Ben'in ortak parçaları yeniden kullanılır; temsil kuralları `NoraCekirdek/SiteVerisi/Temsil.swift`'ten.
 
-**Devir notu:** Claude, 2026-11-21 · [PR #15](https://github.com/emrymn/nora-sanat/pull/15) · dal `claude/great-darwin-3hounp` (oturumun zorunlu dalı; G2 dalını içerir, #11 birleşince fark G2b'ye iner). G şeridi işi; kullanıcının isteğiyle Claude yaptı.
+**Devir notu:** Claude, 2026-11-21 · [PR #15](https://github.com/emrymn/nora-sanat/pull/15) · dal `claude/great-darwin-3hounp` (oturumun zorunlu dalı). G şeridi işi; kullanıcının isteğiyle Claude yaptı.
 - **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
   - `js/ekranlar/gozat.js`: `gozAtUst`, `gozAt`, `carkHtml`, `carkKur`, `onizlemeleriDoldur`, `akimSayfasi`, `sanatciSatiri`, `sanatciSayfasi`, `tumEserler`, `basyapitBaglariniDoldur`, `karsilastirSecici`, `karsilastirmaSutunu`, `karsilastirSayfasi`, `konularCiz`, `knGovdeCiz`, `knSahne`, `knKart`, `hepsineBak`, `bsySahneBagla`, `konuSayfasi`, `konuSahnesiniDoldur`, `metniKatla`, `konuGalerisiAc`
   - `js/ekranlar/akim.js`: `kimlikDoldur`, `bolumBasligi`, `tanimaNotlari`, `eserIzgarasi`, `pekistirDugmesi`, `dugmeBilgisi`, `donemHikayesi`, `konuDizini`, `akimKarsilastirSayfasi`, `USLUPLAR`, `TEKNIKLER`; `js/akim.js` `DORTLU_SECIMI`, `enBilinenEserler`
