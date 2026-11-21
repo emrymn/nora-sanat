@@ -22,9 +22,16 @@ jobs:
       - name: Ben kâhinini canlı sitenin modülleriyle karşılaştır
         if: github.head_ref == 'is/C4-ben' || github.event_name == 'workflow_dispatch'
         run: |
-          npm install --prefix "$RUNNER_TEMP/ben-kahin" --no-audit --no-fund playwright-core@1.56.1
+          npm install --prefix "$RUNNER_TEMP/ben-kahin" --no-audit --no-fund playwright@1.56.1
           NODE_PATH="$RUNNER_TEMP/ben-kahin/node_modules" BEN_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/ben.mjs > "$RUNNER_TEMP/ben-cevaplar.json"
           node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ben/cevaplar.json" "$RUNNER_TEMP/ben-cevaplar.json"
+
+      - name: Galeri kâhinini canlı sitede doğrula
+        if: github.head_ref == 'is/G2-galeri'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/galeri-kahin" --no-audit --no-fund playwright@1.56.1
+          NODE_PATH="$RUNNER_TEMP/galeri-kahin/node_modules" GALERI_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/galeri.mjs > "$RUNNER_TEMP/galeri.json"
+          node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/galeri/cevaplar.json" "$RUNNER_TEMP/galeri.json"
 
       - name: Çalış kâhinini canlı sitenin modülleriyle karşılaştır
         if: github.head_ref == 'is/C2-calis' || github.event_name == 'workflow_dispatch'
@@ -223,6 +230,15 @@ jobs:
             sleep 22
             xcrun simctl io "$UDID" screenshot "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-$SAYFA${BOLUM:+-$BOLUM}.png"
+          done
+          # G2: katalog, ilerleme ve disk önbelleğiyle akımlar çarkı
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -galeriSayfa "#/gozat"
+          for DENEME in {1..18}; do
+            sleep 5
+            xcrun simctl io "$UDID" screenshot ekranlar/galeri.png
+            if "$RUNNER_TEMP/ben-ekran" ekranlar/galeri.png "Salona gir"; then break; fi
+            if [ "$DENEME" = 18 ]; then exit 1; fi
           done
           # C2: Çalış ana ekranı (#/pekistir, #/calis) ve Turlar (#/pekistir/donem): yerli ekran ile sitenin yan yana görünümü
           for IS in calis: calis:turlar calis:yuk donem: donem:salon; do

@@ -145,7 +145,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bitti (#8) |
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bitti: C1a (#7), C1b (#9), C1c (#14) |
-| G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
+| G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bitti (#11); görünüş G2b'de |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | sürüyor (Gemini, 2026-04-20) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
@@ -494,7 +494,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Konular ve ikonografi.
 - Arama ve Koleksiyonum.
 
-**Devir notu:** –
+**Devir notu:** ChatGPT, 2026-11-21 — [PR #11](https://github.com/emrymn/nora-sanat/pull/11), dal `is/G2-galeri`.
+- Kaynak: `sanat-atlasi` @ `a866b86`, `js/ekranlar/{gozat,akim,arama,koleksiyon}.js`, `js/{akim,arama,ikonografi,temsil,birlesme,basyapit,cerceve,tasarim,kunye,imza,tanimaKirpim}.js`.
+- Galeri, T1 kataloğundan akımlar çarkını, salonları, sanatçı künyesini, eser ızgarasını, ikonografi konularını, dört gruplu aramayı ve koleksiyon duvarını kurar. Kilit ve koleksiyon T2 köprüsünden okunur. Görüntüleyici kapanınca kalpteki değişiklik duvara yansır. G1 ana görseli, yedeği, keskin kopyayı ve arka ışığı T3 görsel çözücüsünden alır.
+- Kâhin: `node Testler/kahin/galeri.mjs <site-deposu>`; argümansız çalıştırıldığında Playwright ile canlı siteyi kullanır. `GaleriTests` aynı katalogda arama gruplarını, sıraları, birleşen akım bilgisini, kapakları, dörtlüleri, konuları ve eser eşleşmelerini denetler.
+- Telefonda Debug: `-yerliSekme galeri -adres "#/gozat"`. Çarkı kaydır, açık salonda sanatçıya gir, ikinci eseri açıp kalbe dokun. Koleksiyonum'da aynı eseri açıp kalbi kaldır ve duvara dön. Aramada Türkçe ve özgün eser adını dene. CI: `-galeriSayfa "#/gozat"` ile gerçek yerli kabukta `galeri.png`; OCR açık salonun giriş düğmesini doğrular, `4-url-calis` son görüntüdür.
+- G3 için: Galeri’nin tamamını etkinleştirme kararı G3 sonunda. Başyapıt arama sonucu yakın okuma içeriğine bağlanır. G3 kendi liste ve yakın okuma ekranlarını getirince bu hedef ortaklaştırılabilir. Galeri üst şeridindeki Başyapıtlar ve Zaman, G3/G5 bağlanana kadar sitenin okuma sayfasını açar.
+
+**Denetim (G2):** Claude, 2026-11-21 — **davranış onay; görünüş G2b'ye** ([PR #11 yorumu](https://github.com/emrymn/nora-sanat/pull/11#issuecomment-7060261876)). `swift test` geçti. `galeri.mjs` hem site deposuyla hem canlı sitede çalıştırıldı: çıktı örnekle birebir aynı (canlı kip `playwright-core` arıyordu, `playwright` yapıldı). Görünüş sitedekinden belirgin farklı (çark kartı, yazılar, salon/konu/sanatçı sayfaları çoğunlukla iOS listeleri; CI'da yalnız çark görüntüsü). Galeri yerli olmadığı için telefonda değişen yok. GaleriKatalogu'ndaki temsil kopyaları G2b'de `Temsil.swift`'e geçmeli.
 
 ### C2 · Çalış ana ekranı (ChatGPT)
 **Site kaynakları:** `js/ekranlar/calisma.js`, `js/deste.js`.
