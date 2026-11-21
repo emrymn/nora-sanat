@@ -32,6 +32,12 @@ struct NoraSanatApp: App {
                 }
             } else if Self.arguman("-ekran") == "goruntuleyici" {
                 GoruntuleyiciOnizleme()   // G1: ayrıntı noktası olan ilk eser
+            } else if Self.arguman("-ekran") == "pekistir" {
+                ZStack {
+                    KokGorunum().accessibilityHidden(true)
+                    PekistirmeEkrani(ilkTur: .sanatci(.karisik))
+                        .environment(TemaDeposu.shared)
+                }
             } else if Self.arguman("-ekran") == "tema" {
                 // Site arkada yüklenir (canlı tema için), örnekler üstte
                 ZStack {

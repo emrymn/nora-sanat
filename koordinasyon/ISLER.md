@@ -143,9 +143,10 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | denetimde (#8) |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bekliyor |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bitti (#8) |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bitti (#9), C1c bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
+| C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
@@ -160,7 +161,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Galeri: G1 + G2 + G3
 - Bugün: G4
 - Yolculuk: G5
-- Çalış: C1 + C2 + C3
+- Çalış: C1 (C1a, C1b, C1c) + C2 + C3
 - Ben/Ayarlar: C4
 
 ---
@@ -410,6 +411,47 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - `cevapla(seciliSeviye:)` ekranda seçilen alt seviyedir, kartın seviyesi değil. Alt seviye seçilmediyse `nil` verilir.
   - Kart sitedeki gibi cevaptan önce hazırlanmalı. `hazirla` `sonEserler`'i ilerlemeye yazar.
   - `SoruTuru` (kurs bölümü ve ikonografi turları) yalnız okuyarak karşılaştırıldı. C1b ekranlarıyla birlikte kâhine eklenmeli.
+
+**Devir notu (C1b):** ChatGPT, 2026-11-21 · PR #9 · `is/C1b-pekistir-ekran`.
+- Kaynak: `sanat-atlasi` @ `a866b86`, `js/{oturum,devam,soruTurlari,titresim}.js` ve `js/ekranlar/{pekistir,soruTurlari}.js`.
+- C2 ve G5, `PekistirmeEkrani(ilkTur:)` ile ilgili turu açabilir. Çalış sekmesi C2 ve C3 tamamlanana kadar siteyi gösterir. DEBUG denemesi: `-ekran pekistir`.
+- Kart, ters soru, sanatçı ve akım cevap yaprakları, tur özeti ve yedi gün içinde yarım tura dönüş eklendi. Kart C1a ile cevaptan önce hazırlanır. Seçilen alt seviye yoksa `nil` iletilir. Skorlar, tekrar kuyruğu ve görünen kartın cevap adımı aynı `IlerlemeKoprusu.degistir` çağrısında yazılır. Yerli oturum `ayarlar.noraPekistirmeOturumu` alanında tutulur. Web’in IndexedDB’deki yarım turu ayrı kalır.
+- CI #45'te çekirdek, köprü, iOS derleme ve simülatör adımları geçti. `10-pekistirme.png` (G1'den sonra yeniden numaralandı) incelendi: gerçek eser, kart sayacı, dört sanatçı ve Bilmiyorum düğmesi görünür. Klasörler dışındaki bağlantılar DEBUG açılışı, CI ve bu devir notudur.
+- Kâhin: `a866b86` sürümünün JS modülleriyle kurs bölümü ve ikonografi şıkları, aday sırası, yanlış skor ve devam kuyruğu üretildi. `PekistirmeKaydiTests` (paket testlerinde) bunları ve iki sorunun arasında/cevap yaprağında kapatıp sürdürmeyi karşılaştırır.
+- Telefonda: karışık turda Bilmiyorum'a dokun, akım sorusunda uygulamayı kapat, yeniden açıp sürdür. Eser ve şıklar korunmalı; tur sonunda kart bir kez sayılmalı.
+
+**Denetim (C1b):** Claude, 2026-11-21 — **onay, eksikler C1c'ye** (PR #9 yorumu).
+- Paket testleri geçti (65).
+- `pekistir_ek.mjs` sitenin a866b86 modülleriyle çalıştırıldı, testteki değerlerle aynı.
+- Akış C1a API'sini doğru kullanıyor: iki aşamalı karışık kart (skor akım cevabından sonra tek yazmada), ters kart, Bilmiyorum, ek turlar, yarım tur.
+- `ayarlar.noraPekistirmeOturumu` güvenli: site bilinmeyen ayarları korur (`js/depo.js` `ilerlemeDogrula`: `{ ...t.ayarlar, ...v.ayarlar }`).
+- Düzeltmeler:
+  - Test dosyası uygulama klasöründen paket testlerine taşındı. CI'daki kopyalama ve `-DPEKISTIRME_TESTI` kaldırıldı; artık Linux'ta da çalışıyor.
+  - Kâhin paket kaynaklarından `Testler/kahin/pekistir_ek.mjs`'e taşındı.
+  - CI görüntüsü G1'den sonra 10 numara oldu.
+- **Eksik (sitenin `js/ekranlar/pekistir.js` akışına göre) → C1c.** Ekran yalnız DEBUG'da açıldığı için telefonda etkisi yok, ama Çalış yerli olmadan önce tamamlanmalı.
+
+### C1c · Pekiştirme: tanışma ve eksik adımlar (ChatGPT)
+**Site kaynakları:** `js/ekranlar/pekistir.js` (`kartCiz`, `tanismaGoster`, `konuTanismaGoster`, `tanismaCiz`, `baskaEser`, `ipucuMetni`, `karsiSeritHtml`, `seviyeTamamHtml`, `seviyeHaplari`, `ozetCiz`, `sergiyeEkle`), `js/ogrenme.js` (`tanismaGerekirMi`, `tanismaEserleri`).
+
+**Yapılacaklar** (C1b'nin ekranına, aynı klasörlerde):
+- **Tanışma.**
+  - Karışık, dönem ve hatalar turunda yeni sanatçının (`tanismaGerekirMi`) kartından önce "Yeni sanatçı · önce tanış" ekranı.
+  - Tanışmada üç eser gösterilir (`tanismaEserleri`); bu eserler o turda sorulmaz (`PekistirmeKarti.hazirla(tanismadaGorulen:)`).
+  - Konu turunda `plan.tanisma` arka arkaya, turdan önce.
+  - `ayarlar.tanisma == false` ise tanışma yok.
+- **Başka eser** düğmesi (`baskaEser`).
+- **Cevap yaprağı.**
+  - İpucu ("Nasıl tanırım?", `tanima_notlari.json`).
+  - Karıştırılan ikili şeridi (`karsiSeritHtml`).
+- **Seviye.**
+  - Dönem turunda alt seviye seçimi (`seviyeHaplari`).
+  - Seviye atlayınca gösterim (`seviyeTamamHtml`).
+- **Tur özeti.** Sitedeki gibi: oran, sergi, geçilen seviyeler.
+- **Sayaç.** Eseri bulunamayan kart sitede `ilerle` ile atlanır ve sayaçta kalır; `simdikiniAtla` kartı kuyruktan siliyor. Sayaç sitedeki gibi olmalı.
+- Kâhin: tanışma eserleri ve `tanismadaGorulen` ile kart seçimi `pekistir_turlari.mjs` kalıbıyla.
+
+**Devir notu:** –
 
 ### G2 · Galeri (ChatGPT)
 **Site kaynakları:**
