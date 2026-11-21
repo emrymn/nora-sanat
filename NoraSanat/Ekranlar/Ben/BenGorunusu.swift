@@ -219,7 +219,7 @@ struct ParcaliSecim<Deger: Hashable>: View {
     var body: some View {
         let r = tema.renkler
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
-            ForEach(secenekler.indices, id: \.self) { i in
+            ForEach(0..<secenekler.count, id: \.self) { i in
                 let s = secenekler[i]
                 let acik = s.deger == secili
                 Button { sec(s.deger) } label: {
@@ -307,25 +307,30 @@ struct KucukHap<Deger: Hashable>: View {
     @Environment(TemaDeposu.self) private var tema
 
     var body: some View {
-        let r = tema.renkler
         HStack(spacing: 2) {
-            ForEach(secenekler.indices, id: \.self) { i in
-                let s = secenekler[i]
-                let acik = s.deger == secili
-                Button { secili = s.deger } label: {
-                    Text(s.ad).font(Yazi.sans(12, agirlik: 500, stil: .caption))
-                        .foregroundStyle(Color(acik ? r.zemin : r.murekkep2))
-                        .padding(.horizontal, 10).frame(minHeight: 28)
-                        .background(Capsule().fill(acik ? Color(r.murekkep) : .clear))
-                        .contentShape(Capsule().inset(by: -8))
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(acik ? [.isSelected] : [])
-            }
+            ForEach(0..<secenekler.count, id: \.self) { i in dugme(i) }
         }
         .padding(3)
-        .overlay(Capsule().strokeBorder(Color(r.kenar), lineWidth: 1))
-        .animation(.easeOut(duration: 0.2), value: secili)
+        .overlay(Capsule().strokeBorder(Color(tema.renkler.kenar), lineWidth: 1))
+    }
+
+    private func dugme(_ i: Int) -> some View {
+        let r = tema.renkler
+        let deger: Deger = secenekler[i].deger
+        let acik: Bool = deger == secili
+        let yazi: Color = acik ? Color(r.zemin) : Color(r.murekkep2)
+        let zemin: Color = acik ? Color(r.murekkep) : Color.clear
+        return Button {
+            withAnimation(.easeOut(duration: 0.2)) { secili = deger }
+        } label: {
+            Text(secenekler[i].ad).font(Yazi.sans(12, agirlik: 500, stil: .caption1))
+                .foregroundStyle(yazi)
+                .padding(.horizontal, 10).frame(minHeight: 28)
+                .background(Capsule().fill(zemin))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(acik ? .isSelected : [])
     }
 }
 

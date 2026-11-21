@@ -60,11 +60,11 @@ struct BildirimBolumu: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(x["baslik"]?.metin ?? x["a"]?.metin ?? "").font(Yazi.sans(14))
                             Text([x["neden"]?.metin, x["t"]?.metin].compactMap { $0 }.joined(separator: " · "))
-                                .font(Yazi.sans(12, stil: .caption)).foregroundStyle(Color(tema.renkler.murekkep2))
+                                .font(Yazi.sans(12, stil: .caption1)).foregroundStyle(Color(tema.renkler.murekkep2))
                         }
                     }
                     if liste.count > 8 {
-                        Text("ve \(liste.count - 8) bildirim daha").font(Yazi.sans(12, stil: .caption))
+                        Text("ve \(liste.count - 8) bildirim daha").font(Yazi.sans(12, stil: .caption1))
                             .foregroundStyle(Color(tema.renkler.murekkep2))
                     }
                 }

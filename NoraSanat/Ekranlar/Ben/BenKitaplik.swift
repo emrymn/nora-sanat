@@ -321,7 +321,7 @@ struct KursKitapligi: View {
                                        .init(color: .clear, location: 0.58), .init(color: .black.opacity(0.78), location: 1)],
                                startPoint: .top, endPoint: .bottom)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(bilgi.baslik(x)).font(Yazi.okuma(13, stil: .caption)).lineLimit(2)
+                    Text(bilgi.baslik(x)).font(Yazi.okuma(13, stil: .caption1)).lineLimit(2)
                         .shadow(color: .black.opacity(0.85), radius: 1.5, y: 1)
                         .padding(.horizontal, 10)
                     Text(l.isEmpty ? " " : "\(l.count) sanatçı".uppercased(with: Locale(identifier: "tr_TR")))
@@ -442,7 +442,7 @@ struct KonuKarti: View {
                 .frame(width: 72, height: 72)
                 .clipShape(Circle())
                 .overlay(Circle().strokeBorder(acik ? Color(r.vurgu).opacity(0.7) : Color(r.kenar), lineWidth: acik ? 2 : 1))
-            Text(ad).font(Yazi.sans(12, agirlik: 500, stil: .caption)).lineLimit(2)
+            Text(ad).font(Yazi.sans(12, agirlik: 500, stil: .caption1)).lineLimit(2)
                 .foregroundStyle(Color(acik ? r.murekkep : r.murekkep3))
         }
         .frame(width: 72, alignment: .leading)

@@ -141,7 +141,7 @@ struct BenAyarlari: View {
                     }
                 }
                 Text("Sanat Atlası \(bilgi.surum) · Görseller: Wikimedia Commons, müze açık erişim koleksiyonları ve WikiArt · Eser listeleri: Wikidata")
-                    .font(Yazi.sans(12, stil: .caption)).foregroundStyle(Color(tema.renkler.murekkep3))
+                    .font(Yazi.sans(12, stil: .caption1)).foregroundStyle(Color(tema.renkler.murekkep3))
                     .padding(.top, 18)
             }
             .padding(.horizontal, BenOlcu.yan)

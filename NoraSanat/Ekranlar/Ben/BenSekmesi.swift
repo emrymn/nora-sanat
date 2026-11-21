@@ -263,7 +263,7 @@ struct BenSekmesi: View {
             Etiket(ad, boyut: 10.5, aralik: 0.18)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Text(deger).font(Yazi.serif(32)).foregroundStyle(Color(r.murekkep))
-                if !ek.isEmpty { Text(ek).font(Yazi.sans(12, agirlik: 500, stil: .caption)).foregroundStyle(Color(r.murekkep2)) }
+                if !ek.isEmpty { Text(ek).font(Yazi.sans(12, agirlik: 500, stil: .caption1)).foregroundStyle(Color(r.murekkep2)) }
             }
         }
         .padding(.leading, ilk ? 0 : 12).padding(.trailing, 12)
@@ -400,7 +400,7 @@ struct TabloDugme: View {
         return HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(baslik).font(Yazi.serif(24, italik: true)).lineLimit(1)
-                Text(alt).font(Yazi.sans(12, agirlik: 500, stil: .caption)).foregroundStyle(.white.opacity(0.72)).lineLimit(1)
+                Text(alt).font(Yazi.sans(12, agirlik: 500, stil: .caption1)).foregroundStyle(.white.opacity(0.72)).lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             VStack(spacing: 2) {
