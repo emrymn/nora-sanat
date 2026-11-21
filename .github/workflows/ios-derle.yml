@@ -262,7 +262,7 @@ jobs:
             test -f "$VERI/tmp/calis-hazir"
             sleep 3
             xcrun simctl io "$UDID" screenshot "ekranlar/$AD.png"
-            if [ "$SAYFA" = calis ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Çalış"; fi
+            if [ "$SAYFA" = calis ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Bugünün dersi"; fi
             if [ "$SAYFA" = donem ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Turlar"; fi
             # Site: -yalnizSite ile aynı adres
             xcrun simctl terminate "$UDID" "$PAKET"
