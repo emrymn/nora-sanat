@@ -208,14 +208,36 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-$SAYFA${BOLUM:+-$BOLUM}.png"
           done
-          # G2: katalog, ilerleme ve disk önbelleğiyle akımlar çarkı
-          xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -galeriSayfa "#/gozat"
-          for DENEME in {1..18}; do
-            sleep 5
-            xcrun simctl io "$UDID" screenshot ekranlar/galeri.png
-            if "$RUNNER_TEMP/ben-ekran" ekranlar/galeri.png "Salona gir"; then break; fi
-            if [ "$DENEME" = 18 ]; then exit 1; fi
+          # G2 + G2b: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
+          # AD|adres|bölüm: -galeriKaydir aynı bölüme kaydırır (dizin: "Bütün akımlar" açık). Yerli Galeri hazır olunca
+          # (veri ve görseller yüklendi, istendiyse kaydı) tmp/galeri-hazir yazar; ana ekranda OCR "Salona gir"i arar.
+          for IS in \
+            "ana|#/gozat|" "ana-dizin|#/gozat|dizin" \
+            "akim|#/akim/Gotik|" "akim-eserler|#/akim/Gotik|eserler" "akim-pekistir|#/akim/Gotik|pekistir" \
+            "sanatci|#/sanatci/giotto-di-bondone|" "eserler|#/sanatci/giotto-di-bondone/eserler|" \
+            "konular|#/konular|" "konu|#/konu/annunciation|" "ara|#/ara|" "koleksiyon|#/koleksiyon|" \
+            "karsilastir|#/karsilastir/giotto-di-bondone/duccio-di-buoninsegna|" \
+            "akim-karsilastir|#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans|"; do
+            AD="${IS%%|*}"; KALAN="${IS#*|}"; ADRES="${KALAN%%|*}"; BOLUM="${KALAN#*|}"
+            KAYDIR=()
+            if [ -n "$BOLUM" ]; then KAYDIR=(-galeriKaydir "$BOLUM"); fi
+            xcrun simctl terminate "$UDID" "$PAKET" || true
+            VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+            rm -f "$VERI/tmp/galeri-hazir"
+            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -galeriSayfa "$ADRES" "${KAYDIR[@]}"
+            for _ in {1..90}; do
+              test -f "$VERI/tmp/galeri-hazir" && break
+              sleep 1
+            done
+            test -f "$VERI/tmp/galeri-hazir" || echo "::warning::$AD: yerli Galeri hazır olmadı"
+            sleep 2
+            xcrun simctl io "$UDID" screenshot "ekranlar/galeri-$AD.png"
+            if [ "$AD" = ana ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/galeri-$AD.png" "Salona gir"; fi
+            xcrun simctl terminate "$UDID" "$PAKET"
+            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "$ADRES" "${KAYDIR[@]}"
+            sleep 22
+            xcrun simctl io "$UDID" screenshot "ekranlar/site-galeri-$AD.png"
+            "$RUNNER_TEMP/yan-yana" "ekranlar/site-galeri-$AD.png" "ekranlar/galeri-$AD.png" "ekranlar/galeri-yan-yana-$AD.png"
           done
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
