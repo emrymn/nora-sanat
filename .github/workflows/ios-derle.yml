@@ -103,6 +103,11 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
+          # G1: tam ekran görüntüleyici (ayrıntı noktası olan ilk eser; katalog ve görsel ağdan gelir)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici
+          sleep 30
+          xcrun simctl io "$UDID" screenshot ekranlar/9-goruntuleyici.png
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"
