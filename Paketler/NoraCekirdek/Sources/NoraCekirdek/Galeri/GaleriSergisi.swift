@@ -51,3 +51,27 @@ public enum GaleriSergisi {
         return (a == b ? a : a + "–" + b) + ". yüzyıl"
     }
 }
+
+// Kaynak: sanat-atlasi js/ekranlar/koleksiyon.js, js/sallanma.js ve js/egim.js @ a866b86
+public struct AsiliTablo: Sendable {
+    public let ip: Double
+    public let egim: Double
+    public private(set) var aci = 0.0
+    public private(set) var hiz = 0.0
+    public init(sira: Int) {
+        ip = Double(12 + (sira * 13 % 4) * 7)
+        egim = Double((sira * 37 % 5) - 2) * 0.4
+    }
+
+    public static func donus(_ once: Double, dereceHizi: Double, dt: Double) -> Double {
+        min(33, max(-33, once * exp(-dt / 1.6) + dereceHizi * dt))
+    }
+
+    public mutating func adim(donus: Double, dt: Double) {
+        let hedef = -5 * min(1, max(-1, donus / 22))
+        let sure = min(0.04, dt)
+        let ivme = -(1800 / (ip + 26)) * (aci - hedef) - 2.4 * hiz
+        hiz += ivme * sure
+        aci += hiz * sure
+    }
+}

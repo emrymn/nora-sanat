@@ -2,7 +2,7 @@
 import Foundation
 
 public struct TanimaKirpimi: Sendable {
-    public let anahtar, sanatci, gorsel, ad: String
+    public let anahtar, sanatci, gorsel, ad, metin: String
     public let x, y, w, h: Double
     public let madde: Int?
 
@@ -17,6 +17,7 @@ public struct TanimaKirpimi: Sendable {
               x+w <= 1.0001, y+h <= 1.0001 else { return nil }
         self.anahtar = a; self.sanatci = s; self.gorsel = g; self.ad = ad
         self.x = x; self.y = y; self.w = w; self.h = h
+        self.metin = j["metin"]?.doluMetin ?? ""
         self.madde = j["madde"]?.tamSayi
     }
 
@@ -35,6 +36,20 @@ public struct TanimaKirpimi: Sendable {
             if !liste.isEmpty { sonuc[id] = liste }
         }
         return sonuc
+    }
+
+    /// G1 incelemede önce ilk noktayı sunar; eşleşen noktayı başa alıp diğer noktaları koru.
+    public func inceleme(_ mevcut: AyrintiKaydi?, aciklama: String) -> AyrintiKaydi {
+        if var kayit = mevcut, kayit.gorsel.isEmpty || kayit.gorsel == gorsel,
+           let i = kayit.noktalar.firstIndex(where: {
+               abs($0.x-x) < 0.006 && abs($0.y-y) < 0.006 && abs($0.w-w) < 0.006 && abs($0.h-h) < 0.006
+           }) {
+            kayit.noktalar = Array(kayit.noktalar[i...]) + Array(kayit.noktalar[..<i])
+            return kayit
+        }
+        let yazi = metin.isEmpty ? (aciklama.isEmpty ? ad : aciklama) : metin
+        return AyrintiKaydi(anahtar: anahtar, sanatci: sanatci, gorsel: gorsel,
+                            noktalar: [AyrintiNoktasi(ad: ad, x: x, y: y, w: w, h: h, metin: yazi)])
     }
 
     public func eser(_ liste: [Eser], katalog: SiteKatalogu, il: Ilerleme) -> Eser? {

@@ -58,6 +58,27 @@ final class GaleriTests: XCTestCase {
             }
             XCTAssertEqual(eslesen, c.kirpSonuc[tur])
         }
+        let kirpim = try XCTUnwrap(TanimaKirpimi(try XCTUnwrap(ham["ornek"])))
+        for x in try XCTUnwrap(ham["incelemeler"]?.dizi) {
+            let kayit = x["kayit"].flatMap(AyrintiKaydi.init(json:))
+            let cikti = kirpim.inceleme(kayit, aciklama: "Açıklama")
+            XCTAssertEqual(cikti.noktalar.first?.ad, x["ilk"]?["ad"]?.metin)
+            XCTAssertEqual(cikti.noktalar.first?.metin, x["ilk"]?["metin"]?.metin)
+            XCTAssertEqual(cikti.noktalar.count, x["adet"]?.tamSayi)
+        }
+        for (i, x) in (ham["salinim"]?.dizi ?? []).enumerated() {
+            var tablo = AsiliTablo(sira: i)
+            XCTAssertEqual(tablo.egim, x["egim"]?.sayi)
+            XCTAssertEqual(tablo.ip, x["ip"]?.sayi)
+            var donus = 0.0
+            for adim in try XCTUnwrap(x["adimlar"]?.dizi) {
+                donus = AsiliTablo.donus(donus, dereceHizi: try XCTUnwrap(adim["hiz"]?.sayi), dt: 1/30)
+                tablo.adim(donus: donus, dt: 1/30)
+                XCTAssertEqual(donus, try XCTUnwrap(adim["x"]?.sayi), accuracy: 1e-9)
+                XCTAssertEqual(tablo.aci, try XCTUnwrap(adim["aci"]?.sayi), accuracy: 1e-9)
+                XCTAssertEqual(tablo.hiz, try XCTUnwrap(adim["v"]?.sayi), accuracy: 1e-9)
+            }
+        }
         for (ad, soz) in c.adlar { XCTAssertEqual(GaleriKatalogu.okunacakAd(ad), soz) }
         for x in ham["sesler"]?.dizi ?? [] {
             XCTAssertEqual(GaleriKatalogu.sesUzantisi(x["k"]), x["url"]?.metin.map { ($0 as NSString).pathExtension })

@@ -49,7 +49,7 @@ async function cevaplar({ js, d, al, enBilinen }) {
         konular: tipikKonular(konular, uyeler.filter(s=>islenen.includes(s.konu)).map(s=>s.id)).map(k=>k.id), kapak: kapak?.anahtar ?? null, dortlu: dortlu.map(x => x.e.anahtar) };
     });
     const baglar = Object.fromEntries(konular.map(k => [k.id, k.eserler.map(([anahtar,sanatci]) => eserEslestir(liste[sanatci],{anahtar,sanatci})).filter(e => e?.gorseller.length).map(e => e.anahtar)]));
-    const { tanimaKirpimlariAl, kirpimEseri } = await import(js + '/tanimaKirpim.js');
+    const { tanimaKirpimlariAl, kirpimEseri, incelemeKaydi } = await import(js + '/tanimaKirpim.js');
     const { ayrintiAnahtari } = await import(js + '/ayrinti.js');
     const { gorselAdi, secilenGorsel } = await import(js + '/gorsel.js');
     const hamKirp = await al('tanima_kirpimlari');
@@ -59,12 +59,33 @@ async function cevaplar({ js, d, al, enBilinen }) {
     const kirp = tanimaKirpimlariAl(kirpGirdi);
     const kirpSonuc = Object.fromEntries(['konular', 'sanatcilar'].map(t => [t,Object.fromEntries([...kirp[t]].map(([id,l]) =>
       [id,l.map(k => kirpimEseri(k,liste[k.sanatci],ayrintiAnahtari,e=>gorselAdi(secilenGorsel(e)))?.anahtar ?? '')]))]));
+    const ornek = kirp.sanatcilar.values().next().value[0];
+    const n = { ad:ornek.ad, metin:'Eşleşti', x:ornek.x, y:ornek.y, w:ornek.w, h:ornek.h };
+    const mevcut = {anahtar:ornek.anahtar, sanatci:ornek.sanatci, gorsel:ornek.gorsel,
+      noktalar:[{...n, ad:'Önceki', x:n.x+0.1},n]};
+    const incelemeler = [mevcut, {...mevcut,gorsel:'başka'}, null].map(kayit=>{
+      const r = incelemeKaydi(ornek,kayit,'Açıklama');
+      return {kayit, ilk:r.kayit.noktalar[r.nokta], adet:r.kayit.noktalar.length};
+    });
+    const { ipSertligi, sarkacAdim } = await import(js + '/sallanma.js');
+    const { donusIzle, donustenEgim } = await import(js + '/egim.js');
+    const salinim = Array.from({length: 8}, (_,i) => {
+      const ip = 12 + ((i*13)%4)*7, egim = (((i*37)%5)-2)*0.4;
+      let durum = {aci:0,hiz:0}, donus = {x:0,y:0};
+      const adimlar = [190, 800, 0, -250, -1000, 33, 0].map(hiz => {
+        donus = donusIzle(donus, {gamma:hiz}, 1/30);
+        durum = sarkacAdim(durum, -5*donustenEgim(donus).x, 1/30, ipSertligi(ip));
+        const yuvarla = n => Number(n.toFixed(10));
+        return {hiz, x:yuvarla(donus.x), aci:yuvarla(durum.aci), v:yuvarla(durum.hiz)};
+      });
+      return {ip,egim,adimlar};
+    });
     const kapaklar = Object.fromEntries(konular.map(k => [k.id, kapakSec(k.eserler.map(([anahtar,sanatci]) =>
       eserEslestir(liste[sanatci],{anahtar,sanatci})).filter(e => e?.gorseller.length))?.anahtar ?? '']));
     const adlar = Object.fromEntries(d.sanatcilar.map(s => [s.ad, okunacakAd(s.ad)]));
     const sesler = [{ses:'dosya'}, {okunus:true}, {}, {ses:'x',okunus:true}].map(k => ({k, url:sesDosyasi({id:'deneme'},k)}));
     const kayitlar = [...acik.slice(0, 4).flatMap(s => liste[s.id].slice(0, 1).map(e => ({s:s.id, a:e.anahtar}))).reverse(), {s: 'yok', a: 'yok'}];
-    return { islenen, ek, kirpGirdi, kirpSonuc, kapaklar, adlar, sesler, basGirdi, bilgiGirdi, ozGirdi, bilgi: akimBilgisiBirlestir(bilgiGirdi).akimlar,
+    return { islenen, ek, salinim, ornek, incelemeler, kirpGirdi, kirpSonuc, kapaklar, adlar, sesler, basGirdi, bilgiGirdi, ozGirdi, bilgi: akimBilgisiBirlestir(bilgiGirdi).akimlar,
       oz: ozellikleriBirlestir(ozGirdi.akimlar), baglar, salonlar, aramalar, kayitlar,
       koleksiyon: kayitlar.map(x => liste[x.s]?.find(e => e.anahtar === x.a)).filter(Boolean).map(e => e.anahtar) };
 

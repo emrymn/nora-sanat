@@ -27,7 +27,8 @@ private struct AcilanEserler: Identifiable {
     let id = UUID()
     let eserler: [Eser]
     let sira: Int
-    var incele = false
+    var kirpim: TanimaKirpimi?
+    var aciklama = ""
 }
 
 struct GaleriSekmesi: View {
@@ -95,6 +96,11 @@ struct GaleriSekmesi: View {
                 dizin = yeni
             } catch { if !Task.isCancelled { yenilemeHatasi = true } }
         }
+        .onChange(of: durum.yenidenDokunma[.galeri]) { _, _ in
+            yol = []
+            sayfa = 0
+            dizinAcik = false
+        }
         .onChange(of: durum.yerliAdres[.galeri]) { _, _ in adresiAc() }
         .fullScreenCover(item: $acilan, onDismiss: {
             Task {
@@ -102,10 +108,10 @@ struct GaleriSekmesi: View {
                 catch { yenilemeHatasi = true }
             }
         }) { secim in
-            Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira, incelemeyeBasla: secim.incele, konuSecildi: { id in
+            GaleriGoruntuleyicisi(secim: secim, depo: Self.depo) { id in
                 acilan = nil
                 yol.append(.konu(id))
-            })
+            }
         }
         .alert("Koleksiyon güncellenemedi.", isPresented: $yenilemeHatasi) {
             Button("Yeniden dene") { deneme += 1 }
@@ -263,20 +269,8 @@ struct GaleriSekmesi: View {
                 if eserler.isEmpty { Text("Henüz eser işaretlemedin. Bir eseri büyütüp sağ üstteki işarete dokun.") }
                 else {
                     Text("\(eserler.count) eser")
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(eserler.indices, id: \.self) { i in
-                            let e = eserler[i]
-                            let tip = GaleriSergisi.cerceve(g.katalog.harita[e.sid]?.akim)
-                            Button { acilan = AcilanEserler(eserler: eserler, sira: i) } label: {
-                                VStack(alignment: .center, spacing: 4) {
-                                    Image(systemName: "triangle").font(.caption).foregroundStyle(.secondary)
-                                    resim(e, g).frame(height: 135)
-                                        .border(cerceveRengi(tip), width: ["cita", "cita-kagit"].contains(tip) ? 2 : 6)
-                                    Text(e.gorunenAd).font(Yazi.serif(16))
-                                    Text(e.tarih).font(.caption)
-                                }
-                            }.buttonStyle(.plain)
-                        }
+                    KoleksiyonDuvari(eserler: eserler, galeri: g, ilerleme: il) { i in
+                        acilan = AcilanEserler(eserler: eserler, sira: i)
                     }
                 }
             }.navigationTitle("Koleksiyonum")
@@ -314,7 +308,7 @@ struct GaleriSekmesi: View {
                     ForEach(Array(k.tanima.enumerated()), id: \.offset) { i, metin in
                         Text(metin)
                         if let kayit = g.konuKirpimlari[k.id]?.first(where: { $0.madde == i }) {
-                            kirpim(kayit, eserler, g, il)
+                            kirpim(kayit, eserler, g, il, aciklama: metin)
                         }
                     }
                     izgara(eserler, g)
@@ -360,11 +354,11 @@ struct GaleriSekmesi: View {
         }
     }
 
-    @ViewBuilder private func kirpim(_ k: TanimaKirpimi, _ liste: [Eser], _ g: GaleriKatalogu, _ il: Ilerleme) -> some View {
+    @ViewBuilder private func kirpim(_ k: TanimaKirpimi, _ liste: [Eser], _ g: GaleriKatalogu, _ il: Ilerleme, aciklama: String = "") -> some View {
         if let e = k.eser(liste, katalog: g.katalog, il: il),
            let secili = GorselAdresleri.secilen(e, kotuler: il.kotuGorseller) ?? e.gorseller.first {
             let oran = g.katalog.gorsel.oran(secili) ?? 1
-            Button { acilan = AcilanEserler(eserler: [e], sira: 0, incele: true) } label: {
+            Button { acilan = AcilanEserler(eserler: [e], sira: 0, kirpim: k, aciklama: aciklama) } label: {
                 GeometryReader { geo in
                     let w = geo.size.width / k.w
                     let h = w / oran
@@ -372,15 +366,6 @@ struct GaleriSekmesi: View {
                         .offset(x: -w * k.x, y: -h * k.y)
                 }.aspectRatio(oran * k.w / k.h, contentMode: .fit).clipped()
             }.accessibilityLabel(k.ad)
-        }
-    }
-
-    private func cerceveRengi(_ tip: String) -> Color {
-        switch tip {
-        case "beyaz", "tas": return .white
-        case "cita", "abanoz": return .black
-        case "cita-kagit", "tabernakel": return .brown
-        default: return Color(tema.renkler.pirinc)
         }
     }
 
@@ -441,6 +426,35 @@ struct GaleriSekmesi: View {
                 }
                 if grup.count > 8 { Text("\(grup.count - 8) sonuç daha. Aramayı daralt.").font(.caption) }
             }
+        }
+    }
+}
+
+private struct GaleriGoruntuleyicisi: View {
+    let secim: AcilanEserler
+    let depo: SiteVerisi
+    let konuSecildi: (String) -> Void
+    @Environment(\.dismiss) private var kapat
+    @State private var baglam: GoruntuleyiciBaglami?
+
+    var body: some View {
+        Group {
+            if secim.kirpim == nil {
+                Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira, konuSecildi: konuSecildi)
+            } else if let baglam {
+                Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira,
+                              incelemeyeBasla: secim.kirpim != nil, baglam: baglam, konuSecildi: konuSecildi)
+            } else {
+                VStack { ProgressView("Eser açılıyor…"); Button("Kapat") { kapat() } }
+            }
+        }.task {
+            guard secim.kirpim != nil else { return }
+            var yeni = await GoruntuleyiciBaglami.yukle(siteVerisi: depo)
+            if let kirpim = secim.kirpim, let eser = secim.eserler.first {
+                let kayit = kirpim.inceleme(yeni.ayrinti(eser), aciklama: secim.aciklama)
+                yeni.ayrintilar.insert(kayit, at: 0)
+            }
+            if !Task.isCancelled { baglam = yeni }
         }
     }
 }
