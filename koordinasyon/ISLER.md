@@ -143,16 +143,19 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | sürüyor (Gemini, #8: eksikler aşağıda) |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bekliyor |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bitti (#8) |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bitti (#9), C1c bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
+| C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
-| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | PR açık (#10) |
+| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
+| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bekliyor |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
+| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bekliyor |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 
@@ -160,8 +163,9 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Galeri: G1 + G2 + G3
 - Bugün: G4
 - Yolculuk: G5
-- Çalış: C1 + C2 + C3
-- Ben/Ayarlar: C4
+- Çalış: C1 (C1a, C1b, C1c) + C2 + C3
+- Ben/Ayarlar: C4 + C4b (görünüş)
+- Herhangi bir sekme yerli olmadan önce: T4 (yerli sekme çubuğu)
 
 ---
 
@@ -346,15 +350,37 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Koleksiyon kalbi, "kötü görsel" bildirimi (ilerlemeye yazar), keskin üst kopya.
 - Başka ekranlar şöyle açar: `Goruntuleyici(eserler:baslangic:)`.
 
-**Durum (Claude, 2026-11-21):** Gemini PR #8'de (`is/G1-goruntuleyici`) ~2.000 satır yazdı, iş bitmedi. G1'i Gemini aynı dalda tamamlar (kullanıcı kararı); kod iyi bir başlangıç, baştan yazma. G2–G5 ChatGPT'de.
-- CI derlemesi kırık: `Goruntuleyici.swift:128` — `'(URL?, URL?, URL?, URL?)' has no member 'isik'`.
-- Hiç test ve kâhin yok. `Goruntuleyici/` kuralları (ayrıntı, hikâye, koleksiyon, bildirim, keskinlik, not, karşılaştırma adresi) için `Testler/kahin/goruntuleyici.mjs` + XCTest gerekli.
-- Kaynak commit yanlış yazılmış (`28f751ed` sitede yok); site kaynağı `a866b86`.
-- `KoleksiyonKurallari.degistir` çıkarırken listeyi `dogrula` ile yeniden süzüyor; site süzmüyor (yalnız ekler/çıkarır). Kâhinle düzelt.
-- Görseller `AsyncImage` ile; T3 birleşti, `UzakGorsel` / `GorselDeposu`'na geç.
-- Ekran CI'da hiç görülmedi: DEBUG açılış argümanı (ör. `-ekran goruntuleyici`) ve `ios-derle.yml`'e ekran görüntüsü adımı ekle (4-url-calis hep en sonda kalır).
+**Devir notu:** Gemini, 2026-11-21 — PR #8, dal `is/G1-goruntuleyici`.
+- **Kaynak:** `sanat-atlasi` @ `a866b86`. Taşınan dosyalar: `js/goruntuleyici.js`, `js/ayrinti.js`, `js/hikaye.js`, `js/keskin.js`, `js/koleksiyon.js`, `js/bildirim.js`, `js/karsilastir.js` (ve `js/ikonografi.js`'teki `eserKonusu`).
+- **Yapılan:**
+  - `Paketler/NoraCekirdek/Sources/NoraCekirdek/Goruntuleyici/`:
+    - `Ayrinti.swift`: `AyrintiNoktasi`, `AyrintiKaydi`, `NoktaOdagi`, `AyrintiKurallari` (`noktaGecerliMi`, `ayrintilariAl`, `ayrintiAnahtari`, `ayrintiBul`, `eserinAyrintisi`, `noktaOdagi`, `noktaYeri`, `yakinlasmaSiniri`; JS `Math.round` ile birebir uyumlu `jsRound`).
+    - `Hikaye.swift`: `HikayeKarakteri`, `HikayeKaydi`, `HikayeKurallari` (`hikayeleriAl`, `eserinHikayesi`, `karakterKaydi`).
+    - `Koleksiyon.swift`: `KoleksiyonKaydi`, `KoleksiyonKurallari` (`dogrula`, `koleksiyondaMi`, `degistir`, `sinir = 500`).
+    - `Bildirim.swift`: `BildirimKaydi`, `BildirimKurallari` (`nedenler`, `dogrula`, `eseriBildir`, `kotuIsaretle`, `sinir = 300`).
+    - `GoruntuleyiciKurallari.swift`: `kaynakYazisi`, `notlariAl`, `eserNotu`, `taninmaMetni`, `karsilastirmaAdresi`, `karsilastirmaRotasi`, `benzerSanatcilar`, `ikonografiKonuHaritasi`, `eserKonusu`, `keskinlik`, `commonsUstu`, `keskinUstAdres`.
+    - `GoruntuleyiciBaglami.swift`: `GoruntuleyiciGorselAdresleri` ve `GoruntuleyiciBaglami` (`SiteVerisi` üzerinden `SiteKatalogu`, `eser_notlari.json`, `eser_ayrintilari.json`, `eser_hikayeleri.json` ve `ikonografi.json` verilerini yükleyip T1'in `GorselAdresleri` ve `SiteKatalogu` ile birleştiren veri bağlamı).
+  - `NoraSanat/Ekranlar/Goruntuleyici/`:
+    - `Goruntuleyici.swift`: `Goruntuleyici(eserler:baslangic:)` tam ekran görüntüleyici ekranı. İki parmakla yakınlaştırma (1x–6x), çift dokunuşla 2.5x ↔ 1x, kaydırma, tek dokunuşla sade görünüm, eserler arası geçiş (yatay kaydırma veya ok düğmeleri), aşağı çekince küçülüp şeffaflaşarak kapanma, ilk eserde sağa çekince kapanma, künye/not/konu bağlantısı/kaynak sayfası, koleksiyon işareti ve `⋯` bildirim menüsü (`IlerlemeKoprusu.shared.degistir` ile ilerlemeye yazar).
+    - `GoruntuleyiciGorseli.swift`: T3'ün görsel bileşeni henüz olmadığı için geçici `AsyncImage` tabanlı keskin görsel bileşeni (önce 1280/800 px birincil kopya, hata olursa yedek adres, yüklendikten sonra arkada 4096 px `devasaUrl` üst kopya indirip sarsıntısız geçiş) ve `TabloIsigiGorunumu` (400 px bulanık arka plan ışığı).
+    - `AyrintiGorunumu.swift`: `AyrintiNoktalariKatmani` (tablo üzerinde numaralı ayrıntı noktaları) ve `AyrintiIncelemePaneli` (Önceki / Sonraki / Bitir).
+    - `HikayePaneliGorunumu.swift`: alttan açılan "Hikâyesi" paneli ("Ne oluyor?", "Kim kimdir?", "Ressamla bağı", "Gözden kaçanlar" ve "Karakterleri resimde gör").
+- **Kâhin ve Testler:**
+  - `Testler/kahin/goruntuleyici.mjs` → `Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/goruntuleyici/` (`cevaplar.json` + veri dosyaları): 264 başyapıtın bütün ayrıntı noktaları, 3 farklı sahne boyutunda `noktaOdagi` ve `yakinlasmaSiniri`, 5 hikâye ve karakter kutuları, 155 görünür sanatçının tanıma metinleri ve `benzerSanatcilar` listesi, 293 eserin künye `kaynakYazisi`, `devasaKaynagi`, `sayfa`, `eserNotu`, `ayrinti`, `hikaye` ve ikonografi `konu` eşleşmeleri, koleksiyon ve bildirim adımları.
+  - `Paketler/NoraCekirdek/Tests/NoraCekirdekTests/GoruntuleyiciTests.swift`: 7 yeni XCTest eklendi; toplam 45 paket testi ve iOS Simulator `xcodebuild` derlemesi hatasız geçiyor.
+- **Kalan / Tuzaklar:**
+  - JS `Math.round(-x.5)` negatif yarımları `+∞` yönüne (`-x`) yuvarlarken Swift `.rounded()` `-∞` yönüne (`-(x+1)`) yuvarlıyor; `noktaOdagi`'nda birebir uyum için `floor(x + 0.5)` (`jsRound`) kullanıldı.
+  - T3 birleştiğinde `GoruntuleyiciGorseli` içindeki `AsyncImage` yapısı T3'ün disk önbellekli `Gorsel` bileşenine geçirilebilir.
+- **Sonraki işe ipucu (G2, G3, G4, C3):** Başka ekranlardan `Goruntuleyici(eserler: eserListesi, baslangic: indeks)` ile doğrudan tam ekran (`fullScreenCover`) açılabilir; doğrudan inceleme veya hikâye kipinde açmak için `incelemeyeBasla: true` / `hikayeyeBasla: true` verilebilir.
+- **Site değişirse (K7):** `git -C /tmp/sa log a866b86..HEAD -- js/goruntuleyici.js js/ayrinti.js js/hikaye.js js/keskin.js js/koleksiyon.js js/bildirim.js js/karsilastir.js js/ikonografi.js`; kâhini yeniden çalıştır: `node Testler/kahin/goruntuleyici.mjs`.
 
-**Devir notu:** –
+**Denetim:** Claude, 2026-11-21 — **onay, düzeltmelerle** (PR #8 yorumu).
+- Gemini'nin örnekleri sitenin eski sürümünden (1.81.3, 154 ayrıntı) alınmıştı. Kâhin canlı 1.90.3'e karşı yeniden çalıştırıldı (264 ayrıntı); testler güncel örneklerle geçiyor.
+- Kaynak commit `28f751ed` sitede yok → `a866b86`.
+- `KoleksiyonKurallari.degistir` listeyi süzüyordu, site süzmüyor; düzeltildi. Kâhine eski, eksik alanlı kayıtla başlangıç durumu eklendi (eski kod bu durumda kalırdı).
+- Kâhindeki Mac masaüstü yolu kaldırıldı.
+- CI görüntüsü eklendi: `-ekran goruntuleyici` → `9-goruntuleyici.png` (ayrıntı noktası olan ilk eser).
+- G2'ye kalan: görseller hâlâ `AsyncImage`; T3'ün `UzakGorsel` / `GorselDeposu`'na geçilmeli (önbellek, küçültme).
 
 ### C1 · Pekiştirme oturumu (ChatGPT)
 **Site kaynakları:**
@@ -388,6 +414,48 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - `cevapla(seciliSeviye:)` ekranda seçilen alt seviyedir, kartın seviyesi değil. Alt seviye seçilmediyse `nil` verilir.
   - Kart sitedeki gibi cevaptan önce hazırlanmalı. `hazirla` `sonEserler`'i ilerlemeye yazar.
   - `SoruTuru` (kurs bölümü ve ikonografi turları) yalnız okuyarak karşılaştırıldı. C1b ekranlarıyla birlikte kâhine eklenmeli.
+
+**Devir notu (C1b):** ChatGPT, 2026-11-21 · PR #9 · `is/C1b-pekistir-ekran`.
+- Kaynak: `sanat-atlasi` @ `a866b86`, `js/{oturum,devam,soruTurlari,titresim}.js` ve `js/ekranlar/{pekistir,soruTurlari}.js`.
+- C2 ve G5, `PekistirmeEkrani(ilkTur:)` ile ilgili turu açabilir. Çalış sekmesi C2 ve C3 tamamlanana kadar siteyi gösterir. DEBUG denemesi: `-ekran pekistir`.
+- Kart, ters soru, sanatçı ve akım cevap yaprakları, tur özeti ve yedi gün içinde yarım tura dönüş eklendi. Kart C1a ile cevaptan önce hazırlanır. Seçilen alt seviye yoksa `nil` iletilir. Skorlar, tekrar kuyruğu ve görünen kartın cevap adımı aynı `IlerlemeKoprusu.degistir` çağrısında yazılır. Yerli oturum `ayarlar.noraPekistirmeOturumu` alanında tutulur. Web’in IndexedDB’deki yarım turu ayrı kalır.
+- CI #45'te çekirdek, köprü, iOS derleme ve simülatör adımları geçti. `10-pekistirme.png` (G1'den sonra yeniden numaralandı) incelendi: gerçek eser, kart sayacı, dört sanatçı ve Bilmiyorum düğmesi görünür. Klasörler dışındaki bağlantılar DEBUG açılışı, CI ve bu devir notudur.
+- Kâhin: `a866b86` sürümünün JS modülleriyle kurs bölümü ve ikonografi şıkları, aday sırası, yanlış skor ve devam kuyruğu üretildi. `PekistirmeKaydiTests` (paket testlerinde) bunları ve iki sorunun arasında/cevap yaprağında kapatıp sürdürmeyi karşılaştırır.
+- Telefonda: karışık turda Bilmiyorum'a dokun, akım sorusunda uygulamayı kapat, yeniden açıp sürdür. Eser ve şıklar korunmalı; tur sonunda kart bir kez sayılmalı.
+
+**Denetim (C1b):** Claude, 2026-11-21 — **onay, eksikler C1c'ye** (PR #9 yorumu).
+- Paket testleri geçti (65).
+- `pekistir_ek.mjs` sitenin a866b86 modülleriyle çalıştırıldı, testteki değerlerle aynı.
+- Akış C1a API'sini doğru kullanıyor: iki aşamalı karışık kart (skor akım cevabından sonra tek yazmada), ters kart, Bilmiyorum, ek turlar, yarım tur.
+- `ayarlar.noraPekistirmeOturumu` güvenli: site bilinmeyen ayarları korur (`js/depo.js` `ilerlemeDogrula`: `{ ...t.ayarlar, ...v.ayarlar }`).
+- Düzeltmeler:
+  - Test dosyası uygulama klasöründen paket testlerine taşındı. CI'daki kopyalama ve `-DPEKISTIRME_TESTI` kaldırıldı; artık Linux'ta da çalışıyor.
+  - Kâhin paket kaynaklarından `Testler/kahin/pekistir_ek.mjs`'e taşındı.
+  - CI görüntüsü G1'den sonra 10 numara oldu.
+- **Eksik (sitenin `js/ekranlar/pekistir.js` akışına göre) → C1c.** Ekran yalnız DEBUG'da açıldığı için telefonda etkisi yok, ama Çalış yerli olmadan önce tamamlanmalı.
+
+### C1c · Pekiştirme: tanışma ve eksik adımlar (ChatGPT)
+**Site kaynakları:** `js/ekranlar/pekistir.js` (`kartCiz`, `tanismaGoster`, `konuTanismaGoster`, `tanismaCiz`, `baskaEser`, `ipucuMetni`, `karsiSeritHtml`, `seviyeTamamHtml`, `seviyeHaplari`, `ozetCiz`, `sergiyeEkle`), `js/ogrenme.js` (`tanismaGerekirMi`, `tanismaEserleri`).
+
+**Yapılacaklar** (C1b'nin ekranına, aynı klasörlerde):
+- **Tanışma.**
+  - Karışık, dönem ve hatalar turunda yeni sanatçının (`tanismaGerekirMi`) kartından önce "Yeni sanatçı · önce tanış" ekranı.
+  - Tanışmada üç eser gösterilir (`tanismaEserleri`); bu eserler o turda sorulmaz (`PekistirmeKarti.hazirla(tanismadaGorulen:)`).
+  - Konu turunda `plan.tanisma` arka arkaya, turdan önce.
+  - `ayarlar.tanisma == false` ise tanışma yok.
+- **Başka eser** düğmesi (`baskaEser`).
+- **Cevap yaprağı.**
+  - İpucu ("Nasıl tanırım?", `tanima_notlari.json`).
+  - Karıştırılan ikili şeridi (`karsiSeritHtml`).
+- **Seviye.**
+  - Dönem turunda alt seviye seçimi (`seviyeHaplari`).
+  - Seviye atlayınca gösterim (`seviyeTamamHtml`).
+- **Tur özeti.** Sitedeki gibi: oran, sergi, geçilen seviyeler.
+- **Sayaç.** Eseri bulunamayan kart sitede `ilerle` ile atlanır ve sayaçta kalır; `simdikiniAtla` kartı kuyruktan siliyor. Sayaç sitedeki gibi olmalı.
+- **Görünüş (K5).** Kart ve cevap yaprağı sitenin kartına benzesin: tipografi, kart çerçevesi, şık düğmeleri, ilerleme çubuğu. CI'da aynı turun sitedeki görüntüsüyle yan yana karşılaştır.
+- Kâhin: tanışma eserleri ve `tanismadaGorulen` ile kart seçimi `pekistir_turlari.mjs` kalıbıyla.
+
+**Devir notu:** –
 
 ### G2 · Galeri (ChatGPT)
 **Site kaynakları:**
@@ -453,6 +521,37 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Yedek panoya veya JSON dosyasına alınır. Yapıştırılan ya da dosyadan seçilen eski/yeni yedeği sitenin `yedekCoz` işlevi doğrular. Konu ve skor sayıları gösterilip onay alınır. Onaydan beri kayıt değişmişse geri yükleme durur. Yarım oturum da sitenin doğrulamasından ve IndexedDB yolundan geçer.
 - `Testler/kahin/ben.mjs` geçici tarayıcı profilinde gerçek siteyi çalıştırır. Pano, zayıf sırası, konu/ayar değişiklikleri, eski ve zarflı yedek, yarım oturum, hatalı JSON yapısı, çakışma ve geliştirici modundan dönüş sınanır. `BenTests` aynı örnekleri Swift kurallarına uygular.
 - Telefonda: Ben'den bir konuyu işaretle; Ayarlar'dan gündüz rengini değiştir. Yedek al, bir ayarı değiştir, yedeği denetle ve onayla; önceki ayar ve konu sayısı geri gelmeli. DEBUG: `-adres "#/ilerleme"` veya `-adres "#/ayarlar" -benSayfa ayarlar`. CI görüntüleri: `ben-ilerleme.png`, `ben-ayarlar.png`. T2'nin web görüntüsü ayrı alınır ve `4-url-calis` en sondadır.
+
+**Denetim (C4):** Claude, 2026-11-21 — **onay; Ben henüz yerli değil, görünüş C4b'ye** (PR #10 yorumu).
+- Paket testleri geçti.
+- `ben.mjs` canlı sitede çalıştırıldı, cevaplar aynı. Kâhin Swift dosyasındaki yedek, geri yükleme ve geliştirici betiklerini sitenin içinde gerçekten çalıştırıyor.
+- Geri yükleme güvenli: yedeği sitenin `yedekCoz`'u çözüyor, onaydan beri `kayitNo` değiştiyse duruyor.
+- **Görünüş K5'e uymuyor.** CI görüntülerinde Ben standart iOS listesi: sistem başlığı, sitenin kolajı, büyük rakamları ve tipografisi yok. Telefonda Ben'e her girişte görünür bir gerileme olurdu.
+  - Bu yüzden `Gecis.tasinanlar` boş kaldı; yerli Ben yalnız DEBUG `-yerliSekme ben` ile açılıyor (CI görüntüleri böyle alınıyor).
+  - Görünüş **C4b**'de düzeltilecek.
+- Yerli sekme çubuğu (T3) sitenin yüzen çubuğuna benzemiyor → **T4** (Claude). Hiçbir sekme T4'ten önce yerli olmaz.
+
+### C4b · Ben: görünüş sitedeki gibi (ChatGPT)
+**Site kaynakları:** `js/ekranlar/{ilerleme,pano,ayarlar}.js`, `css/app.css` (Ben ve ayarlar bölümleri), sitede `TASARIM_DILI.md`.
+
+**Yapılacaklar:**
+- C4'ün ekranları (`NoraSanat/Ekranlar/Ben/`) sitenin Ben ve Ayarlar sayfalarına benzesin:
+  - üstte eser kolajı;
+  - "Kursun neresindesin" büyük serif rakamlar;
+  - Sanatçı / Kalıcı / Tekrar sütunları;
+  - son 12 hafta ızgarası;
+  - bölüm başlıkları sitenin küçük büyük harfli etiketleri gibi.
+- Yazılar `Yazi.serif/sans/okuma`, renkler `TemaDeposu`.
+- Karşılaştırma görüntüsü: CI'da aynı adreste sitenin (`-yalnizSite`) ve yerli ekranın görüntüsü yan yana alınsın.
+- Bitince `Gecis.tasinanlar = BenGecisi.sekmeler`; ama T4 bitmeden değil.
+
+**Devir notu:** –
+
+### T4 · Yerli sekme çubuğu sitenin çubuğu gibi (Claude)
+- `KokGorunum`'un yerli çubuğu sitenin yüzen, yuvarlak köşeli çubuğuna benzesin: aynı simgeler (SVG'den), aynı yerleşim, Çalış rozeti.
+- Siteden yerliye geçişte çubuk yerinde kalıyormuş gibi görünsün.
+
+**Devir notu:** –
 
 ### G5 · Yolculuk + Zaman (ChatGPT)
 **Site kaynakları:**

@@ -110,6 +110,23 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
+          # G1: tam ekran görüntüleyici (ayrıntı noktası olan ilk eser; katalog ve görsel ağdan gelir)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici
+          sleep 30
+          xcrun simctl io "$UDID" screenshot ekranlar/9-goruntuleyici.png
+          # C1b: pekiştirme kartı. Kart hazır olduğunda görüntüsünü al. Yükleme ve hata ekranı başarı sayılmaz.
+          xcrun simctl terminate "$UDID" "$PAKET"
+          VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+          rm -f "$VERI/tmp/pekistirme-hazir"
+          xcrun simctl launch "$UDID" "$PAKET" -ekran pekistir
+          for _ in {1..90}; do
+            test -f "$VERI/tmp/pekistirme-hazir" && break
+            sleep 1
+          done
+          test -f "$VERI/tmp/pekistirme-hazir"
+          sleep 4
+          xcrun simctl io "$UDID" screenshot ekranlar/10-pekistirme.png
           # C4: gerçek ilerleme ile yerli Ben ekranı ve ayarları
           cat > "$RUNNER_TEMP/ben-ekran.swift" <<'SWIFT'
           import Foundation
@@ -125,7 +142,7 @@ jobs:
           xcrun swiftc "$RUNNER_TEMP/ben-ekran.swift" -o "$RUNNER_TEMP/ben-ekran"
           for SAYFA in ilerleme ayarlar; do
             xcrun simctl terminate "$UDID" "$PAKET"
-            xcrun simctl launch "$UDID" "$PAKET" -adres "#/$SAYFA" -benSayfa "$SAYFA"
+            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme ben -adres "#/$SAYFA" -benSayfa "$SAYFA"
             SOZ="Kursun neresindesin"
             if [ "$SAYFA" = ayarlar ]; then SOZ="Gündüz rengi"; fi
             for DENEME in {1..18}; do
