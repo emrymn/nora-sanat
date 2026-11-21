@@ -123,7 +123,7 @@ async function yerel(yol) {
 }
 
 async function canli() {
-  const { chromium } = createRequire(import.meta.url)('playwright-core');
+  const { chromium } = createRequire(import.meta.url)('playwright');
   const tarayici = await chromium.launch({ executablePath: process.env.GALERI_CHROMIUM });
   try {
     const sayfa = await tarayici.newPage({ bypassCSP: true });
