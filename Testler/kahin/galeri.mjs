@@ -3,28 +3,11 @@
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-const kok = resolve(process.argv[2]);
-const js = pathToFileURL(resolve(kok, 'js')).href;
-const al = async ad => JSON.parse(await readFile(resolve(kok, 'data', ad + '.json'), 'utf8'));
-globalThis.fetch = async yol => new Response(await readFile(resolve(kok, yol)));
-const E = await import(js + '/eserler.js');
-const G = await import(js + '/gorsel.js');
-const B = await import(js + '/birlesme.js');
-const R = await import(js + '/resim.js');
-const tum = B.sanatcilariBirlestir(await al('sanatcilar'));
-const hazir = await E.hazirOnbellek(), turler = await al('eser_turleri');
-E.eserTurleriniAyarla(turler);
-E.ortakAtiflariAyarla(hazir, new Map(tum.map(s => [s.id, s.ad])));
-E.kopyalariAyarla(await al('kopya_eserler'));
-E.cikarilanlariAyarla(await al('cikarilan_gorseller'));
-E.duzeltmeleriAyarla(await al('eser_duzeltmeleri'));
-E.eserAdlariniAyarla(E.adlariAl(await al('eser_adlari_tr')));
-const sanatcilar = R.gorunurSanatcilar(tum, turler, hazir);
-const akimlar = R.gorunurAkimlar(B.akimlariBirlestir(await al('akimlar')).sort((a,b) => a.sira-b.sira), sanatcilar);
-const d = { sanatcilar, akimlar, harita: new Map(sanatcilar.map(s => [s.id,s])), kisaAdlar: (await al('kisa_adlar')).adlar };
-async function cevaplar() {
+import { createRequire } from 'node:module';
+
+async function cevaplar({ js, d, al, enBilinen }) {
     const { sanatciEserleri } = await import(js + '/eserler.js');
-    const { enBilinenEserler } = await import(js + '/akim.js');
+    const { enBilinenEserler, tipikKonular } = await import(js + '/akim.js');
     const { AKIM_KAPAK, temsilOlabilir } = await import(js + '/temsil.js');
     const { acikSanatcilar } = await import(js + '/kilit.js');
     const { basyapitlariAl, eserEslestir } = await import(js + '/basyapit.js');
@@ -32,11 +15,10 @@ async function cevaplar() {
     const { akimBilgisiBirlestir, ozellikleriBirlestir } = await import(js + '/birlesme.js');
     const { ara, dizinKur, normallestir } = await import(js + '/arama.js');
 
-    // js/ekranlar/ortak.js enBilinen: bu örnekte kötü görsel işareti yok.
-    function enBilinen(eserler) {
-      const uygun = eserler.filter(e => temsilOlabilir(e) && G.secilenGorsel(e, {}) && e.pekistirme !== false);
-      return uygun.reduce((en,e) => !en || e.sl > en.sl ? e : en, null);
-    }
+    const { kapakSec } = await import(js + '/ikonografi.js');
+    const { cerceveTipi } = await import(js + '/cerceve.js');
+    const { akimYuzyillari } = await import(js + '/tasarim.js');
+    const { okunacakAd, sesDosyasi } = await import(js + '/kunye.js');
     const varMi = id => d.harita.has(id);
     const ikonografi = await al('ikonografi');
     const konular = konulariAl(ikonografi, varMi);
@@ -63,13 +45,65 @@ async function cevaplar() {
       const ozel = AKIM_KAPAK[a.ad] && uyeler.flatMap(s => liste[s.id]).find(e => e.qid === AKIM_KAPAK[a.ad]);
       const kapak = ozel || sirali.slice(0,8).map(s => enBilinen(liste[s.id])).find(Boolean);
       const dortlu = enBilinenEserler(uyeler.filter(s => islenen.includes(s.konu)).map(s => ({ s, eserler: liste[s.id] })));
-      return { ad: a.ad, kapak: kapak?.anahtar ?? null, dortlu: dortlu.map(x => x.e.anahtar) };
+      return { ad: a.ad, yy: akimYuzyillari(uyeler, {roma:true}), cerceve: cerceveTipi(a.ad),
+        konular: tipikKonular(konular, uyeler.filter(s=>islenen.includes(s.konu)).map(s=>s.id)).map(k=>k.id), kapak: kapak?.anahtar ?? null, dortlu: dortlu.map(x => x.e.anahtar) };
     });
     const baglar = Object.fromEntries(konular.map(k => [k.id, k.eserler.map(([anahtar,sanatci]) => eserEslestir(liste[sanatci],{anahtar,sanatci})).filter(e => e?.gorseller.length).map(e => e.anahtar)]));
+    const kapaklar = Object.fromEntries(konular.map(k => [k.id, kapakSec(k.eserler.map(([anahtar,sanatci]) =>
+      eserEslestir(liste[sanatci],{anahtar,sanatci})).filter(e => e?.gorseller.length))?.anahtar ?? '']));
+    const adlar = Object.fromEntries(d.sanatcilar.map(s => [s.ad, okunacakAd(s.ad)]));
+    const sesler = [{ses:'dosya'}, {okunus:true}, {}, {ses:'x',okunus:true}].map(k => ({k, url:sesDosyasi({id:'deneme'},k)}));
     const kayitlar = [...acik.slice(0, 4).flatMap(s => liste[s.id].slice(0, 1).map(e => ({s:s.id, a:e.anahtar}))).reverse(), {s: 'yok', a: 'yok'}];
-    return { islenen, ek, basGirdi, bilgiGirdi, ozGirdi, bilgi: akimBilgisiBirlestir(bilgiGirdi).akimlar,
+    return { islenen, ek, kapaklar, adlar, sesler, basGirdi, bilgiGirdi, ozGirdi, bilgi: akimBilgisiBirlestir(bilgiGirdi).akimlar,
       oz: ozellikleriBirlestir(ozGirdi.akimlar), baglar, salonlar, aramalar, kayitlar,
       koleksiyon: kayitlar.map(x => liste[x.s]?.find(e => e.anahtar === x.a)).filter(Boolean).map(e => e.anahtar) };
 
 }
-console.log(JSON.stringify(await cevaplar()));
+
+async function yerel(yol) {
+  const kok = resolve(yol);
+  const js = pathToFileURL(resolve(kok, 'js')).href;
+  const al = async ad => JSON.parse(await readFile(resolve(kok, 'data', ad + '.json'), 'utf8'));
+  globalThis.fetch = async yol => new Response(await readFile(resolve(kok, yol)));
+  const E = await import(js + '/eserler.js');
+  const G = await import(js + '/gorsel.js');
+  const B = await import(js + '/birlesme.js');
+  const R = await import(js + '/resim.js');
+  const tum = B.sanatcilariBirlestir(await al('sanatcilar'));
+  const hazir = await E.hazirOnbellek(), turler = await al('eser_turleri');
+  E.eserTurleriniAyarla(turler);
+  E.ortakAtiflariAyarla(hazir, new Map(tum.map(s => [s.id, s.ad])));
+  E.kopyalariAyarla(await al('kopya_eserler'));
+  E.cikarilanlariAyarla(await al('cikarilan_gorseller'));
+  E.duzeltmeleriAyarla(await al('eser_duzeltmeleri'));
+  E.eserAdlariniAyarla(E.adlariAl(await al('eser_adlari_tr')));
+  const sanatcilar = R.gorunurSanatcilar(tum, turler, hazir);
+  const akimlar = R.gorunurAkimlar(B.akimlariBirlestir(await al('akimlar')).sort((a,b) => a.sira-b.sira), sanatcilar);
+  const d = { sanatcilar, akimlar, harita: new Map(sanatcilar.map(s => [s.id,s])), kisaAdlar: (await al('kisa_adlar')).adlar };
+  const { temsilOlabilir } = await import(js + '/temsil.js');
+    // js/ekranlar/ortak.js enBilinen: bu örnekte kötü görsel işareti yok.
+    function enBilinen(eserler) {
+      const uygun = eserler.filter(e => temsilOlabilir(e) && G.secilenGorsel(e, {}) && e.pekistirme !== false);
+      return uygun.reduce((en,e) => !en || e.sl > en.sl ? e : en, null);
+    }
+  return cevaplar({ js, d, al, enBilinen });
+}
+
+async function canli() {
+  const { chromium } = createRequire(import.meta.url)('playwright-core');
+  const tarayici = await chromium.launch({ executablePath: process.env.GALERI_CHROMIUM });
+  try {
+    const sayfa = await tarayici.newPage({ bypassCSP: true });
+    await sayfa.goto('https://sanat-atlasi.pages.dev/', { waitUntil: 'domcontentloaded' });
+    await sayfa.waitForFunction(() => window.__atlas?.ilerleme, null, { timeout: 90000 });
+    // Aynı işlev, sitenin yüklediği katalog ve modül örnekleriyle çalışır.
+    await sayfa.addScriptTag({ content: 'window.galeriCevaplari = ' + cevaplar.toString() });
+    return await sayfa.evaluate(async () => {
+      const { d, enBilinen } = await import('/js/ekranlar/ortak.js');
+      const al = async ad => (await fetch('/data/' + ad + '.json')).json();
+      return window.galeriCevaplari({ js: '/js', d, al, enBilinen });
+    });
+  } finally { await tarayici.close(); }
+}
+
+console.log(JSON.stringify(process.argv[2] ? await yerel(process.argv[2]) : await canli()));

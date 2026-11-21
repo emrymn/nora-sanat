@@ -11,11 +11,14 @@ public struct GaleriKonusu: Identifiable, Sendable {
 public struct GaleriKatalogu: Sendable {
     public static let turler = ["eski_ahit", "yeni_ahit", "aziz", "mitoloji", "tarih_edebiyat", "diger"]
     public static let turAdlari = ["Eski Ahit", "Yeni Ahit", "Azizler", "Mitoloji", "Tarih ve edebiyat", "Diğer"]
-    public static let dosyalar = ["ikonografi.json", "basyapitlar.json", "akim_bilgi.json", "akim_ozellikleri.json"]
+    public static let dosyalar = ["ikonografi.json", "basyapitlar.json", "akim_bilgi.json", "akim_ozellikleri.json", "imzalar.json", "kunye.json", "tanima_notlari.json"]
     public let katalog: SiteKatalogu
     public let eserler: [String: [Eser]]
     public let konular: [GaleriKonusu]
     public let basyapitlar: [JSONDeger]
+    public let kunye: JSONDeger?
+    public let imzalar: JSONDeger?
+    public let tanimaNotlari: [String: String]
     public let bilgi: [String: [String: String]]
     public let ozellikler: [String: [String]]
 
@@ -23,6 +26,9 @@ public struct GaleriKatalogu: Sendable {
         self.katalog = k
         self.eserler = Dictionary(uniqueKeysWithValues: k.harita.keys.map { ($0, k.eserler($0)) })
         let ham = try dosyalar.mapValues { try JSONDeger.coz($0) }
+        self.kunye = ham["kunye.json"]?["kunye"]
+        self.imzalar = ham["imzalar.json"]?["imzalar"]
+        self.tanimaNotlari = GoruntuleyiciKurallari.notlariAl(ham["tanima_notlari.json"])
         func dolu(_ j: JSONDeger?) -> String? {
             guard let s = j?.metin, !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
             return s
@@ -49,7 +55,7 @@ public struct GaleriKatalogu: Sendable {
         let bilgiler = ham["akim_bilgi.json"]?["akimlar"]?.nesne
         var bilgi: [String: [String: String]] = [:]
         for ad in bilgiler?.anahtarlar ?? [] {
-            bilgi[ad] = Dictionary(uniqueKeysWithValues: ["donem", "yer", "metin"].compactMap { alan in
+            bilgi[ad] = Dictionary(uniqueKeysWithValues: (bilgiler?[ad]?.nesne?.anahtarlar ?? []).compactMap { alan in
                 bilgiler?[ad]?[alan]?.metin.map { (alan, $0) }
             })
         }
@@ -110,6 +116,19 @@ public struct GaleriKatalogu: Sendable {
         e.qid != "Q3947103" && !["q:Q3947103", "Q3947103"].contains(e.anahtar)
     }
 
+    public func konuKapagi(_ eserler: [Eser]) -> Eser? {
+        eserler.filter(temsil).max { $0.sl < $1.sl }
+    }
+
+    public func tipikKonular(_ ad: String, _ il: Ilerleme) -> [GaleriKonusu] {
+        let uyeler = Set(katalog.sanatcilar.filter { $0.akim == ad && $0.konu.map(il.islenenKume.contains) == true }.map(\.id))
+        let sayilar = konular.map { k in (k, k.baglar.filter { uyeler.contains($0.sanatci) }.count) }
+        return sayilar.filter { $0.1 > 0 }.sorted { a, b in
+            if a.1 != b.1 { return a.1 > b.1 }
+            return a.0.ad.compare(b.0.ad, locale: Locale(identifier: "tr")) == .orderedAscending
+        }.prefix(4).map { $0.0 }
+    }
+
     public func carkKapagi(_ ad: String, _ il: Ilerleme) -> Eser? {
         let uyeler = katalog.sanatcilar.filter { $0.akim == ad }
         if ad == "Gotik", let kapak = uyeler.lazy.compactMap({ eslestir("Q948745", $0.id) }).first { return kapak }
@@ -134,5 +153,21 @@ public struct GaleriKatalogu: Sendable {
             secimler.append((ozel ?? ilk, ilk.sl))
         }
         return secimler.sorted { $0.1 > $1.1 }.prefix(4).map { $0.0 }
+    }
+}
+
+// Kaynak: sanat-atlasi js/kunye.js @ a866b86
+extension GaleriKatalogu {
+    public static func sesUzantisi(_ k: JSONDeger?) -> String? {
+        if k?["ses"]?.dogru == true { return "mp3" }
+        return k?["okunus"]?.dogru == true ? "m4a" : nil
+    }
+
+    public static func okunacakAd(_ ad: String) -> String {
+        ad.replacingOccurrences(of: #"\s*\([^)]*\)"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\s+kardeşler\b"#, with: "", options: [.regularExpression, .caseInsensitive])
+            .replacingOccurrences(of: #"\s+ve\s+"#, with: ", ", options: [.regularExpression, .caseInsensitive])
+            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespaces)
     }
 }

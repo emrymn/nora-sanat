@@ -5,7 +5,8 @@ import XCTest
 
 final class GaleriTests: XCTestCase {
     private struct Salon: Decodable {
-        let ad: String
+        let ad, yy, cerceve: String
+        let konular: [String]
         let kapak: String?
         let dortlu: [String]
     }
@@ -20,6 +21,7 @@ final class GaleriTests: XCTestCase {
         let islenen: [Int]
         let ek, koleksiyon: [String]
         let bilgi: [String: [String: String]]
+        let kapaklar, adlar: [String: String]
         let oz, baglar: [String: [String]]
     }
 
@@ -44,8 +46,19 @@ final class GaleriTests: XCTestCase {
         XCTAssertEqual(g.bilgi, c.bilgi)
         XCTAssertEqual(g.ozellikler, c.oz)
         XCTAssertEqual(Set(g.konular.map(\.id)), Set(c.baglar.keys))
-        for k in g.konular { XCTAssertEqual(g.konuEserleri(k).map(\.anahtar), c.baglar[k.id], k.ad) }
+        for k in g.konular {
+            let eserler = g.konuEserleri(k)
+            XCTAssertEqual(eserler.map(\.anahtar), c.baglar[k.id], k.ad)
+            XCTAssertEqual(g.konuKapagi(eserler)?.anahtar ?? "", c.kapaklar[k.id], k.ad)
+        }
+        for (ad, soz) in c.adlar { XCTAssertEqual(GaleriKatalogu.okunacakAd(ad), soz) }
+        for x in ham["sesler"]?.dizi ?? [] {
+            XCTAssertEqual(GaleriKatalogu.sesUzantisi(x["k"]), x["url"]?.metin.map { ($0 as NSString).pathExtension })
+        }
         for salon in c.salonlar {
+            XCTAssertEqual(GaleriSergisi.yuzyillar(katalog.sanatcilar.filter { $0.akim == salon.ad }), salon.yy)
+            XCTAssertEqual(GaleriSergisi.cerceve(salon.ad), salon.cerceve)
+            XCTAssertEqual(g.tipikKonular(salon.ad, il).map(\.id), salon.konular)
             XCTAssertEqual(g.carkKapagi(salon.ad, il)?.anahtar, salon.kapak, salon.ad)
             XCTAssertEqual(g.dortlu(salon.ad, il).map(\.anahtar), salon.dortlu, salon.ad)
         }

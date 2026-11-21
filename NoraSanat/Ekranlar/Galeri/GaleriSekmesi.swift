@@ -139,6 +139,7 @@ struct GaleriSekmesi: View {
                             resim(e, g, boy: 800, kip: .fill).frame(height: 180)
                                 .clipShape(UnevenRoundedRectangle(topLeadingRadius: 80, topTrailingRadius: 80))
                         }
+                        Text(GaleriSergisi.yuzyillar(g.katalog.sanatcilar.filter { $0.akim == salon.ad })).font(.caption)
                         Text(salon.ad).font(Yazi.serif(30)).multilineTextAlignment(.center)
                         Text(durumYazisi(salon)).font(.caption)
                         if salon.acik { NavigationLink("Salona gir", value: GaleriYolu.akim(salon.ad)) }
@@ -146,6 +147,7 @@ struct GaleriSekmesi: View {
                 }
             }.tabViewStyle(.page(indexDisplayMode: .never)).frame(height: 320)
             if !salonlar.isEmpty {
+                GaleriCarki(salonlar: salonlar, sira: $sayfa)
                 HStack {
                     Button { sayfa -= 1 } label: { Image(systemName: "chevron.left") }.disabled(sayfa == 0).accessibilityLabel("Önceki akım")
                     Spacer()
@@ -185,6 +187,11 @@ struct GaleriSekmesi: View {
                 ForEach([true, false], id: \.self) { acik in
                     ForEach(uyeler.filter { ($0.konu.map(il.islenenKume.contains) == true) == acik }) { s in sanatciSatiri(s, il) }
                 }
+                let tipik = g.tipikKonular(ad, il)
+                if !tipik.isEmpty {
+                    Text("Tipik konular").font(.headline)
+                    ForEach(tipik) { k in NavigationLink(k.ad, value: GaleriYolu.konu(k.id)) }
+                }
                 if let bilgi = g.bilgi[ad] {
                     Text(bilgi["donem"] ?? "").font(.headline)
                     Text(bilgi["yer"] ?? "").font(.caption)
@@ -197,12 +204,14 @@ struct GaleriSekmesi: View {
                 sayfaGovdesi {
                     if yol == .sanatci(id) {
                         NavigationLink(s.akim, value: GaleriYolu.akim(s.akim))
-                        Text(s.yillar).font(.subheadline)
+                        SanatciKunyesi(s: s, g: g)
                         NavigationLink("Tüm eserler (\(eserler.count))", value: GaleriYolu.eserler(id))
                         ScrollView(.horizontal) {
                             LazyHStack { ForEach(eserler.indices, id: \.self) { i in kart(eserler, i, g).frame(width: 155) } }
                         }
-                        ForEach([s.taninma, s.kursNotu, s.anlatim].compactMap { $0 }, id: \.self) { Text($0) }
+                        let tanima = GoruntuleyiciKurallari.taninmaMetni(s, tanimaNotlari: g.tanimaNotlari)
+                        if !tanima.isEmpty { Text("Nasıl tanırım?").font(.headline); Text(tanima) }
+                        ForEach([s.kursNotu, s.anlatim].compactMap { $0 }, id: \.self) { Text($0) }
                     } else { izgara(eserler, g) }
                     if eserler.isEmpty { Text("Bu sanatçı için doğrulanmış görsel bulunamadı.") }
                 }.navigationTitle(s.ad)
@@ -211,7 +220,24 @@ struct GaleriSekmesi: View {
             let eserler = g.koleksiyon(il)
             sayfaGovdesi {
                 if eserler.isEmpty { Text("Henüz eser işaretlemedin. Bir eseri büyütüp sağ üstteki işarete dokun.") }
-                else { Text("\(eserler.count) eser"); izgara(eserler, g) }
+                else {
+                    Text("\(eserler.count) eser")
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                        ForEach(eserler.indices, id: \.self) { i in
+                            let e = eserler[i]
+                            let tip = GaleriSergisi.cerceve(g.katalog.harita[e.sid]?.akim)
+                            Button { acilan = AcilanEserler(eserler: eserler, sira: i) } label: {
+                                VStack(alignment: .center, spacing: 4) {
+                                    Image(systemName: "triangle").font(.caption).foregroundStyle(.secondary)
+                                    resim(e, g).frame(height: 135)
+                                        .border(cerceveRengi(tip), width: ["cita", "cita-kagit"].contains(tip) ? 2 : 6)
+                                    Text(e.gorunenAd).font(Yazi.serif(16))
+                                    Text(e.tarih).font(.caption)
+                                }
+                            }.buttonStyle(.plain)
+                        }
+                    }
+                }
             }.navigationTitle("Koleksiyonum")
         case .konular(let tur):
             sayfaGovdesi {
@@ -220,8 +246,13 @@ struct GaleriSekmesi: View {
                     let l = g.konular.filter { $0.tur == t }.sorted { $0.baglar.count > $1.baglar.count }
                     if (tur.isEmpty || tur == t) && !l.isEmpty {
                         NavigationLink(GaleriKatalogu.turAdlari[i], value: GaleriYolu.konular(t)).font(.headline).disabled(tur == t)
-                        ForEach(tur.isEmpty ? Array(l.prefix(2)) : l) { k in
-                            NavigationLink(value: GaleriYolu.konu(k.id)) { LabeledContent(k.ad, value: "\(k.baglar.count) eser") }
+                        ForEach(tur.isEmpty ? Array(l.prefix(6)) : l) { k in
+                            NavigationLink(value: GaleriYolu.konu(k.id)) {
+                                HStack {
+                                    if let kapak = g.konuKapagi(g.konuEserleri(k)) { resim(kapak, g, kip: .fill).frame(width: 68, height: 80) }
+                                    LabeledContent(k.ad, value: "\(k.baglar.count) eser")
+                                }
+                            }
                         }
                     }
                 }
@@ -229,12 +260,18 @@ struct GaleriSekmesi: View {
         case .konu(let id):
             if let k = g.konular.first(where: { $0.id == id }) {
                 sayfaGovdesi {
+                    let eserler = g.konuEserleri(k)
+                    if let kapak = g.konuKapagi(eserler), let i = eserler.firstIndex(of: kapak) {
+                        Button { acilan = AcilanEserler(eserler: eserler, sira: i) } label: {
+                            resim(kapak, g, boy: 800).frame(height: 235)
+                        }.accessibilityLabel(kapak.gorunenAd)
+                    }
                     Text(k.kaynak).font(.caption)
                     Text(k.ozet).font(.headline)
                     ForEach(k.hikaye, id: \.self) { Text($0) }
                     if !k.tanima.isEmpty { Text("Resimde nasıl tanınır?").font(.headline) }
                     ForEach(k.tanima, id: \.self) { Text($0) }
-                    izgara(g.konuEserleri(k), g)
+                    izgara(eserler, g)
                 }.navigationTitle(k.ad)
             }
         case .ara:
@@ -251,6 +288,15 @@ struct GaleriSekmesi: View {
                     }
                 }.navigationTitle(b["baslik"]?.metin ?? "")
             }
+        }
+    }
+
+    private func cerceveRengi(_ tip: String) -> Color {
+        switch tip {
+        case "beyaz", "tas": return .white
+        case "cita", "abanoz": return .black
+        case "cita-kagit", "tabernakel": return .brown
+        default: return Color(tema.renkler.pirinc)
         }
     }
 
