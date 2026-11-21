@@ -157,7 +157,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
-| T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | sürüyor (Claude, 2026-11-21) |
+| T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
@@ -746,7 +746,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Sorun: site (ya da yerli koddan çağrılan betik) `DeviceMotionEvent.requestPermission()` isteyince iOS'un "Harekete ve Yöne Erişmek İstiyor" penceresi çıkıyordu (C4b'nin ilk CI'ı, G2b'nin 5743b49 koşusu). `WebKabugu`'daki temsilci `.grant` dönüyordu ama `async` biçimiydi.
 - Yapılan: temsilci tamamlama bloklu biçime geçti. CI: `-yalnizSite -hareketIzniDene` ile site izin ister; sonuç `granted` olmalı ve ekranda pencere (OCR "Erişmek") olmamalı (`t5-hareket-izni.png`).
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · PR #17 · dal `claude/T5-hareket-izni`.
+- `NoraSanat/WebKabugu.swift`: `Koordinator.webView(_:requestDeviceOrientationAndMotionPermissionFor:initiatedByFrame:decisionHandler:)` → `.grant`. DEBUG `-hareketIzniDene`: sayfa yüklenince `requestPermission()` çağrılır, sonuç `tmp/hareket-izni`'ye yazılır.
+- CI (6a123c4 yeşil): "hareket izni: granted", görüntüde pencere yok. Bu adım artık her PR'da koşar; temsilci bozulursa CI kırmızı olur.
+- Not: eski `async` biçimin neden yetmediği kesin değil (iki koşuda pencere çıktı, her koşuda değil). Yeni biçimle izin isteği hiç bekletilmeden cevaplanıyor.
+- Telefonda: Bugün'de "Telefonu eğince tablo oynasın" açıkken uygulamayı kapatıp aç; izin sorusu çıkmamalı.
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**
