@@ -9,6 +9,8 @@ struct NoraSanatApp: App {
         #if DEBUG
         // -adres "#/ilerleme": site o sayfada açılır (CI ekran görüntüleri için)
         if let adres = Self.arguman("-adres") { Gezgin.shared.git(adres) }
+        // -benKaydir kurs: site (-yalnizSite) Ben'in o bölümüne kayar (C4b karşılaştırma görüntüleri)
+        BenKarsilastirma.siteyiKaydir()
         #endif
     }
 
