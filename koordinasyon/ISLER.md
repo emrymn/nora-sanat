@@ -158,6 +158,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | PR açık (#12) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
+| Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G3
@@ -638,3 +639,53 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Son karşılaştırma: sitedeki her ekranla yan yana ekran görüntüsü.
 
 **Devir notu:** –
+
+---
+
+## Yeni özellikler (Y): sitede olmayan, iPhone'a özgü
+
+Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine davranış testi ve CI görüntüsü yeter. Şerit iş verilince seçilir.
+
+### Y1 · Sesli rehberli bakış
+**Fikir (kullanıcı, 2026-11-21):** Bir tabloya dokunmadan, uzun ve yavaş bakmak. Rehber sesle anlatır, tablo kendiliğinden ayrıntıdan ayrıntıya süzülür.
+
+**Yapılacaklar:**
+- **Kaynak.** Var olan içerik kullanılır:
+  - G1'in ayrıntı noktaları (`eser_ayrintilari.json`, `AyrintiKurallari.noktaOdagi`);
+  - G4'ün resmin içinde yürüyüşü (`yuruyus.json`);
+  - eser notu ve hikâye (`eser_notlari.json`, `eser_hikayeleri.json`).
+- **Akış.**
+  - Açılışta tablonun tamamı ve künyesi okunur.
+  - Sonra her noktaya yavaşça yaklaşılır (20–40 sn), noktanın metni okunur, kısa bir sessizlik bırakılır.
+  - En sonda tablonun tamamına dönülür.
+  - Süre seçilir: 3 / 5 / 10 dk. Nokta yoksa yalnız not ve hikâyeyle, tablo üzerinde yavaş gezinerek.
+- **Ses.**
+  - `AVSpeechSynthesizer`, Türkçe ses; telefonda varsa "gelişmiş" ses seçilir.
+  - Arka planda kesintisiz çalar (ses oturumu).
+  - Kilit ekranında ve kulaklıkta duraklat / sonraki (`MPRemoteCommandCenter`, Now Playing'de tablonun resmi).
+  - Sessiz seçeneği: yalnız yazı altyazı gibi.
+- **Ekran.**
+  - Mod sürerken sönmez (`isIdleTimerDisabled`).
+  - Hareket azaltılmışsa yakınlaşma yerine yumuşak geçiş.
+  - StandBy'da ve AirPlay'de (televizyon) tam ekran.
+- **Bitiş.** "En çok neye baktın?" gibi kısa bir soru ya da o sanatçının tekrar kartı.
+- **Giriş yerleri.** Görüntüleyicide "Dinleyerek bak" düğmesi; günün tablosu; widget ve Siri ("günün tablosuna bak").
+
+**Devir notu:** –
+
+### Fikir havuzu (henüz iş değil)
+- Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
+- Spotlight'ta sanatçı ve eser araması
+- Kilit ekranı ve StandBy widget'ı
+- Kısayollar / Siri eylemleri
+- Günün tablosu duvar kâğıdı (Kısayollar otomasyonu)
+- Müzeye yaklaşınca bildirim
+- Paylaş menüsü
+- Paylaşılabilir eser kartı
+- Görsel Arama (Live Text)
+- Arka planda çevrimdışı indirme (C5 ile)
+- Etkileşimli widget
+- Kamerayla tablo tanıma (büyük)
+- Gerçek boyutta AR (büyük)
+- Mac'te açma
+- Apple Watch (büyük)
