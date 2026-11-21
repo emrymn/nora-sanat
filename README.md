@@ -95,6 +95,12 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Yerli çubukta Yolculuk'a dokun: site geri geliyor, hap kaymaya devam ediyor; çubuk zıplamıyor.
   - Simgeler, yazılar, Çalış'taki sayı sitedekiyle aynı. Parmağı çubukta gezdir: hap parmağı izliyor.
   - Ortadaki dişliye dokun (ya da yukarı çek): Hızlı ayarlar açılıyor. Gündüz'e geç: renkler değişiyor; Günlük kart +/− site Ayarlar'ında da aynı.
+- [ ] (C1c) Çalış hâlâ sitenin. Xcode'da Arguments'a `-ekran pekistir` ekleyip çalıştır (yerli pekiştirme, karışık tur):
+  - Hiç sorulmamış sanatçıda önce "Yeni sanatçı · önce tanış" geliyor: üç eser, şeritte dokununca vitrin değişiyor, vitrine dokununca görüntüleyici açılıyor. "Soruya geç": sorulan eser tanışmadakilerden biri değil.
+  - Kart sitedeki gibi: üstte × ve sayaç, parçalı çizgi, harfli dört şık, Bilmiyorum. Yanlış şık: yaprakta ipucu, "Karşılaştır" ve Ayrıntılar (tekrar kutusu, seviye).
+  - Aynı ikiliyi ikinci kez karıştır: yaprakta "Bu ikisini 2. kez karıştırdın" ve iki sanatçının ikişer eseri.
+  - Ayarlar'da Tanışma kapalıyken yeni sanatçıda tanışma gelmiyor.
+  - Tur bitince "x / n kart doğru", seviye atlayan dönem varsa listesi, "Bir tur daha".
 - [ ] (C4b) Ben artık yerli. Bugün'de sağ üstteki Ben düğmesine dokun:
   - Üstte kayan eser duvarı, "Ben" başlığı, büyük konu sayısı, Sanatçı / Kalıcı / Tekrar sütunları sitedeki gibi. Altta yerli sekme çubuğu, Bugün seçili.
   - Son 12 hafta karelerinde bugünkü kare çerçeveli; çalıştığın günler akımın renginde.
