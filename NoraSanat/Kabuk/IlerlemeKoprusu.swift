@@ -95,7 +95,9 @@ final class IlerlemeKoprusu {
         switch sonuc as? String {
         case "cakisma": throw Hata.cakisma
         case "kilitli": throw Hata.kilitli
-        case let s? where s.hasPrefix("tamam:"): return Int(s.dropFirst(6)) ?? 0
+        case let s? where s.hasPrefix("tamam:"):
+            KabukDurumu.shared.rozetiYenile()   // Çalış rozeti (T4): yazılan kart vadeyi değiştirmiş olabilir
+            return Int(s.dropFirst(6)) ?? 0
         default: throw Hata.siteYok
         }
     }
