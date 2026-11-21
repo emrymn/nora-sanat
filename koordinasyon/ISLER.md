@@ -562,7 +562,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Kapsam:** Liste (dönem sekmeleri), yakın okuma sayfası, yan yana karşılaştırma.
 
-**Devir notu:** Claude, 2026-11-21 · [PR #19](https://github.com/emrymn/nora-sanat/pull/19) · dal `claude/happy-keller-hfidv4` (oturumun zorunlu dalı). Dal G2b'nin (#15, onaylı, henüz birleşmedi) üstünde; #15 birleşince PR'da yalnız G3 kalır. Aynı anda C2 başka oturumda sürdüğü için `Ekranlar/Calis/`'e dokunulmadı.
+**Devir notu:** Claude, 2026-11-21 · [PR #19](https://github.com/emrymn/nora-sanat/pull/19) · dal `claude/happy-keller-hfidv4` (oturumun zorunlu dalı). G2b (#15) birleşti; main ile birleştirildi. Aynı anda C2 başka oturumda sürdüğü için `Ekranlar/Calis/`'e dokunulmadı.
 - **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
   - `js/basyapit.js`: `basyapitlariAl`, `basyapitBul`, `sanatcininBasyapitlari`, `eserEslestir`, `oneCikanlar`, `gorunenBaslik`
   - `js/basyapitSayfa.js`: hepsi (`sade`, `noktalariYerlestir`, `kirpim`, `sozlukAl`, `kunyeSatirlari`, `karsilastirmalariAl`, `terimIsaretle`, `dersBolumleri`, `okumaDakikasi`)
