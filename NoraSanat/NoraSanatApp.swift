@@ -30,6 +30,8 @@ struct NoraSanatApp: App {
                     KokGorunum()
                     IlerlemeOzeti(yaz: CommandLine.arguments.contains("-ilerlemeYaz"))
                 }
+            } else if Self.arguman("-ekran") == "goruntuleyici" {
+                GoruntuleyiciOnizleme()   // G1: ayrıntı noktası olan ilk eser
             } else if Self.arguman("-ekran") == "pekistir" {
                 ZStack {
                     KokGorunum().accessibilityHidden(true)

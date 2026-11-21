@@ -1,6 +1,6 @@
 // Kaynak: sanat-atlasi js/{devam,soruTurlari,oturum,leitner}.js @ a866b86
-// CI bu dosyayı XCTest hedefine alır. iOS uygulamasına test kodu bağlanmaz.
-#if PEKISTIRME_TESTI
+// C1b: ek turların (kurs bölümü, ikonografi) şıkları ve yarım turun kaydedilip sürdürülmesi.
+// Ek tur cevapları: Testler/kahin/pekistir_ek.mjs (sitenin a866b86 modülleri).
 import XCTest
 @testable import NoraCekirdek
 
@@ -64,4 +64,3 @@ final class PekistirmeEkranAkisiTests: XCTestCase {
         XCTAssertEqual(il.gunluk.kart, 1)
     }
 }
-#endif

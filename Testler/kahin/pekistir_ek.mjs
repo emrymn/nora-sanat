@@ -1,5 +1,6 @@
 // Kaynak: sanat-atlasi js/{soruTurlari,oturum,devam,leitner}.js @ a866b86
-// node pekistirmeKahini.mjs /yol/sanat-atlasi
+// C1b: ek tur şıkları ve yarım tur kuyruğu → PekistirmeKaydiTests'teki sabit değerler
+// node Testler/kahin/pekistir_ek.mjs /yol/sanat-atlasi
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
