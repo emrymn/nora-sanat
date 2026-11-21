@@ -36,10 +36,8 @@ jobs:
       - name: Çalış kâhinini canlı sitenin modülleriyle karşılaştır
         if: github.head_ref == 'is/C2-calis' || github.event_name == 'workflow_dispatch'
         run: |
-          git clone --depth 1 https://github.com/emrymn/sanat-atlasi.git "$RUNNER_TEMP/sa"
-          git -C "$RUNNER_TEMP/sa" fetch --depth 1 origin a866b86
-          git -C "$RUNNER_TEMP/sa" checkout a866b86
-          SA_DIZIN="$RUNNER_TEMP/sa" node Testler/kahin/calis.mjs > "$RUNNER_TEMP/calis-cevaplar.json"
+          npm install --prefix "$RUNNER_TEMP/calis-kahin" --no-audit --no-fund playwright@1.56.1
+          NODE_PATH="$RUNNER_TEMP/calis-kahin/node_modules" CALIS_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/calis.mjs > "$RUNNER_TEMP/calis-cevaplar.json"
           node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/calis/cevaplar.json" "$RUNNER_TEMP/calis-cevaplar.json"
 
       - name: Xcode sürümü
