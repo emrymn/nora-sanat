@@ -19,6 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Ben kâhinini canlı sitenin modülleriyle karşılaştır
+        if: github.head_ref == 'is/C4-ben' || github.event_name == 'workflow_dispatch'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/ben-kahin" --no-audit --no-fund playwright-core@1.56.1
+          NODE_PATH="$RUNNER_TEMP/ben-kahin/node_modules" BEN_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/ben.mjs > "$RUNNER_TEMP/ben-cevaplar.json"
+          node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ben/cevaplar.json" "$RUNNER_TEMP/ben-cevaplar.json"
+
       - name: Xcode sürümü
         run: xcodebuild -version
 
@@ -90,7 +97,7 @@ jobs:
           # ...sonra site kendi #/ilerleme sayfasında bunu göstermeli (kayıt kalıcı)
           sleep 3
           xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -adres "#/ilerleme"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/ilerleme"
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/6-site-ilerleme.png
           # T3: temanın renk ve yazı örnekleri (Gece, Gündüz; altta sitenin canlı teması)
@@ -103,11 +110,58 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
+          # T4: aynı adreste sitenin kendi çubuğu (8 ile yan yana: çubuk aynı yerde, aynı görünüşte olmalı)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -adres "#/gozat"
+          sleep 15
+          xcrun simctl io "$UDID" screenshot ekranlar/8b-site-cubuk.png
+          # T4: yerli çubuğun hızlı ayarlar yaprağı (sitedeki dişli dil)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -hizliAcik
+          sleep 15
+          xcrun simctl io "$UDID" screenshot ekranlar/8c-hizli-ayar.png
           # G1: tam ekran görüntüleyici (ayrıntı noktası olan ilk eser; katalog ve görsel ağdan gelir)
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici
           sleep 30
           xcrun simctl io "$UDID" screenshot ekranlar/9-goruntuleyici.png
+          # C1b: pekiştirme kartı. Kart hazır olduğunda görüntüsünü al. Yükleme ve hata ekranı başarı sayılmaz.
+          xcrun simctl terminate "$UDID" "$PAKET"
+          VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+          rm -f "$VERI/tmp/pekistirme-hazir"
+          xcrun simctl launch "$UDID" "$PAKET" -ekran pekistir
+          for _ in {1..90}; do
+            test -f "$VERI/tmp/pekistirme-hazir" && break
+            sleep 1
+          done
+          test -f "$VERI/tmp/pekistirme-hazir"
+          sleep 4
+          xcrun simctl io "$UDID" screenshot ekranlar/10-pekistirme.png
+          # C4: gerçek ilerleme ile yerli Ben ekranı ve ayarları
+          cat > "$RUNNER_TEMP/ben-ekran.swift" <<'SWIFT'
+          import Foundation
+          import Vision
+          let istek = VNRecognizeTextRequest()
+          istek.recognitionLanguages = ["tr-TR", "en-US"]
+          try VNImageRequestHandler(url: URL(fileURLWithPath: CommandLine.arguments[1])).perform([istek])
+          let metin = (istek.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+          print(metin)
+          let soz = CommandLine.arguments[2]
+          exit(metin.range(of: soz, options: [.caseInsensitive, .diacriticInsensitive]) == nil ? 1 : 0)
+          SWIFT
+          xcrun swiftc "$RUNNER_TEMP/ben-ekran.swift" -o "$RUNNER_TEMP/ben-ekran"
+          for SAYFA in ilerleme ayarlar; do
+            xcrun simctl terminate "$UDID" "$PAKET"
+            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme ben -adres "#/$SAYFA" -benSayfa "$SAYFA"
+            SOZ="Kursun neresindesin"
+            if [ "$SAYFA" = ayarlar ]; then SOZ="Gündüz rengi"; fi
+            for DENEME in {1..18}; do
+              sleep 5
+              xcrun simctl io "$UDID" screenshot "ekranlar/ben-$SAYFA.png"
+              if "$RUNNER_TEMP/ben-ekran" "ekranlar/ben-$SAYFA.png" "$SOZ"; then break; fi
+              if [ "$DENEME" = 18 ]; then exit 1; fi
+            done
+          done
           # G2: katalog, ilerleme ve disk önbelleğiyle akımlar çarkı
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -ekran galeri

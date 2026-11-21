@@ -1,0 +1,42 @@
+{
+  "acik": 3,
+  "kalici": 1,
+  "vade": 1,
+  "akim": [
+    7,
+    14,
+    1,
+    2,
+    3
+  ],
+  "zayif": [
+    "ben-a"
+  ],
+  "islenen": [
+    991,
+    993
+  ],
+  "kart": [
+    5,
+    100
+  ],
+  "renk": [
+    "gunduz",
+    "lapis"
+  ],
+  "yarim": true,
+  "eski": [
+    2,
+    3
+  ],
+  "yedekOzetleri": [
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      0
+    ]
+  ]
+}

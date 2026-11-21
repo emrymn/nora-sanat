@@ -90,6 +90,11 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] Bildirime dokununca Çalış sekmesi açılıyor.
 - [ ] Nora Sanat'ta Ayarlar → **Simge rozeti** açılabiliyor ve simgede sayı çıkıyor.
 - [ ] (T3) Uygulama eskisi gibi açılıyor: sekmeler, titreşim, Gece/Gündüz geçişi, saat çubuğunun rengi aynı. Gündüz'e geçince saat/pil çubuğu koyu yazıya dönüyor.
+- [ ] (T4) Uygulama yine eskisi gibi (henüz hiçbir sekme yerli değil). Xcode'da Scheme → Run → Arguments'a `-yerliSekme galeri` ekleyip çalıştır:
+  - Sitenin çubuğunda Galeri'ye dokun: çubuk yerinde kalıyor, yalnız hap Galeri'ye kayıyor (yerli Galeri yeri açılır).
+  - Yerli çubukta Yolculuk'a dokun: site geri geliyor, hap kaymaya devam ediyor; çubuk zıplamıyor.
+  - Simgeler, yazılar, Çalış'taki sayı sitedekiyle aynı. Parmağı çubukta gezdir: hap parmağı izliyor.
+  - Ortadaki dişliye dokun (ya da yukarı çek): Hızlı ayarlar açılıyor. Gündüz'e geç: renkler değişiyor; Günlük kart +/− site Ayarlar'ında da aynı.
 
 ## Geliştirme
 

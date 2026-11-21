@@ -143,25 +143,30 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T1 | Site verisi ve görsel adresleri | K | – | 1–2 | bitti (#4) |
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
-| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | denetimde (#8) |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bekliyor |
+| G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bitti (#8) |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bitti (#9), C1c bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | sürüyor (ChatGPT, 2026-11-21) |
+| C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
-| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bekliyor |
+| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
+| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bekliyor |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
+| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
+| Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G3
 - Bugün: G4
 - Yolculuk: G5
-- Çalış: C1 + C2 + C3
-- Ben/Ayarlar: C4
+- Çalış: C1 (C1a, C1b, C1c) + C2 + C3
+- Ben/Ayarlar: C4 + C4b (görünüş)
+- Herhangi bir sekme yerli olmadan önce: T4 (yerli sekme çubuğu)
 
 ---
 
@@ -411,6 +416,48 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Kart sitedeki gibi cevaptan önce hazırlanmalı. `hazirla` `sonEserler`'i ilerlemeye yazar.
   - `SoruTuru` (kurs bölümü ve ikonografi turları) yalnız okuyarak karşılaştırıldı. C1b ekranlarıyla birlikte kâhine eklenmeli.
 
+**Devir notu (C1b):** ChatGPT, 2026-11-21 · PR #9 · `is/C1b-pekistir-ekran`.
+- Kaynak: `sanat-atlasi` @ `a866b86`, `js/{oturum,devam,soruTurlari,titresim}.js` ve `js/ekranlar/{pekistir,soruTurlari}.js`.
+- C2 ve G5, `PekistirmeEkrani(ilkTur:)` ile ilgili turu açabilir. Çalış sekmesi C2 ve C3 tamamlanana kadar siteyi gösterir. DEBUG denemesi: `-ekran pekistir`.
+- Kart, ters soru, sanatçı ve akım cevap yaprakları, tur özeti ve yedi gün içinde yarım tura dönüş eklendi. Kart C1a ile cevaptan önce hazırlanır. Seçilen alt seviye yoksa `nil` iletilir. Skorlar, tekrar kuyruğu ve görünen kartın cevap adımı aynı `IlerlemeKoprusu.degistir` çağrısında yazılır. Yerli oturum `ayarlar.noraPekistirmeOturumu` alanında tutulur. Web’in IndexedDB’deki yarım turu ayrı kalır.
+- CI #45'te çekirdek, köprü, iOS derleme ve simülatör adımları geçti. `10-pekistirme.png` (G1'den sonra yeniden numaralandı) incelendi: gerçek eser, kart sayacı, dört sanatçı ve Bilmiyorum düğmesi görünür. Klasörler dışındaki bağlantılar DEBUG açılışı, CI ve bu devir notudur.
+- Kâhin: `a866b86` sürümünün JS modülleriyle kurs bölümü ve ikonografi şıkları, aday sırası, yanlış skor ve devam kuyruğu üretildi. `PekistirmeKaydiTests` (paket testlerinde) bunları ve iki sorunun arasında/cevap yaprağında kapatıp sürdürmeyi karşılaştırır.
+- Telefonda: karışık turda Bilmiyorum'a dokun, akım sorusunda uygulamayı kapat, yeniden açıp sürdür. Eser ve şıklar korunmalı; tur sonunda kart bir kez sayılmalı.
+
+**Denetim (C1b):** Claude, 2026-11-21 — **onay, eksikler C1c'ye** (PR #9 yorumu).
+- Paket testleri geçti (65).
+- `pekistir_ek.mjs` sitenin a866b86 modülleriyle çalıştırıldı, testteki değerlerle aynı.
+- Akış C1a API'sini doğru kullanıyor: iki aşamalı karışık kart (skor akım cevabından sonra tek yazmada), ters kart, Bilmiyorum, ek turlar, yarım tur.
+- `ayarlar.noraPekistirmeOturumu` güvenli: site bilinmeyen ayarları korur (`js/depo.js` `ilerlemeDogrula`: `{ ...t.ayarlar, ...v.ayarlar }`).
+- Düzeltmeler:
+  - Test dosyası uygulama klasöründen paket testlerine taşındı. CI'daki kopyalama ve `-DPEKISTIRME_TESTI` kaldırıldı; artık Linux'ta da çalışıyor.
+  - Kâhin paket kaynaklarından `Testler/kahin/pekistir_ek.mjs`'e taşındı.
+  - CI görüntüsü G1'den sonra 10 numara oldu.
+- **Eksik (sitenin `js/ekranlar/pekistir.js` akışına göre) → C1c.** Ekran yalnız DEBUG'da açıldığı için telefonda etkisi yok, ama Çalış yerli olmadan önce tamamlanmalı.
+
+### C1c · Pekiştirme: tanışma ve eksik adımlar (ChatGPT)
+**Site kaynakları:** `js/ekranlar/pekistir.js` (`kartCiz`, `tanismaGoster`, `konuTanismaGoster`, `tanismaCiz`, `baskaEser`, `ipucuMetni`, `karsiSeritHtml`, `seviyeTamamHtml`, `seviyeHaplari`, `ozetCiz`, `sergiyeEkle`), `js/ogrenme.js` (`tanismaGerekirMi`, `tanismaEserleri`).
+
+**Yapılacaklar** (C1b'nin ekranına, aynı klasörlerde):
+- **Tanışma.**
+  - Karışık, dönem ve hatalar turunda yeni sanatçının (`tanismaGerekirMi`) kartından önce "Yeni sanatçı · önce tanış" ekranı.
+  - Tanışmada üç eser gösterilir (`tanismaEserleri`); bu eserler o turda sorulmaz (`PekistirmeKarti.hazirla(tanismadaGorulen:)`).
+  - Konu turunda `plan.tanisma` arka arkaya, turdan önce.
+  - `ayarlar.tanisma == false` ise tanışma yok.
+- **Başka eser** düğmesi (`baskaEser`).
+- **Cevap yaprağı.**
+  - İpucu ("Nasıl tanırım?", `tanima_notlari.json`).
+  - Karıştırılan ikili şeridi (`karsiSeritHtml`).
+- **Seviye.**
+  - Dönem turunda alt seviye seçimi (`seviyeHaplari`).
+  - Seviye atlayınca gösterim (`seviyeTamamHtml`).
+- **Tur özeti.** Sitedeki gibi: oran, sergi, geçilen seviyeler.
+- **Sayaç.** Eseri bulunamayan kart sitede `ilerle` ile atlanır ve sayaçta kalır; `simdikiniAtla` kartı kuyruktan siliyor. Sayaç sitedeki gibi olmalı.
+- **Görünüş (K5).** Kart ve cevap yaprağı sitenin kartına benzesin: tipografi, kart çerçevesi, şık düğmeleri, ilerleme çubuğu. CI'da aynı turun sitedeki görüntüsüyle yan yana karşılaştır.
+- Kâhin: tanışma eserleri ve `tanismadaGorulen` ile kart seçimi `pekistir_turlari.mjs` kalıbıyla.
+
+**Devir notu:** –
+
 ### G2 · Galeri (ChatGPT)
 **Site kaynakları:**
 - `js/ekranlar/gozat.js`, `js/ekranlar/akim.js` + `js/akim.js`, `js/ekranlar/arama.js` + `js/arama.js`
@@ -468,7 +515,99 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Bütün ayarlar.
 - Yedekle ve geri yükle: **sitenin JSON biçimiyle aynı**, eski yedekler çalışmalı.
 
+**Devir notu:** ChatGPT, 2026-11-21 — PR #10, `is/C4-ben`.
+- Kaynak: `sanat-atlasi` @ `a866b86`; `js/ekranlar/{ilerleme,pano,ayarlar,hizliAyar}.js`, `js/{depo,devam,kurs,gunduzRenk,rozet,yenilikler}.js`.
+- Ben yerli sekmedir. İlerleme kurs konularını ve toplu işaretlemeyi, açık sanatçıları, kalıcıları, vadeyi, çalışma geçmişini, akım doğruluklarını, zayıfları ve karıştırılanları gösterir. Normal okumalar ve değişiklikler T2 köprüsünden geçer; renkler ve yazılar T3 temasındandır.
+- Ayarlar günlük kart, tanışma, tema, gündüz rengi, yazı boyutu, hareket, rozet, eğim, titreşim, günün sanatçısı, geliştirici modu ve cihaz araçlarını içerir. C5'e kadar çevrimdışı görsellerin indirme, durdurma ve silme işlemleri mevcut site deposunda yürür.
+- Yedek panoya veya JSON dosyasına alınır. Yapıştırılan ya da dosyadan seçilen eski/yeni yedeği sitenin `yedekCoz` işlevi doğrular. Konu ve skor sayıları gösterilip onay alınır. Onaydan beri kayıt değişmişse geri yükleme durur. Yarım oturum da sitenin doğrulamasından ve IndexedDB yolundan geçer.
+- `Testler/kahin/ben.mjs` geçici tarayıcı profilinde gerçek siteyi çalıştırır. Pano, zayıf sırası, konu/ayar değişiklikleri, eski ve zarflı yedek, yarım oturum, hatalı JSON yapısı, çakışma ve geliştirici modundan dönüş sınanır. `BenTests` aynı örnekleri Swift kurallarına uygular.
+- Telefonda: Ben'den bir konuyu işaretle; Ayarlar'dan gündüz rengini değiştir. Yedek al, bir ayarı değiştir, yedeği denetle ve onayla; önceki ayar ve konu sayısı geri gelmeli. DEBUG: `-adres "#/ilerleme"` veya `-adres "#/ayarlar" -benSayfa ayarlar`. CI görüntüleri: `ben-ilerleme.png`, `ben-ayarlar.png`. T2'nin web görüntüsü ayrı alınır ve `4-url-calis` en sondadır.
+
+**Denetim (C4):** Claude, 2026-11-21 — **onay; Ben henüz yerli değil, görünüş C4b'ye** (PR #10 yorumu).
+- Paket testleri geçti.
+- `ben.mjs` canlı sitede çalıştırıldı, cevaplar aynı. Kâhin Swift dosyasındaki yedek, geri yükleme ve geliştirici betiklerini sitenin içinde gerçekten çalıştırıyor.
+- Geri yükleme güvenli: yedeği sitenin `yedekCoz`'u çözüyor, onaydan beri `kayitNo` değiştiyse duruyor.
+- **Görünüş K5'e uymuyor.** CI görüntülerinde Ben standart iOS listesi: sistem başlığı, sitenin kolajı, büyük rakamları ve tipografisi yok. Telefonda Ben'e her girişte görünür bir gerileme olurdu.
+  - Bu yüzden `Gecis.tasinanlar` boş kaldı; yerli Ben yalnız DEBUG `-yerliSekme ben` ile açılıyor (CI görüntüleri böyle alınıyor).
+  - Görünüş **C4b**'de düzeltilecek.
+- Yerli sekme çubuğu (T3) sitenin yüzen çubuğuna benzemiyor → **T4** (Claude). Hiçbir sekme T4'ten önce yerli olmaz.
+
+### C4b · Ben: görünüş sitedeki gibi (ChatGPT)
+**Site kaynakları:** `js/ekranlar/{ilerleme,pano,ayarlar}.js`, `css/app.css` (Ben ve ayarlar bölümleri), sitede `TASARIM_DILI.md`.
+
+**Yapılacaklar:**
+- C4'ün ekranları (`NoraSanat/Ekranlar/Ben/`) sitenin Ben ve Ayarlar sayfalarına benzesin:
+  - üstte eser kolajı;
+  - "Kursun neresindesin" büyük serif rakamlar;
+  - Sanatçı / Kalıcı / Tekrar sütunları;
+  - son 12 hafta ızgarası;
+  - bölüm başlıkları sitenin küçük büyük harfli etiketleri gibi.
+- Yazılar `Yazi.serif/sans/okuma`, renkler `TemaDeposu`.
+- Karşılaştırma görüntüsü: CI'da aynı adreste sitenin (`-yalnizSite`) ve yerli ekranın görüntüsü yan yana alınsın.
+- Bitince `Gecis.tasinanlar = BenGecisi.sekmeler`; ama T4 bitmeden değil.
+
 **Devir notu:** –
+
+### T4 · Yerli sekme çubuğu sitenin çubuğu gibi (Claude)
+- `KokGorunum`'un yerli çubuğu sitenin yüzen, yuvarlak köşeli çubuğuna benzesin: aynı simgeler (SVG'den), aynı yerleşim, Çalış rozeti.
+- Siteden yerliye geçişte çubuk yerinde kalıyormuş gibi görünsün.
+
+**Devir notu:** Claude, 2026-11-21 · PR #12 · dal `claude/cool-albattani-hix2af` (oturumun zorunlu dalı).
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/ortak.js`: `SEKMELER`, `SEKME_IKONU`, `sekmeleriCiz`, `sekmeRozeti`, `sekmeSurukle`
+  - `js/ekranlar/hizliAyar.js`: dişli dil ve yaprak
+  - `js/tasarim.js`: `YOLLAR`, `ikon()`
+  - `css/app.css`: `.sekmeler`, `#sekmeler` (İş 190), `.sekme-isaret`, `.sekme-rozet`, `.hizli-dil`, `.hizli-yaprak`, `--sekme-h`, `--sekme-alt`
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/ortak.js js/ekranlar/hizliAyar.js js/tasarim.js css/app.css`
+- **Yapılanlar:**
+  - Çekirdek `Gecis/SekmeCubugu.swift`:
+    - `SekmeCubugu.sekmeler`: sitedeki 4 sekme. Ben seçiliyken sitedeki gibi Bugün seçili görünür.
+    - `Simge`: sitenin SVG'leri, olduğu gibi kopyalandı.
+    - `Yerlesim`: çubuk, sekmeler, simge, dil ve rozetin yeri; CSS'in hesabıyla, güvenli alan dahil.
+    - `enYakin` / `surukle`: dokunuş ve sürükleme.
+  - Çekirdek `HizliAyar`: tema ve hareket seçenekleri, günlük kart 5…100.
+  - Çekirdek `Gecis/SVGYolu.swift`: küçük SVG okuyucu (path/rect/circle; yaylar kübik eğriye çevrilir).
+  - `Kabuk/YerliSekmeCubugu.swift`:
+    - Cam çubuk (`--tab-bg` + blur, mürekkep %14 kenar), kayan hap (0.45 s yaylı eğri).
+    - Parmakla sürükleme, seçili simgede zıplama, Çalış rozeti, dişli dil.
+    - Hareket kapalıysa ya da iOS'ta azaltılmışsa animasyon kısalır.
+  - `Kabuk/HizliAyarYapragi.swift`: Tema, Hareket, Günlük kart ±5, Bütün ayarlar (`#/ayarlar`).
+  - `Kabuk/SekmeCubuguKoprusu.swift`: rozet (`turBilgisi('karisik').toplam`) ve hızlı ayar okuma/yazma betikleri. Sitenin yaprağı gibi yazar: `kaydet()`, `temaUygula()`.
+  - `KokGorunum`:
+    - Sistemin sekme çubuğu gizli (`.toolbar(.hidden, for: .tabBar)`).
+    - Her yerli sekmenin altında çubuk kadar boşluk (`safeAreaInset`).
+    - Yerli çubuk site görünürken de kurulu ve saydam: hap sitenin seçimini izler, yerliye geçince oradan kayar.
+  - `Gecis.sekmeyeGecBetigi` (`Gezgin.sekmeyeGec(s, onceki:, bas:)`): yerliden siteye geçerken sitenin hapı önce hareketsiz yerli hapın yerine konur, sonra yeni sekmeye kayar. Site zaten o sekmedeyse (`bas: false`) yalnız hap kayar.
+  - `KabukDurumu`:
+    - `calisRozeti`, `rozetiYenile()`: adres değişince, site yüklenince, ilerleme yazılınca ve uygulama öne gelince yenilenir. Site hazır değilse saniyede bir yeniden dener.
+    - `yenidenDokunma[sekme]`: açık sekmeye yeniden dokunma sayacı.
+    - `cubuguGizle` / `.sekmeCubuguGizli(_:sekme:)`, `hizliAcik`.
+  - SF Symbols simgeleri (`Sekme.simge`) kaldırıldı.
+- **Kâhin:**
+  - `Testler/kahin/sekme_cubugu.mjs` → `Ornekler/sekme_cubugu/cevaplar.json`. İçinde:
+    - simgelerin işaretlemesi ve `getBBox()` sınır kutusu;
+    - 393×852, 320×568, 430×932, 820×1180'de çubuk, sekmeler, hap, simge, dil ve rozet yerleri;
+    - hızlı ayar seçenekleri, günlük kart sınırları (yaprağın kendi + / − düğmeleriyle).
+    - Ayrıca Swift'teki köprü betiklerini canlı sitede çalıştırır: rozet sitenin rozetiyle aynı (8 = 8); tema, hareket ve kart yazılıyor, `localStorage`'a gidiyor.
+  - `SekmeCubuguTests` (7 test): sınır kutuları 0,01, yerleşim 0,01 içinde siteyle aynı.
+  - `kabuk_koprusu.mjs` artık `Gecis.sekmeyeGecBetigi`'ni dosyadan okuyor. Hapın 3'ten 2'ye ve `bas: false` ile 0'dan 2'ye kaydığını sınıyor; geçti.
+  - Linux'ta paket testleri: 75 test, 1'i yalnız canlı modda (atlanıyor).
+- **CI:** 784596e yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44873522825).
+  - Yeni görüntüler: `8b-site-cubuk.png` (aynı adreste sitenin çubuğu) ve `8c-hizli-ayar.png`.
+  - `8-yerli-sekme.png` ile `8b`'nin alt kısımları yan yana bakıldı: çubuk, simgeler, hap, rozet ve dil aynı yerde ve aynı görünüşte.
+  - `ben-ilerleme.png`'de yerli çubukta Bugün seçili (sitedeki gibi).
+  - Düzeltmeler: ilk koşuda rozet yoktu (site hazır olmadan soruluyordu); ikincide rozet simgenin üstündeydi. İkisi düzeltildi.
+- **Kalan / sonraki işler için:**
+  - Hiçbir sekme hâlâ yerli değil. T4 bitti, artık `Gecis.tasinanlar`'a sekme eklenebilir.
+  - Yerli ekranlar:
+    - Açık sekmeye yeniden dokunmayı `.onChange(of: durum.yenidenDokunma[.galeri])` ile dinleyip köke dönsün ya da başa kaysın (sitede en başa kaydırır).
+    - Sitede çubuğun gizlendiği sayfalarda (sekmesiz: karşılaştırma, pekiştirme kartı) `.sekmeCubuguGizli(true, sekme: …)` kullansın. `fullScreenCover` zaten çubuğun üstüne çıkar.
+  - **C4b için:** Sitede `#/ayarlar`'da dişli dil gizli (`HizliAyar.dilGorunur`). Yerli Ben'in Ayarlar sayfası kabuğa görünmüyor; Ben, Ayarlar açıkken kabuğa bildirmeli. Önerim: `KabukDurumu`'na küçük bir `dilGizli` bayrağı. Şimdilik dil orada da görünüyor.
+  - Yürüyüşte (G4) sitede çubuk aşağı kayıp kaybolur (`yuruyus-icinde`). Bu `cubuguGizle` ile yapılabilir; kayma animasyonu henüz yok.
+  - Gündüz'de çubuğun gölgesi yaklaşık: `--golge-rgb` yerine mürekkep %14. Renkli Gündüz'de çubuk sitenin `--tab-bg`'sini `TemaKoprusu`'ndan alıyor.
+- **Tuzaklar:**
+  - Hızlı ayar yazımı sitenin `d.ilerleme`'sine doğrudan yazar (sitenin yaprağı gibi), `IlerlemeKoprusu.degistir`'den geçmez. Kayıt kilidini site `kaydet()`'te kendisi denetler.
+  - Yerli çubuk yazıları Dinamik Yazı'yla büyümez (sitede de sabit 11 px); çubuk yüksekliği sabit 62.
 
 ### G5 · Yolculuk + Zaman (ChatGPT)
 **Site kaynakları:**
@@ -500,3 +639,60 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Son karşılaştırma: sitedeki her ekranla yan yana ekran görüntüsü.
 
 **Devir notu:** –
+
+
+**Denetim:** Claude, 2026-11-21 — **onay** (PR #12 yorumu).
+- Linux'ta 75 test geçti.
+- `sekme_cubugu.mjs` ve `kabuk_koprusu.mjs` canlı sitede yeniden çalıştırıldı: cevaplar aynı. Rozet köprüsü sitenin rozetiyle aynı (8 = 8).
+- CI: `8-yerli-sekme` ile `8b-site-cubuk` alttan kesilip üst üste kondu; simgeler, yerleşim, hap, Çalış rozeti ve dişli dil birebir. `8c-hizli-ayar` sitenin üslubunda.
+- 1–10 ve Ben görüntüleri eskisi gibi. Telefonda hiçbir sekme yerli değil, uygulama aynı.
+- Hızlı ayar yaprağı kapsam dışı değil: sitenin çubuğundaki dişli dil onu açıyor.
+---
+
+## Yeni özellikler (Y): sitede olmayan, iPhone'a özgü
+
+Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine davranış testi ve CI görüntüsü yeter. Şerit iş verilince seçilir.
+
+### Y1 · Sesli rehberli bakış
+**Fikir (kullanıcı, 2026-11-21):** Bir tabloya dokunmadan, uzun ve yavaş bakmak. Rehber sesle anlatır, tablo kendiliğinden ayrıntıdan ayrıntıya süzülür.
+
+**Yapılacaklar:**
+- **Kaynak.** Var olan içerik kullanılır:
+  - G1'in ayrıntı noktaları (`eser_ayrintilari.json`, `AyrintiKurallari.noktaOdagi`);
+  - G4'ün resmin içinde yürüyüşü (`yuruyus.json`);
+  - eser notu ve hikâye (`eser_notlari.json`, `eser_hikayeleri.json`).
+- **Akış.**
+  - Açılışta tablonun tamamı ve künyesi okunur.
+  - Sonra her noktaya yavaşça yaklaşılır (20–40 sn), noktanın metni okunur, kısa bir sessizlik bırakılır.
+  - En sonda tablonun tamamına dönülür.
+  - Süre seçilir: 3 / 5 / 10 dk. Nokta yoksa yalnız not ve hikâyeyle, tablo üzerinde yavaş gezinerek.
+- **Ses.**
+  - `AVSpeechSynthesizer`, Türkçe ses; telefonda varsa "gelişmiş" ses seçilir.
+  - Arka planda kesintisiz çalar (ses oturumu).
+  - Kilit ekranında ve kulaklıkta duraklat / sonraki (`MPRemoteCommandCenter`, Now Playing'de tablonun resmi).
+  - Sessiz seçeneği: yalnız yazı altyazı gibi.
+- **Ekran.**
+  - Mod sürerken sönmez (`isIdleTimerDisabled`).
+  - Hareket azaltılmışsa yakınlaşma yerine yumuşak geçiş.
+  - StandBy'da ve AirPlay'de (televizyon) tam ekran.
+- **Bitiş.** "En çok neye baktın?" gibi kısa bir soru ya da o sanatçının tekrar kartı.
+- **Giriş yerleri.** Görüntüleyicide "Dinleyerek bak" düğmesi; günün tablosu; widget ve Siri ("günün tablosuna bak").
+
+**Devir notu:** –
+
+### Fikir havuzu (henüz iş değil)
+- Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
+- Spotlight'ta sanatçı ve eser araması
+- Kilit ekranı ve StandBy widget'ı
+- Kısayollar / Siri eylemleri
+- Günün tablosu duvar kâğıdı (Kısayollar otomasyonu)
+- Müzeye yaklaşınca bildirim
+- Paylaş menüsü
+- Paylaşılabilir eser kartı
+- Görsel Arama (Live Text)
+- Arka planda çevrimdışı indirme (C5 ile)
+- Etkileşimli widget
+- Kamerayla tablo tanıma (büyük)
+- Gerçek boyutta AR (büyük)
+- Mac'te açma
+- Apple Watch (büyük)

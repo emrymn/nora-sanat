@@ -1,7 +1,7 @@
 // Kaynak: sanat-atlasi js/oturum.js, js/turlar.js, js/bolum.js, js/ekranlar/pekistir.js @ a866b86
 import Foundation
 
-public enum PekistirmeTuru: Equatable {
+public enum PekistirmeTuru: Equatable, Codable {
     case karisik
     /// nil bütün dönemleri kronolojik sırayla sorar.
     case donem(String?)
@@ -10,7 +10,7 @@ public enum PekistirmeTuru: Equatable {
     case hatalar
 }
 
-public enum BolumSeviyesi: Equatable {
+public enum BolumSeviyesi: Equatable, Codable {
     case kolay, orta, zor
     /// Grup sıfırdan başlar. nil bütün bölümün tanışmasıdır.
     case tanitim(orta: Bool, grup: Int?)
@@ -27,7 +27,7 @@ func karistir<T>(_ liste: [T], _ rastgele: PekistirmeRastgele) -> [T] {
     return sonuc
 }
 
-public struct TurPlani {
+public struct TurPlani: Codable {
     public var kartlar: [String] = []
     public var tanisma: [String] = []
     public var esler: [String: String] = [:]

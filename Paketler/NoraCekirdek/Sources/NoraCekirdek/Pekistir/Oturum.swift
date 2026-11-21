@@ -1,8 +1,8 @@
 // Kaynak: sanat-atlasi js/oturum.js, js/leitner.js, js/ekranlar/pekistir.js @ a866b86
 import Foundation
 
-public struct PekistirmeOturumu {
-    public struct Kart: Equatable {
+public struct PekistirmeOturumu: Codable {
+    public struct Kart: Equatable, Codable {
         public let id: String
         public let tekrar: Bool
     }
@@ -38,6 +38,11 @@ public struct PekistirmeOturumu {
             }
         }
         konum += 1
+    }
+
+    /// Eseri bulunamayan kartı skora yazmadan çıkarır.
+    public mutating func simdikiniAtla() {
+        if simdiki != nil { kuyruk.remove(at: konum) }
     }
 
     public enum KartCevabi {
