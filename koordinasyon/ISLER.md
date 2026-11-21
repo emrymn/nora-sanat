@@ -155,7 +155,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bekliyor |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
-| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | PR açık (#12) |
+| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
@@ -640,6 +640,13 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
+
+**Denetim:** Claude, 2026-11-21 — **onay** (PR #12 yorumu).
+- Linux'ta 75 test geçti.
+- `sekme_cubugu.mjs` ve `kabuk_koprusu.mjs` canlı sitede yeniden çalıştırıldı: cevaplar aynı. Rozet köprüsü sitenin rozetiyle aynı (8 = 8).
+- CI: `8-yerli-sekme` ile `8b-site-cubuk` alttan kesilip üst üste kondu; simgeler, yerleşim, hap, Çalış rozeti ve dişli dil birebir. `8c-hizli-ayar` sitenin üslubunda.
+- 1–10 ve Ben görüntüleri eskisi gibi. Telefonda hiçbir sekme yerli değil, uygulama aynı.
+- Hızlı ayar yaprağı kapsam dışı değil: sitenin çubuğundaki dişli dil onu açıyor.
 ---
 
 ## Yeni özellikler (Y): sitede olmayan, iPhone'a özgü
