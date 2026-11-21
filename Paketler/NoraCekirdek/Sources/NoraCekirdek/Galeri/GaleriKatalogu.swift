@@ -11,11 +11,12 @@ public struct GaleriKonusu: Identifiable, Sendable {
 public struct GaleriKatalogu: Sendable {
     public static let turler = ["eski_ahit", "yeni_ahit", "aziz", "mitoloji", "tarih_edebiyat", "diger"]
     public static let turAdlari = ["Eski Ahit", "Yeni Ahit", "Azizler", "Mitoloji", "Tarih ve edebiyat", "Diğer"]
-    public static let dosyalar = ["ikonografi.json", "basyapitlar.json", "akim_bilgi.json", "akim_ozellikleri.json", "imzalar.json", "kunye.json", "tanima_notlari.json"]
+    public static let dosyalar = ["ikonografi.json", "basyapitlar.json", "akim_bilgi.json", "akim_ozellikleri.json", "imzalar.json", "kunye.json", "tanima_notlari.json", "tanima_kirpimlari.json"]
     public let katalog: SiteKatalogu
     public let eserler: [String: [Eser]]
     public let konular: [GaleriKonusu]
     public let basyapitlar: [JSONDeger]
+    public let konuKirpimlari, sanatciKirpimlari: [String: [TanimaKirpimi]]
     public let kunye: JSONDeger?
     public let imzalar: JSONDeger?
     public let tanimaNotlari: [String: String]
@@ -26,6 +27,8 @@ public struct GaleriKatalogu: Sendable {
         self.katalog = k
         self.eserler = Dictionary(uniqueKeysWithValues: k.harita.keys.map { ($0, k.eserler($0)) })
         let ham = try dosyalar.mapValues { try JSONDeger.coz($0) }
+        self.konuKirpimlari = TanimaKirpimi.oku(ham["tanima_kirpimlari.json"], konu: true)
+        self.sanatciKirpimlari = TanimaKirpimi.oku(ham["tanima_kirpimlari.json"], konu: false)
         self.kunye = ham["kunye.json"]?["kunye"]
         self.imzalar = ham["imzalar.json"]?["imzalar"]
         self.tanimaNotlari = GoruntuleyiciKurallari.notlariAl(ham["tanima_notlari.json"])

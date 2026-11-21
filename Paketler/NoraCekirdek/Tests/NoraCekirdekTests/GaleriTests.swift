@@ -21,6 +21,7 @@ final class GaleriTests: XCTestCase {
         let islenen: [Int]
         let ek, koleksiyon: [String]
         let bilgi: [String: [String: String]]
+        let kirpSonuc: [String: [String: [String]]]
         let kapaklar, adlar: [String: String]
         let oz, baglar: [String: [String]]
     }
@@ -31,7 +32,7 @@ final class GaleriTests: XCTestCase {
         let c = try JSONDecoder().decode(Cevaplar.self, from: veri)
         let ham = try JSONDeger.coz(veri)
         var dosyalar: [String: Data] = [:]
-        for (dosya, alan) in [("akim_bilgi.json", "bilgiGirdi"), ("akim_ozellikleri.json", "ozGirdi"), ("basyapitlar.json", "basGirdi")] {
+        for (dosya, alan) in [("akim_bilgi.json", "bilgiGirdi"), ("akim_ozellikleri.json", "ozGirdi"), ("basyapitlar.json", "basGirdi"), ("tanima_kirpimlari.json", "kirpGirdi")] {
             dosyalar[dosya] = Data(try XCTUnwrap(ham[alan]).jsonMetni.utf8)
         }
         let konuURL = try XCTUnwrap(Bundle.module.url(forResource: "Ornekler/goruntuleyici/ikonografi", withExtension: "json"))
@@ -50,6 +51,12 @@ final class GaleriTests: XCTestCase {
             let eserler = g.konuEserleri(k)
             XCTAssertEqual(eserler.map(\.anahtar), c.baglar[k.id], k.ad)
             XCTAssertEqual(g.konuKapagi(eserler)?.anahtar ?? "", c.kapaklar[k.id], k.ad)
+        }
+        for (tur, bolum) in [("konular", g.konuKirpimlari), ("sanatcilar", g.sanatciKirpimlari)] {
+            let eslesen = bolum.mapValues { kirpimlar in
+                kirpimlar.map { k in k.eser(g.eserler[k.sanatci] ?? [], katalog: katalog, il: il)?.anahtar ?? "" }
+            }
+            XCTAssertEqual(eslesen, c.kirpSonuc[tur])
         }
         for (ad, soz) in c.adlar { XCTAssertEqual(GaleriKatalogu.okunacakAd(ad), soz) }
         for x in ham["sesler"]?.dizi ?? [] {

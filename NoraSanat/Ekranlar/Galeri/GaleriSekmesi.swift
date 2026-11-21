@@ -4,10 +4,13 @@ import SwiftUI
 
 enum GaleriYolu: Hashable {
     case akim(String), sanatci(String), eserler(String), konular(String), konu(String), ara, koleksiyon, okuma(String)
+    case akimKarsilastir(String, String), sanatciKarsilastir(String, String)
     init?(adres: String) {
         let p = adres.drop(while: { $0 == "#" || $0 == "/" }).split(separator: "/").map { String($0).removingPercentEncoding ?? String($0) }
         let id = p.dropFirst().first ?? ""
         switch p.first {
+        case "akim-karsilastir" where p.count == 3: self = .akimKarsilastir(id, p[2])
+        case "karsilastir" where p.count == 3: self = .sanatciKarsilastir(id, p[2])
         case "akim": self = .akim(id)
         case "sanatci": self = p.last == "eserler" ? .eserler(id) : .sanatci(id)
         case "ara": self = .ara
@@ -24,6 +27,7 @@ private struct AcilanEserler: Identifiable {
     let id = UUID()
     let eserler: [Eser]
     let sira: Int
+    var incele = false
 }
 
 struct GaleriSekmesi: View {
@@ -73,7 +77,23 @@ struct GaleriSekmesi: View {
                 dizin = d
                 ilerleme = il
                 adresiAc()
+                #if DEBUG
+                // Aynı kabuk, WKWebView ve köprüyle CI'da istenen Galeri yolunu açar.
+                if let hedef = NoraSanatApp.arguman("-galeriSayfa") {
+                    yol = GaleriYolu(adres: hedef).map { [$0] } ?? []
+                }
+                #endif
             } catch { if !Task.isCancelled { hata = "Galeri yüklenemedi." } }
+        }
+        .task(id: durum.secili) {
+            guard durum.secili == .galeri, let g = galeri else { return }
+            do {
+                let il = try await IlerlemeKoprusu.shared.oku()
+                let yeni = await Task.detached { g.dizin(il) }.value
+                guard !Task.isCancelled else { return }
+                ilerleme = il
+                dizin = yeni
+            } catch { if !Task.isCancelled { yenilemeHatasi = true } }
         }
         .onChange(of: durum.yerliAdres[.galeri]) { _, _ in adresiAc() }
         .fullScreenCover(item: $acilan, onDismiss: {
@@ -82,7 +102,7 @@ struct GaleriSekmesi: View {
                 catch { yenilemeHatasi = true }
             }
         }) { secim in
-            Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira, konuSecildi: { id in
+            Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira, incelemeyeBasla: secim.incele, konuSecildi: { id in
                 acilan = nil
                 yol.append(.konu(id))
             })
@@ -112,7 +132,7 @@ struct GaleriSekmesi: View {
 
     private func resim(_ e: Eser, _ g: GaleriKatalogu, boy: Int = 400, kip: ContentMode = .fit) -> some View {
         let kotuler = ilerleme?.kotuGorseller ?? [:]
-        let yedek = GorselAdresleri.secilen(e, kotuler: kotuler).flatMap { URL(string: g.katalog.gorsel.yedek($0)) }
+        let yedek = GorselAdresleri.secilen(e, kotuler: kotuler).flatMap { GorselAdresleri.url(g.katalog.gorsel.yedek($0)) }
         return UzakGorsel(url: g.katalog.gorselAdresi(e, genislik: boy, kotuler: kotuler), icerik: kip, yedek: yedek).clipped()
     }
 
@@ -187,6 +207,19 @@ struct GaleriSekmesi: View {
                 ForEach([true, false], id: \.self) { acik in
                     ForEach(uyeler.filter { ($0.konu.map(il.islenenKume.contains) == true) == acik }) { s in sanatciSatiri(s, il) }
                 }
+                if !dortlu.isEmpty {
+                    Button("Bu dönemi pekiştir") {
+                        durum.sec(.calis)
+                        Gezgin.shared.git("#/pekistir/donem/" + SiteYazisi.uriBileseni(ad))
+                    }
+                }
+                if let akim = g.katalog.akimlar.first(where: { $0.ad == ad }) {
+                    DisclosureGroup("Akımları karşılaştır") {
+                        ForEach(akim.komsular.filter { komsu in komsu != ad && g.katalog.akimlar.contains { $0.ad == komsu } }, id: \.self) { komsu in
+                            NavigationLink(komsu, value: GaleriYolu.akimKarsilastir(ad, komsu))
+                        }
+                    }
+                }
                 let tipik = g.tipikKonular(ad, il)
                 if !tipik.isEmpty {
                     Text("Tipik konular").font(.headline)
@@ -211,7 +244,15 @@ struct GaleriSekmesi: View {
                         }
                         let tanima = GoruntuleyiciKurallari.taninmaMetni(s, tanimaNotlari: g.tanimaNotlari)
                         if !tanima.isEmpty { Text("Nasıl tanırım?").font(.headline); Text(tanima) }
-                        ForEach([s.kursNotu, s.anlatim].compactMap { $0 }, id: \.self) { Text($0) }
+                        ForEach(Array((g.sanatciKirpimlari[id] ?? []).enumerated()), id: \.offset) { _, k in
+                            kirpim(k, eserler, g, il)
+                        }
+                        if let not = s.kursNotu ?? s.anlatim { Text("Notlarımdan").font(.headline); Text(not) }
+                        DisclosureGroup("Karşılaştır") {
+                            ForEach(GoruntuleyiciKurallari.benzerSanatcilar(s, sanatcilar: g.katalog.sanatcilar, akimlar: g.katalog.akimlar)) { diger in
+                                NavigationLink(diger.ad, value: GaleriYolu.sanatciKarsilastir(s.id, diger.id))
+                            }
+                        }
                     } else { izgara(eserler, g) }
                     if eserler.isEmpty { Text("Bu sanatçı için doğrulanmış görsel bulunamadı.") }
                 }.navigationTitle(s.ad)
@@ -270,10 +311,38 @@ struct GaleriSekmesi: View {
                     Text(k.ozet).font(.headline)
                     ForEach(k.hikaye, id: \.self) { Text($0) }
                     if !k.tanima.isEmpty { Text("Resimde nasıl tanınır?").font(.headline) }
-                    ForEach(k.tanima, id: \.self) { Text($0) }
+                    ForEach(Array(k.tanima.enumerated()), id: \.offset) { i, metin in
+                        Text(metin)
+                        if let kayit = g.konuKirpimlari[k.id]?.first(where: { $0.madde == i }) {
+                            kirpim(kayit, eserler, g, il)
+                        }
+                    }
                     izgara(eserler, g)
                 }.navigationTitle(k.ad)
             }
+        case .akimKarsilastir(let a, let b), .sanatciKarsilastir(let a, let b):
+            sayfaGovdesi {
+                HStack(alignment: .top) {
+                    ForEach([a, b], id: \.self) { id in
+                        VStack(alignment: .leading, spacing: 10) {
+                            if case .akimKarsilastir = yol {
+                                NavigationLink(id, value: GaleriYolu.akim(id)).font(.headline)
+                                Text(GaleriSergisi.yuzyillar(g.katalog.sanatcilar.filter { $0.akim == id })).font(.caption)
+                                let eserler = Array(g.dortlu(id, il).prefix(2))
+                                ForEach(eserler.indices, id: \.self) { i in kart(eserler, i, g) }
+                                ForEach(g.ozellikler[id] ?? [], id: \.self) { Text($0) }
+                                ForEach(Array(g.tipikKonular(id, il).prefix(3))) { k in NavigationLink(k.ad, value: GaleriYolu.konu(k.id)) }
+                            } else if let s = g.katalog.harita[id] {
+                                NavigationLink(s.ad, value: GaleriYolu.sanatci(id)).font(.headline)
+                                Text(s.yillar).font(.caption)
+                                Text(GoruntuleyiciKurallari.taninmaMetni(s, tanimaNotlari: g.tanimaNotlari))
+                                let eserler = Array((g.eserler[id] ?? []).sorted { $0.sl > $1.sl }.prefix(4))
+                                ForEach(eserler.indices, id: \.self) { i in kart(eserler, i, g) }
+                            }
+                        }.frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+            }.navigationTitle("Yan yana")
         case .ara:
             sayfaGovdesi { aramaSonuclari(g, il) }.navigationTitle("Ara")
                 .searchable(text: $sorgu, placement: .navigationBarDrawer(displayMode: .always), prompt: "Sanatçı, eser, konu…")
@@ -288,6 +357,21 @@ struct GaleriSekmesi: View {
                     }
                 }.navigationTitle(b["baslik"]?.metin ?? "")
             }
+        }
+    }
+
+    @ViewBuilder private func kirpim(_ k: TanimaKirpimi, _ liste: [Eser], _ g: GaleriKatalogu, _ il: Ilerleme) -> some View {
+        if let e = k.eser(liste, katalog: g.katalog, il: il),
+           let secili = GorselAdresleri.secilen(e, kotuler: il.kotuGorseller) ?? e.gorseller.first {
+            let oran = g.katalog.gorsel.oran(secili) ?? 1
+            Button { acilan = AcilanEserler(eserler: [e], sira: 0, incele: true) } label: {
+                GeometryReader { geo in
+                    let w = geo.size.width / k.w
+                    let h = w / oran
+                    resim(e, g, boy: 800).frame(width: w, height: h)
+                        .offset(x: -w * k.x, y: -h * k.y)
+                }.aspectRatio(oran * k.w / k.h, contentMode: .fit).clipped()
+            }.accessibilityLabel(k.ad)
         }
     }
 

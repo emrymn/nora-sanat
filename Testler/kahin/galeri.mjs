@@ -49,12 +49,22 @@ async function cevaplar({ js, d, al, enBilinen }) {
         konular: tipikKonular(konular, uyeler.filter(s=>islenen.includes(s.konu)).map(s=>s.id)).map(k=>k.id), kapak: kapak?.anahtar ?? null, dortlu: dortlu.map(x => x.e.anahtar) };
     });
     const baglar = Object.fromEntries(konular.map(k => [k.id, k.eserler.map(([anahtar,sanatci]) => eserEslestir(liste[sanatci],{anahtar,sanatci})).filter(e => e?.gorseller.length).map(e => e.anahtar)]));
+    const { tanimaKirpimlariAl, kirpimEseri } = await import(js + '/tanimaKirpim.js');
+    const { ayrintiAnahtari } = await import(js + '/ayrinti.js');
+    const { gorselAdi, secilenGorsel } = await import(js + '/gorsel.js');
+    const hamKirp = await al('tanima_kirpimlari');
+    const kirpGirdi = Object.fromEntries(['konular', 'sanatcilar'].map(t => [t, Object.fromEntries(
+      Object.entries(hamKirp[t]).slice(0,5).map(([id,l]) => [id, [null, {}, ...l, l[0], {...l[0], w:0}]])
+    )]));
+    const kirp = tanimaKirpimlariAl(kirpGirdi);
+    const kirpSonuc = Object.fromEntries(['konular', 'sanatcilar'].map(t => [t,Object.fromEntries([...kirp[t]].map(([id,l]) =>
+      [id,l.map(k => kirpimEseri(k,liste[k.sanatci],ayrintiAnahtari,e=>gorselAdi(secilenGorsel(e)))?.anahtar ?? '')]))]));
     const kapaklar = Object.fromEntries(konular.map(k => [k.id, kapakSec(k.eserler.map(([anahtar,sanatci]) =>
       eserEslestir(liste[sanatci],{anahtar,sanatci})).filter(e => e?.gorseller.length))?.anahtar ?? '']));
     const adlar = Object.fromEntries(d.sanatcilar.map(s => [s.ad, okunacakAd(s.ad)]));
     const sesler = [{ses:'dosya'}, {okunus:true}, {}, {ses:'x',okunus:true}].map(k => ({k, url:sesDosyasi({id:'deneme'},k)}));
     const kayitlar = [...acik.slice(0, 4).flatMap(s => liste[s.id].slice(0, 1).map(e => ({s:s.id, a:e.anahtar}))).reverse(), {s: 'yok', a: 'yok'}];
-    return { islenen, ek, kapaklar, adlar, sesler, basGirdi, bilgiGirdi, ozGirdi, bilgi: akimBilgisiBirlestir(bilgiGirdi).akimlar,
+    return { islenen, ek, kirpGirdi, kirpSonuc, kapaklar, adlar, sesler, basGirdi, bilgiGirdi, ozGirdi, bilgi: akimBilgisiBirlestir(bilgiGirdi).akimlar,
       oz: ozellikleriBirlestir(ozGirdi.akimlar), baglar, salonlar, aramalar, kayitlar,
       koleksiyon: kayitlar.map(x => liste[x.s]?.find(e => e.anahtar === x.a)).filter(Boolean).map(e => e.anahtar) };
 
@@ -69,6 +79,8 @@ async function yerel(yol) {
   const G = await import(js + '/gorsel.js');
   const B = await import(js + '/birlesme.js');
   const R = await import(js + '/resim.js');
+  const yerelG = await al('yerel_gorseller');
+  G.yerelGorselleriAyarla(yerelG.gorseller, yerelG.buyuk);
   const tum = B.sanatcilariBirlestir(await al('sanatcilar'));
   const hazir = await E.hazirOnbellek(), turler = await al('eser_turleri');
   E.eserTurleriniAyarla(turler);

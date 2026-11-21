@@ -38,12 +38,6 @@ struct NoraSanatApp: App {
                     PekistirmeEkrani(ilkTur: .sanatci(.karisik))
                         .environment(TemaDeposu.shared)
                 }
-            } else if Self.arguman("-ekran") == "galeri" {
-                ZStack {
-                    KokGorunum()
-                    GaleriSekmesi().environment(TemaDeposu.shared).environment(KabukDurumu.shared)
-                        .preferredColorScheme(TemaDeposu.shared.koyu ? .dark : .light)
-                }
             } else if Self.arguman("-ekran") == "tema" {
                 // Site arkada yüklenir (canlı tema için), örnekler üstte
                 ZStack {

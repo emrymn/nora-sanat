@@ -171,7 +171,7 @@ jobs:
           done
           # G2: katalog, ilerleme ve disk önbelleğiyle akımlar çarkı
           xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -ekran galeri
+          xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -galeriSayfa "#/gozat"
           for DENEME in {1..18}; do
             sleep 5
             xcrun simctl io "$UDID" screenshot ekranlar/galeri.png
