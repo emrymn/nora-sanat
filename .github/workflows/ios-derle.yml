@@ -33,6 +33,14 @@ jobs:
           NODE_PATH="$RUNNER_TEMP/galeri-kahin/node_modules" GALERI_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/galeri.mjs > "$RUNNER_TEMP/galeri.json"
           node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/galeri/cevaplar.json" "$RUNNER_TEMP/galeri.json"
 
+      - name: Bugün kâhini ve iPhone 15 Pro görünüş ölçüleri
+        if: github.head_ref == 'is/G4-bugun'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/bugun-kahin" --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/bugun-kahin/node_modules/.bin/playwright" install webkit
+          NODE_PATH="$RUNNER_TEMP/bugun-kahin/node_modules" node Testler/kahin/bugun.mjs > "$RUNNER_TEMP/bugun.json"
+          node -e "const a=require(process.argv[1]), b=require(process.argv[2]); const yuvarla=x=>JSON.stringify(x,(_,v)=>typeof v==='number'?Number(v.toFixed(8)):v); require('node:assert/strict').equal(yuvarla(a),yuvarla(b))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/bugun/cevaplar.json" "$RUNNER_TEMP/bugun.json"
+
       - name: Xcode sürümü
         run: xcodebuild -version
 
