@@ -249,10 +249,12 @@ struct GecDugmesi: View {
                             .foregroundStyle(Color(r.vurguAcik))
                             .frame(width: 44, height: 44)
                             .background(Circle().fill(Color(r.vurguAcikYazi)))
-                            .background(Circle().stroke(Color(r.vurguAcikYazi).opacity(0.45), lineWidth: 1).frame(width: 71, height: 71))
+                            .padding(5)
+                            .overlay(Circle().stroke(Color(r.vurguAcikYazi).opacity(0.45),
+                                                     style: StrokeStyle(lineWidth: 1, dash: [2, 3])))
                     }
                     .foregroundStyle(Color(r.vurguAcikYazi))
-                    .padding(.leading, 18).padding(.trailing, 10)
+                    .padding(.leading, 18).padding(.trailing, 5)
                     .frame(maxWidth: .infinity, minHeight: 64)
                     .background(RoundedRectangle(cornerRadius: 3).fill(Color(r.vurguAcik)))
                     .clipShape(RoundedRectangle(cornerRadius: 3))
