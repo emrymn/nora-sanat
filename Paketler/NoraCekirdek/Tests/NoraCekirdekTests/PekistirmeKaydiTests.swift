@@ -40,10 +40,21 @@ final class PekistirmeEkranAkisiTests: XCTestCase {
         var tur = TurKaydi(kip: .sanatci(.karisik), seviye: nil, katalog: katalog, veri: veri, ilerleme: il, gun: gun)
         tur.hazirla(katalog: katalog, veri: veri, ilerleme: &il)
         let ilk = try XCTUnwrap(tur.kart)
-        tur.cevapla(nil, katalog: katalog, gun: gun, ilerleme: &il)
         func geri(_ tur: TurKaydi) throws -> TurKaydi {
             try JSONDecoder().decode(TurKaydi.self, from: JSONEncoder().encode(tur))
         }
+        // C1c: yeni sanatçı önce tanışma; tanışmada sorulan eser gösterilmez, tanışma sürerken cevap yazılmaz.
+        let tanisma = try XCTUnwrap(ilk.tanisma)
+        XCTAssertFalse(tanisma.contains(ilk.resim.eser.anahtar))
+        XCTAssertLessThanOrEqual(tanisma.count, 3)
+        tur.cevapla(nil, katalog: katalog, gun: gun, ilerleme: &il)
+        XCTAssertNil(tur.kart?.sonuc)
+        tur = try geri(tur)
+        XCTAssertEqual(tur.kart?.tanisma, tanisma)
+        tur.tanismaGec(katalog: katalog, veri: veri, ilerleme: &il)
+        XCTAssertNil(tur.kart?.tanisma)
+        XCTAssertEqual(tur.kart?.resim.eser.anahtar, ilk.resim.eser.anahtar)
+        tur.cevapla(nil, katalog: katalog, gun: gun, ilerleme: &il)
         tur = try geri(tur)
         XCTAssertEqual(tur.kart?.resim.eser.anahtar, ilk.resim.eser.anahtar)
         XCTAssertEqual(tur.kart?.secenekler, ilk.secenekler)
@@ -62,5 +73,23 @@ final class PekistirmeEkranAkisiTests: XCTestCase {
         tur.cevapla(akim, katalog: katalog, gun: gun, ilerleme: &il)
         XCTAssertEqual(il, sonuc)
         XCTAssertEqual(il.gunluk.kart, 1)
+    }
+
+    /// C1b'nin sakladığı yarım tur (C1c alanları yok) çözülmeli.
+    func testEskiKayitCozulur() throws {
+        let (_, katalog) = try XCTUnwrap(SiteVerisiTests.hazir)
+        let veri = PekistirmeVerileri(ikonografi: nil, zorluk: nil)
+        var il = try Ilerleme(veri: Data("{}".utf8))
+        il.islenen = katalog.konular.map(\.no)
+        var tur = TurKaydi(kip: .sanatci(.karisik), seviye: nil, katalog: katalog, veri: veri, ilerleme: il, gun: "2026-11-21")
+        tur.hazirla(katalog: katalog, veri: veri, ilerleme: &il)
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(tur)) as? [String: Any])
+        for alan in ["tanisma", "tanismaGorulen", "gecenler", "sonResim"] { json[alan] = nil }
+        var kart = try XCTUnwrap(json["kart"] as? [String: Any])
+        for alan in ["seviye", "tanisma", "atlananlar", "karisan", "seviyeSonucu"] { kart[alan] = nil }
+        json["kart"] = kart
+        let eski = try JSONDecoder().decode(TurKaydi.self, from: JSONSerialization.data(withJSONObject: json))
+        XCTAssertEqual(eski.kart?.resim.eser.anahtar, tur.kart?.resim.eser.anahtar)
+        XCTAssertNil(eski.kart?.tanisma)
     }
 }

@@ -40,9 +40,10 @@ public struct PekistirmeOturumu: Codable {
         konum += 1
     }
 
-    /// Eseri bulunamayan kartı skora yazmadan çıkarır.
+    /// Eseri bulunamayan kartı skora yazmadan geçer. Site (`kartCiz`, `o.oturum.ilerle()`) kartı kuyrukta bırakır:
+    /// sayaçtaki toplam değişmez, sıra bir ilerler.
     public mutating func simdikiniAtla() {
-        if simdiki != nil { kuyruk.remove(at: konum) }
+        if simdiki != nil { konum += 1 }
     }
 
     public enum KartCevabi {
