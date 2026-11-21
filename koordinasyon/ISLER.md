@@ -152,7 +152,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
-| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | sürüyor (Claude, 2026-11-21) |
+| C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | PR açık (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
@@ -546,7 +546,38 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Karşılaştırma görüntüsü: CI'da aynı adreste sitenin (`-yalnizSite`) ve yerli ekranın görüntüsü yan yana alınsın.
 - Bitince `Gecis.tasinanlar = BenGecisi.sekmeler`; ama T4 bitmeden değil.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · PR #13 · dal `claude/happy-euler-f36zti` (oturumun zorunlu dalı). C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/ilerleme.js`: `ilerlemeSayfasi`, `parcalar`, `eserDuvari`, `siradakiKonuHtml`, `kursBolumleriHtml`, `konuKarti`, `kitapKapagi`, `karisanlarBolumu`, `tanisKartiHtml`, `konuIsaretle`
+  - `js/ekranlar/calisma.js`: `takvimHtml`, `oranGrafigi`, `yukGrafigi`, `koleksiyonBagi`
+  - `js/ekranlar/pano.js`: `seviyeIziHtml`, `kutuPipHtml`; `js/ekranlar/ortak.js`: `ust`, `etiket`, `tabloDugme`, `akimNoktasi`
+  - `js/ekranlar/ayarlar.js`: `ayarlarSayfasi` ve bölümleri (sıra, yazılar); `js/tasarim.js`: `YOLLAR` (geri, ileri, işaret, kilit, doğru, karşılaştır, kapat, hareket, mühür, kum saati), `pgDisk`
+  - `css/app.css`: `.ilr-*`, `.duvar*`, `.etiket`, `.bolum-baslik`, `.ust*`, `.calisma-takvim`, `.tk`, `.grafik*`, `.satir`, `.siradaki*`, `.isle-ince`, `.kilitli-kare`, `.kurs-kip`, `.salon-raf*`, `.destek`, `.kitap*`, `.konu-karti*`, `.konu-portre`, `.akim-kart*`, `.cevapsiz-akimlar`, `.hatalar-satir`, `.zayif-*`, `.kutu-pip`, `.sv-iz`, `.secim-hap`, `.tanis-*`, `.eser-dugme`/`.ed-*`, `.ayar`, `.parcali`, `.adimlayici`, `.konu`, `.anahtar`, `.dugme`, `.dugme.ince`, `.pg-disk`
+  - Ölçüler canlı sitenin **hesaplanmış** stillerinden alındı (Playwright, 393 pt, Gece; css dosyasında aynı seçici birkaç kez eziliyor, son değer geçerli).
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/ilerleme.js js/ekranlar/calisma.js js/ekranlar/pano.js js/ekranlar/ayarlar.js js/ekranlar/ortak.js js/tasarim.js css/app.css`
+- **Yapılanlar** (hepsi `NoraSanat/Ekranlar/Ben/`):
+  - `BenGorunusu.swift`: ortak parçalar. `BenSimge`/`BenIkon` (sitenin SVG'leri), `Etiket` (11 px, 0.2em, Türkçe büyük harf), `BolumBasligi`, `BenUst` (yuvarlak geri, 48 px başlık, sağ düğme), `YuvarlakDugme`, `Ayrac`, `HapDugme` (`.dugme` / `ince`), `PigmentDisk`, `ParcaliSecim`, `AnahtarBicimi` (`.anahtar`; konu kartında mürekkep renkli), `AnahtarYazisi`, `KucukHap`, `OranCubugu`, `KutuPip`, `SeviyeIzi`, `AkimNoktasi`, `AyarBolumu`, `AyarAciklamasi`.
+  - `BenSekmesi.swift`: `List` yerine `ScrollView`. Sahne (kayan `EserDuvari`, üst, pano, `TabloDugme` "Tekrar bekliyor"), sonra takvim, grafikler, Koleksiyonum / Ayarlar satırları, sıradaki konu, kitaplık, akımlar, zayıflar. Ayarlar sitedeki gibi ayrı sayfa (yandan kayar). Açık sekmeye yeniden dokunma başa kaydırır, Ayarlar'dan Ben'e döner.
+  - `BenGrafikler.swift`: `CalismaTakvimi` (7×12, akım renkli kare, bugün çerçeveli), `CalismaEgrileri` (sitenin SVG'leri `Canvas`'la aynı ölçüde), `BenSatiri`.
+  - `BenKitaplik.swift`: `SiradakiKonu` (kilitli kareler, dolan "İşlendi yap"), `KursKitapligi` (kip, bölüm rafı, Roma rakamı, halka, kitaplar; sıradaki kitaba kayar), `KonuKarti` (portreler, İşlendi anahtarı, "1–n arası hepsi işlendi").
+  - `BenAkimlar.swift`: `AkimBolumu` (resimli kartlar, seviye etiketi, Sırayla/Zayıf önce, cevapsız haplar), `ZayifBolumu` (karıştırılanlar, Hatalarım turu, zayıflar), `TanisKarti` (Ö6; C4'te yoktu), `AkisDuzeni`.
+  - `BenAyarlari.swift` + `BenAraclari.swift` + `BenCevrimdisi.swift`: sitenin sırası ve yazıları. Değişken yazılar (günün sanatçısı, sürüm, yenilikler, hata sayısı, elle odaklar, yürüyüş sayısı, eğim izni, gündüz rengi örnekleri) sitenin modüllerinden tek betikle okunuyor (`AyarBilgisi.betik`). Çevrimdışı bölüm sitede varsa görünür (artık açılır kapanır değil).
+  - `BenDeposu.yap/degistir(bitti:)`: işlemden sonra yeni ilerlemeyle çağrılır (Tanış kartı için).
+  - Davranış, köprü betikleri (`benYedekAl`, `benGeriYukle`, `benGelistirici`) ve kâhin C4'teki gibi; `ben.mjs` değişmedi.
+- **Ortak dosyalarda küçük değişiklikler:**
+  - `Kabuk/Gecis.swift`: `tasinanlar = BenGecisi.sekmeler` (**Ben artık yerli**; DEBUG `-yalnizSite` site). `KabukDurumu.dilGizle(_:sekme:)` / `dilGorunur` (T4'ün önerisi).
+  - `Kabuk/YerliSekmeCubugu.swift`: dil `dilGorunur` değilse gizli.
+  - `NoraSanatApp.swift` (DEBUG): `BenKarsilastirma.siteyiKaydir()`.
+- **CI karşılaştırması:** `-benKaydir kurs|akim|yedek` (DEBUG) yerli ekranı ve siteyi (`-yalnizSite`) aynı bölüme kaydırır; yerli ekran hazır olunca `tmp/ben-hazir` yazar. CI her biri için `site-*.png`, `ben-*.png` ve ikisinin birleşimi `yan-yana-*.png` üretir (solda site, sağda yerli): ilerleme, ilerleme-kurs, ilerleme-akim, ayarlar, ayarlar-yedek.
+- **CI:** (aşağıda)
+- **Kalan / sonraki işler için:**
+  - Sitedeki giriş hareketleri (kitapların rafa dizilmesi, sayıların sayarak gelmesi, kitap parıltısı, sıradaki konunun kayarak gelmesi) yok; yalnız duvar kayması, İşlendi dolması, kart açılması ve Tanış kartı hareketli. Z3'te.
+  - Sitede işaretlemeden sonra çıkan kısa bildirimler (`bildir`: "Açıldı: …") yok (C4'te de yoktu).
+  - Ayarlar'daki iletiler sitedeki gibi bölümün altında değil, iOS uyarısıyla (C4'teki gibi).
+  - Gündüz'de pano kartı ve gölgeler yaklaşık; CI görüntüleri yalnız Gece.
+- **Tuzaklar:**
+  - Ayarlar açılınca gizli site `#/ayarlar`'a gider (çevrimdışı indirme durumu sitenin sayfasından okunuyor). Bu yüzden yerli Ben'in adresi de `#/ayarlar` olur; sorun değil, ama C5'te indirme Swift'e geçince bu kalkmalı.
+  - `EserDuvari` `TimelineView` ile döner; Ben seçili değilken, Ayarlar açıkken ve hareket azaltılmışken durur.
 
 ### T4 · Yerli sekme çubuğu sitenin çubuğu gibi (Claude)
 - `KokGorunum`'un yerli çubuğu sitenin yüzen, yuvarlak köşeli çubuğuna benzesin: aynı simgeler (SVG'den), aynı yerleşim, Çalış rozeti.
