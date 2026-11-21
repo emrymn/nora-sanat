@@ -115,13 +115,8 @@ public struct GaleriKatalogu: Sendable {
         return d
     }
 
-    private func temsil(_ e: Eser) -> Bool {
-        e.qid != "Q3947103" && !["q:Q3947103", "Q3947103"].contains(e.anahtar)
-    }
-
-    public func konuKapagi(_ eserler: [Eser]) -> Eser? {
-        eserler.filter(temsil).max { $0.sl < $1.sl }
-    }
+    /// Konu kapağı (`kapakSec`, Temsil)
+    public func konuKapagi(_ eserler: [Eser]) -> Eser? { Temsil.kapakSec(eserler) }
 
     public func tipikKonular(_ ad: String, _ il: Ilerleme) -> [GaleriKonusu] {
         let uyeler = Set(katalog.sanatcilar.filter { $0.akim == ad && $0.konu.map(il.islenenKume.contains) == true }.map(\.id))
@@ -132,31 +127,32 @@ public struct GaleriKatalogu: Sendable {
         }.prefix(4).map { $0.0 }
     }
 
+    /// Çarktaki kemerin eseri (`onizlemeleriDoldur`): `Temsil.akimKapak`'ta elle seçilmişse o; yoksa açık sanatçılar önce
+    /// (sonra doğum yılı), ilk 8 sanatçıdan en bilineni olan ilki (`enBilinen`)
     public func carkKapagi(_ ad: String, _ il: Ilerleme) -> Eser? {
         let uyeler = katalog.sanatcilar.filter { $0.akim == ad }
-        if ad == "Gotik", let kapak = uyeler.lazy.compactMap({ eslestir("Q948745", $0.id) }).first { return kapak }
+        if let q = Temsil.akimKapak[ad],
+           let kapak = uyeler.lazy.flatMap({ self.eserler[$0.id] ?? [] }).first(where: { $0.qid == q }) { return kapak }
         let islenen = il.islenenKume
-        let sirali = uyeler.sorted { a, b in
-            let x = a.konu.map(islenen.contains) ?? false, y = b.konu.map(islenen.contains) ?? false
-            return x != y ? x : (a.dogum ?? 0) < (b.dogum ?? 0)
-        }
+        let sirali = uyeler.enumerated().sorted { a, b in
+            let x = a.element.konu.map(islenen.contains) ?? false, y = b.element.konu.map(islenen.contains) ?? false
+            if x != y { return x }
+            let da = a.element.dogum ?? 0, db = b.element.dogum ?? 0
+            return da != db ? da < db : a.offset < b.offset
+        }.map(\.element)
         for s in sirali.prefix(8) {
-            let uygun = (eserler[s.id] ?? []).filter { temsil($0) && $0.pekistirme && GorselAdresleri.secilen($0, kotuler: il.kotuGorseller) != nil }
-            if let ilk = uygun.max(by: { $0.sl < $1.sl }) { return ilk }
+            if let e = Temsil.enBilinen(eserler[s.id] ?? [], kotuler: il.kotuGorseller) { return e }
         }
         return nil
     }
 
-    public func dortlu(_ ad: String, _ il: Ilerleme) -> [Eser] {
-        var secimler: [(Eser, Int)] = []
-        for s in katalog.sanatcilar where s.akim == ad && s.konu.map(il.islenenKume.contains) == true {
-            let uygun = (eserler[s.id] ?? []).filter { !$0.gorseller.isEmpty && temsil($0) }
-            guard let ilk = uygun.max(by: { $0.sl < $1.sl }) else { continue }
-            let ozel = s.id == "pierre-puvis-de-chavannes" ? uygun.first { $0.qid == "Q19820268" } : nil
-            secimler.append((ozel ?? ilk, ilk.sl))
-        }
-        return secimler.sorted { $0.1 > $1.1 }.prefix(4).map { $0.0 }
+    /// Akımın en bilinen eserleri (`akimVerisi` → `enBilinenEserler(listeler, 4)`): açık sanatçılardan
+    public func enBilinenler(_ ad: String, _ il: Ilerleme, adet: Int = 4) -> [(sanatci: Sanatci, eser: Eser)] {
+        let acik = katalog.sanatcilar.filter { $0.akim == ad && $0.konu.map(il.islenenKume.contains) == true }
+        return Temsil.enBilinenEserler(acik.map { ($0, eserler[$0.id] ?? []) }, adet: adet)
     }
+
+    public func dortlu(_ ad: String, _ il: Ilerleme) -> [Eser] { enBilinenler(ad, il).map(\.eser) }
 }
 
 // Kaynak: sanat-atlasi js/kunye.js @ a866b86
