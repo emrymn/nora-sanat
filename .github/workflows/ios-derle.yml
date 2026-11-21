@@ -111,11 +111,29 @@ jobs:
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
           # C4: gerçek ilerleme ile yerli Ben ekranı ve ayarları
+          cat > "$RUNNER_TEMP/ben-ekran.swift" <<'SWIFT'
+          import Foundation
+          import Vision
+          let istek = VNRecognizeTextRequest()
+          istek.recognitionLanguages = ["tr-TR", "en-US"]
+          try VNImageRequestHandler(url: URL(fileURLWithPath: CommandLine.arguments[1])).perform([istek])
+          let metin = (istek.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+          print(metin)
+          let soz = CommandLine.arguments[2]
+          exit(metin.range(of: soz, options: [.caseInsensitive, .diacriticInsensitive]) == nil ? 1 : 0)
+          SWIFT
+          xcrun swiftc "$RUNNER_TEMP/ben-ekran.swift" -o "$RUNNER_TEMP/ben-ekran"
           for SAYFA in ilerleme ayarlar; do
             xcrun simctl terminate "$UDID" "$PAKET"
             xcrun simctl launch "$UDID" "$PAKET" -adres "#/$SAYFA" -benSayfa "$SAYFA"
-            sleep 25
-            xcrun simctl io "$UDID" screenshot "ekranlar/ben-$SAYFA.png"
+            SOZ="Kursun neresindesin"
+            if [ "$SAYFA" = ayarlar ]; then SOZ="Gündüz rengi"; fi
+            for DENEME in {1..18}; do
+              sleep 5
+              xcrun simctl io "$UDID" screenshot "ekranlar/ben-$SAYFA.png"
+              if "$RUNNER_TEMP/ben-ekran" "ekranlar/ben-$SAYFA.png" "$SOZ"; then break; fi
+              if [ "$DENEME" = 18 ]; then exit 1; fi
+            done
           done
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.

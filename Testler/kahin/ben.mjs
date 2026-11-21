@@ -70,6 +70,7 @@ try {
     sonuc.yarim = !!d.yarim && d.yarim.zaman === y.zaman;
     await geri('{"islenen":[3,2,2]}', d.ilerleme.kayitNo);
     sonuc.eski = d.ilerleme.islenen.slice();
+    sonuc.yedekOzetleri = [dis.ilerleme, d.ilerleme].map(il => [il.islenen.length, Object.keys(il.skorlar ?? {}).length]);
     denetle(!d.yarim && !d.oturum, 'Eski yedekte yarım oturum temizlenmeli');
     const mod = new Asenkron('ac',gelistirici);
     await mod(true);

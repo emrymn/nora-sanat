@@ -36,4 +36,16 @@ final class BenTests: XCTestCase {
         XCTAssertEqual([il.ayar("tema")?.metin, il.ayar("gunduzRenk")?.metin].compactMap { $0 }, c["renk"]?.dizi?.compactMap(\.metin))
         XCTAssertEqual(il[alan: "gelecekAlan"]?.metin, "koru")
     }
+    func testYedekOnayindaSiteninSayilari() throws {
+        let g = try ornek("girdi"), c = try ornek("cevaplar")
+        var guncel = try Ilerleme(json: XCTUnwrap(g["il"]))
+        guncel.islenen = c["islenen"]?.dizi?.compactMap(\.tamSayi) ?? []
+        let eski: JSONDeger = .nesne([("islenen", try XCTUnwrap(c["eski"]))])
+        let sonuc = try [guncel.jsonMetni, eski.jsonMetni].map { json in
+            let o = try BenYedekOzeti(dogrulanmisJSON: json)
+            return [o.konu, o.skor]
+        }
+        XCTAssertEqual(sonuc, c["yedekOzetleri"]?.dizi?.map { $0.dizi?.compactMap(\.tamSayi) ?? [] })
+        XCTAssertThrowsError(try BenYedekOzeti(dogrulanmisJSON: "[]"))
+    }
 }

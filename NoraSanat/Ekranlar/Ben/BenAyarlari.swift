@@ -78,6 +78,7 @@ struct BenAyarlari: View {
                 Button("Yedeği denetle", action: denetle).disabled(girdi.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             if let il = depo.il {
+                BenCevrimdisi(depo: depo)
                 BenAraclari(depo: depo)
                 Section {
                     Toggle("Geliştirici modu", isOn: Binding(get: { il[alan: "gelistirici"]?.nesne != nil },
@@ -123,8 +124,8 @@ struct BenAyarlari: View {
             let sonuc = try await depo.kopru.benBetigi("return JSON.stringify((await import('/js/depo.js')).yedekCoz(metin));",
                                                         ["metin": metin])
             guard let json = sonuc as? String else { throw IlerlemeKoprusu.Hata.siteYok }
-            let il = try Ilerleme(veri: Data(json.utf8))
-            onay = Yukleme(metin: metin, no: kayit.kayitNo, konu: il.islenen.count, skor: il.skorlar.count)
+            let ozet = try BenYedekOzeti(dogrulanmisJSON: json)
+            onay = Yukleme(metin: metin, no: kayit.kayitNo, konu: ozet.konu, skor: ozet.skor)
         }
     }
     private func kart(_ adim: Int) { depo.degistir { BenPanosu.kart(adim, il: &$0) } }

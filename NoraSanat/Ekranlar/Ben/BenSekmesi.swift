@@ -3,6 +3,16 @@ import Charts
 import NoraCekirdek
 import SwiftUI
 
+enum BenGecisi {
+    static var sekmeler: Set<Sekme> {
+        #if DEBUG
+        // T2 ekran görüntüsü siteye yazılan ilerlemeyi hâlâ sitede doğrular.
+        if CommandLine.arguments.contains("-yalnizSite") { return [] }
+        #endif
+        return [.ben]
+    }
+}
+
 struct BenSekmesi: View {
     @Environment(TemaDeposu.self) private var tema
     @Environment(KabukDurumu.self) private var kabuk

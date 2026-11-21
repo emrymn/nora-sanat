@@ -150,7 +150,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
-| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | sürüyor (ChatGPT, 2026-11-21) |
+| C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | PR açık (#10) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
@@ -446,7 +446,13 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Bütün ayarlar.
 - Yedekle ve geri yükle: **sitenin JSON biçimiyle aynı**, eski yedekler çalışmalı.
 
-**Devir notu:** –
+**Devir notu:** ChatGPT, 2026-11-21 — PR #10, `is/C4-ben`.
+- Kaynak: `sanat-atlasi` @ `a866b86`; `js/ekranlar/{ilerleme,pano,ayarlar,hizliAyar}.js`, `js/{depo,devam,kurs,gunduzRenk,rozet,yenilikler}.js`.
+- Ben yerli sekmedir. İlerleme kurs konularını ve toplu işaretlemeyi, açık sanatçıları, kalıcıları, vadeyi, çalışma geçmişini, akım doğruluklarını, zayıfları ve karıştırılanları gösterir. Normal okumalar ve değişiklikler T2 köprüsünden geçer; renkler ve yazılar T3 temasındandır.
+- Ayarlar günlük kart, tanışma, tema, gündüz rengi, yazı boyutu, hareket, rozet, eğim, titreşim, günün sanatçısı, geliştirici modu ve cihaz araçlarını içerir. C5'e kadar çevrimdışı görsellerin indirme, durdurma ve silme işlemleri mevcut site deposunda yürür.
+- Yedek panoya veya JSON dosyasına alınır. Yapıştırılan ya da dosyadan seçilen eski/yeni yedeği sitenin `yedekCoz` işlevi doğrular. Konu ve skor sayıları gösterilip onay alınır. Onaydan beri kayıt değişmişse geri yükleme durur. Yarım oturum da sitenin doğrulamasından ve IndexedDB yolundan geçer.
+- `Testler/kahin/ben.mjs` geçici tarayıcı profilinde gerçek siteyi çalıştırır. Pano, zayıf sırası, konu/ayar değişiklikleri, eski ve zarflı yedek, yarım oturum, hatalı JSON yapısı, çakışma ve geliştirici modundan dönüş sınanır. `BenTests` aynı örnekleri Swift kurallarına uygular.
+- Telefonda: Ben'den bir konuyu işaretle; Ayarlar'dan gündüz rengini değiştir. Yedek al, bir ayarı değiştir, yedeği denetle ve onayla; önceki ayar ve konu sayısı geri gelmeli. DEBUG: `-adres "#/ilerleme"` veya `-adres "#/ayarlar" -benSayfa ayarlar`. CI görüntüleri: `ben-ilerleme.png`, `ben-ayarlar.png`. T2'nin web görüntüsü ayrı alınır ve `4-url-calis` en sondadır.
 
 ### G5 · Yolculuk + Zaman (ChatGPT)
 **Site kaynakları:**
