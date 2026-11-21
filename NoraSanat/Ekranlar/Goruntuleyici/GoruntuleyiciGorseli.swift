@@ -2,108 +2,71 @@
 import SwiftUI
 import NoraCekirdek
 
-/// T3'ün görsel bileşeni (`Kabuk/Gorsel.swift`) henüz olmadığından görüntüleyici klasöründe kullanılan
-/// geçici `AsyncImage` tabanlı keskin görsel bileşeni.
-/// - Önce birincil kopya (1280/800 px) yüklenir; hata verirse `yedek` adres denenir.
-/// - Birincil kopya göründükten sonra `devasa` (4096 px, en büyük kopya) varsa arka planda indirilir ve
-///   hazır olduğunda sarsıntısız yerine geçer.
+/// İlk kopya ekranda kalırken keskin kopya T3'ün disk ve bellek önbelleğinden hazırlanır.
 struct GoruntuleyiciGorseli: View {
     let birincil: URL?
     let yedek: URL?
     let devasa: URL?
     var yuklendiMi: ((CGSize) -> Void)? = nil
 
-    @State private var yedekKullan = false
-    @State private var devasaHazir = false
-    @State private var birincilYuklendi = false
-
-    private var etkinBirincil: URL? {
-        if yedekKullan, let yedek { return yedek }
-        return birincil ?? yedek
-    }
+    @State private var resim: UIImage?
+    @State private var hata = false
 
     var body: some View {
-        ZStack {
-            if let url = etkinBirincil {
-                AsyncImage(url: url, transaction: Transaction(animation: .easeOut(duration: 0.18))) { faz in
-                    switch faz {
-                    case .empty:
-                        Text("Yükleniyor…")
-                            .font(.subheadline)
-                            .foregroundStyle(GoruntuleyiciTema.ikincilMurekkep)
-                    case .success(let resim):
-                        resim
-                            .resizable()
-                            .scaledToFit()
-                            .opacity(devasaHazir ? 0 : 1)
-                            .onAppear {
-                                birincilYuklendi = true
-                                yuklendiMi?(CGSize(width: 1280, height: 1280))
-                            }
-                    case .failure:
-                        if !yedekKullan, let yedek, yedek != birincil {
-                            Color.clear.onAppear { yedekKullan = true }
-                        } else {
-                            Text("Görsel yüklenemedi.")
-                                .font(.subheadline)
-                                .foregroundStyle(GoruntuleyiciTema.ikincilMurekkep)
-                        }
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
+        Group {
+            if let resim {
+                Image(uiImage: resim).resizable().scaledToFit()
             } else {
-                Text("Görsel yüklenemedi.")
-                    .font(.subheadline)
+                Text(hata ? "Görsel yüklenemedi." : "Yükleniyor…")
                     .foregroundStyle(GoruntuleyiciTema.ikincilMurekkep)
             }
-
-            // İş 58 / js/keskin.js: birincil görsel yüklendikten sonra en büyük kopya (4096 px) arkada iner,
-            // hazır olunca aynı oranda yerine geçer.
-            if birincilYuklendi, let devasa, devasa != etkinBirincil {
-                AsyncImage(url: devasa) { faz in
-                    if case .success(let buyukResim) = faz {
-                        buyukResim
-                            .resizable()
-                            .scaledToFit()
-                            .onAppear {
-                                devasaHazir = true
-                                yuklendiMi?(CGSize(width: 4096, height: 4096))
-                            }
-                    }
+        }
+        .task(id: [birincil, yedek, devasa]) {
+            resim = nil
+            hata = false
+            var kullanilan: URL?
+            for case let url? in [birincil, yedek] {
+                guard !Task.isCancelled else { return }
+                if let ilk = await GorselCozucu.shared.resim(url, piksel: 1280) {
+                    guard !Task.isCancelled else { return }
+                    resim = ilk
+                    yuklendiMi?(ilk.size)
+                    kullanilan = url
+                    break
                 }
             }
-        }
-        .onChange(of: birincil) { _, _ in
-            yedekKullan = false
-            devasaHazir = false
-            birincilYuklendi = false
+            guard !Task.isCancelled else { return }
+            if let devasa, devasa != kullanilan,
+               let keskin = await GorselCozucu.shared.resim(devasa, piksel: 4096) {
+                guard !Task.isCancelled else { return }
+                resim = keskin
+                yuklendiMi?(keskin.size)
+            }
+            if !Task.isCancelled { hata = resim == nil }
         }
     }
 }
 
-/// Tablonun ışığı (İş 69): 400 px'lik küçük kopya çok bulanık ve büyütülmüş olarak tablonun arkasından yayılır.
 struct TabloIsigiGorunumu: View {
     let url: URL?
     let opaklikCarpani: Double
+    @State private var resim: UIImage?
 
     var body: some View {
-        if let url {
-            AsyncImage(url: url, transaction: Transaction(animation: .easeInOut(duration: 0.7))) { faz in
-                if case .success(let resim) = faz {
-                    resim
-                        .resizable()
-                        .scaledToFit()
-                        .scaleEffect(1.7)
-                        .blur(radius: 34)
-                        .saturation(1.4)
-                        .brightness(-0.15)
-                        .opacity(0.55 * opaklikCarpani)
-                }
-            }
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
+        Group {
+            if let resim {
+                Image(uiImage: resim).resizable().scaledToFit()
+                    .scaleEffect(1.7).blur(radius: 34).saturation(1.4)
+                    .brightness(-0.15).opacity(0.55 * opaklikCarpani)
+            } else { Color.clear }
         }
+        .task(id: url) {
+            resim = nil
+            let yeni = await GorselCozucu.shared.resim(url, piksel: 400)
+            if !Task.isCancelled { resim = yeni }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 
