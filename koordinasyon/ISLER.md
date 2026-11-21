@@ -148,6 +148,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | PR açık (#11) |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bekliyor |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
+| G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | sürüyor (Claude, 2026-11-21) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
@@ -161,7 +162,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
-- Galeri: G1 + G2 + G3
+- Galeri: G1 + G2 + G2b (görünüş) + G3
 - Bugün: G4
 - Yolculuk: G5
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3
@@ -476,6 +477,13 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Kâhin: `node Testler/kahin/galeri.mjs <site-deposu>`; argümansız çalıştırıldığında Playwright ile canlı siteyi kullanır. `GaleriTests` aynı katalogda arama gruplarını, sıraları, birleşen akım bilgisini, kapakları, dörtlüleri, konuları ve eser eşleşmelerini denetler.
 - Telefonda Debug: `-yerliSekme galeri -adres "#/gozat"`. Çarkı kaydır, açık salonda sanatçıya gir, ikinci eseri açıp kalbe dokun. Koleksiyonum'da aynı eseri açıp kalbi kaldır ve duvara dön. Aramada Türkçe ve özgün eser adını dene. CI: `-galeriSayfa "#/gozat"` ile gerçek yerli kabukta `galeri.png`; OCR açık salonun giriş düğmesini doğrular, `4-url-calis` son görüntüdür.
 - G3 için: Galeri’nin tamamını etkinleştirme kararı G3 sonunda. Başyapıt arama sonucu yakın okuma içeriğine bağlanır. G3 kendi liste ve yakın okuma ekranlarını getirince bu hedef ortaklaştırılabilir. Galeri üst şeridindeki Başyapıtlar ve Zaman, G3/G5 bağlanana kadar sitenin okuma sayfasını açar.
+
+### G2b · Galeri: görünüş sitedeki gibi (ChatGPT şeridi; kullanıcının isteğiyle Claude)
+**Site kaynakları:** `js/ekranlar/{gozat,akim,arama,koleksiyon,ortak,bugun}.js`, `css/app.css` (Galeri bölümleri), sitede `TASARIM_DILI.md`.
+
+**Yapılacaklar:** G2'nin ekranları (`NoraSanat/Ekranlar/Galeri/`) sitenin sayfalarına benzesin (PR #11 denetimi). Ölçüler hesaplanmış stillerden; CI'da her ekran için site (`-yalnizSite`) ve yerli yan yana. Ben'in ortak parçaları yeniden kullanılır; temsil kuralları `NoraCekirdek/SiteVerisi/Temsil.swift`'ten.
+
+**Devir notu:** –
 
 ### C2 · Çalış ana ekranı (ChatGPT)
 **Site kaynakları:** `js/ekranlar/calisma.js`, `js/deste.js`.
