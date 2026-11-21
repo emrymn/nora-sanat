@@ -239,6 +239,19 @@ jobs:
             if "$RUNNER_TEMP/ben-ekran" ekranlar/galeri.png "Salona gir"; then break; fi
             if [ "$DENEME" = 18 ]; then exit 1; fi
           done
+          # G4: aynı veri ve tarihte site ile yerli kapak; iki ekranda da eylem görünene kadar bekle.
+          for KIP in site yerli; do
+            xcrun simctl terminate "$UDID" "$PAKET"
+            if [ "$KIP" = site ]; then EK=(-yalnizSite); else EK=(-yerliSekme bugun); fi
+            xcrun simctl launch "$UDID" "$PAKET" "${EK[@]}" -adres "#/"
+            for DENEME in {1..24}; do
+              sleep 4
+              xcrun simctl io "$UDID" screenshot "ekranlar/bugun-$KIP.png"
+              if "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-$KIP.png" "Hayatı"; then break; fi
+              if [ "$DENEME" = 24 ]; then exit 1; fi
+            done
+          done
+          "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"
