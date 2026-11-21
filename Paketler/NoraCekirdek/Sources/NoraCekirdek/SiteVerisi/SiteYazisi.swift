@@ -10,6 +10,17 @@ public enum SiteYazisi {
         return y < 0 ? "MÖ \(-y)" : String(y)
     }
 
+    /// `bulunmaEki`: 3 → "3'te", 10 → "10'da", 100 → "100'de" (ör. "Konu 3'te açılır")
+    public static func bulunmaEki(_ n: Int) -> String {
+        let sayi = abs(n)
+        let birler = ["", "de", "de", "te", "te", "te", "da", "de", "de", "da"]
+        let onlar = ["", "da", "de", "da", "ta", "de", "ta", "de", "de", "da"]
+        if sayi == 0 { return "\(n)'da" }
+        if sayi % 10 != 0 { return "\(n)'\(birler[sayi % 10])" }
+        if sayi % 100 != 0 { return "\(n)'\(onlar[(sayi / 10) % 10])" }
+        return "\(n)'de"
+    }
+
     /// `yillarYaz`
     public static func yillarYaz(dogum: Int?, olum: Int?) -> String {
         switch (dogum, olum) {
