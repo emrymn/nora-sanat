@@ -560,7 +560,7 @@ private struct KonuGalerisi: View {
                         .buttonStyle(YuvarlakDugme())
                         .accessibilityLabel("Kapat")
                 }
-                EserDuvari(eserler: eserler, resim: resim, ac: ac)
+                IkiSutunDuvar(eserler: eserler, resim: resim, ac: ac)
             }
             .padding(.horizontal, BenOlcu.yan).padding(.vertical, 20)
         }

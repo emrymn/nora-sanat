@@ -206,7 +206,7 @@ struct TumEserler: View {
                 if eserler.isEmpty {
                     Text("Bu sanatçı için doğrulanmış görsel bulunamadı.").font(Yazi.sans(13, stil: .footnote))
                 } else {
-                    EserDuvari(eserler: eserler, resim: resim) { eylem.ac(eserler, $0) }.padding(.top, 8)
+                    IkiSutunDuvar(eserler: eserler, resim: resim) { eylem.ac(eserler, $0) }.padding(.top, 8)
                 }
             }
             .padding(.horizontal, BenOlcu.yan).padding(.top, 12).padding(.bottom, 32)
@@ -217,7 +217,7 @@ struct TumEserler: View {
 }
 
 /// `.izgara`: iki sütun (12 aralık), resim sütun genişliğinde, kırpmasız; her eser kısa olan sütuna (18 px alt boşluk)
-struct EserDuvari: View {
+struct IkiSutunDuvar: View {
     let eserler: [Eser]
     let resim: GaleriResim
     let ac: (Int) -> Void
