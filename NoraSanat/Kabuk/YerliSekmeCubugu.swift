@@ -88,7 +88,7 @@ struct YerliSekmeCubugu: View {
 
             HStack(spacing: 0) {
                 ForEach(Array(SekmeCubugu.sekmeler.enumerated()), id: \.offset) { i, s in
-                    sekme(s, sira: i, secili: i == sira)
+                    sekme(s, sira: i, secili: i == sira, genislik: sg)
                         .frame(width: sg, height: y.sekmeler[0].yukseklik)
                 }
             }
@@ -103,7 +103,7 @@ struct YerliSekmeCubugu: View {
         .accessibilityLabel("Ana gezinme")
     }
 
-    private func sekme(_ s: Sekme, sira i: Int, secili: Bool) -> some View {
+    private func sekme(_ s: Sekme, sira i: Int, secili: Bool, genislik: Double) -> some View {
         let r = tema.renkler
         let renk = Color(secili ? r.murekkep : r.murekkep2)
         return VStack(spacing: SekmeCubugu.Olcu.simgeAra) {
@@ -120,8 +120,11 @@ struct YerliSekmeCubugu: View {
         .foregroundStyle(renk)
         .animation(.easeOut(duration: 0.3), value: secili)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay(alignment: .top) {
-            if s == .calis, let n = SekmeCubugu.rozet(durum.calisRozeti) { rozet(n) }
+        .overlay(alignment: .topLeading) {
+            // `left: calc(50% + 6px)`, `top: 3px`
+            if s == .calis, let n = SekmeCubugu.rozet(durum.calisRozeti) {
+                rozet(n).offset(x: genislik / 2 + SekmeCubugu.Olcu.rozetSag, y: SekmeCubugu.Olcu.rozetUst)
+            }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(s.baslik)
@@ -140,9 +143,6 @@ struct YerliSekmeCubugu: View {
             .frame(minWidth: SekmeCubugu.Olcu.rozet, minHeight: SekmeCubugu.Olcu.rozet, maxHeight: SekmeCubugu.Olcu.rozet)
             .background(Capsule().fill(Color(tema.renkler.pirinc)))
             .fixedSize()
-            .padding(.top, SekmeCubugu.Olcu.rozetUst)
-            // Sol kenarı sekmenin ortasının 6 sağında: `left: calc(50% + 6px)`
-            .alignmentGuide(HorizontalAlignment.center) { _ in -SekmeCubugu.Olcu.rozetSag }
             .transition(.scale(scale: 0.3).combined(with: .opacity))
             .accessibilityHidden(true)
     }
