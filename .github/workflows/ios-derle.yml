@@ -242,10 +242,19 @@ jobs:
           # G4: aynı veri ve tarihte site ile yerli kapak; iki ekranda da eylem görünene kadar bekle.
           for KIP in site yerli; do
             xcrun simctl terminate "$UDID" "$PAKET"
-            if [ "$KIP" = site ]; then EK=(-yalnizSite); else EK=(-yerliSekme bugun); fi
+            if [ "$KIP" = site ]; then
+              EK=(-yalnizSite)
+            else
+              EK=(-yerliSekme bugun -bugunKarsilastir)
+              rm -f "$VERI/tmp/bugun-hazir"
+            fi
             xcrun simctl launch "$UDID" "$PAKET" "${EK[@]}" -adres "#/"
             for DENEME in {1..24}; do
               sleep 4
+              if [ "$KIP" = yerli ] && [ ! -s "$VERI/tmp/bugun-hazir" ]; then
+                if [ "$DENEME" = 24 ]; then exit 1; fi
+                continue
+              fi
               xcrun simctl io "$UDID" screenshot "ekranlar/bugun-$KIP.png"
               if "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-$KIP.png" "Hayatı"; then break; fi
               if [ "$DENEME" = 24 ]; then exit 1; fi
