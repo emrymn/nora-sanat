@@ -214,7 +214,7 @@ struct BenSekmesi: View {
             HStack(alignment: .lastTextBaseline, spacing: 10) {
                 Text("\(sayi)").font(Yazi.serif(120, stil: .largeTitle)).tracking(-2.4)
                     .foregroundStyle(Color(r.murekkep))
-                    .padding(.vertical, -20)   // `line-height: .78`
+                    .padding(.top, -26).padding(.bottom, -40)   // `line-height: .78`: rakamın üstü ve altı boş kalmasın
                 VStack(alignment: .leading, spacing: 6) {
                     Text("/ \(konular.count)").font(Yazi.serif(28))
                     Etiket("konu işlendi", aralik: 0.18)

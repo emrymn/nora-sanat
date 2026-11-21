@@ -31,6 +31,8 @@ struct AyarBilgisi {
     var yuruyus = 0
     var egimVar = true
     var izinGerekli = true
+    /// Hareket izni bu oturumda verildi mi. `izinVarMi()` buradan sorulmaz: yerli koddan çağrılan betik dokunuş sayılır
+    /// ve iOS izin penceresini açar (C4b CI'ında Ayarlar'ı kapattı). Düğme, izin verilene kadar görünür.
     var izinVar = false
     /// Gündüz rengi örnekleri: seçim → (band, altın, yüzey, kenar); "notr" için yok
     var paletler: [String: [String]] = [:]
@@ -60,7 +62,7 @@ struct AyarBilgisi {
       hataSon: l.length ? new Date(l[l.length - 1].z).toLocaleString('tr-TR') : '',
       odak: Object.keys(g.cihazdakiElleOdaklar()).length,
       yuruyus: d.yuruyus ? d.sanatcilar.filter((x) => d.yuruyus[x.id]).length : 0,
-      egimVar: e.egimVar(), izinGerekli: e.izinGerekli(), izinVar: await e.izinVarMi(),
+      egimVar: e.egimVar(), izinGerekli: e.izinGerekli(),
       paletler,
     };
     """
@@ -76,7 +78,6 @@ struct AyarBilgisi {
         yuruyus = (s["yuruyus"] as? NSNumber)?.intValue ?? 0
         egimVar = s["egimVar"] as? Bool ?? true
         izinGerekli = s["izinGerekli"] as? Bool ?? true
-        izinVar = s["izinVar"] as? Bool ?? false
         paletler = s["paletler"] as? [String: [String]] ?? [:]
     }
 }
@@ -155,7 +156,11 @@ struct BenAyarlari: View {
         }
         .disabled(depo.mesgul)
         .task(id: depo.il?.kayitNo) {
-            if let s = try? await depo.kopru.benBetigi(AyarBilgisi.betik) as? [String: Any] { bilgi = AyarBilgisi(s) }
+            if let s = try? await depo.kopru.benBetigi(AyarBilgisi.betik) as? [String: Any] {
+                let izin = bilgi.izinVar
+                bilgi = AyarBilgisi(s)
+                bilgi.izinVar = izin
+            }
         }
         .fileExporter(isPresented: $disa, document: YedekBelgesi(yedek), contentType: .json,
                       defaultFilename: "sanat-atlasi-yedek") { if case let .failure(e) = $0 { depo.hata(e) } }
