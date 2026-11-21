@@ -11,6 +11,8 @@ struct NoraSanatApp: App {
         if let adres = Self.arguman("-adres") { Gezgin.shared.git(adres) }
         // -benKaydir kurs: site (-yalnizSite) Ben'in o bölümüne kayar (C4b karşılaştırma görüntüleri)
         BenKarsilastirma.siteyiKaydir()
+        // -galeriKaydir dizin: site Galeri'nin o bölümüne kayar (G2b karşılaştırma görüntüleri)
+        GaleriKarsilastirma.siteyiKaydir()
         #endif
     }
 
