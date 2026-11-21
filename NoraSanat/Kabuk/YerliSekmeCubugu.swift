@@ -57,6 +57,9 @@ struct YerliSekmeCubugu: View {
                 dil
                     .frame(width: y.dil.genislik, height: y.dil.yukseklik)
                     .offset(x: y.dil.x, y: y.dil.y - dilKalkisi)
+                    .opacity(durum.dilGorunur ? 1 : 0)
+                    .allowsHitTesting(durum.dilGorunur)
+                    .accessibilityHidden(!durum.dilGorunur)
                     .zIndex(3)
             }
             .frame(width: gen, height: yuk, alignment: .topLeading)

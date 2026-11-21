@@ -101,6 +101,14 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Aynı ikiliyi ikinci kez karıştır: yaprakta "Bu ikisini 2. kez karıştırdın" ve iki sanatçının ikişer eseri.
   - Ayarlar'da Tanışma kapalıyken yeni sanatçıda tanışma gelmiyor.
   - Tur bitince "x / n kart doğru", seviye atlayan dönem varsa listesi, "Bir tur daha".
+- [ ] (C4b) Ben artık yerli. Bugün'de sağ üstteki Ben düğmesine dokun:
+  - Üstte kayan eser duvarı, "Ben" başlığı, büyük konu sayısı, Sanatçı / Kalıcı / Tekrar sütunları sitedeki gibi. Altta yerli sekme çubuğu, Bugün seçili.
+  - Son 12 hafta karelerinde bugünkü kare çerçeveli; çalıştığın günler akımın renginde.
+  - Sıradaki konuda **İşlendi yap**: düğme dolup "İşlendi" oluyor, sonra sıradaki konu geliyor; yeni sanatçı açıldıysa altta "… yeni sanatçı açıldı · Tanış" kartı çıkıyor.
+  - Kurs kitaplığında bir kitaba dokun: kart altında açılıyor; "Dokununca işaretle"de kitaba dokunmak konuyu doğrudan işaretliyor.
+  - Akım kartları, "Zayıf önce", en zayıf sanatçılar ve "Hatalarım turu" dokununca doğru yere gidiyor.
+  - Dişliye dokun: Ayarlar açılıyor, alttaki dişli dil gizleniyor. Tema, gündüz rengi, yazı boyutu, hareket hapları ve anahtarlar sitedeki gibi; değiştirince site de aynı ayarı gösteriyor. Geri düğmesi Ben'e döndürüyor.
+  - Yedekle, ayarı değiştir, yedeği yapıştırıp **Geri yükle**: onay sorusu çıkıyor, önceki ayar geri geliyor.
 
 ## Geliştirme
 

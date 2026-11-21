@@ -36,3 +36,11 @@ başka eser, eseri bulunamayan kartın sayaçta kalması, karıştırma sayısı
 ```bash
 node Testler/kahin/pekistir_tanisma.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/pekistir/tanisma.json
 ```
+
+## Temsil / küçük görsel (C4b)
+
+```bash
+# Her sanatçının sitedeki eser listesi ve sitenin `enBilinen` seçimi (küçük görseller, kitap kapakları, portreler),
+# kötü işaretli görsellerle seçim, TEMSIL_DISI ve `bilinirlikSirasi` (tablo düğmesinin yelpazesi). ~1,5 MB.
+node Testler/kahin/temsil.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/temsil/cevaplar.json
+```
