@@ -110,6 +110,16 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
+          # T4: aynı adreste sitenin kendi çubuğu (8 ile yan yana: çubuk aynı yerde, aynı görünüşte olmalı)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -adres "#/gozat"
+          sleep 15
+          xcrun simctl io "$UDID" screenshot ekranlar/8b-site-cubuk.png
+          # T4: yerli çubuğun hızlı ayarlar yaprağı (sitedeki dişli dil)
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -hizliAcik
+          sleep 15
+          xcrun simctl io "$UDID" screenshot ekranlar/8c-hizli-ayar.png
           # G1: tam ekran görüntüleyici (ayrıntı noktası olan ilk eser; katalog ve görsel ağdan gelir)
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici

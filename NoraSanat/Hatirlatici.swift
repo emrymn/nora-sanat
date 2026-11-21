@@ -162,21 +162,22 @@ final class Gezgin {
         }
     }
 
-    /// Sitenin kendi sekme düğmesine basar (kullanıcı dokunmuş gibi); çubuk gizliyse sekmenin ana sayfasına gider
-    func sekmeyeGec(_ s: Sekme) {
-        guard let kimlik = s.siteKimligi else { return git(s.kokAdres) }
-        guard yuklendi, let w = webView else { return git(s.kokAdres) }
-        let js = """
-        (function () {
-          var a = document.querySelector('#sekmeler a[data-sekme=' + \(Self.jsDizge(kimlik)) + ']');
-          if (a && !document.getElementById('sekmeler').hidden) a.click(); else location.hash = \(Self.jsDizge(s.kokAdres));
-        })();
-        """
-        w.evaluateJavaScript(js, completionHandler: nil)
+    /// Sitenin kendi sekme düğmesine basar (kullanıcı dokunmuş gibi); çubuk gizliyse sekmenin ana sayfasına gider.
+    /// `onceki`: yerli çubukta seçili sekmenin sırası; sitenin hapı oradan kayar. `bas` false: site zaten o sekmede,
+    /// yalnız hap kayar (`Gecis.sekmeyeGecBetigi`).
+    func sekmeyeGec(_ s: Sekme, onceki: Int? = nil, bas: Bool = true) {
+        guard let kimlik = s.siteKimligi, yuklendi, let w = webView else {
+            if bas { git(s.kokAdres) }
+            return
+        }
+        let arguman: [String: Any] = ["kimlik": kimlik, "adres": s.kokAdres, "bas": bas,
+                                      "onceki": onceki.map { $0 as Any } ?? NSNull()]
+        w.callAsyncJavaScript(Gecis.sekmeyeGecBetigi, arguments: arguman, in: nil, in: .page, completionHandler: nil)
     }
 
     func yuklemeBitti() {
         yuklendi = true
+        KabukDurumu.shared.rozetiYenile()
         if let b = bekleyen {
             bekleyen = nil
             git(b)

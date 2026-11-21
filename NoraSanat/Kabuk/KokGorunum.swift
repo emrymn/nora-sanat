@@ -5,28 +5,39 @@ import SwiftUI
 ///
 /// Site her zaman yüklü kalır (köprüler, ilerleme, rozet ve hatırlatma onu kullanır); yalnız seçili sekme taşınmamışsa
 /// görünür. Hiç sekme taşınmadıysa yerli çubuk hiç kurulmaz ve uygulama bugünküyle birebir aynıdır. Bkz. `Gecis`.
+/// Yerli ekranların çubuğu `YerliSekmeCubugu` (T4): sitenin çubuğuyla aynı yerde, aynı görünüşte.
 struct KokGorunum: View {
     @State private var durum = KabukDurumu.shared
     @State private var tema = TemaDeposu.shared
+    @Environment(\.scenePhase) private var evre
 
     var body: some View {
         ZStack {
             if !Gecis.yerliSekmeler.isEmpty {
+                // Sistemin sekme çubuğu gizli; yerine sitenin çubuğunun aynısı (T4) en üstte durur
                 TabView(selection: Binding(get: { durum.secili }, set: { durum.sec($0) })) {
                     ForEach(Sekme.allCases) { s in
                         yerliEkran(s)
-                            .toolbarBackground(Color(tema.renkler.sekmeZemin), for: .tabBar)
-                            .toolbarBackground(.visible, for: .tabBar)
-                            .tabItem { Label(s.baslik, systemImage: s.simge) }
+                            .toolbar(.hidden, for: .tabBar)
+                            // Kaydırılan içerik yüzen çubuğun altında kalmasın (sitede sayfanın alt boşluğu)
+                            .safeAreaInset(edge: .bottom, spacing: 0) {
+                                Color.clear.frame(height: SekmeCubugu.Olcu.yukseklik + SekmeCubugu.Olcu.enAzAlt)
+                            }
                             .tag(s)
                     }
                 }
-                .tint(Color(tema.renkler.murekkep))
             }
             site
                 .opacity(durum.siteGorunur ? 1 : 0)
                 .allowsHitTesting(durum.siteGorunur)
                 .accessibilityHidden(!durum.siteGorunur)
+            if !Gecis.yerliSekmeler.isEmpty {
+                // Site görünürken de kurulu (saydam): hap sitenin seçimini izler, yerliye geçince oradan kayar
+                YerliSekmeCubugu()
+                    .opacity(durum.cubukGorunur ? 1 : 0)
+                    .allowsHitTesting(durum.cubukGorunur)
+                    .accessibilityHidden(!durum.cubukGorunur)
+            }
         }
         .environment(tema)
         .environment(durum)
@@ -34,6 +45,7 @@ struct KokGorunum: View {
         .preferredColorScheme(tema.koyu ? .dark : .light)
         // Widget'a dokununca: norasanat://bugun
         .onOpenURL { Gezgin.shared.ac($0) }
+        .onChange(of: evre) { _, yeni in if yeni == .active { durum.rozetiYenile() } }
     }
 
     private var site: some View {
