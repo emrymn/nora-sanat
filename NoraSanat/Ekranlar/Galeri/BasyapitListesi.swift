@@ -397,7 +397,8 @@ struct BasyapitSahnesi: View {
                 HStack(spacing: 10) {
                     ForEach(eserler.indices, id: \.self) { i in
                         Button { elle = true; withAnimation { secili = i } } label: {
-                            Capsule().fill(Color(RGBA(css: "#f4f0e8")!, i == secili ? 1 : 0.5))
+                            // `by-nok-*`: seçili nokta pirinç, öbürleri soluk
+                            Capsule().fill(i == secili ? Color(tema.renkler.pirinc) : Color(RGBA(css: "#f3eee4")!, 0.42))
                                 .frame(width: i == secili ? 20 : 6, height: 6)
                                 .frame(width: 20, height: 44)
                         }

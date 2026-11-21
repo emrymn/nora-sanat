@@ -26,7 +26,8 @@ struct YanYana: View {
     var body: some View {
         let r = tema.renkler
         VStack(spacing: 4) {
-            resim(secim.bu, secim.buAd, "\(secim.buAd)")
+            // `.bsy-yan` ekranın tepesinden başlar (durum çubuğunun altı da resim alanı)
+            resim(secim.bu, secim.buAd, "\(secim.buAd)").ignoresSafeArea(edges: .top)
             resim(secim.oteki, secim.otekiAd, "\(secim.k.sanatci), \(secim.k.eser)")
             VStack(alignment: .leading, spacing: 0) {
                 Etiket(secim.k.sanatci)

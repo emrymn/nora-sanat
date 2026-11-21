@@ -134,7 +134,8 @@ struct YakinOkuma: View {
                 #endif
             }
         }
-        .overlay(alignment: .bottom) { altOgeler.padding(.bottom, 34) }
+        // `bottom: calc(var(--sekme-alt) + var(--sekme-h) + 34px)`: dişli dilin de üstünde (CI'da siteyle ölçüldü)
+        .overlay(alignment: .bottom) { altOgeler.padding(.bottom, 83) }
         .background(SayfaZemini(donem: donem))
         .tint(Color(r.murekkep))
         .task(id: b.anahtar) { await yukle() }
