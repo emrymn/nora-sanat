@@ -24,7 +24,7 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/ben-kahin" --no-audit --no-fund playwright-core@1.56.1
           NODE_PATH="$RUNNER_TEMP/ben-kahin/node_modules" BEN_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/ben.mjs > "$RUNNER_TEMP/ben-cevaplar.json"
-          diff -u Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ben/cevaplar.json "$RUNNER_TEMP/ben-cevaplar.json"
+          node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ben/cevaplar.json" "$RUNNER_TEMP/ben-cevaplar.json"
 
       - name: Xcode sürümü
         run: xcodebuild -version

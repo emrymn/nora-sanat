@@ -6,6 +6,7 @@ import SwiftUI
 struct BenSekmesi: View {
     @Environment(TemaDeposu.self) private var tema
     @Environment(KabukDurumu.self) private var kabuk
+    @Environment(\.dynamicTypeSize) private var yaziBoyutu
     @Environment(\.scenePhase) private var evre
     @State private var depo = BenDeposu()
     @State private var ayarlar = false
@@ -32,6 +33,7 @@ struct BenSekmesi: View {
                 }
             }
         }
+        .dynamicTypeSize(tema.ayar.yazi == "buyuk" ? max(yaziBoyutu, .xLarge) : yaziBoyutu)
         .tint(Color(tema.renkler.pirinc))
         .onChange(of: kabuk.yerliAdres[.ben], initial: true) { _, adres in
             if let adres {
@@ -65,6 +67,19 @@ struct BenSekmesi: View {
         return List {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
+                    let acik = il.acikSanatcilar(k.sanatcilar)
+                    let adaylar = acik.isEmpty ? Array(k.sanatcilar.prefix(9)) : acik
+                    let duvar = Array((adaylar.filter { $0.kaynak == "kurs" } + adaylar.filter { $0.kaynak != "kurs" }).prefix(3))
+                    if !duvar.isEmpty {
+                        HStack(spacing: 3) {
+                            ForEach(duvar) { s in
+                                if let eser = k.eserler(s.id).first {
+                                    UzakGorsel(url: k.gorselAdresi(eser, genislik: 400, kotuler: il.kotuGorseller))
+                                        .frame(maxWidth: .infinity).clipped()
+                                }
+                            }
+                        }.frame(height: 94).clipped().accessibilityHidden(true)
+                    }
                     Text("Kursun neresindesin").font(Yazi.sans(13))
                     Text("\(sayi) / \(konular.count) konu işlendi").font(Yazi.serif(30))
                     ProgressView(value: Double(sayi), total: Double(max(1, konular.count)))
