@@ -12,12 +12,13 @@ import SwiftUI
 ///   `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`'tedir.
 enum Gecis {
     /// Swift'e taşınmış sekmeler
-    static let tasinanlar: Set<Sekme> = []
+    static let tasinanlar: Set<Sekme> = [.ben]
 
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
     static let yerliSekmeler: Set<Sekme> = {
         #if DEBUG
         let l = CommandLine.arguments
+        if l.contains("-yalnizSite") { return [] }
         if let i = l.firstIndex(of: "-yerliSekme"), i + 1 < l.count {
             return tasinanlar.union(l[i + 1].split(separator: ",").compactMap { Sekme(rawValue: String($0)) })
         }
