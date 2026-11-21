@@ -101,6 +101,8 @@ public struct TurKarti: Codable {
     /// Yanlış cevaptan sonra ikilinin karıştırılma sayısı (`k.karisanSayi`)
     public var karisan: Int?
     public var seviyeSonucu: SeviyeSonucu?
+    /// Karışık kartın ikinci sorusunda seçilen akım (nil: henüz ya da "bilmiyorum")
+    public var akimCevabi: String?
     public var akimBekliyor: Bool { akimlar != nil && !ikinci }
 }
 
@@ -299,7 +301,7 @@ public struct TurKaydi: Codable {
         let dogru = secim == (k.ikinci ? s.akim : k.dogru)
         k.sonuc = dogru
         k.bilmiyorum = secim == nil
-        if !k.ikinci { k.sanatciCevabi = secim }
+        if k.ikinci { k.akimCevabi = secim } else { k.sanatciCevabi = secim }
         if case let .sanatci(tur) = kip {
             if !k.ikinci {
                 if let secim, secim != s.id {

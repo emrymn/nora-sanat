@@ -190,4 +190,37 @@ final class PekistirTanismaTests: XCTestCase {
         kayit.seviyeSec(2, katalog: k, veri: veri, ilerleme: &il)
         XCTAssertNil(kayit.seviye, "dönemin kendi seviyesi seçilince nil")
     }
+
+    /// Cevap yaprağının yazıları (js/ekranlar/pekistir.js'teki metinlerle aynı)
+    func testCevapYazilari() {
+        // akimiAciklarMi: akım adının 4+ harfli sözcüklerinin ilk beş harfi metinde geçiyor mu
+        XCTAssertTrue(CevapYazilari.akimiAciklarMi("Erken Rönesans ustalarından", "Erken Rönesans"))
+        XCTAssertTrue(CevapYazilari.akimiAciklarMi("İTALYAN RÖNESANSI", "Yüksek Rönesans"))
+        XCTAssertFalse(CevapYazilari.akimiAciklarMi("Altın zemin, düz figürler", "Gotik"))
+        XCTAssertTrue(CevapYazilari.akimiAciklarMi("gotik katedral", "Gotik"))
+        XCTAssertFalse(CevapYazilari.akimiAciklarMi("ışık", "Barok (Flaman)"))
+        XCTAssertTrue(CevapYazilari.akimiAciklarMi("flamanların", "Barok (Flaman)"))
+        // kutuSatiri
+        let gun = "2026-11-21"
+        XCTAssertEqual(CevapYazilari.kutu(Skor(kutu: 0, sonraki: gun), bugun: gun)?.yazi, "Baştan · bu turda yine gelecek")
+        let bir = CevapYazilari.kutu(Skor(kutu: 1, sonraki: "2026-11-22"), bugun: gun)
+        XCTAssertEqual(bir?.yazi, "1. kutu · 1 gün sonra tekrar")
+        XCTAssertEqual(bir?.ilerledi, true)
+        let uc = CevapYazilari.kutu(Skor(kutu: 3, sonraki: "2026-11-21"), bugun: gun)
+        XCTAssertEqual(uc?.yazi, "3. kutu · bugün tekrar")
+        XCTAssertEqual(uc?.ilerledi, false)
+        XCTAssertNil(CevapYazilari.kutu(nil, bugun: gun))
+        // seviyeSatiri
+        let kayit = SeviyeKaydi(s: 0, son: [1, 1, 0])
+        XCTAssertEqual(CevapYazilari.seviyeSatiri(SeviyeSonucu(once: 0, sonra: 0, gecti: false), akim: "Gotik", kartSeviyesi: 0, kayit: kayit),
+                       "Gotik · Kolay · son 3 cevapta 2 doğru · Orta için %80 (en az 2 cevap daha)")
+        XCTAssertEqual(CevapYazilari.seviyeSatiri(SeviyeSonucu(once: 0, sonra: 1, gecti: true), akim: "Gotik", kartSeviyesi: 0, kayit: kayit),
+                       "Gotik Orta seviyeye geçti")
+        XCTAssertEqual(CevapYazilari.seviyeSatiri(SeviyeSonucu(isinma: true, once: 2, sonra: 2, gecti: false), akim: "Gotik", kartSeviyesi: 0, kayit: kayit),
+                       "Isınma · Kolay · Gotik Zor penceresine yazılmadı")
+        // sonuç satırları
+        XCTAssertEqual(CevapYazilari.akimSonucu(akimDogru: true, sanatciDogru: false, bilmiyorum: false).1,
+                       "sanatçı yanlıştı, bu kart 3–5 kart sonra yine gelecek")
+        XCTAssertEqual(CevapYazilari.sonuc(dogru: false, bilmiyorum: true).0, "Bilmiyorum")
+    }
 }

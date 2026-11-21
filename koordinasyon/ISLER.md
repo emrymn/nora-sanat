@@ -144,7 +144,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T2 | İlerleme köprüsü + tekrar kuralları | K | – | 1–2 | bitti (#5) |
 | T3 | Kabuk: yerli sekmeler, tema, görsel önbelleği | K | T1, T2 | 1 | bitti (#6) |
 | G1 | Tam ekran görüntüleyici | G | T1 | 1–2 | bitti (#8) |
-| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bitti (#9), C1c sürüyor |
+| C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | C1a bitti (#7), C1b bitti (#9), C1c bekliyor |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bekliyor |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | sürüyor (Claude, 2026-11-21) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
