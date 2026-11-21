@@ -1,6 +1,7 @@
 // Kaynak: sanat-atlasi js/ekranlar/{gozat,akim,arama,koleksiyon}.js @ a866b86
 import NoraCekirdek
 import SwiftUI
+import SafariServices
 
 enum GaleriYolu: Hashable {
     case akim(String), sanatci(String), eserler(String), konular(String), konu(String), ara, koleksiyon, okuma(String)
@@ -40,6 +41,7 @@ struct GaleriSekmesi: View {
     @State private var yol: [GaleriYolu] = []
     @State private var acilan: AcilanEserler?
     @State private var sayfa = 0
+    @State private var siteBolumu: SiteBolumu?
     @State private var sorgu = ""
     @State private var hata: String?
     @State private var deneme = 0
@@ -56,8 +58,9 @@ struct GaleriSekmesi: View {
                 } else { ProgressView("Galeri hazırlanıyor…") }
             }
             .navigationTitle("Galeri")
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: GaleriYolu.self) { hedef in
-                if let g = galeri, let il = ilerleme { hedefSayfa(hedef, g, il) }
+                if let g = galeri, let il = ilerleme { hedefSayfa(hedef, g, il).toolbar(.visible, for: .navigationBar) }
             }
         }
         .task(id: deneme) {
@@ -113,6 +116,9 @@ struct GaleriSekmesi: View {
                 yol.append(.konu(id))
             }
         }
+        .sheet(item: $siteBolumu) { bolum in
+            GaleriSiteSayfasi(adres: bolum.adres).ignoresSafeArea()
+        }
         .alert("Koleksiyon güncellenemedi.", isPresented: $yenilemeHatasi) {
             Button("Yeniden dene") { deneme += 1 }
             Button("Kapat", role: .cancel) {}
@@ -145,33 +151,50 @@ struct GaleriSekmesi: View {
     private func anaSayfa(_ g: GaleriKatalogu, _ il: Ilerleme) -> some View {
         let salonlar = Kilit.akimDurumlari(g.katalog.akimlar, g.katalog.sanatcilar, islenen: il.islenenKume)
         return Group {
-            HStack {
-                NavigationLink(value: GaleriYolu.ara) { Label("Sanatçı, eser ara", systemImage: "magnifyingglass") }
-                Spacer()
+            HStack(spacing: 10) {
+                Text("Galeri").font(Yazi.serif(34)).accessibilityAddTraits(.isHeader)
+                NavigationLink(value: GaleriYolu.ara) {
+                    Label("Sanatçı, eser ara", systemImage: "magnifyingglass")
+                        .font(Yazi.sans(14)).frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(10).overlay(Capsule().stroke(.secondary.opacity(0.35)))
+                }
                 NavigationLink(value: GaleriYolu.koleksiyon) {
                     Image(systemName: g.koleksiyon(il).isEmpty ? "heart" : "heart.fill")
+                        .frame(width: 40, height: 40).overlay(Circle().stroke(.secondary.opacity(0.35)))
                 }.accessibilityLabel("Koleksiyonum")
             }
-            NavigationLink(value: GaleriYolu.konular("")) { Label("Konular", systemImage: "books.vertical") }
-            HStack {
-                Text("Akımlar çarkı").font(Yazi.serif(24))
+            HStack(spacing: 0) {
+                Text("Akımlar").padding(9).foregroundStyle(Color(tema.renkler.zemin))
+                    .background(Color(tema.renkler.murekkep), in: Capsule())
                 Spacer()
-                Text("\(salonlar.filter(\.acik).count) / \(salonlar.count) salon açık").font(.caption)
-            }
+                Button("Başyapıtlar") { siteBolumu = .basyapitlar }
+                Spacer()
+                NavigationLink("Konular", value: GaleriYolu.konular(""))
+                Spacer()
+                Button("Zaman") { siteBolumu = .zaman }
+            }.font(Yazi.sans(13)).padding(5).padding(.trailing, 9)
+                .overlay(Capsule().stroke(.secondary.opacity(0.35)))
             TabView(selection: $sayfa) {
                 ForEach(Array(salonlar.enumerated()), id: \.element.ad) { i, salon in
                     VStack(spacing: 12) {
                         if let e = g.carkKapagi(salon.ad, il) {
-                            resim(e, g, boy: 800, kip: .fill).frame(height: 180)
-                                .clipShape(UnevenRoundedRectangle(topLeadingRadius: 80, topTrailingRadius: 80))
+                            resim(e, g, boy: 800, kip: .fill).frame(width: 188, height: 240)
+                                .clipShape(UnevenRoundedRectangle(topLeadingRadius: 94, topTrailingRadius: 94))
                         }
                         Text(GaleriSergisi.yuzyillar(g.katalog.sanatcilar.filter { $0.akim == salon.ad })).font(.caption)
-                        Text(salon.ad).font(Yazi.serif(30)).multilineTextAlignment(.center)
+                        Text(salon.ad).font(Yazi.serif(36)).multilineTextAlignment(.center)
                         Text(durumYazisi(salon)).font(.caption)
-                        if salon.acik { NavigationLink("Salona gir", value: GaleriYolu.akim(salon.ad)) }
+                        if salon.acik {
+                            NavigationLink(value: GaleriYolu.akim(salon.ad)) {
+                                Label("Salona gir", systemImage: "chevron.right").labelStyle(.titleAndIcon)
+                                    .font(Yazi.sans(15, agirlik: 600)).padding(.vertical, 10).padding(.horizontal, 18)
+                                    .foregroundStyle(Color(tema.renkler.zemin))
+                                    .background(Color(tema.renkler.murekkep), in: Capsule())
+                            }
+                        }
                     }.padding(.horizontal).tag(i)
                 }
-            }.tabViewStyle(.page(indexDisplayMode: .never)).frame(height: 320)
+            }.tabViewStyle(.page(indexDisplayMode: .never)).frame(height: 410)
             if !salonlar.isEmpty {
                 GaleriCarki(salonlar: salonlar, sira: $sayfa)
                 HStack {
@@ -193,6 +216,7 @@ struct GaleriSekmesi: View {
     }
 
     private func durumYazisi(_ a: AkimDurumu) -> String {
+        if a.acik && a.acikSayisi == a.toplam { return "\(a.toplam) sanatçının hepsi açık" }
         if a.acik { return "\(a.acikSayisi) / \(a.toplam) sanatçı açık" }
         return a.acilacagiKonu.map { "Konu \($0) işlenince açılır" } ?? "Kilitli"
     }
@@ -457,4 +481,21 @@ private struct GaleriGoruntuleyicisi: View {
             if !Task.isCancelled { baglam = yeni }
         }
     }
+}
+
+/// G3 ve G5 kendi ekranlarını bağlayana kadar bu iki okuma bölümü yayındaki siteden açılır.
+private enum SiteBolumu: String, Identifiable {
+    case basyapitlar, zaman
+    var id: String { rawValue }
+    var adres: URL {
+        var bilesenler = URLComponents(url: SiteVerisi.site, resolvingAgainstBaseURL: false)
+        bilesenler?.fragment = "/" + rawValue
+        return bilesenler?.url ?? SiteVerisi.site
+    }
+}
+
+private struct GaleriSiteSayfasi: UIViewControllerRepresentable {
+    let adres: URL
+    func makeUIViewController(context: Context) -> SFSafariViewController { SFSafariViewController(url: adres) }
+    func updateUIViewController(_ denetleyici: SFSafariViewController, context: Context) {}
 }

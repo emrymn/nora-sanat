@@ -175,7 +175,7 @@ jobs:
           for DENEME in {1..18}; do
             sleep 5
             xcrun simctl io "$UDID" screenshot ekranlar/galeri.png
-            if "$RUNNER_TEMP/ben-ekran" ekranlar/galeri.png "Akımlar çarkı"; then break; fi
+            if "$RUNNER_TEMP/ben-ekran" ekranlar/galeri.png "Salona gir"; then break; fi
             if [ "$DENEME" = 18 ]; then exit 1; fi
           done
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
