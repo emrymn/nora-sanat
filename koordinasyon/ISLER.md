@@ -155,7 +155,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bekliyor |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
 | C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
-| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | sürüyor (Claude, 2026-11-21) |
+| T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | PR açık (#12) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 
@@ -551,7 +551,62 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - `KokGorunum`'un yerli çubuğu sitenin yüzen, yuvarlak köşeli çubuğuna benzesin: aynı simgeler (SVG'den), aynı yerleşim, Çalış rozeti.
 - Siteden yerliye geçişte çubuk yerinde kalıyormuş gibi görünsün.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · PR #12 · dal `claude/cool-albattani-hix2af` (oturumun zorunlu dalı).
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/ortak.js`: `SEKMELER`, `SEKME_IKONU`, `sekmeleriCiz`, `sekmeRozeti`, `sekmeSurukle`
+  - `js/ekranlar/hizliAyar.js`: dişli dil ve yaprak
+  - `js/tasarim.js`: `YOLLAR`, `ikon()`
+  - `css/app.css`: `.sekmeler`, `#sekmeler` (İş 190), `.sekme-isaret`, `.sekme-rozet`, `.hizli-dil`, `.hizli-yaprak`, `--sekme-h`, `--sekme-alt`
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/ortak.js js/ekranlar/hizliAyar.js js/tasarim.js css/app.css`
+- **Yapılanlar:**
+  - Çekirdek `Gecis/SekmeCubugu.swift`:
+    - `SekmeCubugu.sekmeler`: sitedeki 4 sekme. Ben seçiliyken sitedeki gibi Bugün seçili görünür.
+    - `Simge`: sitenin SVG'leri, olduğu gibi kopyalandı.
+    - `Yerlesim`: çubuk, sekmeler, simge, dil ve rozetin yeri; CSS'in hesabıyla, güvenli alan dahil.
+    - `enYakin` / `surukle`: dokunuş ve sürükleme.
+  - Çekirdek `HizliAyar`: tema ve hareket seçenekleri, günlük kart 5…100.
+  - Çekirdek `Gecis/SVGYolu.swift`: küçük SVG okuyucu (path/rect/circle; yaylar kübik eğriye çevrilir).
+  - `Kabuk/YerliSekmeCubugu.swift`:
+    - Cam çubuk (`--tab-bg` + blur, mürekkep %14 kenar), kayan hap (0.45 s yaylı eğri).
+    - Parmakla sürükleme, seçili simgede zıplama, Çalış rozeti, dişli dil.
+    - Hareket kapalıysa ya da iOS'ta azaltılmışsa animasyon kısalır.
+  - `Kabuk/HizliAyarYapragi.swift`: Tema, Hareket, Günlük kart ±5, Bütün ayarlar (`#/ayarlar`).
+  - `Kabuk/SekmeCubuguKoprusu.swift`: rozet (`turBilgisi('karisik').toplam`) ve hızlı ayar okuma/yazma betikleri. Sitenin yaprağı gibi yazar: `kaydet()`, `temaUygula()`.
+  - `KokGorunum`:
+    - Sistemin sekme çubuğu gizli (`.toolbar(.hidden, for: .tabBar)`).
+    - Her yerli sekmenin altında çubuk kadar boşluk (`safeAreaInset`).
+    - Yerli çubuk site görünürken de kurulu ve saydam: hap sitenin seçimini izler, yerliye geçince oradan kayar.
+  - `Gecis.sekmeyeGecBetigi` (`Gezgin.sekmeyeGec(s, onceki:, bas:)`): yerliden siteye geçerken sitenin hapı önce hareketsiz yerli hapın yerine konur, sonra yeni sekmeye kayar. Site zaten o sekmedeyse (`bas: false`) yalnız hap kayar.
+  - `KabukDurumu`:
+    - `calisRozeti`, `rozetiYenile()`: adres değişince, site yüklenince, ilerleme yazılınca ve uygulama öne gelince yenilenir. Site hazır değilse saniyede bir yeniden dener.
+    - `yenidenDokunma[sekme]`: açık sekmeye yeniden dokunma sayacı.
+    - `cubuguGizle` / `.sekmeCubuguGizli(_:sekme:)`, `hizliAcik`.
+  - SF Symbols simgeleri (`Sekme.simge`) kaldırıldı.
+- **Kâhin:**
+  - `Testler/kahin/sekme_cubugu.mjs` → `Ornekler/sekme_cubugu/cevaplar.json`. İçinde:
+    - simgelerin işaretlemesi ve `getBBox()` sınır kutusu;
+    - 393×852, 320×568, 430×932, 820×1180'de çubuk, sekmeler, hap, simge, dil ve rozet yerleri;
+    - hızlı ayar seçenekleri, günlük kart sınırları (yaprağın kendi + / − düğmeleriyle).
+    - Ayrıca Swift'teki köprü betiklerini canlı sitede çalıştırır: rozet sitenin rozetiyle aynı (8 = 8); tema, hareket ve kart yazılıyor, `localStorage`'a gidiyor.
+  - `SekmeCubuguTests` (7 test): sınır kutuları 0,01, yerleşim 0,01 içinde siteyle aynı.
+  - `kabuk_koprusu.mjs` artık `Gecis.sekmeyeGecBetigi`'ni dosyadan okuyor. Hapın 3'ten 2'ye ve `bas: false` ile 0'dan 2'ye kaydığını sınıyor; geçti.
+  - Linux'ta paket testleri: 75 test, 1'i yalnız canlı modda (atlanıyor).
+- **CI:** 784596e yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44873522825).
+  - Yeni görüntüler: `8b-site-cubuk.png` (aynı adreste sitenin çubuğu) ve `8c-hizli-ayar.png`.
+  - `8-yerli-sekme.png` ile `8b`'nin alt kısımları yan yana bakıldı: çubuk, simgeler, hap, rozet ve dil aynı yerde ve aynı görünüşte.
+  - `ben-ilerleme.png`'de yerli çubukta Bugün seçili (sitedeki gibi).
+  - Düzeltmeler: ilk koşuda rozet yoktu (site hazır olmadan soruluyordu); ikincide rozet simgenin üstündeydi. İkisi düzeltildi.
+- **Kalan / sonraki işler için:**
+  - Hiçbir sekme hâlâ yerli değil. T4 bitti, artık `Gecis.tasinanlar`'a sekme eklenebilir.
+  - Yerli ekranlar:
+    - Açık sekmeye yeniden dokunmayı `.onChange(of: durum.yenidenDokunma[.galeri])` ile dinleyip köke dönsün ya da başa kaysın (sitede en başa kaydırır).
+    - Sitede çubuğun gizlendiği sayfalarda (sekmesiz: karşılaştırma, pekiştirme kartı) `.sekmeCubuguGizli(true, sekme: …)` kullansın. `fullScreenCover` zaten çubuğun üstüne çıkar.
+  - **C4b için:** Sitede `#/ayarlar`'da dişli dil gizli (`HizliAyar.dilGorunur`). Yerli Ben'in Ayarlar sayfası kabuğa görünmüyor; Ben, Ayarlar açıkken kabuğa bildirmeli. Önerim: `KabukDurumu`'na küçük bir `dilGizli` bayrağı. Şimdilik dil orada da görünüyor.
+  - Yürüyüşte (G4) sitede çubuk aşağı kayıp kaybolur (`yuruyus-icinde`). Bu `cubuguGizle` ile yapılabilir; kayma animasyonu henüz yok.
+  - Gündüz'de çubuğun gölgesi yaklaşık: `--golge-rgb` yerine mürekkep %14. Renkli Gündüz'de çubuk sitenin `--tab-bg`'sini `TemaKoprusu`'ndan alıyor.
+- **Tuzaklar:**
+  - Hızlı ayar yazımı sitenin `d.ilerleme`'sine doğrudan yazar (sitenin yaprağı gibi), `IlerlemeKoprusu.degistir`'den geçmez. Kayıt kilidini site `kaydet()`'te kendisi denetler.
+  - Yerli çubuk yazıları Dinamik Yazı'yla büyümez (sitede de sabit 11 px); çubuk yüksekliği sabit 62.
 
 ### G5 · Yolculuk + Zaman (ChatGPT)
 **Site kaynakları:**
