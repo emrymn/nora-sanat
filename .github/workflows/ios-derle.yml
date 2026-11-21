@@ -19,6 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Ben kâhinini canlı sitenin modülleriyle karşılaştır
+        if: github.head_ref == 'is/C4-ben' || github.event_name == 'workflow_dispatch'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/ben-kahin" --no-audit --no-fund playwright-core@1.56.1
+          NODE_PATH="$RUNNER_TEMP/ben-kahin/node_modules" BEN_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/ben.mjs > "$RUNNER_TEMP/ben-cevaplar.json"
+          diff -u Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ben/cevaplar.json "$RUNNER_TEMP/ben-cevaplar.json"
+
       - name: Xcode sürümü
         run: xcodebuild -version
 

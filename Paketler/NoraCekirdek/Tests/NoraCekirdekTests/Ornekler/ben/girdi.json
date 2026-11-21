@@ -1,0 +1,82 @@
+{
+  "sanatcilar": [
+    {
+      "id": "ben-a",
+      "ad": "A",
+      "akim": "C4",
+      "konu": 991
+    },
+    {
+      "id": "ben-b",
+      "ad": "B",
+      "akim": "C4",
+      "konu": 991
+    },
+    {
+      "id": "ben-c",
+      "ad": "C",
+      "akim": "C4",
+      "konu": 992
+    },
+    {
+      "id": "ben-d",
+      "ad": "D",
+      "akim": "C4",
+      "konu": 993
+    }
+  ],
+  "akimlar": [
+    {
+      "ad": "C4",
+      "sira": 1,
+      "komsular": []
+    }
+  ],
+  "il": {
+    "islenen": [
+      991
+    ],
+    "ekSanatcilar": [
+      "ben-d"
+    ],
+    "ayarlar": {
+      "gunlukKart": 20
+    },
+    "skorlar": {
+      "ben-a": {
+        "sanatci": {
+          "dogru": 1,
+          "yanlis": 2,
+          "kutu": 0,
+          "son": "2026-01-01",
+          "sonraki": "2020-01-01"
+        },
+        "akim": {
+          "dogru": 2,
+          "yanlis": 1,
+          "kutu": 4,
+          "son": "2026-01-01",
+          "sonraki": "2099-01-01"
+        }
+      },
+      "ben-b": {
+        "sanatci": {
+          "dogru": 4,
+          "yanlis": 0,
+          "kutu": 4,
+          "son": "2026-01-01",
+          "sonraki": "2099-01-01"
+        }
+      },
+      "ben-d": {
+        "akim": {
+          "dogru": 0,
+          "yanlis": 4,
+          "kutu": 0,
+          "son": "2026-01-01",
+          "sonraki": "2020-01-01"
+        }
+      }
+    }
+  }
+}
