@@ -117,9 +117,10 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
-          # T4: aynı adreste sitenin kendi çubuğu (8 ile yan yana: çubuk aynı yerde, aynı görünüşte olmalı)
+          # T4: aynı adreste sitenin kendi çubuğu (8 ile yan yana: çubuk aynı yerde, aynı görünüşte olmalı).
+          # G3'ten beri Galeri yerli: sitenin Galeri'si yalnız -yalnizSite ile görünür.
           xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -adres "#/gozat"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8b-site-cubuk.png
           # T4: yerli çubuğun hızlı ayarlar yaprağı (sitedeki dişli dil)
@@ -222,7 +223,7 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-$SAYFA${BOLUM:+-$BOLUM}.png"
           done
-          # G2 + G2b: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
+          # G2 + G2b + G3: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
           # AD|adres|bölüm: -galeriKaydir aynı bölüme kaydırır (dizin: "Bütün akımlar" açık). Yerli Galeri hazır olunca
           # (veri ve görseller yüklendi, istendiyse kaydı) tmp/galeri-hazir yazar; ana ekranda OCR "Salona gir"i arar.
           for IS in \
@@ -231,7 +232,11 @@ jobs:
             "sanatci|#/sanatci/giotto-di-bondone|" "eserler|#/sanatci/giotto-di-bondone/eserler|" \
             "konular|#/konular|" "konu|#/konu/annunciation|" "ara|#/ara|" "koleksiyon|#/koleksiyon|" \
             "karsilastir|#/karsilastir/giotto-di-bondone/duccio-di-buoninsegna|" \
-            "akim-karsilastir|#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans|"; do
+            "akim-karsilastir|#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans|" \
+            "basyapitlar|#/basyapitlar|" "basyapitlar-serit|#/basyapitlar|serit" "basyapitlar-donem|#/basyapitlar|donem" \
+            "okuma|#/basyapit/Q1212937|" "okuma-ayrinti|#/basyapit/Q1212937|okuma-ayrinti" \
+            "okuma-derin|#/basyapit/Q1212937/ders|okuma-derin" "okuma-son|#/basyapit/Q1212937|okuma-son" \
+            "yan-yana|#/basyapit/Q979440|yanyana"; do
             AD="${IS%%|*}"; KALAN="${IS#*|}"; ADRES="${KALAN%%|*}"; BOLUM="${KALAN#*|}"
             KAYDIR=()
             if [ -n "$BOLUM" ]; then KAYDIR=(-galeriKaydir "$BOLUM"); fi

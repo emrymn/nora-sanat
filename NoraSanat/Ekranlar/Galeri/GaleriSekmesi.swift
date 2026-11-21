@@ -1,10 +1,22 @@
-// Kaynak: sanat-atlasi js/ekranlar/{gozat,akim,arama,koleksiyon}.js @ a866b86
+// Kaynak: sanat-atlasi js/ekranlar/{gozat,akim,arama,koleksiyon,basyapit}.js @ a866b86
 import NoraCekirdek
 import SwiftUI
 import SafariServices
 
+/// Galeri yerli sekmedir: G1 + G2 + G2b + G3. DEBUG `-yalnizSite` ile site (CI karşılaştırması).
+enum GaleriGecisi {
+    static var sekmeler: Set<Sekme> {
+        #if DEBUG
+        if CommandLine.arguments.contains("-yalnizSite") { return [] }
+        #endif
+        return [.galeri]
+    }
+}
+
 enum GaleriYolu: Hashable {
-    case akim(String), sanatci(String), eserler(String), konular(String), konu(String), ara, koleksiyon, okuma(String)
+    case akim(String), sanatci(String), eserler(String), konular(String), konu(String), ara, koleksiyon
+    /// `#/basyapitlar`, `#/basyapit/<anahtar>` ve `#/basyapit/<anahtar>/ders` (ayrıntılı anlatım açık)
+    case basyapitlar, okuma(String), okumaDers(String)
     case akimKarsilastir(String, String), sanatciKarsilastir(String, String)
     init?(adres: String) {
         let p = adres.drop(while: { $0 == "#" || $0 == "/" }).split(separator: "/").map { String($0).removingPercentEncoding ?? String($0) }
@@ -18,6 +30,8 @@ enum GaleriYolu: Hashable {
         case "koleksiyon": self = .koleksiyon
         case "konu": self = .konu(id)
         case "konular": self = .konular(id)
+        case "basyapitlar": self = .basyapitlar
+        case "basyapit" where p.count == 3 && p[2] == "ders": self = .okumaDers(id)
         case "basyapit": self = .okuma(id)
         default: return nil
         }
@@ -30,6 +44,9 @@ private struct AcilanEserler: Identifiable {
     let sira: Int
     var kirpim: TanimaKirpimi?
     var aciklama = ""
+    /// Rehberli incelemeyle aç (G3: "Yakından bak"), istenirse bir ayrıntı noktasında
+    var incele = false
+    var nokta: Int?
 }
 
 struct GaleriSekmesi: View {
@@ -47,7 +64,10 @@ struct GaleriSekmesi: View {
     @State private var deneme = 0
     @State private var dizinAcik = false
     @State private var yenilemeHatasi = false
+    @State private var basyapitBaglami: BasyapitBaglami?
+    @State private var bsyDonem = ""
     private static let depo = SiteVerisi()
+    @State private var dersler = DersDeposu(depo: GaleriSekmesi.depo)
 
     var body: some View {
         NavigationStack(path: $yol) {
@@ -98,7 +118,11 @@ struct GaleriSekmesi: View {
                 let ilk = GaleriKarsilastirma.yerliHazirla()
                 if let y = ilk.yol { yol = y }
                 if ilk.dizinAcik { dizinAcik = true }
+                if let d = ilk.donem { bsyDonem = d }
                 #endif
+                // Başyapıtlar: hikâyesi ve rehberli incelemesi olan eserler (rozetler, öne çıkanlar, kırpımlar)
+                let gb = await GoruntuleyiciBaglami.yukle(siteVerisi: Self.depo)
+                if !Task.isCancelled { basyapitBaglami = BasyapitBaglami(hikayeler: gb.hikayeler, ayrintilar: gb.ayrintilar) }
             } catch { if !Task.isCancelled { hata = "Galeri yüklenemedi." } }
         }
         .task(id: durum.secili) {
@@ -150,16 +174,17 @@ struct GaleriSekmesi: View {
             pekistir: { ad in
                 durum.sec(.calis)
                 Gezgin.shared.git("#/pekistir/donem/" + SiteYazisi.uriBileseni(ad))
-            })
+            },
+            goruntule: { e, incele, nokta in acilan = AcilanEserler(eserler: [e], sira: 0, incele: incele, nokta: nokta) })
     }
 
-    /// `gozAtUst`: bölüm sekmeleri; Başyapıtlar ve Zaman G3 / G5'e kadar sitenin sayfasını açar
+    /// `gozAtUst`: bölüm sekmeleri; Zaman G5'e kadar sitenin sayfasını açar
     private func ust(_ etkin: GaleriUst.Bolum, _ g: GaleriKatalogu, _ il: Ilerleme) -> GaleriUst {
         GaleriUst(etkin: etkin, koleksiyonDolu: !g.koleksiyon(il).isEmpty,
                   ara: { yol.append(.ara) }, koleksiyon: { yol.append(.koleksiyon) }) { b in
             switch b {
             case .akimlar: if etkin != .akimlar { yol = [] }
-            case .basyapitlar: siteBolumu = .basyapitlar
+            case .basyapitlar: if etkin != .basyapitlar { yol = [.basyapitlar] }
             case .konular: if etkin != .konular { yol = [.konular("")] }
             case .zaman: siteBolumu = .zaman
             }
@@ -221,25 +246,25 @@ struct GaleriSekmesi: View {
             SanatciKarsilastir(a: a, b: b, galeri: g, il: il, eylem: e)
         case .ara:
             AramaSayfasi(galeri: g, il: il, dizin: dizin, sorgu: $sorgu, eylem: e)
-        case .okuma(let id):
-            // G3 yakın okumayı yerli yazana kadar: başlık, özet ve bölümler
-            if let b = g.basyapitlar.first(where: { $0["anahtar"]?.metin == id }) {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        GaleriSayfaUst(etiket: "Yakın okuma", baslik: b["baslik"]?.metin ?? "", geri: e.geri)
-                        if let x = g.eslestir(id, b["sanatci"]?.metin ?? "") {
-                            let r = GaleriResim(galeri: g, il: il)
-                            EserKarti(eser: x, url: r.url(x, 800), yedek: r.yedek(x), oran: r.oran(x),
-                                      yukseklik: 345 / CGFloat(r.oran(x) ?? 0.75), genislik: 345) { e.ac([x], 0) }
-                        }
-                        OkumaMetni(metin: b["ozet"]?.metin ?? "", italik: true).padding(.top, 16)
-                        ForEach(Array((b["bolumler"]?.dizi ?? []).enumerated()), id: \.offset) { _, bolum in
-                            GaleriBolum(etiket: bolum["baslik"]?.metin ?? "") { OkumaMetni(metin: bolum["metin"]?.metin ?? "") }
-                        }
-                    }
-                    .padding(.horizontal, BenOlcu.yan).padding(.top, 12).padding(.bottom, 32)
+        case .basyapitlar:
+            BasyapitListesi(galeri: g, il: il, baglam: basyapitBaglami ?? BasyapitBaglami(), donem: $bsyDonem, eylem: e,
+                            ust: ust(.basyapitlar, g, il))
+        case .okuma(let id), .okumaDers(let id):
+            if let b = BasyapitKurallari.bul(g.basyapitlar, id) {
+                if case .okumaDers = hedef {
+                    YakinOkuma(b: b, galeri: g, il: il, baglam: basyapitBaglami, dersler: dersler, derinAcik: true, eylem: e).id(id)
+                } else {
+                    YakinOkuma(b: b, galeri: g, il: il, baglam: basyapitBaglami, dersler: dersler, eylem: e).id(id)
                 }
-                .scrollIndicators(.hidden)
+            } else {
+                // `hataGoster`: "Bu eser için yakın okuma bulunamadı."
+                VStack(spacing: 16) {
+                    SanatciUst(etiket: "Başyapıtlar", geri: e.geri)
+                    Text("Bu eser için yakın okuma bulunamadı.").font(Yazi.sans(15)).foregroundStyle(Color(tema.renkler.murekkep2))
+                    Spacer()
+                }
+                .padding(.horizontal, BenOlcu.yan).padding(.top, 12)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .background(SayfaZemini(donem: nil, ustHale: true))
             }
         }
@@ -289,7 +314,8 @@ private struct GaleriGoruntuleyicisi: View {
     var body: some View {
         Group {
             if secim.kirpim == nil {
-                Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira, konuSecildi: konuSecildi)
+                Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira, incelemeyeBasla: secim.incele,
+                              incelemeNokta: secim.nokta, konuSecildi: konuSecildi)
             } else if let baglam {
                 Goruntuleyici(eserler: secim.eserler, baslangic: secim.sira,
                               incelemeyeBasla: secim.kirpim != nil, baglam: baglam, konuSecildi: konuSecildi)
@@ -308,9 +334,9 @@ private struct GaleriGoruntuleyicisi: View {
     }
 }
 
-/// G3 ve G5 kendi ekranlarını bağlayana kadar bu iki okuma bölümü yayındaki siteden açılır.
+/// G5 kendi ekranını bağlayana kadar Zaman yayındaki siteden açılır.
 private enum SiteBolumu: String, Identifiable {
-    case basyapitlar, zaman
+    case zaman
     var id: String { rawValue }
     var adres: URL {
         var bilesenler = URLComponents(url: SiteVerisi.site, resolvingAgainstBaseURL: false)
@@ -334,6 +360,13 @@ enum GaleriKarsilastirma {
         "dizin": ("[data-dizin-ac][aria-expanded=\"false\"]", ".akim-dizin"),
         "eserler": (nil, ".akim-bolum:has(.akim-eserler)"),
         "pekistir": (nil, ".donem-cta"),
+        // G3: Başyapıtlar ve yakın okuma (tıklanacaklar "||" ile sırayla)
+        "serit": (nil, ".by-govde .by-bolum"),
+        "donem": (".by-haplar [data-by-donem=\"ronesans\"]", ".by-bas-donem"),
+        "okuma-ayrinti": (nil, ".bsy-akis .bsy-ayrinti, .bsy-akis .bsy-serit"),
+        "okuma-derin": (nil, ".bsy-derin"),
+        "okuma-son": (nil, "[data-bsy-kunye]"),
+        "yanyana": ("[data-bsy-derin-ac]||.bsy-kiyas[data-bsy-kiyas]", ".bsy-yan"),
     ]
 
     static var bolum: String? { NoraSanatApp.arguman("-galeriKaydir") }
@@ -342,7 +375,7 @@ enum GaleriKarsilastirma {
 
     /// Veriler yüklenince: istenen sayfa, istenen bölüm için dizin; bölüm istenmediyse görseller için bekleyip hazır
     @MainActor
-    static func yerliHazirla() -> (yol: [GaleriYolu]?, dizinAcik: Bool) {
+    static func yerliHazirla() -> (yol: [GaleriYolu]?, dizinAcik: Bool, donem: String?) {
         let yol = NoraSanatApp.arguman("-galeriSayfa").map { GaleriYolu(adres: $0).map { [$0] } ?? [] }
         if bolum == nil {
             Task {
@@ -350,7 +383,7 @@ enum GaleriKarsilastirma {
                 try? Data().write(to: hazir)
             }
         }
-        return (yol, bolum == "dizin")
+        return (yol, bolum == "dizin", bolum == "donem" ? "ronesans" : nil)
     }
 
     /// Yerli sayfa: bölüm bu sayfadaysa başına kayar, sonra hazır yazar
@@ -371,7 +404,8 @@ enum GaleriKarsilastirma {
             (try? JSONSerialization.data(withJSONObject: [x])).flatMap { String(data: $0, encoding: .utf8) }
                 .map { String($0.dropFirst().dropLast()) } ?? "''"
         }
-        let tikla = s.tikla.map { "const t = document.querySelector(\(metin($0))); if (t) t.click(); " } ?? ""
+        let tikla = (s.tikla?.components(separatedBy: "||") ?? [])
+            .map { "{ const t = document.querySelector(\(metin($0))); if (t) t.click(); } " }.joined()
         let js = "(() => { \(tikla)const e = document.querySelector(\(metin(s.kaydir))); "
             + "if (!e) return false; e.scrollIntoView({ block: 'start' }); return true; })()"
         Task {

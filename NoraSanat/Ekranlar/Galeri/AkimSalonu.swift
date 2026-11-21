@@ -14,6 +14,8 @@ struct GaleriEylemleri {
     var ac: ([Eser], Int) -> Void
     /// Çalış'ta dönem turu (`#/pekistir/donem/<akım>`)
     var pekistir: (String) -> Void
+    /// Tek eseri görüntüleyicide aç (G3): rehberli incelemeyle mi, hangi ayrıntı noktasında
+    var goruntule: (Eser, Bool, Int?) -> Void = { _, _, _ in }
 }
 
 /// Görsel adresleri (kullanıcının "kötü" işaretlediği görseller atlanır)

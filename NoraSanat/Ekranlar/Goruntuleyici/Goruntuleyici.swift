@@ -20,6 +20,8 @@ public struct Goruntuleyici: View {
     public let baslangic: Int
     public var gizli: Bool
     public var incelemeyeBasla: Bool
+    /// İncelemeyi bu ayrıntı noktasında aç (`incelemeNokta`, G3: başyapıt sayfasındaki kırpımlar)
+    public var incelemeNokta: Int?
     public var hikayeyeBasla: Bool
     public var baglam: GoruntuleyiciBaglami?
     public var konuSecildi: ((String) -> Void)?
@@ -50,12 +52,14 @@ public struct Goruntuleyici: View {
     @State private var incelemeSira: Int = -1
     @State private var hikayeAcik: Bool = false
     @State private var ilkAcilisYapildi: Bool = false
+    @State private var bekleyenNokta: Int? = nil
 
     public init(
         eserler: [Eser],
         baslangic: Int = 0,
         gizli: Bool = false,
         incelemeyeBasla: Bool = false,
+        incelemeNokta: Int? = nil,
         hikayeyeBasla: Bool = false,
         baglam: GoruntuleyiciBaglami? = nil,
         konuSecildi: ((String) -> Void)? = nil,
@@ -66,6 +70,7 @@ public struct Goruntuleyici: View {
         self.baslangic = guvenliBaslangic
         self.gizli = gizli
         self.incelemeyeBasla = incelemeyeBasla
+        self.incelemeNokta = incelemeNokta
         self.hikayeyeBasla = hikayeyeBasla
         self.baglam = baglam
         self.konuSecildi = konuSecildi
@@ -150,6 +155,13 @@ public struct Goruntuleyici: View {
                                 noktayaGit(secilenNokta, taban: tabanBoyutu, sahne: sahneBoyutu, gorsel: gorsel)
                             }
                             .opacity(asagiCekme > 0 ? 0 : 1)
+                            .task {
+                                // `incelemeNokta`: inceleme açılınca doğrudan o ayrıntıya git
+                                guard let n = bekleyenNokta else { return }
+                                bekleyenNokta = nil
+                                try? await Task.sleep(nanoseconds: 350_000_000)
+                                noktayaGit(n, taban: tabanBoyutu, sahne: sahneBoyutu, gorsel: gorsel)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -701,6 +713,7 @@ public struct Goruntuleyici: View {
         if !ilkAcilisYapildi {
             ilkAcilisYapildi = true
             if incelemeyeBasla, let ayrinti = simdikiAyrinti {
+                bekleyenNokta = incelemeNokta
                 incelemeBaslat(ayrinti)
             } else if hikayeyeBasla, simdikiHikaye != nil {
                 hikayeAcik = true
