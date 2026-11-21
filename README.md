@@ -109,6 +109,12 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Akım kartları, "Zayıf önce", en zayıf sanatçılar ve "Hatalarım turu" dokununca doğru yere gidiyor.
   - Dişliye dokun: Ayarlar açılıyor, alttaki dişli dil gizleniyor. Tema, gündüz rengi, yazı boyutu, hareket hapları ve anahtarlar sitedeki gibi; değiştirince site de aynı ayarı gösteriyor. Geri düğmesi Ben'e döndürüyor.
   - Yedekle, ayarı değiştir, yedeği yapıştırıp **Geri yükle**: onay sorusu çıkıyor, önceki ayar geri geliyor.
+- [ ] (G2b) Galeri henüz yerli değil (G3'ten sonra). Xcode'da Scheme → Run → Arguments'a `-yerliSekme galeri` ekleyip Galeri'ye geç:
+  - Üstte "Galeri", cam arama hapı ve kalp; altında Akımlar / Başyapıtlar / Konular / Zaman sekmeleri sitedeki gibi.
+  - Kemerli kartı parmakla kaydır: komşu kart küçük ve soluk, ortaya oturan büyüyor; alttaki çark ve "01 / 28" birlikte dönüyor, zemin deseni dönem değişince değişiyor. Çarkı parmakla çevir: kartlar onu izliyor.
+  - "Bütün akımlar" dizini açılıp kapanıyor. "Salona gir": sahne, hikâye ("Devamını oku"), mercekli tanıma, eserler, sanatçılar, "Tura başla" kartı (Çalış'ta dönem turu açılıyor), dönem, yan yana koy, tipik konular.
+  - Sanatçıda büyük ad, Dinle, eser şeridi, "Tümünü göster" (iki sütun), Karşılaştır. Konular'da sekmeler kayarken üstte yapışık kalıyor; öne çıkan kart kendiliğinden değişiyor.
+  - Kenardan sağa kaydırınca bir önceki sayfaya dönüyor.
 
 ## Geliştirme
 

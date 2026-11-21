@@ -102,4 +102,23 @@ final class GaleriTests: XCTestCase {
             }
         }
     }
+
+    /// `bulunmaEki` (js/yardimci.js) cevapları: node ile sitenin modülünden alındı
+    func testBulunmaEkiSitedekiyle() {
+        let site: [(Int, String)] = [(0, "0'da"), (1, "1'de"), (2, "2'de"), (3, "3'te"), (6, "6'da"), (9, "9'da"), (10, "10'da"),
+            (20, "20'de"), (30, "30'da"), (40, "40'ta"), (50, "50'de"), (60, "60'ta"), (70, "70'de"), (80, "80'de"), (90, "90'da"),
+            (100, "100'de"), (200, "200'de"), (1000, "1000'de"), (13, "13'te"), (-3, "-3'te")]
+        for (n, beklenen) in site { XCTAssertEqual(SiteYazisi.bulunmaEki(n), beklenen) }
+    }
+
+    /// `kapakSec`: eşit bilinirlikte önce gelen (sitedeki kurs koşulu tutmuyor); temsil dışı eser seçilmez
+    func testKapakSec() {
+        func eser(_ a: String, sl: Int, kurs: Bool = false, qid: String? = nil) -> Eser {
+            Eser(anahtar: a, kaynak: kurs ? "kurs" : "wikidata", kaynaklar: [], baslik: a, tarih: "", yil: nil, muze: "",
+                 kursKonu: nil, qid: qid, gorseller: [], pekistirme: true, sl: sl)
+        }
+        XCTAssertEqual(Temsil.kapakSec([eser("a", sl: 5), eser("b", sl: 5, kurs: true), eser("c", sl: 6)])?.anahtar, "c")
+        XCTAssertEqual(Temsil.kapakSec([eser("q:Q3947103", sl: 9, qid: "Q3947103"), eser("d", sl: 1)])?.anahtar, "d")
+        XCTAssertEqual(Temsil.kapakSec([eser("a", sl: 5), eser("b", sl: 5)])?.anahtar, "a")
+    }
 }
