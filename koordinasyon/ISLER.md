@@ -149,7 +149,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
-| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | sürüyor (Claude, 2026-11-21) |
+| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | PR açık (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
@@ -162,7 +162,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
-- Galeri: G1 + G2 + G2b (görünüş) + G3
+- Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
 - Bugün: G4
 - Yolculuk: G5
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3
@@ -557,12 +557,47 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### G3 · Başyapıtlar (ChatGPT)
+### G3 · Başyapıtlar (ChatGPT şeridi; kullanıcının isteğiyle Claude)
 **Site kaynakları:** `js/basyapit.js`, `js/basyapitSayfa.js`, `js/ekranlar/basyapit.js`.
 
 **Kapsam:** Liste (dönem sekmeleri), yakın okuma sayfası, yan yana karşılaştırma.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · [PR #19](https://github.com/emrymn/nora-sanat/pull/19) · dal `claude/happy-keller-hfidv4` (oturumun zorunlu dalı). Dal G2b'nin (#15, onaylı, henüz birleşmedi) üstünde; #15 birleşince PR'da yalnız G3 kalır. Aynı anda C2 başka oturumda sürdüğü için `Ekranlar/Calis/`'e dokunulmadı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/basyapit.js`: `basyapitlariAl`, `basyapitBul`, `sanatcininBasyapitlari`, `eserEslestir`, `oneCikanlar`, `gorunenBaslik`
+  - `js/basyapitSayfa.js`: hepsi (`sade`, `noktalariYerlestir`, `kirpim`, `sozlukAl`, `kunyeSatirlari`, `karsilastirmalariAl`, `terimIsaretle`, `dersBolumleri`, `okumaDakikasi`)
+  - `js/ekranlar/basyapit.js`: `basyapitSayfasi`, `ayrintiHtml`, `kunyeHtml`, `yanYanaAc`, `dersiBagla`, `basyapitDersSayfasi`
+  - `js/ekranlar/gozat.js`: `basyapitVeri`, `basyapitAdresi`, `basyapitListesi`, `bsyGruplari`, `bsyGovdeCiz`, `bsySahne`, `bsyKart`, `bsySahneBagla`, `eserRozetleri`
+  - `js/eserDersi.js`: `yayinAl`, `dersKlasoru`, `dersDurumu`, `dersGorunurMu`, `dersYolu`, `temizle`, `satirIci`, `mdHtml`; `js/ekranlar/eserDersi.js` `dersinDurumu`; `js/hikaye.js` `hikayeHtml`; `js/harita.js` `BOLGELER`; `js/temsil.js` `temsilOlabilir`
+  - `css/app.css`: `.by-*`, `.bsy*`, `.hikaye-bolum`, `.eser-rozet*`, `.vitrin-akim`, `.serit-son`. Ölçüler canlı sitenin **hesaplanmış** stillerinden (Playwright, iPhone 15 Pro, Gece).
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/basyapit.js js/basyapitSayfa.js js/ekranlar/basyapit.js js/ekranlar/gozat.js js/eserDersi.js js/hikaye.js css/app.css`
+- **Çekirdek** (`NoraCekirdek/Basyapit/`):
+  - `Basyapit.swift`: `Basyapit` (`gorunenBaslik`, `ozgunSatiri`, `adres`), `BasyapitKurallari` (`al` = `basyapitlariAl` + temsil dışı eleme, `bul`, `sanatcinin`, `eser`, `sonraki`, `oneCikanlar`, `gruplar`), `Donem` (`BOLGELER`, `bolgeBul`).
+  - `BasyapitSayfasi.swift`: sayfanın saf yardımcıları ve `metinler` (sitenin `terimleriIsle` sırası: bölüm metni, o bölümün tek ayrıntısının açıklaması, sonra ayrıntılı anlatım).
+  - `EserDersi.swift`: `DersYayini` (kapı), `DersMetni.temizle`, `satirIci`, `mdHtml`. C3 (eser dersleri) de kullanabilir.
+  - `MetinBloklari.swift`: sitenin ürettiği HTML'i (kaçırılmış metin, `mdHtml`, `terimIsaretle`) ekran için bloklara çevirir.
+  - `JSDuzen.swift`: JS düzenli ifadeleri; JS'te `\b`/`\w` ASCII'dir (Türkçe harf sözcük dışı), ICU'da Unicode. Desenlerde `⟨b⟩`, `⟨w⟩` ASCII karşılığa çevrilir.
+  - `GaleriKatalogu.basyapitlar` artık `[Basyapit]` (G2'deki satır içi süzme ve "Q3947103" kalktı; `notTemizle` uygulanıyor).
+- **Kâhin:** `node Testler/kahin/basyapit.mjs` (canlı site, Playwright) → `Ornekler/basyapit/` (`basyapitlar.json` ve `dersler.json` girdi, `cevaplar.json` cevap; ~5 MB). 263 başyapıt: liste, 9 dönem grubu, 210 öne çıkan durumu (3 açıklık × 7 gün × Hepsi ve her dönem), her sayfa için eser eşleşmesi, ayrıntı kaydı, ayrıntıların bölümlere yerleşimi, her noktanın 3 oranda iki kırpımı, ders durumu, künye (dersli/derssiz), sözlük, karşılaştırmalar, `temizle`, ders bölümleri, okuma dakikası, terim işaretli bütün HTML'ler (106 dersin hepsi); kenar durumları (`gorunenBaslik`, `sade`, `mdHtml`, `temizle`, `terimIsaretle`). `BasyapitTests` (6 test) bunları karşılaştırır; ayrıntı yerleşiminde kural bilerek bozulunca 445 hata. Linux'ta 94 test (1 atlanan).
+- **Ekranlar** (`NoraSanat/Ekranlar/Galeri/`):
+  - `BasyapitListesi.swift`: Galeri üstü (Başyapıtlar seçili), yapışkan dönem sekmeleri, `BasyapitSahnesi` (372 px, 6 sn'de bir döner, rozetler), Hepsi'de dönem şeritleri ("n eser ›", "Hepsine bak"), dönemde akım başlıkları ve `.ritim` ızgara; `bsyKart` (kilit etiketi, rozetler, akım noktası). `EserRozetleri`.
+  - `YakinOkuma.swift`: kapak (kenardan kenara, %74, dik tabloda başlık 64 pt biner), kalp, başlık (akım → akım sayfası, sanatçı → sanatçı sayfası), hikâye, bölümler ve ayrıntı kırpımları (dokununca görüntüleyici o ayrıntıda), ayrıntı yoksa "Yakından bak" maddeleri, "Daha derine in" kartı ve aynı sayfada ayrıntılı anlatım, karşılaştırmalar, künye, sözlük, sıradaki, not; başlık çıkınca üst cam çubuk, altta "Yakından bak · n ayrıntı" hapı, terime dokununca sözlük kartı. `DersDeposu` (yayın ve ders dosyaları), `MetinGorunumu` (HTML blokları → `Text`; terimler `nora-terim://` bağlantısı, noktalı pirinç altı çizgi), `CamDugme`, `DoluDugme`, `OkumaBolumu`.
+  - `YanYana.swift`: iki eser üst üste, cam etiketler, kapat, kart ve "Eserin sayfası".
+  - `GaleriSekmesi.swift`: `GaleriYolu.basyapitlar / okuma / okumaDers` (`#/basyapitlar`, `#/basyapit/<k>`, `#/basyapit/<k>/ders`); Başyapıtlar hapı yerli listeyi, arama ve sanatçı sayfasındaki yakın okumalar yerli sayfayı açar (G2'nin geçici sade sayfası kalktı). `GaleriEylemleri.goruntule(eser, incele, nokta)`. Zaman G5'e kadar siteyi yaprakta açar. `GaleriGecisi.sekmeler`.
+- **Ortak dosyalarda küçük değişiklikler:**
+  - `Kabuk/Gecis.swift`: `tasinanlar = BenGecisi.sekmeler ∪ GaleriGecisi.sekmeler` (**Galeri artık yerli**; DEBUG `-yalnizSite` site).
+  - `SiteVerisi.kokDosyasi(yol)`: `data/` dışındaki dosyalar (ders klasörleri), önbellekli; .json değilse JSON denetimi yok.
+  - `Goruntuleyici(incelemeNokta:)` (G1): inceleme açılınca doğrudan o ayrıntıya gider (`incelemeNokta`).
+  - `GaleriGorunusu.swift`: `GaleriSimge.kitap`, `.cik`.
+- **CI:** `galeri-yan-yana-*.png` (solda site, sağda yerli): `basyapitlar`, `basyapitlar-serit`, `basyapitlar-donem` (Rönesans), `okuma` (Elçiler), `okuma-ayrinti`, `okuma-derin` (`#/basyapit/Q1212937/ders`), `okuma-son` (künye, sözlük), `yan-yana` (Q979440'ın ilk resimli karşılaştırması). `-galeriKaydir serit|donem|okuma-ayrinti|okuma-derin|okuma-son|yanyana`; sitede tıklanacaklar `||` ile sırayla. 8b (sitenin çubuğu) artık `-yalnizSite` ile (Galeri yerli). CI sonucu: (CI bekleniyor)
+- **Bilinen farklar / kalan:**
+  - Görsel odağı (`odakliGorsel`, yüzün çevresinden kırpma) yok: kartlar ortadan kırpılıyor (G2b'de de böyle).
+  - Kapak oranı yerel kopya oranından (`gorsel_oranlari.json`); oranı bilinmeyen eserde kapak 4:5 sayılır ve ayrıntı kırpımları çıkmaz (site resmi indirip ölçüyor).
+  - Ayrıntılı anlatım kapatılıp yeniden açılınca site ilk açılışta işaretlenen terimleri ikinci kez işaretlemiyor; burada işaretler korunuyor.
+  - Sitede terimler ders gelince, ayrıntı açıklamaları resim oranı gelince işlenir (sıra yarışa bağlı); burada hep belge sırası.
+  - Giriş hareketleri (`data-gozcu`, kartların yükselmesi), sahne noktalarının dolma animasyonu, `ekranRengi` (eserden gelen hale rengi) yok; hale `--vurgu`.
+  - Yan yanada resim alanlarının zemini `--surface` (`UzakGorsel`'in zemini; sitede sayfa zemini).
+  - Gizli sitenin hareket izni penceresi (G2b denetimi) bu işte ele alınmadı → ayrı iş.
 
 ### C3 · Dersler (ChatGPT)
 **Site kaynakları:**
