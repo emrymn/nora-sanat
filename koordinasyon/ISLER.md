@@ -569,7 +569,10 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - `Kabuk/YerliSekmeCubugu.swift`: dil `dilGorunur` değilse gizli.
   - `NoraSanatApp.swift` (DEBUG): `BenKarsilastirma.siteyiKaydir()`.
 - **CI karşılaştırması:** `-benKaydir kurs|akim|yedek` (DEBUG) yerli ekranı ve siteyi (`-yalnizSite`) aynı bölüme kaydırır; yerli ekran hazır olunca `tmp/ben-hazir` yazar. CI her biri için `site-*.png`, `ben-*.png` ve ikisinin birleşimi `yan-yana-*.png` üretir (solda site, sağda yerli): ilerleme, ilerleme-kurs, ilerleme-akim, ayarlar, ayarlar-yedek.
-- **CI:** (aşağıda)
+- **CI:** 84e605e yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44884426437); son ince ayar commit'i sonrası yeniden koşar.
+  - İlk koşular: `UIFont.TextStyle.caption` yok (`.caption1`); Ayarlar'da yerli koddan çağrılan `izinVarMi()` iOS hareket izni penceresini açıp ekranı kapattı → betikten çıkarıldı.
+  - `yan-yana-*.png` beşine de bakıldı: Ben'in başı, kitaplık, akımlar, Ayarlar ve Yedek bölümleri sitedekiyle aynı düzende, aynı yazı tipleri ve renklerde. Büyük rakamın boşluğu ve Ayarlar açıklamalarının satır aralığı sonradan sıkılaştırıldı.
+  - Bilinen küçük farklar: bazı kitap kapakları sitedekinden farklı eser (kapak dosyası yoksa ilk sanatçının en bilinen eseri; site aynı kuralı izliyor ama eser sırası farklı olabilir); "Nötr kâğıt" örneği düz daire (sitede ikiye bölünmüş); duvarın eserleri farklı (sitede sıra rastgele kayıyor).
 - **Kalan / sonraki işler için:**
   - Sitedeki giriş hareketleri (kitapların rafa dizilmesi, sayıların sayarak gelmesi, kitap parıltısı, sıradaki konunun kayarak gelmesi) yok; yalnız duvar kayması, İşlendi dolması, kart açılması ve Tanış kartı hareketli. Z3'te.
   - Sitede işaretlemeden sonra çıkan kısa bildirimler (`bildir`: "Açıldı: …") yok (C4'te de yoktu).

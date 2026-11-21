@@ -429,9 +429,9 @@ struct AyarAciklamasi: View {
     init(_ metin: String) { self.metin = metin }
     @Environment(TemaDeposu.self) private var tema
     var body: some View {
-        Text(metin).font(Yazi.sans(13, stil: .footnote)).lineSpacing(6.5)
+        Text(metin).font(Yazi.sans(13, stil: .footnote)).lineSpacing(3.5)
             .foregroundStyle(Color(tema.renkler.murekkep2))
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.vertical, 6)
+            .padding(.vertical, 3)
     }
 }
