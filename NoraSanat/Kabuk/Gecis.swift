@@ -146,11 +146,22 @@ final class KabukDurumu {
         if gizli { gizleyenler.insert(sekme) } else { gizleyenler.remove(sekme) }
     }
 
-    /// Rozeti siteden yeniden okur (site hazır değilse eskisi kalır). Yerli çubuk hiç yoksa sormaz.
+    private var rozetGorevi: Task<Void, Never>?
+
+    /// Rozeti siteden yeniden okur. Yerli çubuk hiç yoksa sormaz. Site (ya da `d.ilerleme`) henüz hazır değilse
+    /// hazır olana kadar saniyede bir, en çok 30 kez yeniden dener (açılışta adres iletisi modüllerden önce gelir).
     func rozetiYenile() {
         guard !Gecis.yerliSekmeler.isEmpty else { return }
-        Task {
-            if let n = await SekmeCubuguKoprusu.rozet(), n != calisRozeti { calisRozeti = n }
+        rozetGorevi?.cancel()
+        rozetGorevi = Task {
+            for _ in 0..<30 {
+                if let n = await SekmeCubuguKoprusu.rozet() {
+                    if n != calisRozeti { calisRozeti = n }
+                    return
+                }
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                if Task.isCancelled { return }
+            }
         }
     }
 }
