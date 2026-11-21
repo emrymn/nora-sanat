@@ -11,10 +11,8 @@ import SwiftUI
 /// - Bir sekmenin bütün işleri bitince (Sekmeler ne zaman yerli olur: ISLER.md) adı `tasinanlar`'a eklenir. Ekranı
 ///   `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`'tedir.
 enum Gecis {
-    /// Swift'e taşınmış sekmeler
-    /// Ben C4'te yazıldı ama görünüşü henüz sitedeki gibi değil (K5); C4b bitince buraya `BenGecisi.sekmeler` gelir.
-    /// O zamana kadar yerli Ben yalnız DEBUG'da: `-yerliSekme ben`.
-    static let tasinanlar: Set<Sekme> = []
+    /// Swift'e taşınmış sekmeler. Ben: C4 + C4b (DEBUG `-yalnizSite` ile site; bkz. `BenGecisi`).
+    static let tasinanlar: Set<Sekme> = BenGecisi.sekmeler
 
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
     static let yerliSekmeler: Set<Sekme> = {
@@ -144,6 +142,17 @@ final class KabukDurumu {
     /// Yerli ekran, sitedeki sekmesiz sayfalar gibi çubuğu gizlemek isterse: `.sekmeCubuguGizli(true, sekme: .calis)`
     func cubuguGizle(_ gizli: Bool, sekme: Sekme) {
         if gizli { gizleyenler.insert(sekme) } else { gizleyenler.remove(sekme) }
+    }
+
+    /// Dişli dili gizleyen sekmeler (sitede `HizliAyar.dilGorunur`: #/ayarlar'da gizli). C4b: Ben, Ayarlar açıkken.
+    private var dilGizleyenler: Set<Sekme> = []
+
+    /// Yerli çubuğun dişli dili görünür mü
+    var dilGorunur: Bool { !dilGizleyenler.contains(secili) }
+
+    func dilGizle(_ gizli: Bool, sekme: Sekme) {
+        if gizli { dilGizleyenler.insert(sekme) } else { dilGizleyenler.remove(sekme) }
+        if gizli && secili == sekme { hizliAcik = false }
     }
 
     private var rozetGorevi: Task<Void, Never>?

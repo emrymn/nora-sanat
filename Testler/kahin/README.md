@@ -25,3 +25,11 @@ node Testler/kahin/kabuk_koprusu.mjs
 Uçtan uca örnek: `pekistir_turlari.mjs`. Sitenin ekran yapıştırıcısını (tur kurma, kart hazırlama, cevap yazma) aynen
 kopyalar, tohumlu rastgeleyle 60 durum üretir. Swift testi aynı tohumla aynı sayıları çekmek zorunda; sayı ve sıra da
 karşılaştırılır.
+
+## Temsil / küçük görsel (C4b)
+
+```bash
+# Her sanatçının sitedeki eser listesi ve sitenin `enBilinen` seçimi (küçük görseller, kitap kapakları, portreler),
+# kötü işaretli görsellerle seçim, TEMSIL_DISI ve `bilinirlikSirasi` (tablo düğmesinin yelpazesi). ~1,5 MB.
+node Testler/kahin/temsil.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/temsil/cevaplar.json
+```
