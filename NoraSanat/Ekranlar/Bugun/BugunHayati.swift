@@ -12,6 +12,8 @@ struct BugunHayati: View {
   let adet: Int
   let git: (String, Sekme) -> Void
   let basa: () -> Void
+  private var tur: BugunTuru { BugunTuru(adet: adet) }
+
   var body: some View {
     VStack(alignment: .leading, spacing: 14) {
       if !s.hayat.isEmpty {
@@ -27,7 +29,7 @@ struct BugunHayati: View {
       Etiket(s.kunye).padding(.top, 26)
       Text("Resmi gezdin.").font(Yazi.serif(40))
       Button {
-        git(adet == 0 ? "#/pekistir" : "#/pekistir/karisik", .calis)
+        git(tur.adres, .calis)
       } label: {
         HStack(spacing: 18) {
           ZStack {
@@ -40,13 +42,8 @@ struct BugunHayati: View {
           }.frame(width: 46, height: 58)
           VStack(alignment: .leading, spacing: 3) {
             if adet > 0 { Etiket("Günün işi") }
-            Text(adet == 0 ? "Bugünkü kartlar bitti" : "Bugünkü tur").font(Yazi.serif(26))
-            Text(
-              adet == 0
-                ? "Başka turlar Çalış'ta"
-                : "\(adet) kart · yaklaşık \(max(1,Int((Double(adet)/3).rounded()))) dk"
-            )
-            .font(Yazi.sans(13))
+            Text(tur.baslik).font(Yazi.serif(26))
+            Text(tur.alt).font(Yazi.sans(13))
           }
           Spacer()
           BenIkon(simge: .ileri, boyut: 18, kalinlik: 1.8)

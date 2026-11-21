@@ -261,6 +261,14 @@ jobs:
             done
           done
           "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
+          # Taslak denetiminde arşivin tamamını indirmeden karşılaştırmayı okuyabilmek için küçük önizleme.
+          if [ "$GITHUB_HEAD_REF" = "is/G4-bugun" ]; then
+            sips -s format jpeg -s formatOptions 65 --resampleWidth 720 ekranlar/yan-yana-bugun.png --out "$RUNNER_TEMP/bugun-onizleme.jpg" >/dev/null
+            echo '::group::G4 karşılaştırma önizlemesi (JPEG)'
+            base64 -i "$RUNNER_TEMP/bugun-onizleme.jpg" | fold -w 1024 | sed 's/^/G4-JPEG /'
+            echo
+            echo '::endgroup::'
+          fi
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"

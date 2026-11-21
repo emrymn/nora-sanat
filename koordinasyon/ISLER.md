@@ -150,7 +150,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
-| G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | sürüyor (ChatGPT, 2026-11-21) |
+| G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | PR açık (#18) |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
@@ -535,7 +535,12 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Resmin içinde yürüyüş (kaydırdıkça ayrıntıdan ayrıntıya), eğim hareketi.
 - Hayatı, bugünkü tur kartı.
 
-**Devir notu:** –
+**Devir notu:** ChatGPT, 2026-11-21 · [taslak PR #18](https://github.com/emrymn/nora-sanat/pull/18) · `is/G4-bugun`.
+- Kaynak: sanat-atlasi `a866b86`, `js/ekranlar/bugun.js`, `js/yuruyus.js`, `js/egim.js`, `js/gunun.js`, `js/gunduzRenk.js`, `js/renk.js` ve `css/app.css`. Günlük seçim mevcut `GununTablosuCozucu` ve `GununSanatcisi` üzerinden. Ayarlar'da o gün için seçilmiş sanatçı da geçerli. Odaklar sitenin `adlaOdak/yuruyusEki` yordamlarından, renkli Gündüz mevcut tema köprüsünden gelir.
+- Kapakta perde, kısa ad, varsa imza, Hayatı ve kayda göre Hikâyesi/İncele; tam ekran G1. Yürüyüşte kırpma sınırları, ölçülen kart yüksekliğine göre üst/alt konum, hareketi azaltma ve jiroskop; Hayatı'nda serbest kaydırma, kaynak, günün turu, eserler, okunuş ve başa dönüş. Tur sayısı kabuğun gerçek rozetinden okunur.
+- K5: Playwright/WebKit, iPhone 15 Pro, 393 × 852. Kapak kenarı 24 pt, soyadı 48 pt, eser 17 pt, eylemler en az 48 pt; ayrıntı kartında başlık 26/29,12 ve metin 18/27 pt. Ben'in `cssSatir`, `Etiket`, `BenIkon` parçaları ve Galeri'nin okunuş kuralları kullanılır. `GaleriGorunusu.swift` bu PR'ın tabanında yok; ayrı G2b (#15) dalında.
+- Kâhin: `Testler/kahin/bugun.mjs` (yerelde salt okunur site deposu, CI'da canlı site); iki resim oranı, üç ayrıntı konumu ve iki kart yüksekliği, sekiz kamera karesi, sekiz izleme adımı, jiroskop ve beş tur kartı. `BugunTests` ayrıca aynı güne özel sanatçı seçimini, eski/geçersiz seçimin geri dönüşünü ve G1'e verilen eseri sınar.
+- Telefonda DEBUG `-yerliSekme bugun -adres "#/"` ile açılır. Resme, varsa Hikâyesi'ne veya İncele'ye dokun; kaydırarak ayrıntılar ile Hayatı'nı aç, turu başlat. Gerçek iPhone'da hareket düğmesi ve yana/öne eğim denenmeli. CI aynı adresi `-yalnizSite` ile de açar; `ekranlar/yan-yana-bugun.png` solda site, sağda yerli. `4-url-calis.png` son çekimdir. Normal sürümde etkinleştirme ortak `Gecis.swift` entegrasyonuna kalır.
 
 ### C4 · Ben (ChatGPT)
 **Site kaynakları:** `js/ekranlar/ilerleme.js`, `js/ekranlar/ayarlar.js`, `js/ekranlar/hizliAyar.js`, `js/kurs.js`, `js/yenilikler.js`, `js/rozet.js`.

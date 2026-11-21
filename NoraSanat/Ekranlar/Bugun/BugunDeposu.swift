@@ -25,16 +25,11 @@ final class BugunDeposu {
         GununTablosuCozucu.dosyalar + [
           "biyografiler.json", "tanima_notlari.json", "imzalar.json", "kunye.json",
         ])
+      async let kayitOku: Ilerleme? = try? kopru.oku()
       async let baglamYukle = GoruntuleyiciBaglami.yukle(siteVerisi: site)
       let b = await baglamYukle
       guard let katalog = b.katalog else { throw URLError(.notConnectedToInternet) }
-      // Kabuk ilk açılışta site köprüsünü katalogdan sonra hazırlayabilir.
-      var ilerleme: Ilerleme?
-      for _ in 0..<20 {
-        ilerleme = try? await kopru.oku()
-        if ilerleme != nil { break }
-        try await Task.sleep(for: .milliseconds(250))
-      }
+      let ilerleme = await kayitOku
       let veriler = await dosyalar
       let s = try BugunTablosu(
         tarih: tarih, degisim: ilerleme?[alan: "gununDegisim"],
@@ -43,6 +38,7 @@ final class BugunDeposu {
         try? await kopru.benBetigi(
           """
           const o = await import('/js/ekranlar/ortak.js'), g = await import('/js/gorsel.js');
+          o.gunduzRenginiUygula();
           await o.odaklariYukle();
           return { ...g.yuruyusEki(ad), odak:g.adlaOdak(ad) || [50,40] };
           """, ["ad": s.kayit.gorsel]) as? [String: Any]

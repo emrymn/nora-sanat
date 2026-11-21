@@ -41,6 +41,24 @@ public struct YuruyusKamerasi {
     }
   }
 
+  public func duruslar(odak: CGPoint, yakin: Double, noktalar: [CGRect], kartBoylari: [Int: Double],
+                       ust: Double, alt: Double, taninma: Bool) -> [Durus] {
+    let merkez = CGPoint(x: odak.x * resim.width, y: odak.y * resim.height)
+    var sonuc = [Durus(merkez, kapla * yakin, ekran.height * 0.36),
+                 Durus(CGPoint(x: kirp.midX, y: kirp.midY), kapla, ekran.height / 2)]
+    for (i, kutu) in noktalar.enumerated() {
+      sonuc.append(nokta(kutu, kart: kartBoylari[i + 2] ?? ekran.height * 0.4, ust: ust, alt: alt))
+    }
+    if taninma {
+      sonuc.append(Durus(CGPoint(x: (1 - odak.x) * resim.width, y: resim.height / 2), kapla, ekran.height / 2))
+    }
+    return sonuc
+  }
+
+  public static func sonrakiKare(_ mevcut: Double, hedef: Double) -> Double {
+    abs(hedef - mevcut) < 0.0005 ? hedef : mevcut + (hedef - mevcut) * 0.035
+  }
+
   /// Ayrıntının iki olası kart konumunda görünen payını karşılaştırır.
   public func nokta(_ kutu: CGRect, kart: Double, ust: Double, alt: Double) -> Durus {
     let w = ekran.width

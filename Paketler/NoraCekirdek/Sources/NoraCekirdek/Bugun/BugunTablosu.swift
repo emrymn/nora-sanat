@@ -59,3 +59,15 @@ public struct BugunTablosu {
     buyuk = GorselAdresleri.url(adres.buyuk)
   }
 }
+
+public struct BugunTuru {
+  public let adet: Int
+  public init(adet: Int) { self.adet = adet }
+  public var adres: String { adet > 0 ? "#/pekistir/karisik" : "#/pekistir" }
+  public var baslik: String { adet > 0 ? "Bugünkü tur" : "Bugünkü kartlar bitti" }
+  public var alt: String {
+    guard adet > 0 else { return "Başka turlar Çalış'ta" }
+    let dakika = max(1, Int((Double(adet) / 3).rounded()))
+    return "\(adet) kart · yaklaşık \(dakika) dk"
+  }
+}

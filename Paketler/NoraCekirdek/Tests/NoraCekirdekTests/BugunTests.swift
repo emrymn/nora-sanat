@@ -18,6 +18,11 @@ final class BugunTests: XCTestCase {
     struct Egim: Decodable { let hiz, x, y: Double }
     let noktalar: [Nokta]
     let egim: [Egim]
+    struct Kare: Decodable { let adim, x, y, s: Double }
+    let kareler: [Kare]
+    let izleme: [Double]
+    struct Tur: Decodable { let adet: Int; let adres, baslik, alt: String }
+    let turlar: [Tur]
   }
   func testSiteninKamerasiVeJiroskopu() throws {
     let url = try XCTUnwrap(
@@ -37,6 +42,29 @@ final class BugunTests: XCTestCase {
       XCTAssertEqual(a.olcek, ornek.sonuc.s, accuracy: 1e-8)
       XCTAssertEqual(a.gorunen, ornek.sonuc.gor, accuracy: 1e-8)
       XCTAssertEqual(a.kartUstte, ornek.sonuc.kartUstte)
+    }
+    let kamera = YuruyusKamerasi(ekran: CGSize(width: 393, height: 852), oran: 2, kirp: [0.03,0.04,0.94,0.92])
+    let duruslar = kamera.duruslar(odak: CGPoint(x: 0.31, y: 0.38), yakin: 1.25,
+      noktalar: [CGRect(x: 0.28, y: 0.48, width: 0.32, height: 0.16)], kartBoylari: [2:104],
+      ust: 68, alt: 112, taninma: true)
+    for kare in c.kareler {
+      let i = Int(kare.adim)
+      let d = duruslar[i].ara(duruslar[min(i+1,3)], pay: kare.adim - Double(i))
+      let r = kamera.cerceve(d, buyut: 1, egim: nil)
+      XCTAssertEqual(r.minX, kare.x, accuracy: 0.051)
+      XCTAssertEqual(r.minY, kare.y, accuracy: 0.051)
+      XCTAssertEqual(r.width / 4000, kare.s, accuracy: 0.0000051)
+    }
+    var iz = 0.0
+    for beklenen in c.izleme {
+      iz = YuruyusKamerasi.sonrakiKare(iz, hedef: 1)
+      XCTAssertEqual(iz, beklenen, accuracy: 1e-8)
+    }
+    for e in c.turlar {
+      let tur = BugunTuru(adet: e.adet)
+      XCTAssertEqual(tur.baslik, e.baslik)
+      XCTAssertEqual(tur.alt, e.alt)
+      XCTAssertEqual(tur.adres, e.adres)
     }
     var egim = YuruyusEgimi()
     for e in c.egim {

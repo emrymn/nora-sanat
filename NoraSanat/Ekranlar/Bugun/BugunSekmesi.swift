@@ -13,6 +13,10 @@ struct BugunSekmesi: View {
   @State private var deneme = 0
   @State private var acilan: Acilis?
   @State private var kayma = 0.0
+  @State private var izlenenAdim = 0.0
+  @State private var hedefAdim = 0.0
+  @State private var yonKaymasi = 0.0
+  @State private var izleme: Task<Void, Never>?
   @State private var yukari = false
   @State private var boylar: [Int: Double] = [:]
   @State private var perde = false
@@ -70,6 +74,8 @@ struct BugunSekmesi: View {
     .onChange(of: algilama) { _, ac in if ac { hareket.baslat() } else { hareket.durdur() } }
     .onDisappear {
       hareket.durdur()
+      izleme?.cancel()
+      izleme = nil
       atlamaIsi?.cancel()
       atlama = nil
       yaziGizli = false
@@ -99,29 +105,17 @@ struct BugunSekmesi: View {
     let ust = ekranUstu + 68
     let alt = ekranAlti + 62 + 26
     let h = max(1, boy.height)
-    let ilk = YuruyusKamerasi.Durus(
-      CGPoint(x: depo.odak.x * kamera.resim.width, y: depo.odak.y * kamera.resim.height),
-      kamera.kapla * depo.yakin, h * 0.36)
-    let orta = YuruyusKamerasi.Durus(
-      CGPoint(x: kamera.kirp.midX, y: kamera.kirp.midY), kamera.kapla, h / 2)
-    var adimlar = [ilk, orta]
-    adimlar += s.kayit.noktalar.enumerated().map { i, n in
-      kamera.nokta(n.alan, kart: boylar[i + 2] ?? h * 0.4, ust: ust, alt: alt)
-    }
-    if !s.taninma.isEmpty {
-      adimlar.append(
-        .init(
-          CGPoint(x: (1 - depo.odak.x) * kamera.resim.width, y: kamera.resim.height / 2),
-          kamera.kapla, h / 2))
-    }
+    let adimlar = kamera.duruslar(
+      odak: depo.odak, yakin: depo.yakin, noktalar: s.kayit.noktalar.map(\.alan),
+      kartBoylari: boylar, ust: ust, alt: alt, taninma: !s.taninma.isEmpty)
     let son = adimlar.count - 1
-    let p = min(Double(son), max(0, kayma / h))
+    let p = min(Double(son), max(0, izlenenAdim))
     let i = Int(p)
     let d =
       atlama.map { adimlar[min(son, $0)] }
       ?? adimlar[i].ara(adimlar[min(i + 1, son)], pay: p - Double(i))
     let asma = atlama.map { $0 == 0 ? 0.0 : 1.0 } ?? min(1, max(0, (kayma / h - Double(son)) / 0.6))
-    let gizle = p > 0.5 && asma < 0.5 && !yukari
+    let gizle = kayma / h > 0.5 && asma < 0.5 && !yukari
     let yatayAci = Double(hareket.deger?.x ?? 0) * 3.0
     let dikeyAci = -Double(hareket.deger?.y ?? 0) * 3.0
     let cerceve = kamera.cerceve(d, buyut: perde || durgun ? 1 : 1.08, egim: hareket.deger)
@@ -176,7 +170,11 @@ struct BugunSekmesi: View {
         .coordinateSpace(name: "bugun").scrollIndicators(.hidden)
         .scrollTargetBehavior(BugunOturmasi(boy: h, hayat: Double(son + 1) * h))
         .onPreferenceChange(BugunKayma.self) { y in
-          if abs(y - kayma) > 0.5 { yukari = y < kayma }
+          if abs(y - yonKaymasi) > 6 {
+            yukari = y < yonKaymasi
+            yonKaymasi = y
+          }
+          kamerayiIzle(min(Double(son), max(0, y / h)))
           kayma = y
         }
         .onPreferenceChange(BugunKartBoyu.self) { boylar = $0 }
@@ -200,7 +198,9 @@ struct BugunSekmesi: View {
       .onChange(of: kabuk.yenidenDokunma[.bugun]) { _, _ in kaydir.scrollTo(0, anchor: .top) }
       .onChange(of: kabuk.yerliAdres[.bugun], initial: true) { _, adres in
         guard let adres else { return }
-        if adres.hasPrefix("#/gunun") {
+        if adres.hasPrefix("#/gunun/") {
+          git("#/sanatci/" + String(adres.dropFirst("#/gunun/".count)), .galeri)
+        } else if adres == "#/gunun" {
           kaydir.scrollTo("hayat", anchor: .top)
         } else {
           kaydir.scrollTo(0, anchor: .top)
@@ -217,6 +217,22 @@ struct BugunSekmesi: View {
         #endif
         withAnimation(durgun ? nil : .easeOut(duration: 2.6)) { perde = true }
       }
+    }
+  }
+
+  private func kamerayiIzle(_ hedef: Double) {
+    hedefAdim = hedef
+    guard !durgun, atlama == nil else {
+      izlenenAdim = hedef
+      return
+    }
+    guard izleme == nil else { return }
+    izleme = Task { @MainActor in
+      while !Task.isCancelled, izlenenAdim != hedefAdim {
+        izlenenAdim = YuruyusKamerasi.sonrakiKare(izlenenAdim, hedef: hedefAdim)
+        try? await Task.sleep(for: .milliseconds(16))
+      }
+      if !Task.isCancelled { izleme = nil }
     }
   }
 
