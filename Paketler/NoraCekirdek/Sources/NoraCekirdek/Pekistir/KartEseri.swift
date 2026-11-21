@@ -15,9 +15,7 @@ public enum KartEseri {
         var kacin = son + tanismadaGorulen
         var katmanli = false
         if case .bolum = tur, seviye < 2 {
-            let sirali = Ogrenme.tanismaEserleri(liste, haric: nil, adet: liste.count) { kolaylik[$0.anahtar] }
-            let bas = seviye == 1 && sirali.count > 5 ? 5 : 0
-            liste = Array(sirali.dropFirst(bas).prefix(5))
+            liste = bolumEserleri(liste, orta: seviye == 1) { kolaylik[$0.anahtar] }
             kacin = son
             katmanli = true
         }
@@ -37,6 +35,21 @@ public enum KartEseri {
         func agirlik(_ e: Eser) -> Double { isaretli.contains(e.anahtar) ? 2 : 1 }
         var pay = rastgele() * liste.reduce(0) { $0 + agirlik($1) }
         return liste.first { pay -= agirlik($0); return pay < 0 } ?? liste.last
+    }
+
+    /// `bolumEserleri(havuz, seviye, kolaylik)` (js/bolum.js): bölümün Kolay'ında en tipik `BOLUM_ESER` (5) eser,
+    /// Orta'da sonraki beş (yoksa Kolay'ınkiler).
+    public static func bolumEserleri(_ havuz: [Eser], orta: Bool, kolaylik: ((Eser) -> Double?)?) -> [Eser] {
+        let sirali = Ogrenme.tanismaEserleri(havuz, haric: nil, adet: havuz.count, kolaylik: kolaylik)
+        let kolay = Array(sirali.prefix(5))
+        let ortaninki = Array(sirali.dropFirst(5).prefix(5))
+        return orta && !ortaninki.isEmpty ? ortaninki : kolay
+    }
+
+    /// Karıştırılan ikili şeridi (`karsiSeritDoldur`): sanatçının en bilinen iki eseri, sorulan eser hariç
+    public static func karsiEserler(_ eserler: [Eser], kotuler: [String: [String]], haric: String?) -> [Eser] {
+        Array(havuz(eserler, kotuler).filter { $0.anahtar != haric }.enumerated()
+            .sorted { ($0.element.sl, $1.offset) > ($1.element.sl, $0.offset) }.prefix(2).map(\.element))
     }
 
     public static func tersSorulur(_ tur: PekistirmeTuru, seviye: Int,
