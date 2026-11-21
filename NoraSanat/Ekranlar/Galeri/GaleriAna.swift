@@ -96,73 +96,84 @@ struct AkimCarki: View {
     }
 
     private func kart(_ i: Int, _ salon: AkimDurumu, w: CGFloat) -> some View {
-        let r = tema.renkler
-        let k = min(1, abs(Double(i) - konum))
-        let (url, yedek) = kapak(salon.ad)
-        let uyeler = galeri.katalog.sanatcilar.filter { $0.akim == salon.ad }
+        let k: Double = min(1, abs(Double(i) - konum))
+        let olcek: CGFloat = CGFloat(1 - k * 0.2)
+        let kayma: CGFloat = CGFloat(k * 30)
         return Button { if salon.acik { gir(salon.ad) } } label: {
             VStack(spacing: 0) {
-                // `.cark-kemer`: üstte yarım daire, altta 16 px; pirinç halka (seçiliyken), altta yumuşak gölge
-                ZStack {
-                    Color(r.yuzey)
-                    UzakGorsel(url: url, icerik: .fill, yedek: yedek)
-                        .grayscale(salon.acik ? 0 : 1).brightness(salon.acik ? 0 : -0.3)
-                    LinearGradient(stops: [.init(color: Color(r.zemin, 0.5), location: 0), .init(color: Color(r.zemin, 0), location: 0.34)],
-                                   startPoint: .bottom, endPoint: .top)
-                }
-                .frame(width: Self.kartGenisligi, height: Self.kartGenisligi * 262 / 204)
-                .clipShape(Kemer(alt: 16))
-                .overlay(Kemer(alt: 16).stroke(Color(GaleriRenk.karis(r.pirinc, r.kenar, 1 - k * 0.7)), lineWidth: 1))
-                .shadow(color: .black.opacity(0.7 * 0.45), radius: 25, y: 26 - 11)
-                .opacity(1 - k * 0.55)
-                // `.cark-yazi`: 320 genişlik (kartın iki yanından taşar), 3 aralık
-                VStack(spacing: 3) {
-                    Text(GaleriSergisi.yuzyillar(uyeler))
-                        .font(Yazi.sans(13, agirlik: 600, stil: .footnote)).cssSatir(.sans, 13, 18.2)
-                        .foregroundStyle(Color(r.pirinc))
-                    Text(salon.ad)
-                        .font(Yazi.serif(40, agirlik: 500, stil: .largeTitle)).tracking(-0.4).cssSatir(.serif, 40, 46)
-                        .foregroundStyle(Color(salon.acik ? r.murekkep : r.murekkep2))
-                        .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.7)
-                    Group {
-                        if salon.acik {
-                            Text(salon.acikSayisi == salon.toplam ? "\(salon.toplam) sanatçının hepsi açık"
-                                 : "\(salon.acikSayisi) / \(salon.toplam) sanatçı açık")
-                        } else {
-                            HStack(spacing: 6) {
-                                GaleriIkon(simge: .kilit, boyut: 14, kalinlik: 1.6)
-                                Text("Konu \(SiteYazisi.bulunmaEki(salon.acilacagiKonu ?? 0)) açılır")
-                            }
-                        }
-                    }
-                    .font(Yazi.sans(15, stil: .subheadline)).cssSatir(.sans, 15, 21)
-                    .foregroundStyle(Color(r.murekkep2))
-                    if salon.acik {
-                        // `.cark-gir`: tek dolu düğme; 44 yükseklik, `--ink` zemin, 600 15 px
-                        HStack(spacing: 4) {
-                            Text("Salona gir").font(Yazi.sans(15, agirlik: 600, stil: .subheadline))
-                            GaleriIkon(simge: .ileri, boyut: 16, kalinlik: 1.8)
-                        }
-                        .foregroundStyle(Color(r.zemin))
-                        .padding(.leading, 22).padding(.trailing, 18)
-                        .frame(height: 44)
-                        .background(Capsule().fill(Color(r.murekkep)))
-                        .padding(.top, 10)
-                    }
-                }
-                .frame(width: min(320, w * 0.86))
-                .padding(.top, 16)
-                .opacity(max(0, 1 - k * 1.6))
+                kemer(salon, k)
+                yazi(salon, w).opacity(max(0, 1 - k * 1.6))
             }
             .frame(width: Self.kartGenisligi)
             .contentShape(Rectangle())
         }
         .buttonStyle(KartBasma())
-        .scaleEffect(1 - k * 0.2, anchor: UnitPoint(x: 0.5, y: 0.34))
-        .offset(y: k * 30)
+        .scaleEffect(olcek, anchor: UnitPoint(x: 0.5, y: 0.34))
+        .offset(y: kayma)
         .disabled(!salon.acik)
         .accessibilityElement(children: .combine)
         .accessibilityHint(salon.acik ? "Salona gir" : "")
+    }
+
+    /// `.cark-kemer`: üstte yarım daire, altta 16 px; pirinç halka (seçiliyken), altta yumuşak gölge
+    private func kemer(_ salon: AkimDurumu, _ k: Double) -> some View {
+        let r = tema.renkler
+        let adres = kapak(salon.ad)
+        let halka: RGBA = GaleriRenk.karis(r.pirinc, r.kenar, 1 - k * 0.7)
+        let golge: [Gradient.Stop] = [.init(color: Color(r.zemin, 0.5), location: 0), .init(color: Color(r.zemin, 0), location: 0.34)]
+        let yukseklik: CGFloat = Self.kartGenisligi * 262 / 204
+        return ZStack {
+            Color(r.yuzey)
+            UzakGorsel(url: adres.url, icerik: .fill, yedek: adres.yedek)
+                .grayscale(salon.acik ? 0 : 1).brightness(salon.acik ? 0 : -0.3)
+            LinearGradient(stops: golge, startPoint: .bottom, endPoint: .top)
+        }
+        .frame(width: Self.kartGenisligi, height: yukseklik)
+        .clipShape(Kemer(alt: 16))
+        .overlay(Kemer(alt: 16).stroke(Color(halka), lineWidth: 1))
+        .shadow(color: .black.opacity(0.32), radius: 25, y: 15)
+        .opacity(1 - k * 0.55)
+    }
+
+    /// `.cark-yazi`: 320 genişlik (kartın iki yanından taşar), 3 aralık
+    private func yazi(_ salon: AkimDurumu, _ w: CGFloat) -> some View {
+        let r = tema.renkler
+        let uyeler = galeri.katalog.sanatcilar.filter { $0.akim == salon.ad }
+        let durum: String = salon.acikSayisi == salon.toplam ? "\(salon.toplam) sanatçının hepsi açık"
+            : "\(salon.acikSayisi) / \(salon.toplam) sanatçı açık"
+        let kilit = "Konu \(SiteYazisi.bulunmaEki(salon.acilacagiKonu ?? 0)) açılır"
+        return VStack(spacing: 3) {
+            Text(GaleriSergisi.yuzyillar(uyeler))
+                .font(Yazi.sans(13, agirlik: 600, stil: .footnote)).cssSatir(.sans, 13, 18.2)
+                .foregroundStyle(Color(r.pirinc))
+            Text(salon.ad)
+                .font(Yazi.serif(40, agirlik: 500, stil: .largeTitle)).tracking(-0.4).cssSatir(.serif, 40, 46)
+                .foregroundStyle(Color(salon.acik ? r.murekkep : r.murekkep2))
+                .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.7)
+            HStack(spacing: 6) {
+                if !salon.acik { GaleriIkon(simge: .kilit, boyut: 14, kalinlik: 1.6) }
+                Text(salon.acik ? durum : kilit)
+            }
+            .font(Yazi.sans(15, stil: .subheadline)).cssSatir(.sans, 15, 21)
+            .foregroundStyle(Color(r.murekkep2))
+            if salon.acik { salonaGir }
+        }
+        .frame(width: min(320, w * 0.86))
+        .padding(.top, 16)
+    }
+
+    /// `.cark-gir`: tek dolu düğme; 44 yükseklik, `--ink` zemin, 600 15 px
+    private var salonaGir: some View {
+        let r = tema.renkler
+        return HStack(spacing: 4) {
+            Text("Salona gir").font(Yazi.sans(15, agirlik: 600, stil: .subheadline))
+            GaleriIkon(simge: .ileri, boyut: 16, kalinlik: 1.8)
+        }
+        .foregroundStyle(Color(r.zemin))
+        .padding(.leading, 22).padding(.trailing, 18)
+        .frame(height: 44)
+        .background(Capsule().fill(Color(r.murekkep)))
+        .padding(.top, 10)
     }
 
     // MARK: Çark
@@ -302,71 +313,116 @@ private struct CarkTekeri: View {
     @Environment(TemaDeposu.self) private var tema
 
     var body: some View {
-        let r = tema.renkler
         GeometryReader { g in
-            let w = g.size.width
-            let merkez = CGPoint(x: w / 2, y: 48 + 700)
-            ZStack(alignment: .top) {
-                // `::before`: yayın altından yükselen ışık
-                RadialGradient(stops: [.init(color: Color(r.pirinc, 0.16), location: 0), .init(color: Color(r.pirinc, 0.05), location: 0.55),
-                                       .init(color: Color(r.pirinc, 0), location: 1)],
-                               center: UnitPoint(x: 0.5, y: 0.46), startRadius: 0, endRadius: w * 0.46)
-                    .scaleEffect(x: 1, y: 150 * 0.62 / (w * 0.46), anchor: UnitPoint(x: 0.5, y: 0.46))
-                Canvas { c, boyut in
-                    // `.cark-disk::after`: yayın üstünde 6 px, %40 pirinç, 5 px bulanık ışık
-                    var yay = Path()
-                    yay.addArc(center: merkez, radius: 700, startAngle: .degrees(-90 - 25), endAngle: .degrees(-90 + 25), clockwise: false)
-                    var isik = c
-                    isik.addFilter(.blur(radius: 5))
-                    isik.stroke(yay, with: .color(Color(r.pirinc, 0.4)), lineWidth: 6)
-                    c.stroke(yay, with: .color(Color(GaleriRenk.karis(r.pirinc, r.murekkep, 0.85))), lineWidth: 1)
-                    // `.cark-halka`: 2°'de bir 0.16° genişliğinde çentik, 678–688 arası; şeritle döner
-                    let don = -konum * AkimCarki.carkAdimi
-                    var centik = Path()
-                    for d in stride(from: -30.0, through: 30.0, by: 2) {
-                        let a = (d + don.truncatingRemainder(dividingBy: 2)) * .pi / 180
-                        centik.move(to: CGPoint(x: merkez.x + 678 * sin(a), y: merkez.y - 678 * cos(a)))
-                        centik.addLine(to: CGPoint(x: merkez.x + 688 * sin(a), y: merkez.y - 688 * cos(a)))
-                    }
-                    c.stroke(centik, with: .color(Color(r.murekkep, 0.34)), lineWidth: 688 * 0.16 * .pi / 180)
-                    _ = boyut
-                }
-                // `.cark-ibre`: tepede 8 px ışık
-                Circle().fill(Color(RGBA(css: "#f4e3b8")!))
-                    .frame(width: 8, height: 8)
-                    .background(Circle().fill(Color(r.pirinc, 0.22)).frame(width: 18, height: 18))
-                    .shadow(color: Color(r.pirinc, 0.4), radius: 10)
-                    .position(x: w / 2, y: 48)
-                // `.cark-ad`: 740 px yukarıda, (i − konum) · 12° dönmüş; seçili ad gizli (başlıkta var)
-                ForEach(Array(salonlar.enumerated()), id: \.offset) { i, a in
-                    let aci = (Double(i) - konum) * AkimCarki.carkAdimi
-                    if abs(aci) <= 24 && abs(Double(i) - konum) >= 0.5 {
-                        Text(a.ad)
-                            .font(Yazi.sans(12, agirlik: 500, stil: .caption1)).cssSatir(.sans, 12, 13.8)
-                            .foregroundStyle(Color(a.acik ? r.murekkep : r.soluk, a.acik ? 0.5 : 1))
-                            .multilineTextAlignment(.center).lineLimit(2)
-                            .frame(width: 124, height: 30, alignment: .bottom)
-                            .opacity(1 - max(0, abs(aci) - 10) / 12)
-                            .rotationEffect(.degrees(aci), anchor: .bottom)
-                            .position(x: merkez.x + 740 * sin(aci * .pi / 180),
-                                      y: merkez.y - 740 * cos(aci * .pi / 180) - 15)
-                    }
-                }
-                // `.cark-sayac`: 500 28 px Bodoni no, 16 px "/ 28"
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(String(format: "%02d", sira + 1)).font(Yazi.serif(28, agirlik: 500)).monospacedDigit()
-                        .foregroundStyle(Color(r.murekkep))
-                    Text("/ \(salonlar.count)").font(Yazi.serif(16)).foregroundStyle(Color(r.murekkep2))
-                }
-                .padding(.top, 78 - 6)
-            }
-            .frame(width: w, height: 150)
-            // `-webkit-mask`: iki uçta silinir
-            .mask(LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.16),
-                                         .init(color: .black, location: 0.84), .init(color: .clear, location: 1)],
-                                 startPoint: .leading, endPoint: .trailing))
-            .clipped()
+            govde(g.size.width)
         }
         .accessibilityHidden(true)
+    }
+
+    private func govde(_ w: CGFloat) -> some View {
+        ZStack(alignment: .top) {
+            isik(w)
+            Canvas { c, _ in ciz(&c, w) }
+            ibre(w)
+            adlar(w)
+            sayac
+        }
+        .frame(width: w, height: 150)
+        // `-webkit-mask`: iki uçta silinir
+        .mask(LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.16),
+                                     .init(color: .black, location: 0.84), .init(color: .clear, location: 1)],
+                             startPoint: .leading, endPoint: .trailing))
+        .clipped()
+    }
+
+    /// `::before`: yayın altından yükselen ışık (elips 46% × 62%)
+    private func isik(_ w: CGFloat) -> some View {
+        let p = tema.renkler.pirinc
+        let duraklar: [Gradient.Stop] = [.init(color: Color(p, 0.16), location: 0), .init(color: Color(p, 0.05), location: 0.55),
+                                         .init(color: Color(p, 0), location: 1)]
+        let yaricap: CGFloat = w * 0.46
+        let olcek: CGFloat = 150 * 0.62 / yaricap
+        let merkez = UnitPoint(x: 0.5, y: 0.46)
+        return RadialGradient(stops: duraklar, center: merkez, startRadius: 0, endRadius: yaricap)
+            .scaleEffect(x: 1, y: olcek, anchor: merkez)
+            .frame(width: w, height: 150)
+    }
+
+    /// Yay (1 px, üstünde bulanık ışık) ve dönen çentikler
+    private func ciz(_ c: inout GraphicsContext, _ w: CGFloat) {
+        let r = tema.renkler
+        let mx = Double(w) / 2, my = 748.0
+        var yay = Path()
+        yay.addArc(center: CGPoint(x: mx, y: my), radius: 700, startAngle: .degrees(-115), endAngle: .degrees(-65), clockwise: false)
+        var bulanik = c
+        bulanik.addFilter(.blur(radius: 5))
+        bulanik.stroke(yay, with: .color(Color(r.pirinc, 0.4)), lineWidth: 6)
+        let cizgi: RGBA = GaleriRenk.karis(r.pirinc, r.murekkep, 0.85)
+        c.stroke(yay, with: .color(Color(cizgi)), lineWidth: 1)
+        // `.cark-halka`: 2°'de bir 0.16° genişliğinde çentik, 678–688 arası; şeritle döner
+        let kayma: Double = (-konum * AkimCarki.carkAdimi).truncatingRemainder(dividingBy: 2)
+        var centik = Path()
+        var d = -30.0
+        while d <= 30 {
+            let a: Double = (d + kayma) * Double.pi / 180
+            let sa = sin(a), ca = cos(a)
+            centik.move(to: CGPoint(x: mx + 678 * sa, y: my - 678 * ca))
+            centik.addLine(to: CGPoint(x: mx + 688 * sa, y: my - 688 * ca))
+            d += 2
+        }
+        let kalinlik: Double = 688 * 0.16 * Double.pi / 180
+        c.stroke(centik, with: .color(Color(r.murekkep, 0.34)), lineWidth: kalinlik)
+    }
+
+    /// `.cark-ibre`: tepede 8 px ışık
+    private func ibre(_ w: CGFloat) -> some View {
+        let p = tema.renkler.pirinc
+        return Circle().fill(Color(RGBA(css: "#f4e3b8")!))
+            .frame(width: 8, height: 8)
+            .background(Circle().fill(Color(p, 0.22)).frame(width: 18, height: 18))
+            .shadow(color: Color(p, 0.4), radius: 10)
+            .position(x: w / 2, y: 48)
+    }
+
+    /// `.cark-ad`: 740 px yukarıda, (i − konum) · 12° dönmüş; seçili ad gizli (başlıkta var)
+    private func adlar(_ w: CGFloat) -> some View {
+        ZStack {
+            ForEach(Array(salonlar.enumerated()), id: \.offset) { i, a in
+                ad(i, a, w)
+            }
+        }
+        .frame(width: w, height: 150)
+    }
+
+    @ViewBuilder private func ad(_ i: Int, _ a: AkimDurumu, _ w: CGFloat) -> some View {
+        let fark: Double = Double(i) - konum
+        let aci: Double = fark * AkimCarki.carkAdimi
+        if abs(aci) <= 24 && abs(fark) >= 0.5 {
+            let r = tema.renkler
+            let renk: Color = a.acik ? Color(r.murekkep, 0.5) : Color(r.soluk)
+            let radyan: Double = aci * Double.pi / 180
+            let x: CGFloat = w / 2 + CGFloat(740 * sin(radyan))
+            let y: CGFloat = CGFloat(748 - 740 * cos(radyan)) - 15
+            let opaklik: Double = 1 - max(0, abs(aci) - 10) / 12
+            Text(a.ad)
+                .font(Yazi.sans(12, agirlik: 500, stil: .caption1)).cssSatir(.sans, 12, 13.8)
+                .foregroundStyle(renk)
+                .multilineTextAlignment(.center).lineLimit(2)
+                .frame(width: 124, height: 30, alignment: .bottom)
+                .opacity(opaklik)
+                .rotationEffect(.degrees(aci), anchor: .bottom)
+                .position(x: x, y: y)
+        }
+    }
+
+    /// `.cark-sayac`: 500 28 px Bodoni no, 16 px "/ 28"
+    private var sayac: some View {
+        let r = tema.renkler
+        return HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Text(String(format: "%02d", sira + 1)).font(Yazi.serif(28, agirlik: 500)).monospacedDigit()
+                .foregroundStyle(Color(r.murekkep))
+            Text("/ \(salonlar.count)").font(Yazi.serif(16)).foregroundStyle(Color(r.murekkep2))
+        }
+        .padding(.top, 72)
     }
 }
