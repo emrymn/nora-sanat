@@ -629,7 +629,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Görünüş (K5):** ölçüler canlı sitenin hesaplanmış stillerinden (393 pt, Gece). CI: `-yerliSekme calis,ben -adres "#/pekistir/ders/Gotik[/adım]" -calisSayfa ders:Gotik[:adım]`, hazır olunca `tmp/ders-hazir`; `ders-yan-yana-{ders,gor,ogren,ayirt}.png` (solda site), ayrıca yalnız yerli `ders-ayirt-cevap.png` (`-dersCevapla`: soldaki esere dokunur; ilerleme yazdığı için en sonda).
 - **Kalan:** Çalış'ı yerli sekmelere eklemek (`Gecis.tasinanlar`; bu işte Kabuk'a dokunulmadı). Site Gör'de eserin palet rengini (`ekranRengi`) dolu düğmeye verir; yerli taraf temanın `vurguAcik`'ini kullanır (Kabuk sitenin canlı değişkenlerini okuyorsa aynıdır).
 - **Tuzaklar:** Gör'ün ölçü birimi resmin ilk (1280) kopyasının boyudur; büyük kopya gelince ölçü değişmez (sitede de `img.style.width` sabit). Kamera hedefi üst çubuğun altı + 8 ile panelin üstü − 8 arasıdır; panel yazıya göre uzayıp kısalınca kamera yeniden kurulur.
-- **CI sonucu:** (aşağıda)
+- **CI:** derleme ve paket testleri yeşil. İş süresi 40 → 60 dk yapıldı: G3 + C2 görüntüleri tek başına ekran görüntüsü adımını 36 dk'ya çıkarıyor, C3 ~5 dk ekliyor (40 dk'da C3'e sıra gelmeden iptal oluyordu). Yan yana: Gör, Öğren, Ayırt et sitedekiyle neredeyse birebir (aynı kare, aynı yazı kırılımları); ders sayfasının dolu düğmesi C2'de köşeli ve pirinçti, sitedeki gibi hap ve `--vurgu-acik` yapıldı.
 
 ### G4 · Bugün (ChatGPT)
 **Site kaynakları:**

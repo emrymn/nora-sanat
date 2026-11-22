@@ -474,18 +474,19 @@ struct CalisDersSayfasi: View {
                             .font(Yazi.sans(16, agirlik: 600))
                         if !dugme.alt.isEmpty {
                             Text(dugme.alt)
-                                .font(Yazi.sans(13))
-                                .opacity(0.82)
+                                .font(Yazi.sans(14))
+                                .monospacedDigit()
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     BenIkon(simge: .ileri, boyut: 18, kalinlik: 1.8)
                 }
-                .foregroundStyle(Color(r.zemin))
-                .padding(.horizontal, 18)
-                .padding(.vertical, 14)
-                .frame(minHeight: 54)
-                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color(r.pirinc)))
+                // `html .ders-dugme.dolu`: hap, `--pg-asil` (= `--vurgu-acik`)
+                .foregroundStyle(Color(r.vurguAcikYazi))
+                .padding(.horizontal, 22)
+                .padding(.vertical, 10)
+                .frame(minHeight: 52)
+                .background(Capsule().fill(Color(r.vurguAcik)))
             }
             .buttonStyle(.plain)
 

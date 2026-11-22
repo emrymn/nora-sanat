@@ -120,16 +120,22 @@ struct DersAyirtAdimi: View {
             konum = CalisDersKurallari.kalinanYer(i: b.kayit.ayirt.i, toplam: toplam)
             gorulen = DersAdimKurallari.gorulen(i: b.kayit.ayirt.i, toplam: toplam)
             ikiliKur()
-            #if DEBUG
-            Task {
-                try? await Task.sleep(nanoseconds: 4_000_000_000)
-                if NoraSanatApp.arguman("-dersCevapla") != nil, ikili?.cevap == nil { sec(0) }
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                DersKarsilastirma.hazirYaz()
-            }
-            #endif
         }
         .onChange(of: konum) { _, _ in ikiliKur() }
+        #if DEBUG
+        // CI: ikili kurulunca (-dersCevapla ile soldaki esere dokunup) hazır işareti yazılır
+        .task(id: ik?.konum) {
+            guard ik != nil else { return }
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard !Task.isCancelled else { return }
+            if NoraSanatApp.arguman("-dersCevapla") != nil {
+                if ikili?.cevap == nil { sec(0) }
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                guard ikili?.cevap != nil else { return }
+            }
+            DersKarsilastirma.hazirYaz()
+        }
+        #endif
     }
 
     // MARK: Eser kartı (`.ders-ikili-eser`)
