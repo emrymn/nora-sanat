@@ -5,12 +5,21 @@ import SwiftUI
 import WebKit
 
 extension IlerlemeKoprusu {
-    /// Sitedeki kayıt doğrulaması ve yarım oturum aynı WebKit oturumunda çalışır.
+    /// Sitedeki kayıt doğrulaması ve yarım oturum aynı WebKit oturumunda çalışır. Kayıt artık dosyadan anında
+    /// okunduğu için betikten önce sitenin kendi ilerlemesinin (`d.ilerleme`) yüklenmesi ve aynanın bitmesi beklenir.
     func benBetigi(_ kaynak: String, _ veri: [String: Any] = [:]) async throws -> Any? {
         let web = try await hazirSite()
         await aynaBitsin()
+        guard try await web.callAsyncJavaScript(Self.siteIlerlemesiBetigi, arguments: [:], in: nil, contentWorld: .page) as? Bool == true
+        else { throw Hata.siteYok }
         return try await web.callAsyncJavaScript(kaynak, arguments: veri, in: nil, contentWorld: .page)
     }
+    /// Sitenin açılışı `d.ilerleme`'yi kurana kadar (en çok 10 sn) bekler
+    static let siteIlerlemesiBetigi = """
+    const o = await import('/js/ekranlar/ortak.js');
+    for (let i = 0; i < 100 && !o.d.ilerleme; i++) await new Promise((r) => setTimeout(r, 100));
+    return !!o.d.ilerleme;
+    """
     /// Geliştirici modunun açtığı her şey: bütün konu numaraları ve harita bölümleri (sitenin listeleri; Z2c'de Swift)
     static let benGelistiriciListeleri = """
     const o = await import('/js/ekranlar/ortak.js');
