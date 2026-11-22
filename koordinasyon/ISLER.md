@@ -151,7 +151,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bitti (#22) |
-| G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
+| G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bitti (#18); görünüş G4b'de |
+| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
@@ -644,7 +645,20 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Resmin içinde yürüyüş (kaydırdıkça ayrıntıdan ayrıntıya), eğim hareketi.
 - Hayatı, bugünkü tur kartı.
 
-**Devir notu:** –
+**Devir notu:** ChatGPT, 2026-11-21 · [taslak PR #18](https://github.com/emrymn/nora-sanat/pull/18) · `is/G4-bugun`.
+- Kaynak: sanat-atlasi `a866b86`, `js/ekranlar/bugun.js`, `js/yuruyus.js`, `js/egim.js`, `js/gunun.js`, `js/gunduzRenk.js`, `js/renk.js` ve `css/app.css`. Günlük seçim mevcut `GununTablosuCozucu` ve `GununSanatcisi` üzerinden. Ayarlar'da o gün için seçilmiş sanatçı da geçerli. Odaklar sitenin `adlaOdak/yuruyusEki` yordamlarından, renkli Gündüz mevcut tema köprüsünden gelir.
+- Kapakta perde, kısa ad, varsa imza, Hayatı ve kayda göre Hikâyesi/İncele; tam ekran G1. Yürüyüşte kırpma sınırları, ölçülen kart yüksekliğine göre üst/alt konum, hareketi azaltma ve jiroskop; Hayatı'nda serbest kaydırma, kaynak, günün turu, eserler, okunuş ve başa dönüş. Tur sayısı kabuğun gerçek rozetinden okunur.
+- K5: Playwright/WebKit, iPhone 15 Pro, 393 × 852. Kapak kenarı 24 pt, soyadı 64 pt (tek satıra sığarken en az 34 pt), eser 17 pt, eylemler en az 48 pt; ayrıntı kartında başlık 26/29,12 ve metin 18/27 pt. Ben'in `cssSatir`, `Etiket`, `BenIkon` parçaları ile Galeri'nin `GaleriIkon` ve okunuş kuralları kullanılır.
+- Kâhin: `Testler/kahin/bugun.mjs` (yerelde salt okunur site deposu, CI'da canlı site); iki resim oranı, üç ayrıntı konumu ve iki kart yüksekliği, sekiz kamera karesi, sekiz izleme adımı, jiroskop ve beş tur kartı. `BugunTests` ayrıca aynı güne özel sanatçı seçimini, eski/geçersiz seçimin geri dönüşünü ve G1'e verilen eseri sınar.
+- Telefonda DEBUG `-yerliSekme bugun -adres "#/"` ile açılır. Resme, varsa Hikâyesi'ne veya İncele'ye dokun; kaydırarak ayrıntılar ile Hayatı'nı aç, turu başlat. Gerçek iPhone'da hareket düğmesi ve yana/öne eğim denenmeli. CI aynı adresi `-yalnizSite` ile de açar; `ekranlar/yan-yana-bugun.png` solda site, sağda yerli. `-bugunKaydir` ile aynı sanatçı ve adımda `yan-yana-bugun-ayrinti-alt.png`, `-ayrinti-ust.png`, `-hayati.png`, `-eserler.png` ve `-tur.png` çekilir. Site, DEBUG `-siteBetik` ile gerçek WebView içinde bölüme kayar. CI `tmp/site-betik` sonucundaki sanatçı ve adımı okuyup site görüntüsünü alır; ardından yerli ekran kendi hesapladığı konumu doğrular. Görüntüler CI arşivindedir. `4-url-calis.png` son çekimdir. Normal sürümde etkinleştirme ortak `Gecis.swift` entegrasyonuna kalır.
+
+
+- **Claude ekleri (GPT hakkı bitince, 2026-11-22):** `-siteBetik` istisnasında `WKJavaScriptExceptionMessage` yazılır (CI günlüğünde görünsün); `bugun-site-cekimi.mjs` öğe ekran dışında kalırsa `scrollIntoView` ile bir kez daha dener. CI 3156c15 yeşil: beş bölümün site/yerli çifti alındı.
+
+**Denetim (G4):** Claude, 2026-11-22 — **onay; Bugün henüz yerli değil, görünüş G4b'ye** (PR #18 yorumu). İlk denetimin 3 maddesi yapıldı (her bölüm için yan yana, base64 yok, `Gecis.swift`'e dokunulmadı). Yan yana: kapak ve üstteki ayrıntı kartı sitedekiyle aynı. Farklar (G4b): alttaki ayrıntıda sitede kamera ayrıntıya yaklaşıyor, yerlide tablonun tamamı; Hayatı/eserler/tur'da sitede yazının arkası koyulaşıyor ve üst şerit (tarih, Ben) duruyor, yerlide resim parlak kalıyor ve yazı durum çubuğuna biniyor; tur kartında sayı kutusu ve ok sitedekinden farklı.
+
+### G4b · Bugün: görünüş sitedeki gibi
+- Yukarıdaki denetimin farkları. Yöntem G2b gibi: `yan-yana-bugun-*.png` çiftleri birebir olana kadar. `Gecis.swift`'e dokunma; Bugün'ün yerli olması G4b denetiminden sonra Claude'da (K).
 
 ### C4 · Ben (ChatGPT)
 **Site kaynakları:** `js/ekranlar/ilerleme.js`, `js/ekranlar/ayarlar.js`, `js/ekranlar/hizliAyar.js`, `js/kurs.js`, `js/yenilikler.js`, `js/rozet.js`.
