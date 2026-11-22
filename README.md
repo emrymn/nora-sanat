@@ -122,6 +122,13 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Metnin arasındaki ayrıntı kırpımlarına dokun: görüntüleyici o ayrıntıda açılıyor. Alttaki "Yakından bak · n ayrıntı" incelemeyi baştan açıyor.
   - "Okumayı sürdür": ayrıntılı anlatım aynı sayfada açılıyor; noktalı altı çizili terime dokununca altta sözlük kartı. Resimli bir karşılaştırmaya dokun: iki eser üst üste, "Eserin sayfası" o esere gidiyor.
   - Aramada bir başyapıt adı yaz (ör. "elçiler"): sonuç yerli sayfayı açıyor. Sanatçı sayfasındaki "Yakın okuma" satırları da.
+- [ ] (C3) Çalış hâlâ sitenin (yerli olması ayrı bir küçük adım). Xcode'da Arguments'a `-yerliSekme calis` ekleyip çalıştır, Çalış'a geç:
+  - Bugünün dersi kartında bir adım halkasına (Gör / Öğren / Ayırt et) dokun: doğrudan o adım açılıyor; alttaki devam satırı da sıradaki adımı açıyor. Ders sayfasındaki adım satırları da.
+  - **Gör**: koyu sahne, önce eserin tamamı; "Ayrıntılara bak" ile kamera ayrıntıya kayıp yaklaşıyor (uzak ayrıntıda önce biraz geri çekiliyor), alttaki yazı solup yenisi yükseliyor. "Sıradaki eser"de resim çapraz solarak değişiyor. Ayarlar'da Hareket kapalıyken her şey anında.
+  - Gör'ü yarıda bırak, dersi yeniden aç: kaldığın ayrıntıdan açılıyor; site de aynı yeri gösteriyor (`#/pekistir/ders/<akım>/gor`).
+  - **Öğren**: büyük eser, madde, "Bu eserde" kutusu, üç küçük eser (dokununca büyük eser değişiyor), Açıklama. Büyük esere dokun: görüntüleyici açılıyor. Altta "Anladım · II. özellik".
+  - **Ayırt et**: "Hangisi …?" iki eser; birine dokun: doğru yeşil, yanlış kırmızı çerçeve, altında iki sütun ve dönem metinleri. Cevaptan sonra esere dokununca görüntüleyici.
+  - Adım bitince yeşil onay, "Sıradaki adım: …" ve "Derse dön"; üç adım da bitince "Haritaya geç". Ben ve sitedeki ders sayfası aynı ilerlemeyi gösteriyor.
 
 ## Geliştirme
 

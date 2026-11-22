@@ -7,6 +7,7 @@ import SwiftUI
 /// - Ana ekran (`#/pekistir`): `CalisAnaGorunumu`
 /// - Döneme göre / Turlar (`#/pekistir/donem`): `DonemTurlariGorunumu`
 /// - Ders özeti (`#/pekistir/ders/<akım>`): `CalisDersSayfasi`
+/// - Dersin adımları (`#/pekistir/ders/<akım>/gor|ogren|ayirt`): `DersAdimEkrani` (C3)
 /// - Aktif tur (`model.turAcik`): `PekistirmeEkrani` (sekme çubuğunu `.sekmeCubuguGizli(true, sekme: .calis)` ile gizler)
 @MainActor
 struct CalisSekmesi: View {
@@ -25,6 +26,7 @@ struct CalisSekmesi: View {
         case ana
         case donem(salonlaraIn: Bool)
         case ders(String)
+        case adim(String, DersAdimi)
     }
 
     var body: some View {
@@ -47,6 +49,7 @@ struct CalisSekmesi: View {
                         masaSekmesi: $masaSekmesi,
                         turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) },
                         derseGit: { akim in gecis { altSayfa = .ders(akim) } },
+                        adimaGit: { akim, adim in gecis { altSayfa = .adim(akim, adim) } },
                         donemlereGit: { salonlaraIn in gecis { altSayfa = .donem(salonlaraIn: salonlaraIn) } },
                         adreseGit: { adreseGit($0) }
                     )
@@ -66,17 +69,32 @@ struct CalisSekmesi: View {
                         akim: akim,
                         geri: { gecis { altSayfa = .ana } },
                         turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) },
-                        adreseGit: { adreseGit($0) }
+                        adreseGit: { adreseGit($0) },
+                        adimaGit: { adim in gecis { altSayfa = .adim(akim, adim) } }
                     )
                     .transition(.move(edge: .trailing))
                     .zIndex(1)
+                case .adim(let akim, let adim):
+                    // Adımdan adıma geçiş yer değiştirir (`data-ders-gec` → gezin(…, 'bolum')): geri ders sayfasına
+                    DersAdimEkrani(
+                        model: model,
+                        akim: akim,
+                        adim: adim,
+                        derseDon: { gecis { altSayfa = .ders(akim) } },
+                        adimaGit: { yeni in gecis { altSayfa = .adim(akim, yeni) } },
+                        adreseGit: { adreseGit($0) },
+                        turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) }
+                    )
+                    .id("\(akim)|\(adim.rawValue)")
+                    .transition(.move(edge: .trailing))
+                    .zIndex(2)
                 }
             }
         }
         .foregroundStyle(Color(r.murekkep))
         .dynamicTypeSize(tema.ayar.yazi == "buyuk" ? max(yaziBoyutu, .xLarge) : yaziBoyutu)
         .tint(Color(r.vurguAcik))
-        .sekmeCubuguGizli(model.turAcik, sekme: .calis)
+        .sekmeCubuguGizli(model.turAcik || adimAcik, sekme: .calis)
         .onChange(of: kabuk.yerliAdres[.calis], initial: true) { _, adres in
             if let adres {
                 kabuk.adresIslendi(.calis)
@@ -101,7 +119,13 @@ struct CalisSekmesi: View {
                         altSayfa = .ana
                         masaSekmesi = .turlar
                     } else if sayfa.hasPrefix("ders:") {
-                        altSayfa = .ders(String(sayfa.dropFirst(5)))
+                        // `ders:<akım>` ya da `ders:<akım>:<adım>`
+                        let p = sayfa.dropFirst(5).split(separator: ":", maxSplits: 1).map(String.init)
+                        if p.count == 2, let a = DersAdimi(rawValue: p[1]) {
+                            altSayfa = .adim(p[0], a)
+                        } else {
+                            altSayfa = .ders(String(sayfa.dropFirst(5)))
+                        }
                     }
                 }
                 #endif
@@ -131,6 +155,12 @@ struct CalisSekmesi: View {
     }
 
     private var hareketYok: Bool { tema.ayar.hareketAzaltilmis }
+
+    /// Adım ekranları tam ekrandır (sitede `#/pekistir/ders/<akım>/<adım>` sekme çubuğu göstermez)
+    private var adimAcik: Bool {
+        if case .adim = altSayfa { return true }
+        return false
+    }
 
     private func gecis(_ islem: () -> Void) {
         withAnimation(hareketYok ? nil : .timingCurve(0.2, 0.8, 0.2, 1, duration: 0.35), islem)
@@ -211,7 +241,12 @@ struct CalisSekmesi: View {
             if parcalar.count >= 3 {
                 let akim = parcalar[2].removingPercentEncoding ?? parcalar[2]
                 model.turAcik = false
-                gecis { altSayfa = .ders(akim) }
+                // `#/pekistir/ders/<akım>/sina` (eski adres) ders sayfasını açar
+                if parcalar.count >= 4, let adim = DersAdimi(rawValue: parcalar[3]) {
+                    gecis { altSayfa = .adim(akim, adim) }
+                } else {
+                    gecis { altSayfa = .ders(akim) }
+                }
             }
         default:
             break
@@ -228,6 +263,8 @@ struct CalisDersSayfasi: View {
     let geri: () -> Void
     let turBaslat: (PekistirmeKipi, Int?) -> Void
     let adreseGit: (String) -> Void
+    /// Dersin adımını açar (`dersAdresi(akim, adim)`)
+    let adimaGit: (DersAdimi) -> Void
 
     @Environment(TemaDeposu.self) private var tema
 
@@ -349,6 +386,7 @@ struct CalisDersSayfasi: View {
                 ForEach(Array(b.durum.adimlar.enumerated()), id: \.element.adim) { i, s in
                     let say = CalisDersKurallari.adimSayisi(b, s.adim)
                     let simdi = !s.bitti && s.adim == b.durum.siradaki
+                    Button { adimaGit(s.adim) } label: {
                     HStack(spacing: 14) {
                         ZStack {
                             Circle()
@@ -392,6 +430,10 @@ struct CalisDersSayfasi: View {
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .strokeBorder(Color(simdi ? r.pirinc : r.kenar), lineWidth: 1)
                     )
+                    .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("ders-adim-\(s.adim.rawValue)")
                 }
 
                 haritaSatiri(b, harita: harita)
@@ -419,10 +461,11 @@ struct CalisDersSayfasi: View {
             .padding(.bottom, 12)
 
             Button {
-                if dugme.adim == nil {
-                    adreseGit("#/harita")
+                // `devamDugmesi(b)`: ders bittiyse haritaya, yoksa sıradaki (ya da ilk) adıma
+                if let a = dugme.adim {
+                    adimaGit(a)
                 } else {
-                    turBaslat(.sanatci(.donem(b.akim)), nil)
+                    adreseGit("#/harita")
                 }
             } label: {
                 HStack(spacing: 12) {

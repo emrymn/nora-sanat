@@ -101,6 +101,22 @@ final class PekistirmeModeli {
         }
     }
 
+    /// Ders adımının ilerlemesini yazar (`ilerlemeYaz` → `adimIsle(d.ilerleme, akim, adim, adimOrani(gorulen, toplam), bugun)`).
+    /// Turdan bağımsızdır (`mesgul`e bakmaz); oran yalnız artar.
+    func dersAdimiIsle(akim: String, adim: DersAdimi, gorulen: Int, toplam: Int) async {
+        let oran = CalisDersKurallari.adimOrani(gorulen: gorulen, toplam: toplam)
+        let gun = bugun
+        do {
+            let il = try await IlerlemeKoprusu.shared.degistir { il in
+                _ = CalisDersKurallari.adimIsle(ilerleme: &il, akim: akim, adim: adim, oran: oran, bugun: gun)
+            }
+            ilerleme = il
+            hata = nil
+        } catch {
+            hata = "Dersin ilerlemesi kaydedilemedi."
+        }
+    }
+
     /// Günlük kart hedefini değiştirir (`data-gunluk-hedef`)
     func gunlukHedefSec(_ hedef: Int) async {
         guard !mesgul else { return }

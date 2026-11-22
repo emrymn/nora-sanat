@@ -150,7 +150,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C2 | Çalış ana ekranı | C | C1 | 1 | bitti (#16) |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
-| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
+| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | sürüyor (Claude, 2026-11-22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
