@@ -213,7 +213,8 @@ struct GaleriSekmesi: View {
           .task { await GaleriKarsilastirma.kaydir(kaydir, "dizin") }
           #endif
         }
-        .background(SayfaZemini(donem: donem))
+        .background(SayfaZemini(donem: donem, tablo: salonlar.indices.contains(sayfa)
+            ? g.carkKapagi(salonlar[sayfa].ad, il).flatMap { resim.url($0, 400) } : nil))
     }
 
     @ViewBuilder private func hedefSayfa(_ hedef: GaleriYolu, _ g: GaleriKatalogu, _ il: Ilerleme) -> some View {

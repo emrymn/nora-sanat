@@ -42,7 +42,8 @@ struct CalisSekmesi: View {
     var body: some View {
         let r = tema.renkler
         ZStack {
-            Color(r.zemin).ignoresSafeArea()
+            // Z3c: zemin bugünün dersinin tablosundan iki renk süzmesi (kullanıcının tasarım tuvali, Çalış artboard'ları)
+            SayfaZemini(donem: nil, alan: .calis)
 
             if model.turAcik {
                 PekistirmeEkrani(
@@ -336,9 +337,6 @@ struct CalisDersSayfasi: View {
             .padding(.bottom, 128)
             .frame(maxWidth: 640, alignment: .leading)
             .frame(maxWidth: .infinity)
-        }
-        .background(alignment: .topLeading) {
-            CalisSayfaHalesi()
         }
         .foregroundStyle(Color(r.murekkep))
     }

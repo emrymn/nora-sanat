@@ -144,9 +144,6 @@ struct CalisAnaGorunumu: View {
                         .transition(.move(edge: .top).combined(with: .opacity))
                 }
             }
-            .background(alignment: .topLeading) {
-                CalisSayfaHalesi()
-            }
         } else if model.hata == nil {
             ProgressView("Çalış hazırlanıyor…")
                 .font(Yazi.sans(15))
@@ -246,6 +243,8 @@ struct CalisAnaGorunumu: View {
                     Color(RGBA(css: "#1a1816")!)
                     if let kapakEser {
                         UzakGorsel(url: model.gorsel(kapakEser, 960), icerik: .fill)
+                            // Z3c: Çalış'ın zemini bu tablonun renklerinden
+                            .task(id: kapakEser.anahtar) { ZeminTablosu.shared.son[.calis] = model.gorsel(kapakEser, 960) }
                             .frame(maxWidth: .infinity, minHeight: 236, maxHeight: 236)
                             .clipped()
                     }
@@ -928,27 +927,6 @@ private struct CalisBaslikKonumu: PreferenceKey {
     static let defaultValue: CGFloat = 100
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
-    }
-}
-
-/// `.hale.bsy-hale`: sol üstten yayılan yumuşak vurgu halesi
-struct CalisSayfaHalesi: View {
-    @Environment(TemaDeposu.self) private var tema
-    var body: some View {
-        let r = tema.renkler
-        RadialGradient(
-            stops: [
-                .init(color: Color(r.vurgu).opacity(0.11), location: 0),
-                .init(color: Color(r.vurgu).opacity(0.03), location: 0.45),
-                .init(color: Color(r.vurgu).opacity(0), location: 0.70),
-            ],
-            center: .topLeading,
-            startRadius: 0,
-            endRadius: 420
-        )
-        .frame(height: 520)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
     }
 }
 

@@ -136,7 +136,7 @@ struct YakinOkuma: View {
         }
         // `bottom: calc(var(--sekme-alt) + var(--sekme-h) + 34px)`: dişli dilin de üstünde (CI'da siteyle ölçüldü)
         .overlay(alignment: .bottom) { altOgeler.padding(.bottom, 83) }
-        .background(SayfaZemini(donem: donem))
+        .background(SayfaZemini(donem: donem, tablo: eser.flatMap { resim.url($0, 400) }))
         .tint(Color(r.murekkep))
         .task(id: b.anahtar) { await yukle() }
         .task(id: "\(baglam != nil)|\(ders != nil)|\(derin)") { metinleriKur() }

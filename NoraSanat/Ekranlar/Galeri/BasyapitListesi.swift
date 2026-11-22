@@ -27,6 +27,7 @@ struct BasyapitListesi: View {
     let eylem: GaleriEylemleri
     let ust: GaleriUst
     @Environment(TemaDeposu.self) private var tema
+    @State private var zeminTablo: URL?
 
     private static let seritSayi = 6
     private var resim: GaleriResim { GaleriResim(galeri: galeri, il: il) }
@@ -52,7 +53,8 @@ struct BasyapitListesi: View {
                                     .padding(.top, 16)
                             }
                             if !one.isEmpty {
-                                BasyapitSahnesi(eserler: one, galeri: galeri, baglam: baglam, resim: resim) { eylem.git(.okuma($0)) }
+                                BasyapitSahnesi(eserler: one, galeri: galeri, baglam: baglam, resim: resim,
+                                                ac: { eylem.git(.okuma($0)) }, secildi: zemineAl)
                                     .padding(.top, 8)
                                     .id("sahne-" + donem)
                             }
@@ -74,7 +76,12 @@ struct BasyapitListesi: View {
             .task { for id in ["serit", "donem"] { await GaleriKarsilastirma.kaydir(kaydir, id) } }
             #endif
         }
-        .background(SayfaZemini(donem: zemin))
+        .background(SayfaZemini(donem: zemin, tablo: zeminTablo))
+    }
+
+    /// Z3c: zeminin iki rengi öne çıkan kartta görünen tablodan
+    private func zemineAl(_ b: Basyapit) {
+        zeminTablo = BasyapitKurallari.eser(galeri.eserler[b.sanatci] ?? [], b).flatMap { resim.url($0, 400) }
     }
 
     // MARK: Dönem sekmeleri
@@ -354,6 +361,8 @@ struct BasyapitSahnesi: View {
     let baglam: BasyapitBaglami
     let resim: GaleriResim
     let ac: (String) -> Void
+    /// Görünen kart değişince (zeminin rengi için)
+    var secildi: ((Basyapit) -> Void)? = nil
     @Environment(TemaDeposu.self) private var tema
     @Environment(\.accessibilityReduceMotion) private var hareketAz
     @State private var secili = 0
@@ -412,7 +421,8 @@ struct BasyapitSahnesi: View {
         .frame(height: 372)
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .shadow(color: .black.opacity(0.4), radius: 25, y: 24)
-        .onChange(of: eserler.map(\.anahtar)) { _, _ in secili = 0 }
+        .onChange(of: eserler.map(\.anahtar)) { _, _ in secili = 0; eserler.first.map { secildi?($0) } }
+        .onChange(of: secili, initial: true) { _, i in if eserler.indices.contains(i) { secildi?(eserler[i]) } }
         .task(id: eserler.map(\.anahtar)) {
             guard !hareketAz, !tema.ayar.hareketAzaltilmis, tema.ayar.hareket == "tam", eserler.count > 1 else { return }
             while !Task.isCancelled {

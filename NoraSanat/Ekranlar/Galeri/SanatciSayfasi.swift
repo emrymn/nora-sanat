@@ -121,7 +121,9 @@ struct SanatciSayfasi: View {
             .padding(.bottom, 32)
         }
         .scrollIndicators(.hidden)
-        .background(SayfaZemini(donem: nil, ustHale: true))
+        .background(SayfaZemini(donem: nil, ustHale: true,
+                                tablo: Temsil.bilinirlikSirasi(galeri.eserler[s.id] ?? []).first { !$0.gorseller.isEmpty }
+                                    .flatMap { resim.url($0, 400) }))
     }
 
     /// `karsilastirSecici(s)`: "Karşılaştır" düğmesi (`details`); açılınca aynı / komşu akımdan en çok 8 sanatçı
