@@ -369,7 +369,7 @@ struct KonuSayfasi: View {
             .padding(.horizontal, BenOlcu.yan).padding(.top, 12).padding(.bottom, 32)
         }
         .scrollIndicators(.hidden)
-        .background(SayfaZemini(donem: nil, ustHale: true))
+        .background(SayfaZemini(donem: nil, ustHale: true, tablo: galeri.konuKapagi(eserler).flatMap { resim.url($0, 400) }))
         .sheet(isPresented: $galeriAcik) {
             KonuGalerisi(baslik: konu.ad, eserler: eserler, resim: resim) { i in
                 galeriAcik = false

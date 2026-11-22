@@ -99,10 +99,14 @@ struct SayfaZemini: View {
     var donem: String?
     /// `.hale` (sanatçı, konu sayfaları): yalnız üstteki 520 px, sol üstten
     var ustHale = false
-    /// Z3c (kullanıcının tasarım tuvali, `TabloRenkleri`): tablonun iki renginden süzme; sol üstte birinci %24, sağ altta
-    /// ikinci %16. Yoksa sitenin tek renkli soluk halesi.
-    var renkler: TabloRenkleri.Cift? = nil
+    /// Z3c (kullanıcının tasarım tuvali, `TabloRenkleri`): sayfanın ana tablosu. Zemin onun iki renginden süzülür: sol
+    /// üstte birinci %24, sağ altta ikinci %16. Verilmezse bu bölümde (Galeri / Çalış) son bakılan tablonunki; hiç yoksa
+    /// sitenin tek renkli soluk halesi.
+    var tablo: URL? = nil
+    var alan: ZeminTablosu.Alan = .galeri
     @Environment(TemaDeposu.self) private var tema
+    @State private var cift: TabloRenkleri.Cift?
+    private var kaynak: URL? { tablo ?? ZeminTablosu.shared.son[alan] }
 
     var body: some View {
         let r = tema.renkler
@@ -110,7 +114,7 @@ struct SayfaZemini: View {
             let w = g.size.width, h = g.size.height
             ZStack(alignment: .topLeading) {
                 Color(r.zemin)
-                if let c = renkler, !ustHale {
+                if let c = cift {
                     // Gündüz'de açık zeminde aynı süzme daha soluk
                     let k = r.koyu ? 1.0 : 0.6
                     elips(c.birinci, [(0.24 * k, 0), (0.06 * k, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.6 * h, merkez: .topLeading, w: w, h: h)
@@ -129,10 +133,14 @@ struct SayfaZemini: View {
                 }
             }
             .animation(.easeOut(duration: 0.6), value: donem)
-            .animation(.easeInOut(duration: 0.8), value: renkler)
+            .animation(.easeInOut(duration: 0.8), value: cift)
         }
         .ignoresSafeArea()
         .accessibilityHidden(true)
+        .task(id: kaynak) {
+            if let tablo { ZeminTablosu.shared.son[alan] = tablo }
+            if let c = await TabloRengi.cift(kaynak) { cift = c }
+        }
     }
 
     /// CSS `radial-gradient(rx ry at köşe, …)`: dairesel geçiş, dikeyde ölçeklenir
@@ -522,6 +530,15 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         viewControllers.count > 1
     }
+}
+
+/// Z3c: bölümde (Galeri, Çalış) son bakılan ana tablo; ana tablosu olmayan sayfalar (arama, koleksiyon, listeler) zemini
+/// bundan alır, geçişte renk kopmaz
+@MainActor @Observable
+final class ZeminTablosu {
+    enum Alan: Hashable { case galeri, calis }
+    static let shared = ZeminTablosu()
+    var son: [Alan: URL] = [:]
 }
 
 /// Z3c: tablonun küçük kopyasından iki süzme rengi (`TabloRenkleri.cift`); adres başına bir kez hesaplanır

@@ -27,7 +27,7 @@ struct BasyapitListesi: View {
     let eylem: GaleriEylemleri
     let ust: GaleriUst
     @Environment(TemaDeposu.self) private var tema
-    @State private var zeminRenk: TabloRenkleri.Cift?
+    @State private var zeminTablo: URL?
 
     private static let seritSayi = 6
     private var resim: GaleriResim { GaleriResim(galeri: galeri, il: il) }
@@ -76,13 +76,12 @@ struct BasyapitListesi: View {
             .task { for id in ["serit", "donem"] { await GaleriKarsilastirma.kaydir(kaydir, id) } }
             #endif
         }
-        .background(SayfaZemini(donem: zemin, renkler: zeminRenk))
+        .background(SayfaZemini(donem: zemin, tablo: zeminTablo))
     }
 
     /// Z3c: zeminin iki rengi öne çıkan kartta görünen tablodan
     private func zemineAl(_ b: Basyapit) {
-        let url = BasyapitKurallari.eser(galeri.eserler[b.sanatci] ?? [], b).flatMap { resim.url($0, 400) }
-        Task { if let c = await TabloRengi.cift(url) { zeminRenk = c } }
+        zeminTablo = BasyapitKurallari.eser(galeri.eserler[b.sanatci] ?? [], b).flatMap { resim.url($0, 400) }
     }
 
     // MARK: Dönem sekmeleri
