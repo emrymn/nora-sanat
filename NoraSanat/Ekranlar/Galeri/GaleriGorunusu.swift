@@ -10,7 +10,7 @@ import SwiftUI
 
 /// Galeri'nin simgeleri: js/tasarim.js `YOLLAR[ad]` (24'lük viewBox, çizgi); `ses` js/kunye.js'teki hoparlör
 enum GaleriSimge {
-    case ara, kalp, izgara, ileri, geri, asagi, kilit, buyut, ses, karsilastir, kapat
+    case ara, kalp, izgara, ileri, geri, asagi, kilit, buyut, ses, karsilastir, kapat, kitap, cik
 
     var isaretleme: String {
         switch self {
@@ -26,6 +26,9 @@ enum GaleriSimge {
         case .ses: return #"<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>"#
         case .karsilastir: return #"<rect x="3" y="4" width="7.5" height="16" rx="1.5"/><rect x="13.5" y="4" width="7.5" height="16" rx="1.5"/>"#
         case .kapat: return #"<path d="M18 6 6 18"/><path d="m6 6 12 12"/>"#
+        case .kitap:
+            return #"<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>"#
+        case .cik: return #"<path d="M12 20V5"/><path d="m6 11 6-6 6 6"/>"#
         }
     }
 }
