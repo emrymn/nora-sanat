@@ -89,14 +89,14 @@ final class KabukDurumu {
     func siteAdresiGeldi(_ adres: String) {
         let onceki = siteAdresi
         siteAdresi = SiteRotalari.hash(adres)
-        if let s = SiteRotalari.sekme(siteAdresi), Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
+        if siteAdresi != onceki, let s = SiteRotalari.yerliSekme(siteAdresi), Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
         if let s = SiteRotalari.secim(onceki: onceki, yeni: siteAdresi, secili: secili, yerli: Gecis.yerli) { secili = s }
         rozetiYenile()   // sitenin rozeti de her sayfa çiziminde yenilenir (sekmeleriCiz)
     }
 
     /// Widget, bildirim, `-adres`: hedef yerli bir sekmedeyse orada açılır (true); değilse site gider (false)
     func yerliyeGit(_ adres: String) -> Bool {
-        guard let s = SiteRotalari.sekme(adres), Gecis.yerli(s) else { return false }
+        guard let s = SiteRotalari.yerliSekme(adres), Gecis.yerli(s) else { return false }
         yerliAdres[s] = SiteRotalari.hash(adres)
         secili = s
         return true

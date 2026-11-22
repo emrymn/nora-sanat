@@ -115,8 +115,25 @@ public enum SiteRotalari {
     /// - Taşınmamış sekmeye yalnız sitenin sekmesi gerçekten değiştiyse geçilir. Sitenin açılışta ya da yeniden
     ///   yüklenince bildirdiği aynı sekmenin adresi (ör. "#/") widget'la, bildirimle açılmış yerli sekmeyi kapatmaz.
     /// - Sekmesiz sayfa (pekiştirme kartı, karşılaştırma) açıldığı sekmede kalır.
+    /// - Aynı adres (sitenin açılışta ya da yeniden yüklenince bildirdiği) seçimi hiç değiştirmez (T7: Bugün yerli
+    ///   olunca açılıştaki "#/" widget'la açılmış sekmeyi Bugün'e çeviriyordu).
     public static func secim(onceki: String, yeni: String, secili: Sekme, yerli: (Sekme) -> Bool) -> Sekme? {
+        guard hash(yeni) != hash(onceki) else { return nil }
+        if let y = yerliSekme(yeni), yerli(y) { return y == secili ? nil : y }
         guard let s = sekme(yeni), s != secili else { return nil }
-        return yerli(s) || s != sekme(onceki) ? s : nil
+        return s != sekme(onceki) ? s : nil
+    }
+
+    /// Yerli ekranların açacağı sekme (T7). `sekme`'nin sekmesiz bıraktığı sayfaları da bir yerli sekmeye verir:
+    /// `#/pekistir/…` (tur, ders adımları, kurs bölümü) Çalış'ta, karşılaştırmalar Galeri'de açılır; yerli Çalış ve
+    /// Galeri bu adresleri kendi içinde gösterir (`CalisSekmesi.rotayiIsle`, `GaleriYolu`).
+    /// Yolculuk'un bölüm turu (`#/pekistir/bolum/<id>/<seviye>`) nil: yerli Yolculuk turu adresle açmaz.
+    public static func yerliSekme(_ adres: String) -> Sekme? {
+        if let s = sekme(adres) { return s }
+        let h = hash(adres)
+        if h.hasPrefix("#/pekistir/bolum/") { return nil }
+        if h.hasPrefix("#/pekistir/") { return .calis }
+        if h.hasPrefix("#/karsilastir/") || h.hasPrefix("#/akim-karsilastir/") { return .galeri }
+        return nil
     }
 }
