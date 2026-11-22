@@ -11,8 +11,9 @@ import SwiftUI
 /// - Bir sekmenin bütün işleri bitince (Sekmeler ne zaman yerli olur: ISLER.md) adı `tasinanlar`'a eklenir. Ekranı
 ///   `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`'tedir.
 enum Gecis {
-    /// Swift'e taşınmış sekmeler. Ben: C4 + C4b (DEBUG `-yalnizSite` ile site; bkz. `BenGecisi`).
-    static let tasinanlar: Set<Sekme> = BenGecisi.sekmeler
+    /// Swift'e taşınmış sekmeler. Ben: C4 + C4b; Galeri: G1 + G2 + G2b + G3 (DEBUG `-yalnizSite` ile site; bkz.
+    /// `BenGecisi`, `GaleriGecisi`).
+    static let tasinanlar: Set<Sekme> = BenGecisi.sekmeler.union(GaleriGecisi.sekmeler)
 
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
     static let yerliSekmeler: Set<Sekme> = {

@@ -35,6 +35,8 @@ public struct SiteKatalogu: Sendable {
     public let onbellekTarihi: Date?
     /// sanatçı → önbellekteki eserler (`onbellekEseri` uygulanmış, süzülmemiş)
     let onbellek: [String: [Eser]]?
+    /// Önbellekteki sanatçıların dosyadaki sırası (`Object.entries(hazir.sanatcilar)`; C5 indirme listesi)
+    let onbellekSirasi: [String]
     let suzgec: ResimSuzgeci
 
     /// - Parameter dosyalar: `data/` altındaki dosya adı → içerik ("sanatcilar.json" …). İlk üçü zorunlu.
@@ -65,6 +67,8 @@ public struct SiteKatalogu: Sendable {
             tarih = h["olusturma"]?.metin.flatMap(Self.isoTarih)
         }
         self.onbellek = onbellek
+        var gorulen = Set<String>()
+        onbellekSirasi = onbellekSirali.map(\.sid).filter { gorulen.insert($0).inserted }
         onbellekTarihi = tarih
         let hamSayilar = onbellek == nil ? nil
             : Dictionary(onbellekSirali.map { ($0.sid, $0.eserler.count) }, uniquingKeysWith: { _, b in b })

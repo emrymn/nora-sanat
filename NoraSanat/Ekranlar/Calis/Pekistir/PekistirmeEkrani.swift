@@ -6,10 +6,13 @@ import NoraCekirdek
 @MainActor
 struct PekistirmeEkrani: View {
     @Environment(TemaDeposu.self) private var tema
-    @State private var model = PekistirmeModeli()
+    @State private var icModel = PekistirmeModeli()
     @State private var yeniKip: PekistirmeKipi?
     @State private var yeniSeviye: Int?
+    var disModel: PekistirmeModeli? = nil
     var ilkTur: PekistirmeKipi? = nil
+    var disAdreseGit: ((String) -> Void)? = nil
+    private var model: PekistirmeModeli { disModel ?? icModel }
     private var murekkep: Color { Color(tema.renkler.murekkep) }
     private var yuzey: Color { Color(tema.renkler.yuzey) }
 
@@ -21,14 +24,29 @@ struct PekistirmeEkrani: View {
         return k.sonuc == nil ? "kart" : "yaprak"
     }
 
+    private func adreseGit(_ adres: String) {
+        if let disAdreseGit {
+            disAdreseGit(adres)
+        } else {
+            model.turAcik = false
+            Gezgin.shared.git(adres)
+        }
+    }
+
     var body: some View {
         Group {
             if model.turAcik, let tur = model.kayit {
                 if tur.tanismaBekliyor || tur.kart?.tanisma != nil {
                     TanismaGorunumu(model: model, tur: tur) { model.turAcik = false }
                 } else if let k = tur.kart {
-                    KartGorunumu(model: model, tur: tur, k: k) { model.turAcik = false }
-                        .id("\(tur.gorunenKonum)|\(k.resim.eser.anahtar)|\(k.ikinci)")
+                    KartGorunumu(
+                        model: model,
+                        tur: tur,
+                        k: k,
+                        kapat: { model.turAcik = false },
+                        disAdreseGit: { adreseGit($0) }
+                    )
+                    .id("\(tur.gorunenKonum)|\(k.resim.eser.anahtar)|\(k.ikinci)")
                 } else {
                     ScrollView { ozet(tur).padding(.horizontal, 24) }
                 }
@@ -179,7 +197,7 @@ struct PekistirmeEkrani: View {
                 gecenler(tur)
             }
             eylemKarti(tur).padding(.top, 32)
-            Button { model.turAcik = false; Gezgin.shared.git("#/") } label: {
+            Button { adreseGit("#/") } label: {
                 Text("Tuval’e dön").font(Yazi.sans(15, agirlik: 600)).underline().foregroundStyle(Color(r.murekkep2))
                     .frame(maxWidth: .infinity).frame(minHeight: 44)
             }

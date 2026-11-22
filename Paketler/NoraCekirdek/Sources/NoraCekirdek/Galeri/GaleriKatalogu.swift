@@ -15,7 +15,8 @@ public struct GaleriKatalogu: Sendable {
     public let katalog: SiteKatalogu
     public let eserler: [String: [Eser]]
     public let konular: [GaleriKonusu]
-    public let basyapitlar: [JSONDeger]
+    /// `basyapitVeri()`: geçerli ve temsil edebilen yakın okumalar (G3: `BasyapitKurallari.al`)
+    public let basyapitlar: [Basyapit]
     public let konuKirpimlari, sanatciKirpimlari: [String: [TanimaKirpimi]]
     public let kunye: JSONDeger?
     public let imzalar: JSONDeger?
@@ -50,11 +51,7 @@ public struct GaleriKatalogu: Sendable {
                                 ozet: dolu(j["ozet"]) ?? "", kaynak: dolu(j["kaynak"]) ?? "", hikaye: hikaye,
                                 tanima: satirlar(j["tanima"]), baglar: baglar)
         }
-        self.basyapitlar = (ham["basyapitlar.json"]?["eserler"]?.dizi ?? []).filter { b in
-            guard let sid = dolu(b["sanatci"]), k.harita[sid] != nil, dolu(b["anahtar"]) != nil, b["anahtar"]?.metin != "Q3947103", dolu(b["baslik"]) != nil,
-                  let bolumler = b["bolumler"]?.dizi, !bolumler.isEmpty else { return false }
-            return bolumler.allSatisfy { dolu($0["baslik"]) != nil && dolu($0["metin"]) != nil }
-        }
+        self.basyapitlar = BasyapitKurallari.al(ham["basyapitlar.json"]) { k.harita[$0] != nil }
         let bilgiler = ham["akim_bilgi.json"]?["akimlar"]?.nesne
         var bilgi: [String: [String: String]] = [:]
         for ad in bilgiler?.anahtarlar ?? [] {
@@ -108,9 +105,7 @@ public struct GaleriKatalogu: Sendable {
         }
         for k in konular { d.append(GaleriKaydi(.konu, k.id, k.ad, alanlar: [k.ad, k.ozgun], agirlik: k.baglar.count)) }
         for b in basyapitlar {
-            let ad = b["baslik"]?.metin ?? ""
-            d.append(GaleriKaydi(.basyapit, b["anahtar"]?.metin ?? "", ad,
-                                 alanlar: [ad, SiteYazisi.notTemizle(b["ozgun"]?.metin ?? "")], sanatci: b["sanatci"]?.metin))
+            d.append(GaleriKaydi(.basyapit, b.anahtar, b.baslik, alanlar: [b.baslik, b.ozgun], sanatci: b.sanatci))
         }
         return d
     }

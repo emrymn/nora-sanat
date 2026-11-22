@@ -86,9 +86,22 @@ public actor SiteVerisi {
         return k
     }
 
+    /// Sitenin kökünden bir dosya (`data/` dışında; G3: `basyapit-dersleri/eserler/<klasör>/DERS_ORTA.md`).
+    /// `veri` gibi önbelleğe alınır; .json değilse JSON denetimi yapılmaz.
+    public func kokDosyasi(_ yol: String, zorla: Bool = false) async -> Data? {
+        let ad = "kok/" + yol
+        let u = yerel(ad)
+        if !zorla, yas(ad) < omur, let d = try? Data(contentsOf: u) { return d }
+        if let d = await indir(yol, onek: "", json: yol.hasSuffix(".json")) {
+            try? d.write(to: u, options: .atomic)
+            return d
+        }
+        return try? Data(contentsOf: u)
+    }
+
     /// İndirme: 200 ve geçerli JSON ise veri, değilse nil
-    func indir(_ dosya: String) async -> Data? {
-        guard let url = URL(string: "data/" + dosya, relativeTo: kok) else { return nil }
+    func indir(_ dosya: String, onek: String = "data/", json: Bool = true) async -> Data? {
+        guard let url = URL(string: onek + dosya, relativeTo: kok) else { return nil }
         let istek = URLRequest(url: url)
         let sonuc: (Data, URLResponse)? = await withCheckedContinuation { devam in
             oturum.dataTask(with: istek) { d, y, h in
@@ -96,7 +109,7 @@ public actor SiteVerisi {
             }.resume()
         }
         guard let (d, y) = sonuc, (y as? HTTPURLResponse)?.statusCode == 200,
-              (try? JSONDeger.coz(d)) != nil else { return nil }
+              !json || (try? JSONDeger.coz(d)) != nil else { return nil }
         return d
     }
 }
