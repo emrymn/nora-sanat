@@ -161,7 +161,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
 | T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
-| T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bekliyor |
+| T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | PR açık |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
@@ -934,6 +934,9 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 ### T8 · CI'ı paralel makinelere böl (Claude)
 - Ekran görüntüsü adımı tek simülatörde sırayla ~55 dk (102 görüntü; G5 ile ~70, sınır 75). Uygulama bir kez derlenir (artifact), Ben / Galeri / Çalış+dersler / Bugün / Yolculuk / genel kontroller ayrı macOS işlerinde aynı anda çekilir. Depo açık: macOS dakikası ücretsiz.
+- `derle` işi: kâhinler, paket testleri, derleme, uygulamanın içi; `.app` → `uygulama` arşivi. `ekran` matrisi (`genel`, `bugun`, `ben`, `galeri`, `calis`, `yolculuk`) her biri kendi simülatöründe `Testler/ci/ekran.sh <grup>`; görüntüler `ekranlar-<grup>` arşivinde (adlar eskisi gibi).
+- Her grup temiz simülatörle başlar: ilk açılış, sonra (Ben, Galeri, Çalış, Yolculuk) T2'nin deneme ilerlemesi. Yeni ekran adımı eklerken ilgili grubun işlevine yaz; widget adresi (`4-url-calis`) `genel`in sonunda kalmalı.
+- PR'ların CI'ını beklerken tek bir "derle" yerine bütün kontrol koşularına bak (7 iş).
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**
