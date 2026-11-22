@@ -53,11 +53,13 @@ private let turkce = Locale(identifier: "tr_TR")
 extension Yazi.Aile {
     /// Yazı tipinin kendi satır yüksekliği (hhea: (ascent − descent + lineGap) / unitsPerEm). SwiftUI satırı bununla
     /// çizer; sitede ise CSS `line-height` geçerli. Bodoni Moda 2250/−800/2000, Archivo 878/−210/1000, Newsreader 1470/−530/2000.
+    /// Newsreader'ın tablodan çıkan 1.0'ı iOS'ta tutmuyor: CI'da Bugün Hayatı'nın 19/29.45 metninde yerli satır adımı 29.92
+    /// ölçüldü (G4b, satır başına +0.47 pt) → gerçek doğal satır ≈ 1.0247 × boyut (Z3b; uzun okuma metinleri artık kaymıyor).
     var satirOrani: CGFloat {
         switch self {
         case .serif: return 1.525
         case .sans: return 1.088
-        case .okuma: return 1.0
+        case .okuma: return 1.0247
         }
     }
 }

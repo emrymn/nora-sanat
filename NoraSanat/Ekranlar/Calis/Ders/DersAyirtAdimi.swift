@@ -57,9 +57,8 @@ struct DersAyirtAdimi: View {
                 .padding(.bottom, 14)
 
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(DersAdimKurallari.ayirtSorusu(b.akim))
-                        .font(Yazi.serif(26))
-                        .cssSatir(.serif, 26, 29.9)
+                    // `h2.ders-soru`: 26/1.15, `text-wrap: balance` (uzun akım adı iki satıra inerse sitedeki gibi)
+                    CssBaslik(metin: DersAdimKurallari.ayirtSorusu(b.akim), boyut: 26, satir: 29.9)
                         .foregroundStyle(Color(r.murekkep))
                         .accessibilityAddTraits(.isHeader)
                     Text(DersAdimKurallari.ayirtAltYazisi(c))
