@@ -107,6 +107,10 @@ private struct YolculukHaritaEkrani: View {
     @State private var durak: YolculukDuragi?
     @State private var kurs = false
     @State private var motif: String?
+    @Environment(\.accessibilityReduceMotion) private var hareketAz
+    @State private var animasyonYeri: YolcuPatikasi.Nokta?
+    @State private var animasyonOn = false
+    @State private var yuruyus: Task<Void,Never>?
     private let bolgeler = YolculukHaritasi.bolgeler
 
     var body: some View {
@@ -166,6 +170,7 @@ private struct YolculukHaritaEkrani: View {
                 }.buttonStyle(.plain).padding(.horizontal,12).padding(.top,10)
             }
         }
+        .onDisappear { yuruyus?.cancel() }
         .sheet(item:$durak,onDismiss:{ Task { await depo.yukle() } }) { x in
             YolculukDurakEkrani(durak:x,katalog:katalog,tur:tur).presentationDragIndicator(.visible)
         }
@@ -195,45 +200,105 @@ private struct YolculukHaritaEkrani: View {
         }
     }
 
-    private func donem(_ i:Int,_ en:CGFloat) -> some View {
-        let b = bolgeler[i], boy = en*3
-        let duraklar = depo.duraklar.filter { $0.bolge == b }
-        let ust = Double(8-i)*1.34
-        let sinir = depo.duraklar.filter(\.acik).map { d in Double(8-(bolgeler.firstIndex(of:d.bolge) ?? 0))*1.34 + d.y - 0.07 }.min() ?? 11.72
-        let resim = haritaGorseli("donem_\(b)_\(tur)")
-        let motifler = depo.dosyalar["harita.json"]?["bolgeler"]?[b]?["motifler"]?.dizi ?? []
-        return ZStack(alignment:.topLeading) {
-            UzakGorsel(url:resim)
-                .overlay { if sinir > ust {
-                    UzakGorsel(url:resim).saturation(0.17).colorMultiply(Color(red:0.83,green:0.77,blue:0.65))
-                        .mask(LinearGradient(stops:[.init(color:.white,location:max(0,min(1,sinir-ust-0.04))),.init(color:sinir >= ust+1 ? .white : .clear,location:max(0,min(1,sinir-ust)))],startPoint:.top,endPoint:.bottom))
-                } }
-            ForEach(motifler.indices,id:\.self) { j in
-                if let kutu = motifler[j]["kutu"]?.dizi?.compactMap(\.sayi), kutu.count == 4 {
-                    Button { motif = motifler[j]["eser"]?.metin } label: { Color.clear.contentShape(Rectangle()) }
-                        .frame(width:(kutu[2]-kutu[0])*en,height:(kutu[3]-kutu[1])*boy)
-                        .offset(x:kutu[0]*en,y:kutu[1]*boy).accessibilityLabel("Saklı motif \(j+1)")
-                }
-            }
-            ForEach(duraklar) { x in
-                let olcek = en/390
-                Button { durak = x
-                    if x.acik { Task { await depo.yaz { $0[alan:"haritaYolcu"] = .metin(x.id) } } }
-                } label: {
-                    UzakGorsel(url:haritaGorseli("sembol_\(b)_\(x.sembol)_\(tur)"),icerik:.fit)
-                        .overlay { Circle().stroke(x.acik ? .yellow.opacity(0.8) : .gray,lineWidth:2) }
-                        .overlay(alignment:.bottom){ Image(systemName:x.acik ? "star.fill" : "lock.fill").font(.caption2) }
-                }.buttonStyle(.plain).frame(width:x.en*olcek,height:x.boy*olcek)
-                 .position(x:x.x*en+(0.5-x.ax)*x.en*olcek,y:x.y*boy+(0.5-x.ay)*x.boy*olcek)
-                 .accessibilityLabel(x.ad + (x.kilit.map { ", "+$0 } ?? ", \(x.yildiz) yıldız")).id(x.id)
-            }
-            if let x = depo.yolcu, x.bolge == b, let ad = depo.dosyalar["harita_yolcu.json"]?["bolgeler"]?[b]?["ad"]?.metin {
-                UzakGorsel(url:haritaGorseli("\(ad)_\(b)_dur_\(tur)"),icerik:.fit).frame(width:44*en/390,height:96*en/390)
-                    .position(x:max(18,min(372,x.x*390+(x.x>0.5 ? -34 : 34)))*en/390,y:x.y*boy-44*en/390).allowsHitTesting(false)
-            }
-        }.frame(width:en,height:boy).clipped()
+    private func donem(_ i: Int, _ en: CGFloat) -> some View {
+        let bolge = bolgeler[i]
+        let motifler = depo.dosyalar["harita.json"]?["bolgeler"]?[bolge]?["motifler"]?.dizi ?? []
+        return ZStack(alignment: .topLeading) {
+            donemResmi(i)
+            ForEach(motifler.indices, id: \.self) { j in motifDugmesi(motifler[j], no:j, en:en) }
+            ForEach(depo.duraklar.filter { $0.bolge == bolge }) { d in durakDugmesi(d, en:en) }
+            if let d = depo.yolcu, d.bolge == bolge { yolcu(d,en:en) }
+        }.frame(width:en,height:en*3).clipped()
     }
 
+    private func donemResmi(_ i:Int) -> some View {
+        let resim = haritaGorseli("donem_\(bolgeler[i])_\(tur)")
+        let ust = Double(8-i)*1.34
+        let acik = depo.duraklar.filter(\.acik)
+        let sinir = acik.map { d in Double(8-(bolgeler.firstIndex(of:d.bolge) ?? 0))*1.34 + d.y - 0.07 }.min() ?? 11.72
+        let alt = min(1,max(0,sinir-ust))
+        let renk:Color = sinir >= ust+1 ? .white : .clear
+        let gecis = Gradient(stops:[.init(color:.white,location:max(0,alt-0.04)),.init(color:renk,location:alt)])
+        return UzakGorsel(url:resim).overlay {
+            if sinir > ust {
+                UzakGorsel(url:resim).saturation(0.15).colorMultiply(Color(red:0.88,green:0.83,blue:0.74))
+                    .mask(LinearGradient(gradient:gecis,startPoint:.top,endPoint:.bottom))
+            }
+        }
+    }
+
+    @ViewBuilder private func motifDugmesi(_ m:JSONDeger,no:Int,en:CGFloat) -> some View {
+        if let p = m["kutu"]?.dizi?.compactMap(\.sayi), p.count == 4 {
+            let w = CGFloat(p[2]-p[0])*en
+            let h = CGFloat(p[3]-p[1])*en*3
+            Button { motif = m["eser"]?.metin } label: { Color.clear.contentShape(Rectangle()) }
+                .frame(width:w,height:h).offset(x:CGFloat(p[0])*en,y:CGFloat(p[1])*en*3)
+                .accessibilityLabel("Saklı motif \(no+1)")
+        }
+    }
+
+    private func durakDugmesi(_ d:YolculukDuragi,en:CGFloat) -> some View {
+        let olcek = en/390
+        let w = CGFloat(d.en)*olcek, h = CGFloat(d.boy)*olcek
+        let x = CGFloat(d.x)*en + CGFloat(0.5-d.ax)*w
+        let y = CGFloat(d.y)*en*3 + CGFloat(0.5-d.ay)*h
+        return Button { sec(d) } label: {
+            UzakGorsel(url:haritaGorseli("sembol_\(d.bolge)_\(d.sembol)_\(tur)"),icerik:.fit)
+                .overlay { Circle().stroke(d.acik ? Color.yellow.opacity(0.8) : Color.gray,lineWidth:2) }
+                .overlay(alignment:.bottom) {
+                    if d.acik {
+                        HStack(spacing:1) { ForEach(0..<3,id:\.self) { i in Image(systemName:i<d.yildiz ? "star.fill" : "star") } }.font(.system(size:8))
+                    } else { Image(systemName:"lock.fill").font(.caption2) }
+                }
+        }.buttonStyle(.plain).frame(width:w,height:h)
+         .overlay(alignment:.bottom) {
+            if d.id == depo.simdiki?.id {
+                let sv = ["kolay","orta","zor"].first { !d.gecti($0) }
+                VStack(spacing:2) {
+                    Text(d.ad).font(Yazi.serif(16))
+                    Text(sv.map { "\($0.capitalized) · \($0 == "kolay" ? 8 : 10) soru seni bekliyor" } ?? "Üç yıldız tamam").font(Yazi.sans(11))
+                }.fixedSize().padding(6).background(.ultraThinMaterial,in:RoundedRectangle(cornerRadius:8)).offset(y:d.y>0.84 ? -75 : 46)
+            }
+         }
+         .position(x:x,y:y).accessibilityLabel(d.ad + (d.kilit.map { ", "+$0 } ?? ", \(d.yildiz) yıldız")).id(d.id)
+    }
+
+    @ViewBuilder private func yolcu(_ d:YolculukDuragi,en:CGFloat) -> some View {
+        if let v = depo.dosyalar["harita_yolcu.json"]?["bolgeler"]?[d.bolge], let ad = v["ad"]?.metin {
+            let p = animasyonYeri ?? YolcuPatikasi.yer(d)
+            let on = animasyonYeri == nil ? il[alan:"haritaYolcuOn"]?.mantik == true : animasyonOn
+            let poz = on ? "on" : "dur"
+            let olcu = v["pozlar"]?[poz]
+            let w = CGFloat(olcu?["w"]?.sayi ?? 33)*en/390
+            let y = CGFloat(p.y + 96*(0.5-(olcu?["ay"]?.sayi ?? 1)))*en/390
+            UzakGorsel(url:haritaGorseli("\(ad)_\(d.bolge)_\(poz)_\(tur)"),icerik:.fit)
+                .frame(width:w,height:96*en/390).position(x:CGFloat(p.x)*en/390,y:y).allowsHitTesting(false)
+        }
+    }
+
+    private func sec(_ x:YolculukDuragi) {
+        guard yuruyus == nil else { return }
+        guard x.acik, let eski = depo.yolcu, let yol = YolcuPatikasi(duraklar:depo.duraklar,eski:eski.id,yeni:x.id,veri:depo.dosyalar["harita_patikalar.json"]) else { durak = x; return }
+        yuruyus = Task { @MainActor in
+            defer { yuruyus = nil; animasyonYeri = nil }
+            if yol.yurunur && !hareketAz && !tema.ayar.hareketAzaltilmis {
+                let bas = Date()
+                while !Task.isCancelled {
+                    let t = Date().timeIntervalSince(bas)/yol.sure
+                    let nokta = yol.konum(t)
+                    animasyonYeri = nokta.yer; animasyonOn = nokta.on
+                    if t >= 1 { break }
+                    try? await Task.sleep(for:.milliseconds(20))
+                }
+            }
+            guard !Task.isCancelled else { return }
+            await depo.yaz { il in
+                il[alan:"haritaYolcu"] = .metin(x.id)
+                il[alan:"haritaYolcuOn"] = .mantik(yol.geri && !hareketAz && !tema.ayar.hareketAzaltilmis)
+            }
+            if !Task.isCancelled { durak = x }
+        }
+    }
 
     private func gecis(_ i:Int,_ en:CGFloat) -> some View {
         ZStack {

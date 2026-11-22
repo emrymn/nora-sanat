@@ -59,40 +59,47 @@ struct ZamanEkrani: View {
                 Spacer()
                 adim(10)
             }.frame(height:91).padding(.horizontal, 24)
-            GeometryReader { g in
-                let orta = g.size.width/2
-                let enCok = max(1,cubuklar.map(\.sayi).max() ?? 1)
-                ZStack(alignment: .topLeading) {
-                    ForEach(cubuklar) { c in
-                        let x = orta + CGFloat(c.id-yil)*4
-                        if x >= -40 && x <= g.size.width {
-                            let h = 3 + (27 * Double(c.sayi) / Double(enCok)).rounded()
-                            if c.sayi > 0 {
-                                Rectangle().fill(Color(GaleriRenk.akim(katalog,c.akim ?? ""))).opacity(c.acik ? 1 : 0.28)
-                                    .frame(width:38,height:h).offset(x:x+1,y:30-h)
-                            }
-                        }
-                    }
-                    ForEach(Array(stride(from:1250,through:2000,by:10)), id:\.self) { y in
-                        let x = orta + CGFloat(y-yil)*4
-                        if x >= -20 && x < g.size.width+20 {
-                            Rectangle().fill(.secondary).frame(width:1,height:y%50 == 0 ? 11 : 5).offset(x:x,y:31)
-                            if y%100 == 0 { Text(String(y)).font(Yazi.sans(10)).position(x:x,y:51) }
-                        }
-                    }
-                    Rectangle().fill(Color(tema.renkler.vurguAcik)).frame(width:2).position(x:orta,y:g.size.height/2)
-                }.frame(maxWidth:.infinity,maxHeight:.infinity,alignment:.topLeading).clipped().contentShape(Rectangle())
-                 .gesture(DragGesture(minimumDistance:0).onChanged { v in
-                     if suruklemeBasi == nil { suruklemeBasi = yil }
-                     yil = ZamanKadrani.sinirla(Double(suruklemeBasi ?? yil) - v.translation.width/4)
-                 }.onEnded { v in
-                     if abs(v.translation.width)<3 { yil = ZamanKadrani.sinirla(Double(yil)+(v.location.x-orta)/4) }
-                     suruklemeBasi = nil
-                 })
-            }.frame(height:64)
-             .accessibilityElement(children:.ignore).accessibilityLabel("Yıl").accessibilityValue(String(yil))
-             .accessibilityAdjustableAction { yon in yil = ZamanKadrani.sinirla(Double(yil + (yon == .increment ? 1 : -1))) }
+            cetvel
         }.padding(.top,8).background(Color(tema.renkler.zemin)).overlay(alignment:.bottom) { Divider() }
+    }
+
+
+    private var cetvel: some View {
+        GeometryReader { g in
+            Canvas { baglam, boyut in
+                let orta = boyut.width / 2
+                let enCok = Double(max(1, cubuklar.map(\.sayi).max() ?? 1))
+                for c in cubuklar where c.sayi > 0 {
+                    let x = orta + CGFloat(c.id - yil) * 4
+                    guard x > -40 && x < boyut.width else { continue }
+                    let h = CGFloat(3 + (27 * Double(c.sayi) / enCok).rounded())
+                    let renk = Color(GaleriRenk.akim(katalog, c.akim ?? "")).opacity(c.acik ? 1 : 0.28)
+                    baglam.fill(Path(CGRect(x: x+1, y: 30-h, width: 38, height: h)), with: .color(renk))
+                }
+                for y in stride(from: 1250, through: 2000, by: 10) {
+                    let x = orta + CGFloat(y - yil) * 4
+                    guard x > -20 && x < boyut.width+20 else { continue }
+                    let h: CGFloat = y.isMultiple(of: 50) ? 11 : 5
+                    baglam.fill(Path(CGRect(x: x, y: 31, width: 1, height: h)), with: .color(.secondary))
+                    if y.isMultiple(of: 100) { baglam.draw(Text(String(y)).font(Yazi.sans(10)), at: CGPoint(x:x,y:51)) }
+                }
+                baglam.fill(Path(CGRect(x: orta-1, y: 0, width: 2, height: boyut.height)), with: .color(Color(tema.renkler.vurguAcik)))
+            }
+            .contentShape(Rectangle())
+            .gesture(DragGesture(minimumDistance: 0).onChanged { v in
+                let bas = suruklemeBasi ?? yil
+                suruklemeBasi = bas
+                yil = ZamanKadrani.sinirla(Double(bas) - Double(v.translation.width)/4)
+            }.onEnded { v in
+                if abs(v.translation.width) < 3 {
+                    yil = ZamanKadrani.sinirla(Double(yil) + Double(v.location.x - g.size.width/2)/4)
+                }
+                suruklemeBasi = nil
+            })
+        }
+        .frame(height:64).accessibilityElement(children:.ignore)
+        .accessibilityLabel("Yıl").accessibilityValue(String(yil))
+        .accessibilityAdjustableAction { yon in yil = ZamanKadrani.sinirla(Double(yil + (yon == .increment ? 1 : -1))) }
     }
 
     private func adim(_ fark: Int) -> some View {

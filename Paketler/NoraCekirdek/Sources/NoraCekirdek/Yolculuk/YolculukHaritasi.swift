@@ -37,68 +37,33 @@ public enum YolculukHaritasi {
 
     public static func kur(_ k: SiteKatalogu, ilerleme: Ilerleme, harita: JSONDeger,
                            dersler: JSONDeger?, yuruyus: JSONDeger?) -> [YolculukDuragi] {
-        let kumeler = k.akimlar.sorted { $0.sira < $1.sira }.map { a in
-            let uyeler = k.sanatcilar.filter { $0.akim == a.ad && $0.birlesen == nil }
-            let konular = Dictionary(grouping: uyeler) { $0.konu ?? 0 }
-            var gruplar = [[Sanatci]](), grup = [Sanatci]()
-            for no in konular.keys.sorted() {
-                grup += konular[no, default: []].sorted { ($0.dogum ?? 0) < ($1.dogum ?? 0) }
-                if grup.count >= 3 { gruplar.append(grup); grup = [] }
-            }
-            if !grup.isEmpty {
-                if gruplar.isEmpty { gruplar.append(grup) } else { gruplar[gruplar.count - 1] += grup }
-            }
-            return (a, uyeler, gruplar)
+        let bolumler = CalisDersKurallari.bolumleriKur(akimlar: k.akimlar, sanatcilar: k.sanatcilar)
+        let durum = CalisDersKurallari.bolumDurumlari(bolumler: bolumler, ilerleme: ilerleme, harita: k.harita) { akim in
+            guard let dersler else { return nil }
+            guard let ders = CalisDersKurallari.dersBul(kaynak: dersler, akim: akim) else { return true }
+            let adimlar = CalisDersKurallari.dersAdimlari(ders: ders, yuruyus: yuruyus)
+            return CalisDersKurallari.dersDurumu(CalisDersKurallari.dersKaydi(ilerleme, akim: akim), adimlar: adimlar).bitti
         }
-        let boylar = kumeler.flatMap { $0.2.map(\.count) }
-        let ortalama = boylar.isEmpty ? 3 : Int((Double(boylar.reduce(0,+)) / Double(boylar.count)).rounded())
-        let kayitlar = ilerleme[alan: "bolumler"]
-        var duraklar = [YolculukDuragi](), sayilar = [String:Int]()
-        for (a, uyeler, gruplar) in kumeler {
-            var tum = gruplar.enumerated().map { ("\(Int(a.sira))-\($0.offset + 1)", $0.element) }
-            let ek = k.sanatcilar.filter { $0.akim == a.ad && $0.birlesen == "Uluslararası Gotik" }
-            if !ek.isEmpty {
-                let tamamlayan = uyeler.sorted { ($0.dogum ?? 0) > ($1.dogum ?? 0) }.prefix(max(0, ortalama - ek.count))
-                tum.append(("3-1", (ek + tamamlayan).sorted { ($0.dogum ?? 0) < ($1.dogum ?? 0) }))
-            }
-            let ders = dersler?["dersler"]?.dizi?.first { $0["akim"]?.metin == a.ad }
-            let oynandi = tum.contains { !(kayitlar?[$0.0]?.nesne?.ciftler.isEmpty ?? true) }
-            let gor = ders?["gor"]?.dizi?.contains { g in
-                guard let id = g["sanatci"]?.metin, let eser = yuruyus?[id], eser["eser"] == g["eser"] else { return false }
-                return !(eser["noktalar"]?.dizi?.isEmpty ?? true)
-            } ?? false
-            let gerekli = gor ? ["gor","ogren","ayirt"] : ["ogren","ayirt"]
-            let dersKilit = ders != nil && !oynandi && gerekli.contains { (ilerleme[alan:"dersler"]?[a.ad]?[$0]?["i"]?.sayi ?? 0) < 1 - 1e-9 }
+        var sayilar = [String: Int]()
+        return durum.durumlar.map { d in
+            let b = d.bolum
             let sonlar = [3,8,12,14,16,20,22,25,99]
-            let bolge = bolgeler[a.sira >= 0 ? sonlar.firstIndex(where: { Double($0) >= a.sira }) ?? 8 : 8]
+            let bolge = bolgeler[sonlar.firstIndex { b.sira >= 0 && b.sira <= Double($0) } ?? 8]
             let veri = harita["bolgeler"]?[bolge]
             let noktalar = veri?["duraklar"]?.dizi ?? []
-            for (i, kayit) in tum.enumerated() {
-                let j = sayilar[bolge, default: 0]
-                sayilar[bolge] = j + 1
-                let s = max(0,min(j,noktalar.count - 1))
-                let p = noktalar.indices.contains(s) ? noktalar[s].dizi ?? [] : []
-                let semboller = veri?["semboller"]?.dizi ?? []
-                let n = semboller.indices.contains(s) ? semboller[s] : nil
-                var x = YolculukDuragi(id: kayit.0, akim: a.ad, no: i+1, adet: tum.count,
-                    sanatcilar: kayit.1.map(\.id), kayit: kayitlar?[kayit.0], sembol: s+1, bolge: bolge,
-                    x: p.first?.sayi ?? 0.5, y: max(0.02,(p.last?.sayi ?? 0.5) - Double(j-s)*0.05),
-                    en: n?["w"]?.sayi ?? 34, boy: n?["h"]?.sayi ?? 56, ax: n?["ax"]?.sayi ?? 0.5, ay: n?["ay"]?.sayi ?? 0.85)
-                if let once = duraklar.last {
-                    if i > 0 && !once.gecti("orta") { x.kilit = "\(once.ad): Orta seviyeyi geçince açılır." }
-                    if i == 0 {
-                        let gereken = Int(ceil(Double(once.adet)*0.6 - 1e-9))
-                        let gecen = duraklar.filter { $0.akim == once.akim && $0.gecti("orta") }.count
-                        if gecen < gereken { x.kilit = "\(once.akim) akımında \(gereken) bölümün Orta'sını geçince açılır (şu an \(gecen))." }
-                    }
-                }
-                if x.kilit == nil && dersKilit { x.kilit = "Çalış’taki \(a.ad) dersini bitirince açılır."; x.dersGerekli = true }
-                if let eksik = kayit.1.compactMap(\.konu).filter({ !ilerleme.islenenKume.contains($0) }).min() {
-                    x.kilit = "Konu \(eksik) işlenince açılır."; x.dersGerekli = false
-                }
-                duraklar.append(x)
-            }
+            let j = sayilar[bolge, default: 0]
+            sayilar[bolge] = j+1
+            let s = max(0,min(j,noktalar.count-1))
+            let p = noktalar.indices.contains(s) ? noktalar[s].dizi ?? [] : []
+            let semboller = veri?["semboller"]?.dizi ?? []
+            let n = semboller.indices.contains(s) ? semboller[s] : nil
+            let dersGerekli: Bool
+            if case .ders = d.neden { dersGerekli = true } else { dersGerekli = false }
+            return YolculukDuragi(id:b.id, akim:b.akim, no:b.no, adet:b.adet, sanatcilar:b.sanatcilar,
+                kilit:d.acik ? nil : CalisDersKurallari.kilitMetni(d,bolumler:bolumler), dersGerekli:dersGerekli,
+                kayit:ilerleme[alan:"bolumler"]?[b.id], sembol:s+1, bolge:bolge,
+                x:p.first?.sayi ?? 0.5, y:max(0.02,(p.last?.sayi ?? 0.5)-Double(j-s)*0.05),
+                en:n?["w"]?.sayi ?? 34, boy:n?["h"]?.sayi ?? 56, ax:n?["ax"]?.sayi ?? 0.5, ay:n?["ay"]?.sayi ?? 0.85)
         }
-        return duraklar
     }
 }
