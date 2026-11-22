@@ -4,7 +4,7 @@ import NoraCekirdek
 import SwiftUI
 
 /// Hızlı ayarlar (İş 172): sekme çubuğunun arkasından yükselen yaprak. Tema, Hareket, Günlük kart ve "Bütün ayarlar".
-/// Değerler sitenin kaydına sitenin yaprağıyla aynı biçimde yazılır (`SekmeCubuguKoprusu.yazmaBetigi`); tema değişince
+/// Değerler sitenin yaprağıyla aynı kuralla Swift kaydına yazılır (`SekmeCubuguKoprusu.yaz`, Z2b); tema değişince
 /// site `temaUygula()` yapar, `TemaKoprusu` yeni renkleri getirir.
 struct HizliAyarYapragi: View {
     let kapat: () -> Void
