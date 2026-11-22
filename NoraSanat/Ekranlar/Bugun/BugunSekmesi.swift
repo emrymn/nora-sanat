@@ -2,6 +2,16 @@
 import NoraCekirdek
 import SwiftUI
 
+/// T7: Bugün yerli sekme (G4 + G4b). DEBUG `-yalnizSite` ile site.
+enum BugunGecisi {
+  static var sekmeler: Set<Sekme> {
+    #if DEBUG
+    if CommandLine.arguments.contains("-yalnizSite") { return [] }
+    #endif
+    return [.bugun]
+  }
+}
+
 struct BugunSekmesi: View {
   @Environment(KabukDurumu.self) private var kabuk
   @Environment(TemaDeposu.self) private var tema

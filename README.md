@@ -131,6 +131,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Metnin arasındaki ayrıntı kırpımlarına dokun: görüntüleyici o ayrıntıda açılıyor. Alttaki "Yakından bak · n ayrıntı" incelemeyi baştan açıyor.
   - "Okumayı sürdür": ayrıntılı anlatım aynı sayfada açılıyor; noktalı altı çizili terime dokununca altta sözlük kartı. Resimli bir karşılaştırmaya dokun: iki eser üst üste, "Eserin sayfası" o esere gidiyor.
   - Aramada bir başyapıt adı yaz (ör. "elçiler"): sonuç yerli sayfayı açıyor. Sanatçı sayfasındaki "Yakın okuma" satırları da.
+- [ ] (T7) Beş sekme de yerli: Bugün ve Yolculuk da Swift. Widget'tan Çalış'ı aç, birkaç saniye bekle: Bugün'e atlamamalı. Galeri'de bir akımın "Pekiştir"ine dokun: Çalış'ta o akımın turu açılmalı. Yolculuk'ta bir durağın "Derse git"i Çalış'ta dersi açmalı.
 - [ ] (T6) Çalış artık yerli sekme: Çalış'a dokun, yerli ekran açılıyor (Bugünün dersi, Çalışma masan, Turlar). Widget'taki tekrar sayısına dokununca da yerli Çalış açılıyor. Bir tur başlat: sekme çubuğu gizleniyor, tur bitince geri geliyor.
 - [ ] (C3) Çalış'a geç (T6'dan sonra yerli):
   - Bugünün dersi kartında bir adım halkasına (Gör / Öğren / Ayırt et) dokun: doğrudan o adım açılıyor; alttaki devam satırı da sıradaki adımı açıyor. Ders sayfasındaki adım satırları da.

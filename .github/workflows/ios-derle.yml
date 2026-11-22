@@ -472,6 +472,18 @@ jobs:
           xcrun simctl openurl "$UDID" "norasanat://calis"
           sleep 6
           xcrun simctl io "$UDID" screenshot ekranlar/4-url-calis.png
+          # T7: beş sekme yerli. Açılışta Çalış istenince site arkada "#/" bildirse de Bugün'e atlamamalı.
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -adres "#/pekistir"
+          sleep 25
+          xcrun simctl io "$UDID" screenshot ekranlar/t7-acilis-calis.png
+          "$RUNNER_TEMP/ben-ekran" ekranlar/t7-acilis-calis.png "Bugünün dersi"
+          # Yolculuk yerli: haritanın ilerleme hapı
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -adres "#/harita"
+          sleep 20
+          xcrun simctl io "$UDID" screenshot ekranlar/t7-yolculuk.png
+          "$RUNNER_TEMP/ben-ekran" ekranlar/t7-yolculuk.png "konu"
 
       - uses: actions/upload-artifact@v4
         if: always()
