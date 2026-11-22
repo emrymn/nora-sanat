@@ -45,6 +45,19 @@ node Testler/kahin/pekistir_tanisma.mjs > Paketler/NoraCekirdek/Tests/NoraCekird
 node Testler/kahin/temsil.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/temsil/cevaplar.json
 ```
 
+## Dersin adımları: Gör, Öğren, Ayırt et (C3)
+
+`ders_adimlari.mjs` geçici profilde bütün konuları işlenmiş sayar ve sitenin kendi ders ekranlarını gezer: 28 dersin her
+Gör karesi (üst satır, başlık, metin, noktalar, düğmeler ve kameranın kurduğu duruş: sahne genişliği, üst çubukla panel
+arası, resmin CSS boyu, `transform`), her Öğren maddesi, her Ayırt et ikilisi (cevaptan sonraki sütunlar ve cümleler) ve
+adım sonları. Ayrıca `js/kamera.js`'in yumuşak yolu (26 belirlenimli yol), eğriler ve `roma`. Webdriver'da site hareketi
+kapatır; kamera duruşu anında kurulur. Ölçüler tarayıcının yazı çizimine bağlı olduğundan CI'da yeniden üretilip
+karşılaştırılmaz; `DersAdimlariTests` sitenin girdileriyle (W, üst, alt, resim boyu) aynı duruşu hesaplar. ~3 dk.
+
+```bash
+node Testler/kahin/ders_adimlari.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ders_adimlari/cevaplar.json
+```
+
 ## Çevrimdışı görseller (C5)
 
 ```bash
