@@ -146,7 +146,9 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
                         metin = String(decoding: veri, as: UTF8.self)
                     }
                 } catch {
-                    metin = "Hata: " + error.localizedDescription
+                    // WebKit istisnanın kendi metnini userInfo'da verir; localizedDescription yalnız genel cümle.
+                    let ayrinti = (error as NSError).userInfo["WKJavaScriptExceptionMessage"] as? String
+                    metin = "Hata: " + (ayrinti ?? error.localizedDescription)
                 }
                 try? Data(metin.utf8).write(to: FileManager.default.temporaryDirectory
                     .appendingPathComponent("site-betik"), options: .atomic)
