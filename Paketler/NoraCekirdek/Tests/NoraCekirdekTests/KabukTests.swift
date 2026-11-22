@@ -64,6 +64,24 @@ final class SekmeTests: XCTestCase {
         XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/ilerleme", secili: .bugun, yerli: { _ in false }), .ben)
         XCTAssertEqual(SiteRotalari.secim(onceki: "#/ilerleme", yeni: "#/", secili: .ben, yerli: { _ in false }), .bugun)
     }
+
+    /// T7: Bugün ve Yolculuk da yerli; sekmesiz adresler yerli Çalış'a / Galeri'ye
+    func testHepsiYerliyken() {
+        let hepsi: (Sekme) -> Bool = { _ in true }
+        // Site açılışta "#/" bildirir: widget'la açılmış Çalış kapanmamalı
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/", yeni: "#/", secili: .calis, yerli: hepsi))
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/pekistir", yeni: "#/pekistir", secili: .bugun, yerli: hepsi))
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/pekistir/karisik", secili: .galeri, yerli: hepsi), .calis)
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/pekistir/ders/Gotik/gor", secili: .bugun, yerli: hepsi), .calis)
+        XCTAssertNil(SiteRotalari.secim(onceki: "#/pekistir", yeni: "#/pekistir/karisik", secili: .calis, yerli: hepsi))
+        XCTAssertEqual(SiteRotalari.secim(onceki: "#/", yeni: "#/karsilastir/a/b", secili: .calis, yerli: hepsi), .galeri)
+        XCTAssertEqual(SiteRotalari.yerliSekme("#/pekistir/ders/Gotik/ayirt"), .calis)
+        XCTAssertEqual(SiteRotalari.yerliSekme("#/pekistir/donem/Barok"), .calis)
+        XCTAssertEqual(SiteRotalari.yerliSekme("#/akim-karsilastir/a/b"), .galeri)
+        XCTAssertNil(SiteRotalari.yerliSekme("#/pekistir/bolum/2-1/kolay"))
+        XCTAssertEqual(SiteRotalari.yerliSekme("#/harita"), .yolculuk)
+        XCTAssertEqual(SiteRotalari.yerliSekme(""), .bugun)
+    }
 }
 
 final class TemaTests: XCTestCase {
