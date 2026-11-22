@@ -162,6 +162,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
+| Z3b | Ders ve yazı cilası | C | C3 | 1 | sürüyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -937,6 +938,12 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - K7'ye göre sitedeki değişikliklerin taşınması.
 - Erişilebilirlik (VoiceOver, Dinamik Yazı).
 - Son karşılaştırma: sitedeki her ekranla yan yana ekran görüntüsü.
+
+**Devir notu:** –
+
+### Z3b · Ders ve yazı cilası
+- C3 (PR #24 yan yanası) ve G4b'deki "Tuzak"tan kalan farklar: Ders Gör ve Öğren adımlarının görünüşü, ortak `Yazi.Aile.satirOrani` (Newsreader).
+- `Gecis.swift`, `Kabuk/`, `Ekranlar/Yolculuk/` ve `.github/workflows/ios-derle.yml`'e dokunulmaz.
 
 **Devir notu:** –
 

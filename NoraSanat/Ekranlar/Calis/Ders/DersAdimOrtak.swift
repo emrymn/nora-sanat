@@ -181,7 +181,10 @@ struct DersAdimUst: View {
 
             DersCizgileri(durum: durum, simdiki: adim, sahne: sahne)
         }
-        .frame(minHeight: 52)
+        // `.ders-ust { min-height: 52px }`, `box-sizing: border-box`. Gör'de (`.ders-gor .ders-ust`) üst boşluk
+        // (`--ust-bosluk`) çubuğun kendi dolgusu olduğu için 52'nin içinde kalır: içerik (44) ortalanmaz, ~4 pt yukarıda
+        // durur (Z3b; CI'da site 77.3, yerli 81 pt).
+        .frame(minHeight: sahne ? 0 : 52)
     }
 }
 
@@ -284,5 +287,104 @@ struct DersHaritaSimgesi: View {
             .stroke(style: StrokeStyle(lineWidth: kalinlik, lineCap: .round, lineJoin: .round))
             .frame(width: boyut, height: boyut)
             .accessibilityHidden(true)
+    }
+}
+
+// MARK: Çok satırlı serif başlık (Z3b)
+
+/// Sitedeki `h1`–`h3` gibi başlık: CSS `line-height` her satırda tam uygulanır ve satırlar `text-wrap: balance` ile
+/// dengelenir (css/app.css `h1, h2, h3 { text-wrap: balance }`; ör. `.ders-gor-panel h2` 28/1.1, `.ders-madde` 27/1.15,
+/// `.ders-soru`).
+///
+/// Neden ayrı düzen: Bodoni Moda'nın kendi satırı 1.525 em, sitedeki başlıklar 1.1–1.15. `cssSatir` yalnız ilk/son satırın
+/// yarım boşluğunu daraltabiliyor; satır arası için gereken eksi `lineSpacing`'i SwiftUI yok sayıyor (C3'te denendi), bu yüzden
+/// iki satırlı başlıkta her satır ~10 pt fazla açılıyordu. Ayrıca SwiftUI satırı açgözlü kırar ("Aziz Maxima ve Aziz Ansanus /
+/// ile Müjde"), site dengeler ("Aziz Maxima ve Aziz / Ansanus ile Müjde (Triptik)").
+/// Burada her sözcük ayrı ölçülür; `CssBaslikDuzeni` satırları kırar ve her satırı `satir` yüksekliğinde, yazının içerik alanı
+/// ortada (CSS'in yarım boşluğu gibi) yerleştirir.
+struct CssBaslik: View {
+    let metin: String
+    var aile: Yazi.Aile = .serif
+    let boyut: CGFloat
+    let satir: CGFloat
+    var stil: UIFont.TextStyle = .title2
+    var ortali = false
+
+    var body: some View {
+        let font = UIFontMetrics(forTextStyle: stil).scaledFont(for: Yazi.uiFont(aile, boyut))
+        let olcek = font.pointSize / boyut
+        let bosluk = (" " as NSString).size(withAttributes: [.font: font]).width
+        CssBaslikDuzeni(satir: satir * olcek, bosluk: bosluk, ortali: ortali) {
+            ForEach(Array(metin.split(separator: " ").enumerated()), id: \.offset) { _, s in
+                Text(String(s)).font(Font(font)).lineLimit(1).fixedSize()
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: ortali ? .center : .leading)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(metin)
+    }
+}
+
+/// Sözcükleri satırlara dizer. Önce açgözlü kırar; birden çok satır çıkarsa satır sayısını artırmayan en dar genişliği
+/// arar ve o genişlikte yeniden kırar (`text-wrap: balance`'ın tarayıcıdaki yaklaşımı).
+struct CssBaslikDuzeni: Layout {
+    let satir: CGFloat
+    let bosluk: CGFloat
+    var ortali = false
+
+    static func kir(_ g: [CGFloat], genislik W: CGFloat, bosluk: CGFloat) -> [Range<Int>] {
+        var satirlar: [Range<Int>] = []
+        var bas = 0
+        var x: CGFloat = 0
+        for i in g.indices {
+            if i > bas && x + bosluk + g[i] > W + 0.5 {
+                satirlar.append(bas..<i)
+                bas = i
+                x = g[i]
+            } else {
+                x += (i > bas ? bosluk : 0) + g[i]
+            }
+        }
+        if bas < g.count { satirlar.append(bas..<g.count) }
+        return satirlar
+    }
+
+    static func dengele(_ g: [CGFloat], genislik W: CGFloat, bosluk: CGFloat) -> [Range<Int>] {
+        let ilk = kir(g, genislik: W, bosluk: bosluk)
+        guard ilk.count > 1, W.isFinite else { return ilk }
+        var alt = g.max() ?? 0
+        var ust = W
+        for _ in 0..<16 where ust - alt > 0.5 {
+            let orta = (alt + ust) / 2
+            if kir(g, genislik: orta, bosluk: bosluk).count <= ilk.count { ust = orta } else { alt = orta }
+        }
+        return kir(g, genislik: ust, bosluk: bosluk)
+    }
+
+    private func genislikler(_ s: Subviews) -> [CGFloat] { s.map { $0.sizeThatFits(.unspecified).width } }
+
+    private func satirGenisligi(_ r: Range<Int>, _ g: [CGFloat]) -> CGFloat {
+        r.reduce(0) { $0 + g[$1] } + bosluk * CGFloat(max(0, r.count - 1))
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let g = genislikler(subviews)
+        let W = proposal.width ?? .infinity
+        let satirlar = Self.dengele(g, genislik: W, bosluk: bosluk)
+        let enGenis = satirlar.map { satirGenisligi($0, g) }.max() ?? 0
+        return CGSize(width: W.isFinite ? W : enGenis, height: CGFloat(satirlar.count) * satir)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let g = genislikler(subviews)
+        let satirlar = Self.dengele(g, genislik: bounds.width, bosluk: bosluk)
+        for (n, r) in satirlar.enumerated() {
+            var x = bounds.minX + (ortali ? (bounds.width - satirGenisligi(r, g)) / 2 : 0)
+            let orta = bounds.minY + (CGFloat(n) + 0.5) * satir
+            for i in r {
+                subviews[i].place(at: CGPoint(x: x, y: orta), anchor: .leading, proposal: .unspecified)
+                x += g[i] + bosluk
+            }
+        }
     }
 }

@@ -22,15 +22,6 @@ enum YurRenk {
   static func hex(_ s: String) -> Color { Color(RGBA(css: s) ?? RGBA(0, 0, 0), 1) }
 }
 
-extension View {
-  /// `cssSatir(.okuma, …)` gibi, ama Newsreader'ın iOS'taki gerçek satırıyla: CI'da Hayatı'nın 19/29.45 metninde yerli satır
-  /// adımı 29.92 ölçüldü (satır başına +0.47; 20 satırda ~10 pt kayma). Doğal satır ≈ 1.0247 × boyut.
-  func bugunOkumaSatiri(_ boyut: CGFloat, _ satir: CGFloat) -> some View {
-    let fark = satir - boyut * 1.0247
-    return lineSpacing(max(0, fark)).padding(.vertical, fark / 2)
-  }
-}
-
 struct BugunHayati: View {
   let s: BugunTablosu
   let kucukler: [URL?]
@@ -52,7 +43,7 @@ struct BugunHayati: View {
         Text("Hayatı").font(Yazi.serif(34)).cssSatir(.serif, 34, 37.4).accessibilityAddTraits(.isHeader)
           .padding(.bottom, 14)
         ForEach(Array(s.hayat.split(whereSeparator: \.isNewline).enumerated()), id: \.offset) { _, p in
-          Text(String(p)).font(Yazi.okuma(19)).bugunOkumaSatiri(19, 29.45)
+          Text(String(p)).font(Yazi.okuma(19)).cssSatir(.okuma, 19, 29.45)
             .fixedSize(horizontal: false, vertical: true).padding(.bottom, 14)
         }
         Text("Kaynak: " + s.kaynak).font(Yazi.sans(13)).cssSatir(.sans, 13, 18.2)

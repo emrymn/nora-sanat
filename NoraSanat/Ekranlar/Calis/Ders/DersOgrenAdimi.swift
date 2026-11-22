@@ -77,9 +77,8 @@ struct DersOgrenAdimi: View {
                         .accessibilityIdentifier("ders-kanit-eser")
                     }
 
-                    Text(m.madde)
-                        .font(Yazi.serif(27))
-                        .cssSatir(.serif, 27, 31.05)
+                    // `h2.ders-madde`: 27/1.15, `text-wrap: balance` (Z3b: "Altın zemin ve ahşap / pano üzerine tempera")
+                    CssBaslik(metin: m.madde, boyut: 27, satir: 31.05)
                         .foregroundStyle(Color(r.murekkep))
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityIdentifier("ders-madde")
