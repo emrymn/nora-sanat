@@ -109,6 +109,15 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Akım kartları, "Zayıf önce", en zayıf sanatçılar ve "Hatalarım turu" dokununca doğru yere gidiyor.
   - Dişliye dokun: Ayarlar açılıyor, alttaki dişli dil gizleniyor. Tema, gündüz rengi, yazı boyutu, hareket hapları ve anahtarlar sitedeki gibi; değiştirince site de aynı ayarı gösteriyor. Geri düğmesi Ben'e döndürüyor.
   - Yedekle, ayarı değiştir, yedeği yapıştırıp **Geri yükle**: onay sorusu çıkıyor, önceki ayar geri geliyor.
+- [ ] (C5) Ben → Ayarlar → **En büyük kopyaları telefona indir** (indirme artık uygulamanın kendisinde):
+  - Açıklamada "5624 eserin … (19402 dosya) · toplam 21,0 GB. Telefonda: 0 / 19402" gibi sayılar var (sayılar siteyle aynı).
+  - Wi-Fi'deyken **İndir**: altında çubuk ve "Telefonda n / 19402 · Parça 1 / 33 · ~… GB" ilerliyor; **Durdur** çıkıyor.
+  - Uygulamadan çık (ana ekrana dön), birkaç dakika sonra geri gel: sayı arkada da artmış olmalı.
+  - **Durdur**: "Durduruldu: n görsel indirildi…". Yeniden **İndir** kaldığı yerden sürüyor.
+  - Uygulamayı yukarı kaydırıp kapat, yeniden aç: yarım kalan indirme kendiliğinden sürüyor (Ayarlar'ı açınca sayı artıyor).
+  - Birkaç parça indikten sonra uçak modunu aç: Ben'in eser duvarı, kitap kapakları ve tam ekran görüntüleyicide indirilmiş eserler (büyük kopya dahil) yine açılıyor.
+  - **Telefondan sil** → "silinsin mi?" → **Sil**: "Silindi.", Telefonda: 0. (Sitenin eskiden indirdikleri de silinir.)
+  - iPhone Ayarlar → Genel → iPhone Saklama Alanı → Nora Sanat: "Belgeler ve Veriler" inenler kadar büyüyor, silince küçülüyor.
 - [ ] (G2b) Galeri henüz yerli değil (G3'ten sonra). Xcode'da Scheme → Run → Arguments'a `-yerliSekme galeri` ekleyip Galeri'ye geç:
   - Üstte "Galeri", cam arama hapı ve kalp; altında Akımlar / Başyapıtlar / Konular / Zaman sekmeleri sitedeki gibi.
   - Kemerli kartı parmakla kaydır: komşu kart küçük ve soluk, ortaya oturan büyüyor; alttaki çark ve "01 / 28" birlikte dönüyor, zemin deseni dönem değişince değişiyor. Çarkı parmakla çevir: kartlar onu izliyor.
