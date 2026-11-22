@@ -66,3 +66,14 @@ node Testler/kahin/ders_adimlari.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekT
 # Site verisi Ornekler/site_verisi/'ndekilerden farklıysa durur: önce site_verisi.mjs ile örnekleri yenile.
 node Testler/kahin/cevrimdisi.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/cevrimdisi/cevaplar.json
 ```
+
+## Kayıt kuralları (Z2a)
+
+`depo.mjs` tarayıcısız çalışır: sitenin deposunun bir kopyasındaki `js/depo.js`'i Node'da doğrudan yükler. Saat sabit
+(2026-11-22T10:00:00Z), saat dilimi UTC olmalı. Tohumlu rastgele 400 ilerleme (eski temalar, bozuk alanlar, birleşen
+akımlar, geliştirici yedeği…) `ilerlemeDogrula`'dan geçer; ayrıca yedek metni/çözümü, günlük, son çalışılanlar, yedek
+hatırlatması, `enYeniKayit`, geliştirici modu aç/kapat. `IlerlemeKurallariTests` aynı girdilerle aynı yapıyı bekler.
+
+```bash
+TZ=UTC node Testler/kahin/depo.mjs /tmp/sa > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/depo/cevaplar.json
+```
