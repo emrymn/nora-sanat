@@ -15,7 +15,7 @@ concurrency:
 jobs:
   yolculuk-olcu:
     if: github.head_ref == 'is/G5-yolculuk'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: iPhone 15 Pro üzerinde sitenin hesaplanmış ölçüleri
