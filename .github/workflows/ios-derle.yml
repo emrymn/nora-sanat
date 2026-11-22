@@ -195,7 +195,7 @@ jobs:
           CGImageDestinationFinalize(hedef)
           SWIFT
           xcrun swiftc "$RUNNER_TEMP/yan-yana.swift" -o "$RUNNER_TEMP/yan-yana"
-          for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek; do
+          for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek ayarlar:cevrimdisi; do
             SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
             AD="ben-$SAYFA${BOLUM:+-$BOLUM}"
             KAYDIR=()
@@ -215,6 +215,8 @@ jobs:
             SOZ="Ben"
             if [ "$SAYFA" = ayarlar ]; then SOZ="Gündüz rengi"; fi
             if [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "$SOZ"; fi
+            # C5: çevrimdışı bölüm Swift'in listesiyle (sitenin sayfası okunmadan)
+            if [ "$BOLUM" = cevrimdisi ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Telefonda: 0 / "; fi
             # Site: aynı adres, aynı bölüm
             xcrun simctl terminate "$UDID" "$PAKET"
             xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/$SAYFA" "${KAYDIR[@]}"
@@ -222,6 +224,24 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-$SAYFA${BOLUM:+-$BOLUM}.png"
           done
+          # C5: Swift'te gerçek indirme (arka plan URLSession). Küçük bir parça (2 en büyük kopya kadar) iner,
+          # dosyalar uygulamanın Application Support/CevrimdisiGorseller klasörüne yazılmalı.
+          xcrun simctl terminate "$UDID" "$PAKET"
+          VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+          rm -f "$VERI/tmp/ben-hazir"
+          xcrun simctl launch "$UDID" "$PAKET" -adres "#/ayarlar" -benSayfa ayarlar -benKaydir cevrimdisi -cevrimdisiIndir -cevrimdisiParca 2
+          INEN=0
+          for _ in {1..120}; do
+            INEN=$( (ls "$VERI/Library/Application Support/CevrimdisiGorseller" 2>/dev/null || true) | wc -l | tr -d ' ')
+            if [ "$INEN" -ge 2 ]; then break; fi
+            sleep 1
+          done
+          sleep 6
+          xcrun simctl io "$UDID" screenshot ekranlar/c5-cevrimdisi-indi.png
+          echo "çevrimdışı inen dosya: $INEN"
+          ls -la "$VERI/Library/Application Support/CevrimdisiGorseller" || true
+          test "$INEN" -ge 2
+          "$RUNNER_TEMP/ben-ekran" ekranlar/c5-cevrimdisi-indi.png "bitti"
           # G2 + G2b: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
           # AD|adres|bölüm: -galeriKaydir aynı bölüme kaydırır (dizin: "Bütün akımlar" açık). Yerli Galeri hazır olunca
           # (veri ve görseller yüklendi, istendiyse kaydı) tmp/galeri-hazir yazar; ana ekranda OCR "Salona gir"i arar.

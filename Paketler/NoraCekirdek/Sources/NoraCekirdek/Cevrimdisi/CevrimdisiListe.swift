@@ -5,7 +5,7 @@ import Foundation
 /// "En büyük kopyaları telefona indir"in listesi (C5). Sitedeki gibi yalnız uygulamada gösterilen görseller:
 /// en büyük kopyası olanların en büyük kopyası (d/), olmayanların 1280'liği (b/), sonra bütün 400'lükler (gorseller/k/),
 /// sonra kalan 1280'likler. Sıra indirme sırasıdır (sayfaları en çok hızlandıranlar önce).
-public struct CevrimdisiListe: Sendable, Equatable {
+public struct CevrimdisiListe: Codable, Sendable, Equatable {
     /// Ayarlar'da "n eserin … en yüksek kalitedeki hali" (`devasaAdresleri()`)
     public let devasaAdresleri: [String]
     /// İndirilecek bütün dosyalar, sırayla (`telefonAdresleri()`)

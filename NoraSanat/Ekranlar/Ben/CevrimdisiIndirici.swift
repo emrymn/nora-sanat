@@ -1,0 +1,323 @@
+// Kaynak: sanat-atlasi js/ekranlar/ayarlar.js (devasaIndir, devasaSurdur, devasaSil, durdurma), js/devasaOnbellek.js
+// @ a866b86 (site 1.90.3). Kurallar (liste, parçalar, yazılar, dosya deposu): NoraCekirdek/Cevrimdisi.
+import NoraCekirdek
+import SwiftUI
+import UIKit
+
+/// "En büyük kopyaları telefona indir" (C5): görseller Swift'te, arka plan `URLSession`'ıyla iner.
+///
+/// Sitedeki gibi parça parça (~0,7 GB ya da 1000 dosya): bir parçanın bütün dosyaları birden arka plan oturumuna verilir,
+/// parça bitince sıradaki başlar. Arka plan oturumu uygulama arka plandayken ve iOS onu kapatınca da indirmeyi sürdürür;
+/// iş bitince uygulamayı uyandırır (`handleEventsForBackgroundURLSession`), sıradaki parça orada verilir. Kullanıcı
+/// uygulamayı kaydırıp kapatırsa iOS görevleri iptal eder: bir dahaki açılışta kaldığı yerden sürer (sitenin
+/// `devasaSurdur`'u).
+///
+/// İnen dosyalar `CevrimdisiDepo`'da (Application Support). `GorselDeposu` bir adresi önce orada arar.
+@MainActor @Observable
+final class CevrimdisiIndirici {
+    static let shared = CevrimdisiIndirici()
+    static let oturumKimligi = "com.emrymn.norasanat.cevrimdisi"
+
+    let depo = CevrimdisiDepo.varsayilan
+    /// İndirme listesi (katalogdan; son hesaplanan diske de yazılır, arka planda uyanınca oradan okunur)
+    private(set) var liste: CevrimdisiListe?
+    /// Listedekilerden telefonda olanlar
+    private(set) var telefonda = 0
+    /// Bu açılıştaki (ya da sürmekte olan) parça
+    private(set) var durum: CevrimdisiDurumu?
+    /// "Telefondan sil"den sonra
+    private(set) var silindi = false
+
+    @ObservationIgnored private var oturum: URLSession!
+    @ObservationIgnored private let temsilci = Temsilci()
+    @ObservationIgnored private var bekleyen = Set<String>()
+    @ObservationIgnored private var durdurIstendi = false
+    @ObservationIgnored private var kuruldu = false
+    @ObservationIgnored var arkaPlanBitti: (() -> Void)?
+
+    #if DEBUG
+    /// CI: `-cevrimdisiParca 2` küçük parça (sitenin `__atlasParca`'sı); yalnız bir parça iner, sürdürülmez
+    static let denemeParcasi = NoraSanatApp.arguman("-cevrimdisiParca").flatMap(Int.init)
+    #else
+    static let denemeParcasi: Int? = nil
+    #endif
+
+    private static let surdurAnahtari = "cevrimdisi.surdur"
+    private static let durumAnahtari = "cevrimdisi.durum"
+    private var listeDosyasi: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("CevrimdisiListe.json")
+    }
+    /// Başlatılan indirme bitmedi: uygulama kapanıp açılınca sürer (sitenin `sanat-atlasi:devasa-surdur`'u)
+    private var surdur: Bool {
+        get { UserDefaults.standard.bool(forKey: Self.surdurAnahtari) }
+        set { UserDefaults.standard.set(newValue, forKey: Self.surdurAnahtari) }
+    }
+
+    /// Uygulama açılışında (ve arka planda uyanınca) çağrılır: oturumu yeniden kurar, yarım kalan indirmeyi sürdürür.
+    func baslat() {
+        guard !kuruldu else { return }
+        kuruldu = true
+        let ayar = URLSessionConfiguration.background(withIdentifier: Self.oturumKimligi)
+        ayar.isDiscretionary = false
+        ayar.sessionSendsLaunchEvents = true
+        ayar.httpMaximumConnectionsPerHost = 3          // sitede üç görsel birden (İş 125)
+        ayar.timeoutIntervalForRequest = 90             // İş 135: en büyük kopyalar 3–5 MB
+        ayar.urlCache = nil
+        temsilci.sahip = self
+        oturum = URLSession(configuration: ayar, delegate: temsilci, delegateQueue: nil)
+        if let d = UserDefaults.standard.data(forKey: Self.durumAnahtari) {
+            durum = try? JSONDecoder().decode(CevrimdisiDurumu.self, from: d)
+        }
+        if liste == nil, let d = try? Data(contentsOf: listeDosyasi) {
+            liste = try? JSONDecoder().decode(CevrimdisiListe.self, from: d)
+        }
+        oturum.getAllTasks { gorevler in
+            let suren = Set(gorevler.filter { $0.state == .running || $0.state == .suspended }.compactMap(\.taskDescription))
+            Task { @MainActor in
+                self.bekleyen = suren
+                if suren.isEmpty, self.surdur { self.parcaBaslat() }   // kapanmadan önce başlamıştı
+                else if suren.isEmpty, self.durum?.bitti == false { self.parcaBitti() }
+            }
+        }
+        siteIndirmesiniDurdur()
+    }
+
+    /// Ayarlar açılınca: listeyi güncel katalogdan kurar ve telefondakileri sayar
+    func hazirla(_ katalog: SiteKatalogu) async {
+        let yeni = await Task.detached(priority: .userInitiated) { CevrimdisiListe(katalog: katalog) }.value
+        if yeni != liste {
+            liste = yeni
+            let dosya = listeDosyasi
+            Task.detached(priority: .utility) { try? JSONEncoder().encode(yeni).write(to: dosya, options: .atomic) }
+        }
+        await say()
+    }
+
+    /// Listedekilerden telefonda olanları sayar; listede olmayan eski dosyaları siler (`telefondakiler`)
+    func say() async {
+        guard let l = liste else { return }
+        let depo = depo
+        let suren = durum?.suruyor ?? false
+        telefonda = await Task.detached(priority: .utility) {
+            depo.telefondakiler(l.telefonAdresleri, sil: l.suzuldu && !suren).adresler.count
+        }.value
+    }
+
+    var gorunum: CevrimdisiGorunum? {
+        liste.map { CevrimdisiGorunum(liste: $0, telefonda: telefonda, durum: durum) }
+    }
+
+    // MARK: Düğmeler
+
+    func indir() {
+        guard liste != nil, durum?.suruyor != true else { return }
+        silindi = false
+        surdur = true
+        parcaBaslat()
+    }
+
+    func durdur() {
+        guard durum?.suruyor == true else { return }
+        durdurIstendi = true
+        surdur = false
+        oturum.getAllTasks { $0.forEach { $0.cancel() } }
+        if bekleyen.isEmpty { parcaBitti() }
+    }
+
+    func sil() async {
+        surdur = false
+        durdurIstendi = true
+        oturum.getAllTasks { $0.forEach { $0.cancel() } }
+        bekleyen = []
+        durum = nil
+        kaydet()
+        let depo = depo
+        await Task.detached(priority: .userInitiated) { depo.temizle() }.value
+        siteDeposunuSil()
+        telefonda = 0
+        silindi = true
+        durdurIstendi = false
+    }
+
+    // MARK: Parçalar
+
+    private func parcaBaslat() {
+        guard let l = liste else { surdur = false; return }
+        durdurIstendi = false
+        let var_ = depo.telefondakiler(l.telefonAdresleri, sil: false).adresler
+        let p = l.parca(telefonda: var_, parcaGorsel: Self.denemeParcasi ?? CevrimdisiListe.parcaGorsel)
+        var i = CevrimdisiDurumu(p)
+        telefonda = var_.count
+        guard !p.urller.isEmpty else {
+            i.bitir(durduruldu: false)
+            durum = i
+            surdur = false
+            kaydet()
+            return
+        }
+        durum = i
+        kaydet()
+        try? depo.hazirla()
+        bekleyen = Set(p.urller)
+        for u in p.urller {
+            guard let url = URL(string: u) else { bekleyen.remove(u); continue }
+            var istek = URLRequest(url: url)
+            istek.cachePolicy = .reloadIgnoringLocalCacheData   // `cache: 'no-store'`
+            let g = oturum.downloadTask(with: istek)
+            g.taskDescription = u
+            g.resume()
+        }
+    }
+
+    enum Sonuc: Sendable { case indi, hata, yerYok(String), yazilamadi(String), kesildi }
+
+    /// Bir dosyanın sonucu (temsilciden)
+    fileprivate func sonuc(_ adres: String, _ s: Sonuc) {
+        guard bekleyen.remove(adres) != nil, var i = durum, i.suruyor else { return }
+        switch s {
+        case .kesildi:
+            break   // durdurulunca kesilen istek hata da inen de sayılmaz
+        case .indi:
+            i.biten += 1
+            i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
+            telefonda += 1
+        case .hata:
+            i.biten += 1
+            i.hata += 1
+            i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
+        case let .yerYok(m):
+            i.biten += 1
+            i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
+            i.yerYok = true
+            i.yazilamadi += 1
+            i.sonHata = m
+            oturum.getAllTasks { $0.forEach { $0.cancel() } }
+        case let .yazilamadi(m):
+            i.biten += 1
+            i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
+            i.hata += 1
+            i.yazilamadi += 1
+            i.sonHata = m
+        }
+        durum = i
+        if bekleyen.isEmpty { parcaBitti() } else if i.biten % 10 == 0 { kaydet() }
+    }
+
+    private func parcaBitti() {
+        guard var i = durum, i.suruyor else { return }
+        i.bitir(durduruldu: durdurIstendi)
+        durum = i
+        // parça bitti, sıradaki parçalar var: sürer. Hiç görsel inemediyse (internet yok) durur
+        if !i.parcaBitti || Self.denemeParcasi != nil { surdur = false }
+        kaydet()
+        if i.parcaBitti && Self.denemeParcasi == nil { parcaBaslat() } else { Task { await say() } }
+    }
+
+    private func kaydet() {
+        UserDefaults.standard.set(durum.flatMap { try? JSONEncoder().encode($0) }, forKey: Self.durumAnahtari)
+    }
+
+    fileprivate func olaylarBitti() {
+        arkaPlanBitti?()
+        arkaPlanBitti = nil
+    }
+
+    // MARK: Site
+
+    /// Eski yol: site görselleri kendisi (IndexedDB'ye) indiriyordu ve kapanınca kaldığı yerden sürdürüyordu. Artık
+    /// indirme burada: sitenin sürdürme işareti kaldırılır, sürmekte olan site indirmesi durdurulur.
+    static let siteIndirmesiniDurdurBetigi = """
+    try { localStorage.removeItem('sanat-atlasi:devasa-surdur'); } catch {}
+    const o = await import('/js/ekranlar/ortak.js');
+    const i = o.d.devasaIndirme;
+    if (i && !i.bitti) { i.durdur = true; for (const a of i.iptaller || []) a.abort(); }
+    return !!i;
+    """
+
+    /// "Telefondan sil": sitenin eski indirdikleri de silinir (yer açılsın)
+    static let siteDeposunuSilBetigi = """
+    const D = await import('/js/devasaOnbellek.js');
+    await D.kaliciSil();
+    D.defterSil();
+    for (const a of ['sanat-atlasi:devasa-surdur', 'sanat-atlasi:devasa-sayi']) try { localStorage.removeItem(a); } catch {}
+    const o = await import('/js/ekranlar/ortak.js');
+    o.d.devasaIndirme = null;
+    return true;
+    """
+
+    private func siteBetigi(_ kaynak: String) {
+        Task {
+            for _ in 0..<120 {
+                if Gezgin.shared.yuklendi, let w = Gezgin.shared.webView {
+                    _ = try? await w.callAsyncJavaScript(kaynak, arguments: [:], in: nil, contentWorld: .page)
+                    return
+                }
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+            }
+        }
+    }
+
+    private func siteIndirmesiniDurdur() { siteBetigi(Self.siteIndirmesiniDurdurBetigi) }
+    private func siteDeposunuSil() { siteBetigi(Self.siteDeposunuSilBetigi) }
+
+    // MARK: Oturum temsilcisi
+
+    /// `URLSession` olaylarını alır (kendi kuyruğunda); inen dosyayı hemen yerine taşır, sonucu ana iş parçacığına verir.
+    private final class Temsilci: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
+        weak var sahip: CevrimdisiIndirici?
+        private let kilit = NSLock()
+        private var sonuclar: [Int: Sonuc] = [:]
+        private let depo = CevrimdisiDepo.varsayilan
+
+        func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+            guard let adres = downloadTask.taskDescription else { return }
+            let s: Sonuc
+            let h = downloadTask.response as? HTTPURLResponse
+            if let h, (200..<300).contains(h.statusCode),
+               (h.value(forHTTPHeaderField: "Content-Type") ?? "").hasPrefix("image/") {
+                do {
+                    try depo.tasi(location, adres: adres)
+                    s = .indi
+                } catch {
+                    let ns = error as NSError
+                    let m = "\(ns.domain) \(ns.code): \(ns.localizedDescription)"
+                    s = ns.domain == NSCocoaErrorDomain && ns.code == NSFileWriteOutOfSpaceError ? .yerYok(m) : .yazilamadi(m)
+                }
+            } else {
+                s = .hata
+            }
+            kilit.lock(); sonuclar[downloadTask.taskIdentifier] = s; kilit.unlock()
+        }
+
+        func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+            guard let adres = task.taskDescription else { return }
+            kilit.lock(); let kayitli = sonuclar.removeValue(forKey: task.taskIdentifier); kilit.unlock()
+            let s: Sonuc
+            if let kayitli { s = kayitli }
+            else if let e = error as? URLError, e.code == .cancelled { s = .kesildi }
+            else { s = .hata }
+            Task { @MainActor in self.sahip?.sonuc(adres, s) }
+        }
+
+        func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+            Task { @MainActor in self.sahip?.olaylarBitti() }
+        }
+    }
+}
+
+/// Arka plan oturumunun olayları için (uygulama arka planda uyandırılınca)
+final class NoraSanatUygulamaTemsilcisi: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        CevrimdisiIndirici.shared.baslat()
+        return true
+    }
+
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String,
+                     completionHandler: @escaping () -> Void) {
+        guard identifier == CevrimdisiIndirici.oturumKimligi else { completionHandler(); return }
+        CevrimdisiIndirici.shared.arkaPlanBitti = completionHandler
+        CevrimdisiIndirici.shared.baslat()
+    }
+}
