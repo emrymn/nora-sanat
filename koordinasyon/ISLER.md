@@ -164,6 +164,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
+| Z3c | Başyapıt zemininde tablonun iki renginden süzme | K | G3 | 1 | PR açık |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -938,6 +939,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Her grup temiz simülatörle başlar: ilk açılış, sonra (Ben, Galeri, Çalış, Yolculuk) T2'nin deneme ilerlemesi. Yeni ekran adımı eklerken ilgili grubun işlevine yaz; widget adresi (`4-url-calis`) `genel`in sonunda kalmalı.
 - PR'ların CI'ını beklerken tek bir "derle" yerine bütün kontrol koşularına bak (8 iş).
 - İlk koşu (c14c543): derle 3 dk; gruplar 10–23 dk; hesapta aynı anda çalışan macOS işi sınırlı (başka PR'ların CI'ıyla paylaşılıyor), bu yüzden toplam 51 dk. Galeri (23 dk) ikiye bölündü.
+
+### Z3c · Başyapıt zemininde tablonun iki rengi (Claude)
+- Kullanıcının isteği (2026-11-22): "başyapıtlarda arkaplanda ışıklı hale vardı… renk süzmeleri şeklinde". Kaynak: kullanıcının tasarım tuvali "Başyapıt Sayfası — Bütüncül Tasarım" (2026-11-16, Galeri · Başyapıtlar ve 1 · Açılış): `.zemin`'de tablonun iki renginden süzme, sol üstte %24 → %6 → 0 (120% 60%), sağ altta %16 → 0 (90% 50%). Sitede bu tek renge (vurgu) indi, İş 192'de üçte birine düştü (%10/%5). **Bilinçli fark, yalnız uygulama** (kullanıcı seçti).
+- `TabloRenkleri.cift` (çekirdek, testli): tablonun 24 × 24 kopyasında 12 ton dilimi; ikisi de ağır ve en az 60° ayrık ikili, ağır olan sol üste; tasarımdaki açıklık/doygunluğa getirilir. Elçiler: kırmızı-kahve + zeytin yeşili (perde küçük kopyada zeytin).
+- `SayfaZemini(renkler:)`: varsa iki süzme (Gündüz'de %60'ı), yoksa eski tek renkli hale. Başyapıtlar listesinde öne çıkan kartta görünen tablodan (kart değişince renkler yumuşakça geçer), başyapıt sayfasında o tablodan.
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**

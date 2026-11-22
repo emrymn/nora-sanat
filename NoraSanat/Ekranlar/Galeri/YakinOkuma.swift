@@ -55,6 +55,8 @@ struct YakinOkuma: View {
     @State private var cubuk = false
     @State private var koleksiyonda = false
     @State private var yanYana: YanYanaSecimi?
+    /// Z3c: zeminde tablonun iki renginden süzme
+    @State private var zeminRenk: TabloRenkleri.Cift?
 
     /// Dersten gelenler (`dersiBagla`)
     struct DersDurumu {
@@ -136,7 +138,8 @@ struct YakinOkuma: View {
         }
         // `bottom: calc(var(--sekme-alt) + var(--sekme-h) + 34px)`: dişli dilin de üstünde (CI'da siteyle ölçüldü)
         .overlay(alignment: .bottom) { altOgeler.padding(.bottom, 83) }
-        .background(SayfaZemini(donem: donem))
+        .background(SayfaZemini(donem: donem, renkler: zeminRenk))
+        .task(id: b.anahtar) { zeminRenk = await TabloRengi.cift(eser.flatMap { resim.url($0, 400) }) }
         .tint(Color(r.murekkep))
         .task(id: b.anahtar) { await yukle() }
         .task(id: "\(baglam != nil)|\(ders != nil)|\(derin)") { metinleriKur() }

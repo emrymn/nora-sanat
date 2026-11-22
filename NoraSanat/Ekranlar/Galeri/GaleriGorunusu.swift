@@ -99,6 +99,9 @@ struct SayfaZemini: View {
     var donem: String?
     /// `.hale` (sanatçı, konu sayfaları): yalnız üstteki 520 px, sol üstten
     var ustHale = false
+    /// Z3c (kullanıcının tasarım tuvali, `TabloRenkleri`): tablonun iki renginden süzme; sol üstte birinci %24, sağ altta
+    /// ikinci %16. Yoksa sitenin tek renkli soluk halesi.
+    var renkler: TabloRenkleri.Cift? = nil
     @Environment(TemaDeposu.self) private var tema
 
     var body: some View {
@@ -107,7 +110,12 @@ struct SayfaZemini: View {
             let w = g.size.width, h = g.size.height
             ZStack(alignment: .topLeading) {
                 Color(r.zemin)
-                if ustHale {
+                if let c = renkler, !ustHale {
+                    // Gündüz'de açık zeminde aynı süzme daha soluk
+                    let k = r.koyu ? 1.0 : 0.6
+                    elips(c.birinci, [(0.24 * k, 0), (0.06 * k, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.6 * h, merkez: .topLeading, w: w, h: h)
+                    elips(c.ikinci, [(0.16 * k, 0), (0, 0.7)], rx: 0.9 * w, ry: 0.5 * h, merkez: .bottomTrailing, w: w, h: h)
+                } else if ustHale {
                     elips(r.vurgu, [(0.11, 0), (0.03, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.8 * 520, merkez: .topLeading, w: w, h: 520)
                 } else {
                     elips(r.vurgu, [(0.1, 0), (0.025, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.6 * h, merkez: .topLeading, w: w, h: h)
@@ -121,6 +129,7 @@ struct SayfaZemini: View {
                 }
             }
             .animation(.easeOut(duration: 0.6), value: donem)
+            .animation(.easeInOut(duration: 0.8), value: renkler)
         }
         .ignoresSafeArea()
         .accessibilityHidden(true)
@@ -512,5 +521,36 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
 
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         viewControllers.count > 1
+    }
+}
+
+/// Z3c: tablonun küçük kopyasından iki süzme rengi (`TabloRenkleri.cift`); adres başına bir kez hesaplanır
+@MainActor
+enum TabloRengi {
+    private static var onbellek: [URL: TabloRenkleri.Cift] = [:]
+
+    static func cift(_ url: URL?) async -> TabloRenkleri.Cift? {
+        guard let url else { return nil }
+        if let c = onbellek[url] { return c }
+        guard let resim = await GorselCozucu.shared.resim(url, piksel: 200), let cg = resim.cgImage else { return nil }
+        let c = await Task.detached(priority: .utility) { () -> TabloRenkleri.Cift? in
+            let n = 24
+            var veri = [UInt8](repeating: 0, count: n * n * 4)
+            let tamam = veri.withUnsafeMutableBytes { tampon -> Bool in
+                guard let baglam = CGContext(data: tampon.baseAddress, width: n, height: n, bitsPerComponent: 8, bytesPerRow: n * 4,
+                                             space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
+                baglam.interpolationQuality = .medium
+                baglam.draw(cg, in: CGRect(x: 0, y: 0, width: n, height: n))
+                return true
+            }
+            guard tamam else { return nil }
+            let px = stride(from: 0, to: veri.count, by: 4).map { i in
+                (Double(veri[i]) / 255, Double(veri[i + 1]) / 255, Double(veri[i + 2]) / 255)
+            }
+            return TabloRenkleri.cift(pikseller: px)
+        }.value
+        if let c { onbellek[url] = c }
+        return c
     }
 }
