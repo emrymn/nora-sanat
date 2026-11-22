@@ -44,6 +44,14 @@ jobs:
           NODE_PATH="$RUNNER_TEMP/galeri-kahin/node_modules" GALERI_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/galeri.mjs > "$RUNNER_TEMP/galeri.json"
           node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/galeri/cevaplar.json" "$RUNNER_TEMP/galeri.json"
 
+      - name: Bugün kâhini ve iPhone 15 Pro görünüş ölçüleri
+        if: github.head_ref == 'is/G4-bugun'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/bugun-kahin" --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/bugun-kahin/node_modules/.bin/playwright" install webkit
+          NODE_PATH="$RUNNER_TEMP/bugun-kahin/node_modules" node Testler/kahin/bugun.mjs > "$RUNNER_TEMP/bugun.json"
+          node -e "const a=require(process.argv[1]), b=require(process.argv[2]); const yuvarla=x=>JSON.stringify(x,(_,v)=>typeof v==='number'?Number(v.toFixed(8)):v); require('node:assert/strict').equal(yuvarla(a),yuvarla(b))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/bugun/cevaplar.json" "$RUNNER_TEMP/bugun.json"
+
       - name: Çalış kâhinini canlı sitenin modülleriyle karşılaştır
         if: github.head_ref == 'is/C2-calis' || github.event_name == 'workflow_dispatch'
         run: |
@@ -109,6 +117,92 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET"
           sleep 12
           xcrun simctl io "$UDID" screenshot ekranlar/2-ikinci-acilis.png
+          cat > "$RUNNER_TEMP/ben-ekran.swift" <<'SWIFT'
+          import Foundation
+          import Vision
+          let istek = VNRecognizeTextRequest()
+          istek.recognitionLanguages = ["tr-TR", "en-US"]
+          try VNImageRequestHandler(url: URL(fileURLWithPath: CommandLine.arguments[1])).perform([istek])
+          let metin = (istek.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+          print(metin)
+          let soz = CommandLine.arguments[2]
+          exit(metin.range(of: soz, options: [.caseInsensitive, .diacriticInsensitive]) == nil ? 1 : 0)
+          SWIFT
+          xcrun swiftc "$RUNNER_TEMP/ben-ekran.swift" -o "$RUNNER_TEMP/ben-ekran"
+          cat > "$RUNNER_TEMP/yan-yana.swift" <<'SWIFT'
+          import CoreGraphics
+          import Foundation
+          import ImageIO
+          import UniformTypeIdentifiers
+          func oku(_ y: String) -> CGImage {
+            let k = CGImageSourceCreateWithURL(URL(fileURLWithPath: y) as CFURL, nil)!
+            return CGImageSourceCreateImageAtIndex(k, 0, nil)!
+          }
+          let a = oku(CommandLine.arguments[1]), b = oku(CommandLine.arguments[2])
+          let ara = 48, w = a.width + ara + b.width, h = max(a.height, b.height)
+          let c = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+                            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+          c.setFillColor(CGColor(red: 1, green: 0, blue: 0.5, alpha: 1))
+          c.fill(CGRect(x: 0, y: 0, width: w, height: h))
+          c.draw(a, in: CGRect(x: 0, y: h - a.height, width: a.width, height: a.height))
+          c.draw(b, in: CGRect(x: a.width + ara, y: h - b.height, width: b.width, height: b.height))
+          let hedef = CGImageDestinationCreateWithURL(URL(fileURLWithPath: CommandLine.arguments[3]) as CFURL,
+                                                      UTType.png.identifier as CFString, 1, nil)!
+          CGImageDestinationAddImage(hedef, c.makeImage()!, nil)
+          CGImageDestinationFinalize(hedef)
+          SWIFT
+          xcrun swiftc "$RUNNER_TEMP/yan-yana.swift" -o "$RUNNER_TEMP/yan-yana"
+          VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+          # G4: aynı veri ve tarihte site ile yerli kapak; iki ekranda da eylem görünene kadar bekle.
+          for KIP in site yerli; do
+            xcrun simctl terminate "$UDID" "$PAKET"
+            if [ "$KIP" = site ]; then
+              EK=(-yalnizSite)
+            else
+              EK=(-yerliSekme bugun -bugunKarsilastir)
+              rm -f "$VERI/tmp/bugun-hazir"
+            fi
+            xcrun simctl launch "$UDID" "$PAKET" "${EK[@]}" -adres "#/"
+            for DENEME in {1..24}; do
+              sleep 4
+              if [ "$KIP" = yerli ] && [ ! -s "$VERI/tmp/bugun-hazir" ]; then
+                if [ "$DENEME" = 24 ]; then exit 1; fi
+                continue
+              fi
+              xcrun simctl io "$UDID" screenshot "ekranlar/bugun-$KIP.png"
+              if "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-$KIP.png" "Hayat"; then break; fi
+              if [ "$DENEME" = 24 ]; then exit 1; fi
+            done
+          done
+          "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
+          # Denetim: aynı sanatçı, aynı gerçek ayrıntı, iki kart konumu ve yürüyüş sonu.
+          for BOLUM in ayrinti-alt ayrinti-ust hayati eserler tur; do
+            BETIK=$(node Testler/bugun-site-cekimi.mjs "$BOLUM")
+            xcrun simctl terminate "$UDID" "$PAKET"
+            rm -f "$VERI/tmp/site-betik"
+            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/" -siteBetik "$BETIK"
+            for _ in {1..90}; do
+              test -s "$VERI/tmp/site-betik" && break
+              sleep 1
+            done
+            SONUC=$(cat "$VERI/tmp/site-betik")
+            echo "$SONUC"
+            IFS='|' read -r HEDEF SANATCI ADIM SOZ <<< "$SONUC"
+            test "$HEDEF" = "$BOLUM" && test -n "$SOZ" || exit 1
+            xcrun simctl io "$UDID" screenshot "ekranlar/bugun-site-$BOLUM.png"
+            xcrun simctl terminate "$UDID" "$PAKET"
+            rm -f "$VERI/tmp/bugun-hazir"
+            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme bugun -adres "#/" -bugunKaydir "$BOLUM" -bugunSanatci "$SANATCI" -bugunAdim "$ADIM"
+            for _ in {1..60}; do
+              test -s "$VERI/tmp/bugun-hazir" && break
+              sleep 1
+            done
+            test "$(cat "$VERI/tmp/bugun-hazir")" = "$BOLUM"
+            xcrun simctl io "$UDID" screenshot "ekranlar/bugun-yerli-$BOLUM.png"
+            # OCR bazı Türkçe harfleri düz Latin harflerine çevirir.
+            "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-yerli-$BOLUM.png" "${SOZ%% *}"
+            "$RUNNER_TEMP/yan-yana" "ekranlar/bugun-site-$BOLUM.png" "ekranlar/bugun-yerli-$BOLUM.png" "ekranlar/yan-yana-bugun-$BOLUM.png"
+          done
           # Widget'ın üç boyutu, gerçek veriyle (yalnız Debug'da olan önizleme ekranı)
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -widgetOnizleme
@@ -179,41 +273,6 @@ jobs:
           xcrun simctl io "$UDID" screenshot ekranlar/10s-site-pekistirme.png
           # C4 + C4b: gerçek ilerleme ile yerli Ben ekranı ve ayarları; her biri sitenin aynı sayfasıyla yan yana
           # (solda site -yalnizSite, sağda yerli). -benKaydir aynı bölüme kaydırır (kurs, akim, yedek).
-          cat > "$RUNNER_TEMP/ben-ekran.swift" <<'SWIFT'
-          import Foundation
-          import Vision
-          let istek = VNRecognizeTextRequest()
-          istek.recognitionLanguages = ["tr-TR", "en-US"]
-          try VNImageRequestHandler(url: URL(fileURLWithPath: CommandLine.arguments[1])).perform([istek])
-          let metin = (istek.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
-          print(metin)
-          let soz = CommandLine.arguments[2]
-          exit(metin.range(of: soz, options: [.caseInsensitive, .diacriticInsensitive]) == nil ? 1 : 0)
-          SWIFT
-          xcrun swiftc "$RUNNER_TEMP/ben-ekran.swift" -o "$RUNNER_TEMP/ben-ekran"
-          cat > "$RUNNER_TEMP/yan-yana.swift" <<'SWIFT'
-          import CoreGraphics
-          import Foundation
-          import ImageIO
-          import UniformTypeIdentifiers
-          func oku(_ y: String) -> CGImage {
-            let k = CGImageSourceCreateWithURL(URL(fileURLWithPath: y) as CFURL, nil)!
-            return CGImageSourceCreateImageAtIndex(k, 0, nil)!
-          }
-          let a = oku(CommandLine.arguments[1]), b = oku(CommandLine.arguments[2])
-          let ara = 48, w = a.width + ara + b.width, h = max(a.height, b.height)
-          let c = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
-                            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-          c.setFillColor(CGColor(red: 1, green: 0, blue: 0.5, alpha: 1))
-          c.fill(CGRect(x: 0, y: 0, width: w, height: h))
-          c.draw(a, in: CGRect(x: 0, y: h - a.height, width: a.width, height: a.height))
-          c.draw(b, in: CGRect(x: a.width + ara, y: h - b.height, width: b.width, height: b.height))
-          let hedef = CGImageDestinationCreateWithURL(URL(fileURLWithPath: CommandLine.arguments[3]) as CFURL,
-                                                      UTType.png.identifier as CFString, 1, nil)!
-          CGImageDestinationAddImage(hedef, c.makeImage()!, nil)
-          CGImageDestinationFinalize(hedef)
-          SWIFT
-          xcrun swiftc "$RUNNER_TEMP/yan-yana.swift" -o "$RUNNER_TEMP/yan-yana"
           for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek ayarlar:cevrimdisi; do
             SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
             AD="ben-$SAYFA${BOLUM:+-$BOLUM}"
