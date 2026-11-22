@@ -152,7 +152,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bitti (#22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bitti (#18); görünüş G4b'de |
-| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bekliyor |
+| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bitti (#25) |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bitti (#20): G5a ChatGPT, G5b (görünüş) Claude |
@@ -662,6 +662,21 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 ### G4b · Bugün: görünüş sitedeki gibi
 - Yukarıdaki denetimin farkları. Yöntem G2b gibi: `yan-yana-bugun-*.png` çiftleri birebir olana kadar. `Gecis.swift`'e dokunma; Bugün'ün yerli olması G4b denetiminden sonra Claude'da (K).
+
+**Devir notu:** Claude, 2026-11-22 · [taslak PR #25](https://github.com/emrymn/nora-sanat/pull/25) · dal `claude/g4b-bugun-screen-8zq61x` (oturumun zorunlu dalı). G şeridi işi; kullanıcının isteğiyle Claude yaptı. G4 (#18) main'de olmadığı için dal origin/main + `is/G4-bugun` birleşimi üstünde; #18 birleşince PR farkı yalnız G4b'ye iner.
+- **Kaynak:** sanat-atlasi `a866b86`: `js/yuruyus.js` (`yuruyusBaslat`: `boya`, `kare`, `perdeYaz`), `js/egim.js` (`egimBaslat`, `egimDegeri`), `js/ekranlar/bugun.js` (`ustHtml`, `kapakHtml`, `yuruyusSonu`, `yuruyusKur`), `js/ekranlar/ortak.js` `kunye`, `js/kunye.js` `dinleEkle`, `css/app.css` (`.bugun-ust`, `.bugun-tarih`, `.bugun-ben`, `.yur-sahne::after`, `.yur-bulanik`, `.bugun-yuruyus > .bugun-ust::before`, `.yur-noktalar`, `.yur-kart`, `.yur-hayat`, `.yur-son*`, `.yur-tur*`, `.yur-deste*`, `.yur-karo*`, `.yur-harf`, `.yur-kare*`, `.isim-ek`, `.yur-basa*`, `.bugun-notlar .egim-dugme`). Ölçüler canlı sitenin hesaplanmış stillerinden (Playwright, 393 pt).
+  K7: `git -C /tmp/sa log a866b86..HEAD -- js/yuruyus.js js/egim.js js/ekranlar/bugun.js js/ekranlar/ortak.js js/kunye.js css/app.css`
+- **Kök neden (G4 denetimindeki farkların çoğu):** kaydırma konumu okunmuyordu. İçeriğin arkasındaki `GeometryReader` tercihi kaydırınca güncellenmiyordu; kayma hep 0 kaldı. Bu yüzden kamera ayrıntıya yaklaşmıyor, perde koyulaşmıyor, yürüyüşte sekme çubuğu ve hareket düğmesi duruyordu. Şimdi `BugunKaymaIzi`: iOS 18'de `onScrollGeometryChange`, iOS 17'de içeriğin `.scrollView` uzayındaki yeri (`onGeometryChange`).
+- **Eğim:** sitede eğim izni gerekmiyorsa ayar açıkken hemen dinlenir ve `egimDegeri()` ilk örnekten önce `{0, 0}` döner; resim her yandan 26 px taşar. Yerlide `izin` düğmeye basılana kadar kapalıydı ve ilk jiroskop örneği bekleniyordu; aslan karesindeki ~30 pt dikey fark bu paydan (CI günlüğünde site dönüşümü `perspective … translate3d(-26px, …)`). Artık `algilama` = ayar açık; `BugunHareketi.baslat` değeri hemen `.zero` yapar; simülatörde `varMi` sitenin `egimVar()`ı gibi doğru.
+- **Görünüş:** sahne gradyanı `rgba(18,17,16)` .5/0/0/.8/.96; buğu malzeme + `rgba(18,17,16,.6)`, saydamlığı perde (resmin kendisine `.blur` bantlı ve karanlık çıktı). Üst şerit: tarih 11.5/600 aralık 2.3 `#aca498`, Ben `rgba(18,17,16,.5)`; Hayatı'na inerken arkasında `::before` perdesi (0.92 → 0, ekran üstünden şeridin 40 pt altına). Hareket düğmesi kapakta (kapakla kayar). Yürüyüş noktaları pirinç. Ayrıntı kartı malzeme + `rgba(24,22,20,.5)`, 1 px `rgba(235,229,218,.14)` çizgi (boyuta dahil).
+- **Hayatı ve son** (`BugunHayati.swift`, baştan): h2 34/37.4, metin 19/29.45, kaynak 13/18.2 `--yur-ikincil` (alt 40); künye `BugunTablosu.sonKunye` (yıllar · akım, pirinç, testli); "Resmi gezdin." 40/42; tur kartı (deste 70 × 66, ±8° kartlar `#4e3d2c`/`#6d5236`, sayı kartı `#26221e` + pirinç 1.5, halkalı ok 40); iki karo (harf halkası 52, 2 × 2 kareler 30 × 26, en az 150, eşit boy); Dinle/IPA (Galeri'deki `.isim-ek` gibi); Başa dön halkası 56 + BAŞA DÖN 11/600 aralık 2.2.
+- **Tuzak:** Newsreader'ın iOS'taki doğal satırı ~1.0247 × boyut (ortak `cssSatir`'ın varsaydığı 1.0 değil). Hayatı'nın uzun metninde satır başına +0.47 pt, 20 satırda ~10 pt kayma ölçüldü. Bugün'de yerel `bugunOkumaSatiri` kullanılıyor; ortak `Yazi.Aile.satirOrani` (Ben, T4 dosyası) Z3'te düzeltilmeli (uzun okuma metinlerini etkiler).
+- **CI:** site betiği (`Testler/bugun-site-cekimi.mjs`) Hayatı içindeki gerçek kaydırmayı (`konum`) ve ölçüleri (`H`, alt pay, kart, resim dönüşümü) döndürür; yerli `-bugunKonum` ile aynı yere gider (iOS 18 `ScrollPosition`, yalnız DEBUG), kamera hedefe oturunca `tmp/bugun-durum`'a kayma/adım/çerçeve yazar, günlükte `yerli <bölüm>: …`. Eserler OCR sözcüğü `Izgara` (karonun başlığı sitede de sekme çubuğunun arkasında).
+- **Yan yana** (e415f90, eğimden önce): kapak, iki ayrıntı, Hayatı, eserler, tur aynı düzen, yazı ve renkte; satırlar ±1 pt. Kalan fark aslan karesinde kameranın 26 px payıydı (yukarıda).
+- **Kalan / bilinen:** tur kartındaki parıltı (`yur-parilti`) ve dokunma hareketleri (deste açılır, ok kayar) yok. Hareket düğmesinin basılı/basısız simge tonu yok. Gündüz temasında yürüyüş renkleri sabit koyu (sitede de `.bugun-yuruyus` her temada koyu).
+- **Ortak dosya:** dokunulmadı (`Gecis.swift` dahil). Bugün'ün yerli olması denetimden sonra Claude'da.
+
+**Denetim (G4b):** Claude, 2026-11-22 — **onay** (PR #25 yorumu). CI e415f90 yeşil (eğim payı düzeltmesi 387cf47 sonrası CI birleştirmeden önce); altı yan yana görüntü (kapak, alttaki ve üstteki ayrıntı, Hayatı, eserler, tur) sitedekiyle birebire yakın. G4 squash ile girdiği için main'le çakışma Claude'da çözüldü (taban 0f8bd91; sonuç farkı dalın G4b farkıyla aynı).
 
 ### C4 · Ben (ChatGPT)
 **Site kaynakları:** `js/ekranlar/ilerleme.js`, `js/ekranlar/ayarlar.js`, `js/ekranlar/hizliAyar.js`, `js/kurs.js`, `js/yenilikler.js`, `js/rozet.js`.
