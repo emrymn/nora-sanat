@@ -47,17 +47,6 @@ extension RGBA {
     func saydam(_ a: Double) -> RGBA { RGBA(r, g, b, a) }
 }
 
-// MARK: Satır yüksekliği
-
-extension View {
-    /// Çok satırlı serif başlıklar için CSS `line-height`: `cssSatir` satır arasını sıfırın altına indirmez; Bodoni'nin
-    /// kendi satırı (1.525 em) sitenin 1.1–1.15'inden yüksek olduğundan burada satır arası eksiye de iner.
-    func dersSatir(_ aile: Yazi.Aile, _ boyut: CGFloat, _ satir: CGFloat) -> some View {
-        let fark = satir - boyut * aile.satirOrani
-        return lineSpacing(fark).padding(.vertical, fark / 2)
-    }
-}
-
 // MARK: Düğme
 
 /// `.ders-dugme`: hap, 52 pt; `dolu`: `--pg-asil` zemin. `koyu`: Gör sahnesinin kenarlı düğmesi.
@@ -250,7 +239,7 @@ struct DersAdimSonu: View {
             .frame(width: 64, height: 64)
             Text(baslik)
                 .font(Yazi.serif(34, stil: .largeTitle))
-                .dersSatir(.serif, 34, 37.4)
+                .cssSatir(.serif, 34, 37.4)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color(r.murekkep))
                 .accessibilityAddTraits(.isHeader)

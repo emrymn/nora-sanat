@@ -79,7 +79,7 @@ struct DersOgrenAdimi: View {
 
                     Text(m.madde)
                         .font(Yazi.serif(27))
-                        .dersSatir(.serif, 27, 31.05)
+                        .cssSatir(.serif, 27, 31.05)
                         .foregroundStyle(Color(r.murekkep))
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityIdentifier("ders-madde")
