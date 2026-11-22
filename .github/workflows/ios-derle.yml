@@ -239,6 +239,7 @@ jobs:
           sleep 6
           xcrun simctl io "$UDID" screenshot ekranlar/c5-cevrimdisi-indi.png
           echo "çevrimdışı inen dosya: $INEN"
+          cat "$VERI/tmp/cevrimdisi-durum.json" || true; echo
           ls -la "$VERI/Library/Application Support/CevrimdisiGorseller" || true
           test "$INEN" -ge 2
           "$RUNNER_TEMP/ben-ekran" ekranlar/c5-cevrimdisi-indi.png "bitti"

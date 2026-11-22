@@ -176,7 +176,7 @@ final class CevrimdisiIndirici {
     }
 
     enum Sonuc: Sendable {
-        case indi, hata, yerYok(String), yazilamadi(String), kesildi
+        case indi, hata(String), yerYok(String), yazilamadi(String), kesildi
         var inmis: Bool { if case .kesildi = self { return false }; return true }
     }
 
@@ -194,9 +194,10 @@ final class CevrimdisiIndirici {
             i.biten += 1
             i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
             telefonda += 1
-        case .hata:
+        case let .hata(m):
             i.biten += 1
             i.hata += 1
+            if i.yazilamadi == 0 { i.sonHata = m }   // ileti yalnız kaydedilemeyince gösterir; tanı için saklanır
             i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
         case let .yerYok(m):
             i.biten += 1
@@ -227,7 +228,12 @@ final class CevrimdisiIndirici {
     }
 
     private func kaydet() {
-        UserDefaults.standard.set(durum.flatMap { try? JSONEncoder().encode($0) }, forKey: Self.durumAnahtari)
+        let veri = durum.flatMap { try? JSONEncoder().encode($0) }
+        UserDefaults.standard.set(veri, forKey: Self.durumAnahtari)
+        #if DEBUG
+        // CI: indirme denemesinin durumu (sayılar ve son hata)
+        try? veri?.write(to: FileManager.default.temporaryDirectory.appendingPathComponent("cevrimdisi-durum.json"))
+        #endif
     }
 
     fileprivate func olaylarBitti() {
@@ -297,7 +303,7 @@ final class CevrimdisiIndirici {
                     s = ns.domain == NSCocoaErrorDomain && ns.code == NSFileWriteOutOfSpaceError ? .yerYok(m) : .yazilamadi(m)
                 }
             } else {
-                s = .hata
+                s = .hata("yanıt \(h?.statusCode ?? -1) \(h?.value(forHTTPHeaderField: "Content-Type") ?? "-")")
             }
             kilit.lock(); sonuclar[downloadTask.taskIdentifier] = s; kilit.unlock()
         }
@@ -308,7 +314,10 @@ final class CevrimdisiIndirici {
             let s: Sonuc
             if let kayitli { s = kayitli }
             else if let e = error as? URLError, e.code == .cancelled { s = .kesildi }
-            else { s = .hata }
+            else {
+                let ns = error.map { $0 as NSError }
+                s = .hata(ns.map { "\($0.domain) \($0.code): \($0.localizedDescription)" } ?? "dosya gelmedi")
+            }
             Task { @MainActor in self.sahip?.sonuc(adres, s) }
         }
 
