@@ -57,7 +57,9 @@ struct BugunHayati: View {
       }
       if let kunye {
         HStack {
-          Button("Dinle", systemImage: "speaker.wave.2") { dinle(kunye) }
+          Button { dinle(kunye) } label: {
+            HStack { GaleriIkon(simge: .ses, boyut: 16); Text("Dinle") }
+          }
           if let ipa = kunye["ipa"]?["yazi"]?.metin { Text(ipa) }
         }.font(Yazi.sans(14))
       }

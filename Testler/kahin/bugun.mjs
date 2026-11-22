@@ -104,7 +104,12 @@ if (process.argv[2]) {
         return [[s, Object.fromEntries(['font-size','line-height','margin','padding','border-radius','height','left','bottom'].map(k => [k, st.getPropertyValue(k)]))]];
       })));
     console.error('G4 iPhone 15 Pro', JSON.stringify(olculer));
+    // Kâhinin eğimsiz kamera örneğini sayfanın çalışan hareket dinleyicisinden ayır.
+    await p.route('**/g4-kahin.html', route => route.fulfill({contentType:'text/html',body:'<!doctype html><title>G4</title>'}));
+    await p.goto('https://sanat-atlasi.pages.dev/g4-kahin.html');
     const c = await p.evaluate(cevaplar, 'https://sanat-atlasi.pages.dev');
+    await p.goto('https://sanat-atlasi.pages.dev/');
+    await p.waitForSelector('.yur-kapak .ad-son');
     await p.route('**/js/ekranlar/bugun.js?g4', async route => {
       const yanit = await route.fetch({url:'https://sanat-atlasi.pages.dev/js/ekranlar/bugun.js'});
       const kaynak = await yanit.text();

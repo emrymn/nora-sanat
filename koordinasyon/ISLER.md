@@ -148,6 +148,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bitti (#11); görünüş G2b'de |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
+| G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | PR açık (#18) |
@@ -161,7 +162,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
-- Galeri: G1 + G2 + G3
+- Galeri: G1 + G2 + G2b (görünüş) + G3
 - Bugün: G4
 - Yolculuk: G5
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3
@@ -503,6 +504,52 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Denetim (G2):** Claude, 2026-11-21 — **davranış onay; görünüş G2b'ye** ([PR #11 yorumu](https://github.com/emrymn/nora-sanat/pull/11#issuecomment-7060261876)). `swift test` geçti. `galeri.mjs` hem site deposuyla hem canlı sitede çalıştırıldı: çıktı örnekle birebir aynı (canlı kip `playwright-core` arıyordu, `playwright` yapıldı). Görünüş sitedekinden belirgin farklı (çark kartı, yazılar, salon/konu/sanatçı sayfaları çoğunlukla iOS listeleri; CI'da yalnız çark görüntüsü). Galeri yerli olmadığı için telefonda değişen yok. GaleriKatalogu'ndaki temsil kopyaları G2b'de `Temsil.swift`'e geçmeli.
 
+### G2b · Galeri: görünüş sitedeki gibi (ChatGPT şeridi; kullanıcının isteğiyle Claude)
+**Site kaynakları:** `js/ekranlar/{gozat,akim,arama,koleksiyon,ortak,bugun}.js`, `css/app.css` (Galeri bölümleri), sitede `TASARIM_DILI.md`.
+
+**Yapılacaklar:** G2'nin ekranları (`NoraSanat/Ekranlar/Galeri/`) sitenin sayfalarına benzesin (PR #11 denetimi). Ölçüler hesaplanmış stillerden; CI'da her ekran için site (`-yalnizSite`) ve yerli yan yana. Ben'in ortak parçaları yeniden kullanılır; temsil kuralları `NoraCekirdek/SiteVerisi/Temsil.swift`'ten.
+
+**Devir notu:** Claude, 2026-11-21 · [PR #15](https://github.com/emrymn/nora-sanat/pull/15) · dal `claude/great-darwin-3hounp` (oturumun zorunlu dalı). G şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/ekranlar/gozat.js`: `gozAtUst`, `gozAt`, `carkHtml`, `carkKur`, `onizlemeleriDoldur`, `akimSayfasi`, `sanatciSatiri`, `sanatciSayfasi`, `tumEserler`, `basyapitBaglariniDoldur`, `karsilastirSecici`, `karsilastirmaSutunu`, `karsilastirSayfasi`, `konularCiz`, `knGovdeCiz`, `knSahne`, `knKart`, `hepsineBak`, `bsySahneBagla`, `konuSayfasi`, `konuSahnesiniDoldur`, `metniKatla`, `konuGalerisiAc`
+  - `js/ekranlar/akim.js`: `kimlikDoldur`, `bolumBasligi`, `tanimaNotlari`, `eserIzgarasi`, `pekistirDugmesi`, `dugmeBilgisi`, `donemHikayesi`, `konuDizini`, `akimKarsilastirSayfasi`, `USLUPLAR`, `TEKNIKLER`; `js/akim.js` `DORTLU_SECIMI`, `enBilinenEserler`
+  - `js/ekranlar/arama.js`, `js/ekranlar/koleksiyon.js` (üst), `js/ekranlar/bugun.js` (`seritUst`, `eserSeridi`, `notBolumleri`, `donemCizelgesi`), `js/ekranlar/ortak.js` (`sayfaZemini`, `ust`, `akimRenk`, `isimHtml`), `js/kunye.js`, `js/imza.js`, `js/temsil.js` (`AKIM_KAPAK`), `js/ikonografi.js` (`kapakSec`), `js/harita.js` (`BOLGELER`), `js/yardimci.js` (`bulunmaEki`), `js/tasarim.js` (`YOLLAR`)
+  - `css/app.css`: `.gz-ust`, `.arama-hapi`, `.arama-kalp`, `.bolumler`, `.hale`, `.bsy-hale`, `.bsy-desen` (+ `--desen` SVG'leri), `.cark*`, `.zaman-kart`, `.akim-dizin*`, `.akim-sahne*`, `.akim-bolum*`, `.akim-hikaye*`, `.akim-ipucu*`, `.akim-eser*`, `.donem-dugme*`, `.donem`, `.akim-komsu*`, `.akim-konu-dizin`, `.akim-karsi*`, `.sanatci-ust`, `.isim-blok`, `.ad-*`, `.portre-arka`, `.imza`, `.dinle`, `.ipa`, `.serit-ust`, `.eserler`, `.eser`, `.tumu`, `.izgara`, `.bolum`, `.satir`, `.kucuk-kare`, `.basyapit-bag`, `.karsilastir-sec`, `.kars*`, `.by-*`, `.konu-*`, `.arama-alan`, `.arama-ipucu`
+  - Ölçüler canlı sitenin hesaplanmış stillerinden (Playwright, iPhone 15 Pro 393 pt, Gece; `getComputedStyle` + `getBoundingClientRect`).
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/ekranlar/gozat.js js/ekranlar/akim.js js/akim.js js/ekranlar/arama.js js/ekranlar/koleksiyon.js js/ekranlar/bugun.js js/ekranlar/ortak.js js/kunye.js js/imza.js js/temsil.js js/ikonografi.js js/harita.js css/app.css`
+- **Çekirdek:**
+  - `SiteVerisi/Temsil.swift`: `akimKapak` (`AKIM_KAPAK`), `dortluSecimi` (`DORTLU_SECIMI`), `kapakSec`, `enBilinenEserler`. `GaleriKatalogu`'ndaki satır içi kopyalar (`temsil`, Gotik QID'i, Puvis seçimi) kalktı: `konuKapagi` → `Temsil.kapakSec`, `carkKapagi` → `Temsil.akimKapak` + `Temsil.enBilinen`, `dortlu` → `enBilinenler` (sanatçısıyla birlikte; "sanatçıId|başlık" anahtarı da tanınır, sıralama kararlı).
+  - Tuzak: sitenin `kapakSec`'inde "eşitlikte kurs eseri öne" koşulu hiç tutmuyor (`onbellekEseri` nesnelerinde `kurs` alanı yok). Swift de uygulamıyor; `galeri.mjs` kapakları bunu doğruladı (bir konu farklı çıkıyordu).
+  - `SiteYazisi.bulunmaEki` ("Konu 3'te açılır"; G2 "işlenince açılır" yazıyordu). Testler: `testBulunmaEkiSitedekiyle` (sitenin modülünden 20 değer), `testKapakSec`. Linux'ta 88 test (1 atlanan).
+- **Ekranlar** (`NoraSanat/Ekranlar/Galeri/`):
+  - `GaleriGorunusu.swift`: `GaleriSimge`/`GaleriIkon` (sitenin SVG'leri), `SayfaZemini` (hale + dönem deseni), `GaleriUst` + `BolumHaplari`, `GaleriSayfaUst` (`.ust`), `SanatciUst`, `VurguEtiket`, `GaleriSatir` (`.satir`), `Rozet`, `GaleriListe`, `EserKarti`, `DonemCizelgesi`, `GaleriBolum`, `OkumaMetni`; kenardan kaydırarak geri (gizli gezinme çubuğunda da).
+  - `Desenler/desen-<dönem>@3x.png`: `css/app.css` `--desen` SVG'lerinden 288 px karolar (Playwright'la çizildi); `--ink` %4 ile döşenir.
+  - `GaleriAna.swift`: kemerli kartların yatay şeridi (210 × 269.7, 22 aralık; komşu `translateY(30k) scale(1 − 0.2k)`, kemer opaklığı 1 − 0.55k, yazı 1 − 1.6k), "Işık" çarkı (yarıçap 700, 12°, 2°'de bir çentik, dönen adlar, ışıklı nokta, 01 / 28), parmakla çevirme ve dokunma, "Bütün akımlar" dizini.
+  - `AkimSalonu.swift`: sahne, künye, dönemin hikâyesi, mercekli "Nasıl tanınır?", en bilinen eserler, ustalar, "Bu dönemi pekiştir" kartı, dönem, "Yan yana koy", tipik konular; üsluba göre bölüm başlıkları (Orta Çağ altın baş harf, Rönesans ortalı, Barok…). `AkimKarsilastir`.
+  - `SanatciKunyesi.swift` (yeniden): büyük ad, tam ad, silik portre, altın imza (maske), Dinle ve IPA, yıllar · kurs, seviye satırı. `SanatciSayfasi.swift`: sanatçı, `EserSeridi`, `TumEserler` (`IkiSutunDuvar`), `SanatciKarsilastir`.
+  - `KonuSayfalari.swift`: `KonularSayfasi` (yapışkan grup sekmeleri, öne çıkanlar kartı 6 sn'de bir döner, şeritler, "Hepsine bak"), `KonuSayfasi` (sahne, başlık, özet, katlanan hikâye, tanıma kartları ve kırpımlar, duraklar, "Bütün resimler" yaprağı).
+  - `AramaKoleksiyon.swift`: arama (altı çizili Bodoni alan, dört grup, en çok 8, "ve n sonuç daha"), Koleksiyonum (G2'nin duvarı yeni üstle).
+  - `GaleriSekmesi.swift`: gezinme çubuğu her sayfada gizli; sayfalar `GaleriEylemleri` ve `GaleriResim` ile kuruluyor. `GaleriCarki.swift` silindi.
+  - Karşılaştırma sayfaları sitedeki gibi sekmesiz (`.sekmeCubuguGizli`).
+- **Ortak dosyalarda küçük değişiklik:** `NoraSanatApp.swift` (DEBUG): `GaleriKarsilastirma.siteyiKaydir()`.
+- **CI karşılaştırması:** yerli `-yerliSekme galeri -adres "#/gozat" -galeriSayfa <adres> [-galeriKaydir dizin|eserler|pekistir]`, site `-yalnizSite -adres <adres> [-galeriKaydir …]`. Yerli ekran hazır olunca `tmp/galeri-hazir` yazar. Görüntüler: `galeri-<ad>.png`, `site-galeri-<ad>.png`, `galeri-yan-yana-<ad>.png` (solda site): ana, ana-dizin, akim, akim-eserler, akim-pekistir, sanatci, eserler, konular, konu, ara, koleksiyon, karsilastir, akim-karsilastir. Eski `galeri.png` adımı bunun içinde (ana ekranda "Salona gir" OCR'ı).
+- **CI:** a36f435 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44894994139). İlk koşu derlemede kaldı (çark tek kapanışta tür denetimi süresini aşıyordu → küçük açık türlü parçalar). `galeri-yan-yana-*.png` on üçüne de bakıldı: Galeri üstü, kemerli kart, akım salonu (sahne, hikâye, eserler, pekiştir kartı, dönem), sanatçı, tüm eserler, konular, konu, arama, koleksiyon ve iki karşılaştırma sitedekiyle aynı düzen, yazı tipi ve renklerde. Sonra düzeltilen: çark ~40 pt yukarıdaydı (sitede öğe 479.9), dönen adlar yayın üstüne oturmuyordu; dizinde kilitli satırlar fazla soluktu; akım karşılaştırmada maddeler numarasızdı; konu sahnesi kısaydı (`min(62vh, 520)`), özetin “ işareti yoktu.
+  - 5743b49 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44897472471): çark ve dönen adlar, konu sahnesi ve “ işareti sitedekiyle aynı yerde. Bu koşuda yerli `galeri-ana.png`'nin üstünde arkadaki gizli sitenin "Harekete ve Yöne Erişmek İstiyor" penceresi çıktı (WKWebView'in izin isteği, G2b'nin değil; önceki koşuda yoktu). Galeri yerli olunca site arkada bu izni istememeli → G3 / Z2.
+- **Bilinen farklar / kalan:**
+  - Tüm eserler duvarında sıra farklı: sitede CSS `columns` (sütun sütun akar), burada kısa olan sütuna.
+  - Akımın kendi yazı tipi (`harfUygula`, ör. Gotik'te Grenze Gotisch) yok; başlık Bodoni.
+  - Akım paleti (`eserPaleti`, eser görsellerinden renk) ve sanatçı/konu sayfasının eserden gelen rengi (`ekranRengi`) yok; hale `--vurgu` ile.
+  - "Bu dönemi pekiştir" sahnesindeki dönem tekniği gösterisi (mozaik, vitray… parçaları) yok; yalnız eser kemerde. Dada'nın kesik harfleri yok.
+  - Giriş hareketleri (`data-gozcu` belirmeleri, desen geçişi dışında), çark önizlemelerindeki üç küçük çerçeve (sitede de gizli) yok.
+  - Başyapıtlar ve Zaman G3 / G5'e kadar sitenin sayfasını yaprakta açar; yakın okuma (`#/basyapit/…`) sade yerli sayfa.
+  - Koleksiyon duvarının asılı tablo görünüşü G2'deki gibi (sitenin `.asi-cerceve` çerçeveleri yaklaşık).
+- **Tuzaklar:**
+  - Gezinme çubuğu gizli: geri hareketi için `UINavigationController` jest temsilcisi (GaleriGorunusu.swift sonu) bütün uygulamada geçerli.
+  - Çark: şeridin konumu `PreferenceKey` ile okunur; çark çevrilirken konum parmaktan gelir ve şerit en yakın akıma kayarak izler.
+  - Ben'de de `EserDuvari` var; Galeri'ninki `IkiSutunDuvar`.
+
+**Denetim (G2b):** Claude, 2026-11-21 — **onay** ([PR #15 yorumu](https://github.com/emrymn/nora-sanat/pull/15#issuecomment-7067177100)). 88 test geçti; `galeri.mjs` ve `temsil.mjs` canlı sitede örneklerle aynı. 13 yan yana görüntünün hepsi sitenin düzeninde. Küçük: sanatçıda "Notlarımdan" etiketi altın (sitede gri); `UINavigationController` eklentisi bütün uygulamayı etkiliyor (Z3). Yan bulgu: gizli site hareket izni penceresi açabiliyor (`WebKabugu` temsilcisi `.grant` dönmesine rağmen) → ayrı iş.
+
 ### C2 · Çalış ana ekranı (ChatGPT)
 **Site kaynakları:** `js/ekranlar/calisma.js`, `js/deste.js`.
 
@@ -538,7 +585,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 **Devir notu:** ChatGPT, 2026-11-21 · [taslak PR #18](https://github.com/emrymn/nora-sanat/pull/18) · `is/G4-bugun`.
 - Kaynak: sanat-atlasi `a866b86`, `js/ekranlar/bugun.js`, `js/yuruyus.js`, `js/egim.js`, `js/gunun.js`, `js/gunduzRenk.js`, `js/renk.js` ve `css/app.css`. Günlük seçim mevcut `GununTablosuCozucu` ve `GununSanatcisi` üzerinden. Ayarlar'da o gün için seçilmiş sanatçı da geçerli. Odaklar sitenin `adlaOdak/yuruyusEki` yordamlarından, renkli Gündüz mevcut tema köprüsünden gelir.
 - Kapakta perde, kısa ad, varsa imza, Hayatı ve kayda göre Hikâyesi/İncele; tam ekran G1. Yürüyüşte kırpma sınırları, ölçülen kart yüksekliğine göre üst/alt konum, hareketi azaltma ve jiroskop; Hayatı'nda serbest kaydırma, kaynak, günün turu, eserler, okunuş ve başa dönüş. Tur sayısı kabuğun gerçek rozetinden okunur.
-- K5: Playwright/WebKit, iPhone 15 Pro, 393 × 852. Kapak kenarı 24 pt, soyadı 48 pt, eser 17 pt, eylemler en az 48 pt; ayrıntı kartında başlık 26/29,12 ve metin 18/27 pt. Ben'in `cssSatir`, `Etiket`, `BenIkon` parçaları ve Galeri'nin okunuş kuralları kullanılır. `GaleriGorunusu.swift` bu PR'ın tabanında yok; ayrı G2b (#15) dalında.
+- K5: Playwright/WebKit, iPhone 15 Pro, 393 × 852. Kapak kenarı 24 pt, soyadı 48 pt, eser 17 pt, eylemler en az 48 pt; ayrıntı kartında başlık 26/29,12 ve metin 18/27 pt. Ben'in `cssSatir`, `Etiket`, `BenIkon` parçaları ile Galeri'nin `GaleriIkon` ve okunuş kuralları kullanılır.
 - Kâhin: `Testler/kahin/bugun.mjs` (yerelde salt okunur site deposu, CI'da canlı site); iki resim oranı, üç ayrıntı konumu ve iki kart yüksekliği, sekiz kamera karesi, sekiz izleme adımı, jiroskop ve beş tur kartı. `BugunTests` ayrıca aynı güne özel sanatçı seçimini, eski/geçersiz seçimin geri dönüşünü ve G1'e verilen eseri sınar.
 - Telefonda DEBUG `-yerliSekme bugun -adres "#/"` ile açılır. Resme, varsa Hikâyesi'ne veya İncele'ye dokun; kaydırarak ayrıntılar ile Hayatı'nı aç, turu başlat. Gerçek iPhone'da hareket düğmesi ve yana/öne eğim denenmeli. CI aynı adresi `-yalnizSite` ile de açar; `ekranlar/yan-yana-bugun.png` solda site, sağda yerli. `4-url-calis.png` son çekimdir. Normal sürümde etkinleştirme ortak `Gecis.swift` entegrasyonuna kalır.
 
