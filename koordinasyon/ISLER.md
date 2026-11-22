@@ -147,7 +147,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bitti: C1a (#7), C1b (#9), C1c (#14) |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bitti (#11); görünüş G2b'de |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
-| C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
+| C2 | Çalış ana ekranı | C | C1 | 1 | bitti (#16) |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
@@ -556,7 +556,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Kapsam:** Bugünün dersi kartı, günlük tekrar, başka turlar, 14 günlük yük grafiği.
 
-**Devir notu:** –
+**Devir notu:** Gemini, 2026-11-21 · [PR #16](https://github.com/emrymn/nora-sanat/pull/16) · dal `is/C2-calis`. Gemini'nin hakkı bitince notu ve CI düzeltmesini denetçi Claude yazdı (2026-11-22).
+- **Kaynak:** sanat-atlasi `a866b86`: `js/ekranlar/{ders,pekistir,soruTurlari,calisma,gozat,bugun}.js`, `js/{ders,dersIcerik,bolum,oturum,soruTurlari,ikonografi,gecmis,deste,sallanma,egim}.js`, `css/app.css` (`.ders-*`, `.calis-*`, `.tur-izgara`, `.pk-*`, `.salon`, `.hedef-sec`).
+- **Çekirdek** (`NoraCekirdek/Calis/`): `CalisKurallari` (tur önizlemesi `turOzeti`, soru turları, 14 günlük yük, konum yazısı), `CalisDersKurallari` (ders planı, Gör → Öğren → Ayırt et adımları, harita bölümleri), `DesteFizigi` (destenin yaylı sarkacı ve eğim). Kâhin `Testler/kahin/calis.mjs` → `Ornekler/calis/cevaplar.json` (+ `ders_kaynaklari.json`); `CalisTests` (94 test, Linux).
+- **Ekranlar** (`Ekranlar/Calis/`): `CalisSekmesi` (ana / Turlar / ders alt sayfaları, adresle açılış, tur sürerken `.sekmeCubuguGizli`), `CalisAnaGorunumu` (bugünün dersi kartı, günlük tekrar, Çalışma masan: Dersler / Başka turlar, kilitli dersler, harita satırı, 14 gün), `DonemTurlariGorunumu` (bugünkü tur destesi, günlük hedef, yarım kalan tur, döneme göre salonlar), `CalisDersSayfasi`. `PekistirmeEkrani` dışarıdan model ve `disAdreseGit` alıyor (C1c'nin C2 maddeleri).
+- **CI:** `-yerliSekme calis,ben -adres "#/pekistir" [-calisSayfa donem] [-calisKaydir turlar|yuk|salon]`, hazır olunca `tmp/calis-hazir`; `yan-yana-calis-*.png` (solda site). Kâhin yalnız bu dalda canlı sitede koşar (libm farkı için 11 haneye yuvarlanır).
+- **Kalan:** Dersin adımları (Gör, Öğren, Ayırt et ekranları) hâlâ sitenin sayfasını açar → **C3**. Çalış C3 bitince yerli olur. Yerli "Yarım kalan tur" kartı uygulamanın kendi kaydından (`noraPekistirmeOturumu`) gelir; site bu kaydı bilmediği için sitedeki ekranda görünmez.
+
+**Denetim (C2):** Claude, 2026-11-22 — **onay** ([PR #16 yorumu](https://github.com/emrymn/nora-sanat/pull/16)). 94 test geçti; `calis.mjs` canlı sitede yeniden çalıştırıldı, cevaplar örnekle aynı. Yan yana görüntülerde Çalış ana ekranı, Başka turlar ve 14 gün sitenin düzeninde; yerli ekran biraz daha iri (Z3). CI kırmızıydı: Turlar ekranında OCR başlığı resmin üstünde okuyamıyordu ("Turu başlat" aranıyor). Gemini'nin Galeri görüntülerini bu dalda atlatan koşulu kaldırıldı.
 
 ### G3 · Başyapıtlar (ChatGPT)
 **Site kaynakları:** `js/basyapit.js`, `js/basyapitSayfa.js`, `js/ekranlar/basyapit.js`.

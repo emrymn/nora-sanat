@@ -1,0 +1,4814 @@
+{
+  "bugun": "2026-11-21",
+  "bulunmaSonuclari": [
+    {
+      "n": 0,
+      "ek": "0'da",
+      "konum": "Konu 0'dasın"
+    },
+    {
+      "n": 1,
+      "ek": "1'de",
+      "konum": "Konu 1'desin"
+    },
+    {
+      "n": 2,
+      "ek": "2'de",
+      "konum": "Konu 2'desin"
+    },
+    {
+      "n": 3,
+      "ek": "3'te",
+      "konum": "Konu 3'tesin"
+    },
+    {
+      "n": 4,
+      "ek": "4'te",
+      "konum": "Konu 4'tesin"
+    },
+    {
+      "n": 5,
+      "ek": "5'te",
+      "konum": "Konu 5'tesin"
+    },
+    {
+      "n": 6,
+      "ek": "6'da",
+      "konum": "Konu 6'dasın"
+    },
+    {
+      "n": 7,
+      "ek": "7'de",
+      "konum": "Konu 7'desin"
+    },
+    {
+      "n": 8,
+      "ek": "8'de",
+      "konum": "Konu 8'desin"
+    },
+    {
+      "n": 9,
+      "ek": "9'da",
+      "konum": "Konu 9'dasın"
+    },
+    {
+      "n": 10,
+      "ek": "10'da",
+      "konum": "Konu 10'dasın"
+    },
+    {
+      "n": 11,
+      "ek": "11'de",
+      "konum": "Konu 11'desin"
+    },
+    {
+      "n": 12,
+      "ek": "12'de",
+      "konum": "Konu 12'desin"
+    },
+    {
+      "n": 16,
+      "ek": "16'da",
+      "konum": "Konu 16'dasın"
+    },
+    {
+      "n": 19,
+      "ek": "19'da",
+      "konum": "Konu 19'dasın"
+    },
+    {
+      "n": 20,
+      "ek": "20'de",
+      "konum": "Konu 20'desin"
+    },
+    {
+      "n": 30,
+      "ek": "30'da",
+      "konum": "Konu 30'dasın"
+    },
+    {
+      "n": 40,
+      "ek": "40'ta",
+      "konum": "Konu 40'tasın"
+    },
+    {
+      "n": 50,
+      "ek": "50'de",
+      "konum": "Konu 50'desin"
+    },
+    {
+      "n": 60,
+      "ek": "60'ta",
+      "konum": "Konu 60'tasın"
+    },
+    {
+      "n": 70,
+      "ek": "70'de",
+      "konum": "Konu 70'desin"
+    },
+    {
+      "n": 80,
+      "ek": "80'de",
+      "konum": "Konu 80'desin"
+    },
+    {
+      "n": 90,
+      "ek": "90'da",
+      "konum": "Konu 90'dasın"
+    },
+    {
+      "n": 100,
+      "ek": "100'de",
+      "konum": "Konu 100'desin"
+    }
+  ],
+  "dersPlanlari": [
+    {
+      "akim": "Gotik",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "simone-martini",
+          "eser": "Annunciation (triptik)",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "duccio-di-buoninsegna",
+          "eser": "The Nativity with the Prophets Isaiah and Ezekiel",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "limbourg-kardesler",
+          "eser": "The Fall of the Rebel Angels",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 17,
+      "ogrenSayisi": 7,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Altın zemin ve ahşap pano üzerine tempera",
+          "kanitlar": [
+            "8764cc762d",
+            "1ac9101de5",
+            "6013c34ec3"
+          ],
+          "aciklamalar": [
+            "79c30a8200",
+            "66b21317bf"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Uzun, ince, biraz düz figürler; Bizans etkisi",
+          "kanitlar": [
+            "5b6e5b9991",
+            "26a88d3d38",
+            "36e98320b0"
+          ],
+          "aciklamalar": [
+            "00922cae6a",
+            "36bf085a61"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Altın çizgilerle işlenmiş kumaş kıvrımları",
+          "kanitlar": [],
+          "aciklamalar": [
+            "36bf085a61",
+            "3d3b9340bf"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Meryem ve Çocuk, boyalı haç, sunak resmi",
+          "kanitlar": [
+            "c9a253892d",
+            "766c042cb9",
+            "74666c6198"
+          ],
+          "aciklamalar": [
+            "79c30a8200",
+            "5b72ab6553"
+          ]
+        },
+        {
+          "no": 4,
+          "madde": "Zarif, kıvrımlı çizgiler ve süslü giysiler (Uluslararası Gotik)",
+          "kanitlar": [
+            "649c4a3361"
+          ],
+          "aciklamalar": [
+            "197eb226d6",
+            "d4cdf5adf3"
+          ]
+        },
+        {
+          "no": 5,
+          "madde": "Saray hayatı, at, av ve ayrıntılı doğa (Uluslararası Gotik)",
+          "kanitlar": [],
+          "aciklamalar": [
+            "7d3c41f03a"
+          ]
+        },
+        {
+          "no": 6,
+          "madde": "Minyatür inceliğinde el yazmaları (Uluslararası Gotik)",
+          "kanitlar": [
+            "cf54d566c9"
+          ],
+          "aciklamalar": [
+            "001b6000ac"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Erken Rönesans"
+      ],
+      "kapakAnahtar": "q:Q1608116"
+    },
+    {
+      "akim": "Erken Rönesans",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "pietro-perugino",
+          "eser": "İsa'nın Anahtarları Petrus'a Vermesi (Perugino)",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "domenico-di-michelino",
+          "eser": "Dante Alighieri with Florence and the Realms of the Divine Comedy (Hell, Purgatory, Paradise)",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "andrea-mantegna",
+          "eser": "Saint Jerome in the desert",
+          "noktaSayisi": 6
+        }
+      ],
+      "gorToplam": 17,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Tek kaçış noktalı doğrusal perspektif",
+          "kanitlar": [
+            "a35ed142d2",
+            "04c6f44823",
+            "1d4e5ef087"
+          ],
+          "aciklamalar": [
+            "69fd069f13"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Antik mimari ve heykelden alınmış hacimli figürler",
+          "kanitlar": [
+            "76069af76b",
+            "3f7e444a8b"
+          ],
+          "aciklamalar": []
+        },
+        {
+          "no": 2,
+          "madde": "Net çizgiler, berrak ve eşit ışık",
+          "kanitlar": [
+            "8260f862ba",
+            "186716d3cf"
+          ],
+          "aciklamalar": [
+            "ce47573d20"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Dini sahnelerde gerçekçi mekân ve portre",
+          "kanitlar": [
+            "64d3146f6c"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Gotik",
+        "Yüksek Rönesans",
+        "Venedik Rönesansı"
+      ],
+      "kapakAnahtar": "c:the_tribute_money_by_masaccio.jpg"
+    },
+    {
+      "akim": "Kuzey Rönesansı",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "jan-van-eyck",
+          "eser": "Arnolfini Portrait",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "hans-holbein-genc",
+          "eser": "Elçiler",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "lucas-cranach-yasl",
+          "eser": "The fountain of youth",
+          "noktaSayisi": 6
+        }
+      ],
+      "gorToplam": 18,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Yağlı boyada inanılmaz ayrıntı (kumaş, metal, cam)",
+          "kanitlar": [
+            "be950231e5"
+          ],
+          "aciklamalar": [
+            "0a007d2249",
+            "954c49ec51"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Gizli simgelerle dolu gündelik nesneler",
+          "kanitlar": [
+            "53149c720d",
+            "7df7de65de",
+            "a44b5fd11a"
+          ],
+          "aciklamalar": [
+            "89171184b8",
+            "b416efdc91"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Pencereden görünen manzara, iç mekân ışığı",
+          "kanitlar": [
+            "ce02af6673",
+            "eeb7b1156e",
+            "bad36b84e0"
+          ],
+          "aciklamalar": [
+            "0a007d2249"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Ciddi, gerçekçi, idealleştirilmemiş yüzler",
+          "kanitlar": [],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Gotik",
+        "Erken Rönesans",
+        "Flaman Barok"
+      ],
+      "kapakAnahtar": "c:van_eyck_-_arnolfini_portrait.jpg"
+    },
+    {
+      "akim": "Yüksek Rönesans",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "donato-bramante",
+          "eser": "Christ at the Column",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "marcantonio-raimondi",
+          "eser": "The Judgment of Paris (baskı)",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "raphael",
+          "eser": "The School of Athens (Atina Okulu)",
+          "noktaSayisi": 6
+        }
+      ],
+      "gorToplam": 18,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Piramit biçimli, dengeli kompozisyon",
+          "kanitlar": [
+            "538508f505",
+            "fa9ac57da5",
+            "b1ae1402f8"
+          ],
+          "aciklamalar": [
+            "c61b351153",
+            "c5011f8a22"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Sfumato: yumuşak geçişli gölgeler",
+          "kanitlar": [
+            "538508f505",
+            "cf62fc9587",
+            "295e6867a7"
+          ],
+          "aciklamalar": [
+            "618f509455",
+            "c5011f8a22"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "İdeal güzellik ve sakin, ağırbaşlı figürler",
+          "kanitlar": [
+            "b11b02159b",
+            "7550dbf20b"
+          ],
+          "aciklamalar": [
+            "c61b351153",
+            "93729f7df5"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Anatomiye hâkim, heykel gibi bedenler",
+          "kanitlar": [
+            "c8921184f6",
+            "a33a1a9cb0",
+            "2cec20af73"
+          ],
+          "aciklamalar": [
+            "25a476bfe9"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Erken Rönesans",
+        "Venedik Rönesansı",
+        "Maniyerizm"
+      ],
+      "kapakAnahtar": "q:Q2344505"
+    },
+    {
+      "akim": "Venedik Rönesansı",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "titian",
+          "eser": "Bacchus ve Ariadne",
+          "noktaSayisi": 7
+        },
+        {
+          "sanatci": "tintoretto",
+          "eser": "Saint George and the Dragon",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "paolo-veronese",
+          "eser": "Kana'da Düğün",
+          "noktaSayisi": 6
+        }
+      ],
+      "gorToplam": 18,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Çizgiden çok renk (colore): sıcak, doygun tonlar",
+          "kanitlar": [
+            "475403de3c"
+          ],
+          "aciklamalar": [
+            "70b2b08992"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Yumuşak ışık ve atmosferli manzara",
+          "kanitlar": [
+            "e182264e47",
+            "eb4752ef92",
+            "52e3fbd6c9"
+          ],
+          "aciklamalar": [
+            "dccbe07033",
+            "45a01592f0"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Görünür fırça izi, tuval üzerine yağlı boya",
+          "kanitlar": [],
+          "aciklamalar": [
+            "70b2b08992",
+            "df74dd2869"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Çıplak figür, mitoloji ve şölen sahneleri",
+          "kanitlar": [
+            "6422e07e49",
+            "141f4ae0e4",
+            "dcd16c1e0f"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Yüksek Rönesans",
+        "Maniyerizm"
+      ],
+      "kapakAnahtar": "c:tiziano_-_venere_di_urbino_-_google_art_project.jpg"
+    },
+    {
+      "akim": "Maniyerizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "sofonisba-anguissola",
+          "eser": "Anguissola kardeşlerin portresi (oyun oynayan kardeşler)",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "el-greco",
+          "eser": "The Burial of the Count of Orgaz",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "jacopo-pontormo",
+          "eser": "Deposition",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 17,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Uzatılmış boyunlar ve uzuvlar",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 1,
+          "madde": "Asitli, yapay renkler (pembe, nane yeşili)",
+          "kanitlar": [
+            "6fd22d1a26",
+            "37928add2e",
+            "97cbf3ac3e"
+          ],
+          "aciklamalar": [
+            "0f43509c52"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Kıvrılan figürler, sıkışık ya da boş merkezli kompozisyon",
+          "kanitlar": [
+            "fe71b0ffcd",
+            "7e3b6ae707",
+            "6fd22d1a26"
+          ],
+          "aciklamalar": [
+            "6289e52f8d",
+            "24e387c061"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Soğuk, tedirgin ya da zarif-yapay bir hava",
+          "kanitlar": [
+            "09fcf208b0",
+            "c44d9a3cf3",
+            "8f0392d1d4"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Yüksek Rönesans",
+        "Venedik Rönesansı",
+        "İtalyan Barok ve Caravaggizm"
+      ],
+      "kapakAnahtar": "c:jacopo_pontormo_-_deposition_-_wga18113_(cropped).jpg"
+    },
+    {
+      "akim": "İtalyan Barok ve Caravaggizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "orazio-gentileschi",
+          "eser": "The Lute Player",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "annibale-carracci",
+          "eser": "Assumption of the Virgin",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "caravaggio",
+          "eser": "The Conversion of Saint Paul",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 16,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Tenebrizm: zifiri karanlıkta sert spot ışığı",
+          "kanitlar": [
+            "17e37ee1f7",
+            "c646dad3b5"
+          ],
+          "aciklamalar": [
+            "b1608d71e8"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Sokaktan alınmış gerçekçi, kirli ayaklı modeller",
+          "kanitlar": [],
+          "aciklamalar": [
+            "a0ac57fdce"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "En dramatik an; izleyiciye taşan hareket",
+          "kanitlar": [
+            "e038cfde34",
+            "cbe9c1b904",
+            "e2692f9a4b"
+          ],
+          "aciklamalar": [
+            "21126c6b2b",
+            "4cba087824"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Çapraz kompozisyon, yakın plan figürler",
+          "kanitlar": [
+            "e12abe6d51",
+            "9fb52a2921",
+            "aa479adf6d"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "İspanyol Barok",
+        "Flaman Barok",
+        "Hollanda Altın Çağı",
+        "Maniyerizm",
+        "Geç İtalyan Barok"
+      ],
+      "kapakAnahtar": "c:supper_at_emmaus-caravaggio_(1601).jpg"
+    },
+    {
+      "akim": "İspanyol Barok",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "diego-velazquez",
+          "eser": "Las Meninas (The Maids of Honor)",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "francisco-de-zurbaran",
+          "eser": "The Defense of Cadiz Against the English",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 11,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Karanlık zemin, sert ve sade ışık",
+          "kanitlar": [
+            "dec786186f",
+            "87df82785e",
+            "718bb736c5"
+          ],
+          "aciklamalar": [
+            "54b1c17a78",
+            "631c83954e"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Derin dindarlık: azizler, çileciler, natürmort",
+          "kanitlar": [],
+          "aciklamalar": [
+            "54b1c17a78"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Saray portrelerinde gümüşi gri tonlar (Velázquez)",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Gerçekçi, ağırbaşlı ve sessiz figürler",
+          "kanitlar": [],
+          "aciklamalar": [
+            "79d65e8104",
+            "a066519433"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "İtalyan Barok ve Caravaggizm",
+        "Hollanda Altın Çağı"
+      ],
+      "kapakAnahtar": "q:Q4693305"
+    },
+    {
+      "akim": "Flaman Barok",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "peter-paul-rubens",
+          "eser": "The Fall of the Damned",
+          "noktaSayisi": 4
+        },
+        {
+          "sanatci": "anthony-van-dyck",
+          "eser": "The Vision of the Blessed Hermann Joseph",
+          "noktaSayisi": 4
+        }
+      ],
+      "gorToplam": 8,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Etli, canlı, hareketli bedenler (Rubens)",
+          "kanitlar": [
+            "16d9b1be72",
+            "9b92a41878",
+            "6c7cc626b7"
+          ],
+          "aciklamalar": [
+            "c284cf192c",
+            "d71d663e6c"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Sıcak renkler, kıvrılan diyagonal kompozisyon",
+          "kanitlar": [
+            "f11cbdf56e",
+            "16d9b1be72"
+          ],
+          "aciklamalar": [
+            "d71d663e6c",
+            "c284cf192c"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Zengin portreler, ipek ve dantel (van Dyck)",
+          "kanitlar": [
+            "989103f40d",
+            "6f1adb347a"
+          ],
+          "aciklamalar": [
+            "c23ba37119"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Av, mitoloji ve büyük sunak resimleri",
+          "kanitlar": [],
+          "aciklamalar": [
+            "8e24fe69a0",
+            "20d7432cf1"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Hollanda Altın Çağı",
+        "İtalyan Barok ve Caravaggizm"
+      ],
+      "kapakAnahtar": "c:peter_paul_rubens_-_the_rape_of_the_daughters_of_leucippus.jpg"
+    },
+    {
+      "akim": "Hollanda Altın Çağı",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "rembrandt-van-rijn",
+          "eser": "The Return of the Prodigal Son",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "johannes-vermeer",
+          "eser": "Açık Pencere Önünde Mektup Okuyan Kız",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "frans-hals",
+          "eser": "Young Man and Woman in an Inn",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 16,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Gündelik hayat (janr), iç mekân, natürmort",
+          "kanitlar": [
+            "4cc66f9b16",
+            "79305681d3",
+            "2a3df6ffce"
+          ],
+          "aciklamalar": [
+            "eea855b85e",
+            "554a830626"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Pencereden süzülen sakin ışık (Vermeer)",
+          "kanitlar": [
+            "bef5f9c662",
+            "fed2b4082f",
+            "5a6460c3d4"
+          ],
+          "aciklamalar": [
+            "8bb94c7143",
+            "ddd254d207"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Grup portreleri ve derin ışık-gölge (Rembrandt)",
+          "kanitlar": [
+            "7a887dca53",
+            "9a6a04ba20",
+            "2fcd85e808"
+          ],
+          "aciklamalar": [
+            "d65814d5c6"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Küçük boy, burjuva alıcı için resim",
+          "kanitlar": [],
+          "aciklamalar": [
+            "181d50f4db",
+            "cdde135741"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Flaman Barok",
+        "İspanyol Barok",
+        "İtalyan Barok ve Caravaggizm"
+      ],
+      "kapakAnahtar": "q:Q700251"
+    },
+    {
+      "akim": "Fransız Klasisizmi",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "hyacinthe-rigaud",
+          "eser": "Portrait of Louis XIV",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "charles-le-brun",
+          "eser": "The King governs by himself, 1661",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "nicolas-poussin",
+          "eser": "The Agony in the Garden",
+          "noktaSayisi": 4
+        }
+      ],
+      "gorToplam": 15,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Düzenli, yatay, sahne gibi kompozisyon",
+          "kanitlar": [
+            "eaa9f4347c",
+            "8c10896b56",
+            "740565140a"
+          ],
+          "aciklamalar": [
+            "67483689bd",
+            "075dc2412e"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Antik ve İncil konuları, ders veren anlatı",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 2,
+          "madde": "Serin renkler, net çizgi, idealize manzara",
+          "kanitlar": [
+            "283b1ad90b",
+            "9b52d2cd3c",
+            "15dfec02ca"
+          ],
+          "aciklamalar": [
+            "67483689bd",
+            "0677825d9b"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Duygudan çok akıl ve ölçü",
+          "kanitlar": [
+            "6c10f65ab4"
+          ],
+          "aciklamalar": [
+            "0677825d9b",
+            "be6e90a5ee"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Rokoko",
+        "İtalyan Barok ve Caravaggizm",
+        "Neoklasisizm",
+        "Geç İtalyan Barok"
+      ],
+      "kapakAnahtar": "c:nicolas_poussin_-_et_in_arcadia_ego_(deuxième_version).jpg"
+    },
+    {
+      "akim": "Geç İtalyan Barok",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "mattia-preti",
+          "eser": "Feast of Herod",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "giuseppe-maria-crespi",
+          "eser": "Searching for Fleas",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "salvator-rosa",
+          "eser": "Allegory of Fortune",
+          "noktaSayisi": 4
+        }
+      ],
+      "gorToplam": 14,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Tavanlarda gökyüzüne açılan yanılsama (quadratura)",
+          "kanitlar": [
+            "754429b7d7",
+            "2ac6a5dbde"
+          ],
+          "aciklamalar": [
+            "6b99e92a8a",
+            "0cb1452089"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Açık, havadar renkler, uçan figürler",
+          "kanitlar": [
+            "98310129bc",
+            "978032ac68",
+            "9fc94e231d"
+          ],
+          "aciklamalar": [
+            "6b99e92a8a"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Venedik manzaraları (veduta) ve kalabalık şölenler",
+          "kanitlar": [
+            "97572a1148"
+          ],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Teatral, dekoratif büyük ölçek",
+          "kanitlar": [
+            "10aafca1de"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "İtalyan Barok ve Caravaggizm",
+        "Rokoko",
+        "Fransız Klasisizmi"
+      ],
+      "kapakAnahtar": "q:Q112401018"
+    },
+    {
+      "akim": "Rokoko",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "jean-antoine-watteau",
+          "eser": "Pilgrimage to the Island of Cythera",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "francois-boucher",
+          "eser": "The Triumph of Venus",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "william-hogarth",
+          "eser": "Before",
+          "noktaSayisi": 4
+        }
+      ],
+      "gorToplam": 15,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Pastel tonlar: pembe, açık mavi, krem",
+          "kanitlar": [
+            "2105d71d78",
+            "da2076e23e",
+            "d85c1ca5c4"
+          ],
+          "aciklamalar": [
+            "70f1e78430",
+            "4597e7501d"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Hafif, oyunbaz aşk ve bahçe sahneleri (fête galante)",
+          "kanitlar": [
+            "b4d7350706",
+            "446b47326a",
+            "ed3be5dc54"
+          ],
+          "aciklamalar": [
+            "4597e7501d",
+            "912a590e51"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Kıvrımlı, asimetrik süsleme",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Aristokrat zarafeti, tüy gibi fırça",
+          "kanitlar": [
+            "9192a0970c"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Fransız Klasisizmi",
+        "Neoklasisizm",
+        "Geç İtalyan Barok"
+      ],
+      "kapakAnahtar": "c:joean_honoré_fragonard_-_the_swing.jpg"
+    },
+    {
+      "akim": "Neoklasisizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "jacques-louis-david",
+          "eser": "İmparator Napolyon Tuileries'deki Çalışma Odasında",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "benjamin-west",
+          "eser": "Colonel Guy Johnson and Karonghyontye",
+          "noktaSayisi": 4
+        },
+        {
+          "sanatci": "angelica-kauffman",
+          "eser": "Telemachus and the Nymphs of Calypso",
+          "noktaSayisi": 4
+        }
+      ],
+      "gorToplam": 13,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Keskin çizgi, pürüzsüz yüzey, görünmez fırça",
+          "kanitlar": [],
+          "aciklamalar": [
+            "47fbe85445"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Antik Roma ve Yunan konuları; erdem ve fedakârlık",
+          "kanitlar": [
+            "616f7df806"
+          ],
+          "aciklamalar": [
+            "d1b1b5a66a",
+            "47fbe85445"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Friz gibi yatay, sahne düzeni",
+          "kanitlar": [
+            "4dcff5e9c2"
+          ],
+          "aciklamalar": [
+            "47fbe85445"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Sert, berrak ışık; heykel gibi figürler",
+          "kanitlar": [
+            "5fd8ca5471"
+          ],
+          "aciklamalar": [
+            "47fbe85445"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Rokoko",
+        "Akademizm ve Oryantalizm",
+        "Romantizm"
+      ],
+      "kapakAnahtar": "c:jacques-louis_david_-_oath_of_the_horatii_-_google_art_project.jpg"
+    },
+    {
+      "akim": "Romantizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "caspar-david-friedrich",
+          "eser": "Bulutların Üzerinde Yolculuk",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "theodore-gericault",
+          "eser": "The Raft of the Medusa",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "j-m-w-turner",
+          "eser": "The Fighting Temeraire",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 17,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Duygu, tutku ve fırtına; dramatik doğa",
+          "kanitlar": [
+            "57a56e19a2",
+            "6ffec26569",
+            "8ae8d154a9"
+          ],
+          "aciklamalar": [
+            "7aefdc9168",
+            "aad84d6c69"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Serbest, hareketli fırça ve güçlü renk",
+          "kanitlar": [
+            "df7d7a5b5b",
+            "8ae8d154a9",
+            "5c3172b269"
+          ],
+          "aciklamalar": [
+            "7aefdc9168",
+            "b21f76ad88"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Yüce (sublime): insan doğa karşısında küçük",
+          "kanitlar": [
+            "0fd271eee6",
+            "42b9ee63df",
+            "434f035c7c"
+          ],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Egzotik, tarihî ve güncel trajik konular",
+          "kanitlar": [
+            "1754b9011c",
+            "a42fa0bf3f"
+          ],
+          "aciklamalar": [
+            "7aefdc9168",
+            "9c30095ccb"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Neoklasisizm",
+        "Prerafaelitler",
+        "Barbizon ve Realizm"
+      ],
+      "kapakAnahtar": "q:Q311243"
+    },
+    {
+      "akim": "Prerafaelitler",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "william-holman-hunt",
+          "eser": "The Lady of Shalott",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "dante-gabriel-rossetti",
+          "eser": "Proserpine",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "john-everett-millais",
+          "eser": "Mariana",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 15,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Parlak, saf renkler; beyaz zemin üzerine",
+          "kanitlar": [
+            "806f1edc50",
+            "e4397354a2",
+            "2f9bbaa4e2"
+          ],
+          "aciklamalar": [
+            "9253ce68a0",
+            "90616c1ffe"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Her yaprağı tek tek çizilmiş doğa ayrıntısı",
+          "kanitlar": [
+            "5c3978600f",
+            "8026ba73af"
+          ],
+          "aciklamalar": [
+            "6f5ff0ce47",
+            "90616c1ffe"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Orta Çağ efsaneleri, Shakespeare, uzun saçlı kadınlar",
+          "kanitlar": [],
+          "aciklamalar": [
+            "67822defc7",
+            "013b541553"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Düz, keskin ışık; simgelerle dolu sahne",
+          "kanitlar": [
+            "0f95fafb3a"
+          ],
+          "aciklamalar": [
+            "90616c1ffe"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Romantizm",
+        "Sembolizm",
+        "Akademizm ve Oryantalizm"
+      ],
+      "kapakAnahtar": "q:Q4281369"
+    },
+    {
+      "akim": "Akademizm ve Oryantalizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "jean-auguste-dominique-ingres",
+          "eser": "The Dream of Ossian",
+          "noktaSayisi": 4
+        },
+        {
+          "sanatci": "jean-leon-gerome",
+          "eser": "The Carpet Merchant",
+          "noktaSayisi": 4
+        },
+        {
+          "sanatci": "william-adolphe-bouguereau",
+          "eser": "Dante and Virgil in Hell",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 13,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Kusursuz, cilalı yüzey ve akademik çizim",
+          "kanitlar": [
+            "ba91b84028",
+            "3d222e8f83",
+            "594b6feeea"
+          ],
+          "aciklamalar": [
+            "f8c576678e",
+            "be214e08fd"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Mitoloji, tarih ve idealize çıplak",
+          "kanitlar": [
+            "02dba8f0b3",
+            "115be79d41",
+            "24229f5df1"
+          ],
+          "aciklamalar": [
+            "b874dcbdf4",
+            "730bf3cda0"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Doğu sahneleri: hamam, çarşı, harem (hayalî)",
+          "kanitlar": [
+            "3babe47c37",
+            "5c9427dd26",
+            "0e3760b159"
+          ],
+          "aciklamalar": [
+            "be214e08fd"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Fotoğraf gibi ayrıntı, teatral kurgu",
+          "kanitlar": [
+            "ffff8c2cc8"
+          ],
+          "aciklamalar": [
+            "8da3388f05"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Neoklasisizm",
+        "Romantizm",
+        "Prerafaelitler"
+      ],
+      "kapakAnahtar": "c:jean_auguste_dominique_ingres,_la_grande_odalisque,_1814.jpg"
+    },
+    {
+      "akim": "Barbizon ve Realizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "gustave-courbet",
+          "eser": "Ornans'ta Cenaze",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "honore-daumier",
+          "eser": "The Connoisseur",
+          "noktaSayisi": 4
+        },
+        {
+          "sanatci": "jean-francois-millet",
+          "eser": "The Gleaners",
+          "noktaSayisi": 6
+        }
+      ],
+      "gorToplam": 16,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Köylü, işçi ve sıradan insanın gündelik hayatı",
+          "kanitlar": [
+            "9376ba70d6",
+            "b53d3c16a6"
+          ],
+          "aciklamalar": [
+            "19e2ca18a3",
+            "17bc644172"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Toprak renkleri: kahve, okra, yeşil",
+          "kanitlar": [
+            "02edd1d514",
+            "07b7331ab1",
+            "109aa0bfe8"
+          ],
+          "aciklamalar": [
+            "eea8bf6f4e",
+            "97c05b12da"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Açık havada doğa; orman ve tarla",
+          "kanitlar": [
+            "982ac087b2",
+            "4dc8ab44a1",
+            "0fb094f862"
+          ],
+          "aciklamalar": [
+            "fd59008522",
+            "97c05b12da"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "İdealize etmeden, ağır ve gerçek",
+          "kanitlar": [
+            "b53d3c16a6"
+          ],
+          "aciklamalar": [
+            "92f9eb73ec"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Romantizm",
+        "Empresyonizm"
+      ],
+      "kapakAnahtar": "q:Q1368055"
+    },
+    {
+      "akim": "Empresyonizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "edouard-manet",
+          "eser": "A Bar at the Folies-Bergère",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "gustave-caillebotte",
+          "eser": "Paris Street; Rainy Day",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "edgar-degas",
+          "eser": "Bale Sınıfı (Degas, Metropolitan Sanat Müzesi)",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 17,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Kısa, görünür fırça vuruşları; bulanık değil titreşen yüzey",
+          "kanitlar": [
+            "154f34b0e8",
+            "47e870c079",
+            "e5398d1641"
+          ],
+          "aciklamalar": [
+            "6ca304e3c4"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Anlık ışık ve hava; gölgede bile renk",
+          "kanitlar": [
+            "0bd4f79a02"
+          ],
+          "aciklamalar": [
+            "e351f66c84",
+            "164fcbbf04"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Açık havada (en plein air) manzara, kafe, nehir",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Siyah yok denecek kadar az; açık palet",
+          "kanitlar": [],
+          "aciklamalar": [
+            "6ca304e3c4"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Barbizon ve Realizm",
+        "Post-Empresyonizm"
+      ],
+      "kapakAnahtar": "c:claude_monet,_impression,_soleil_levant.jpg"
+    },
+    {
+      "akim": "Ukiyo-e (Japon baskısı)",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "utagawa-hiroshige",
+          "eser": "Sudden Shower over Shin-Ōhashi Bridge and Atake",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "katsushika-hokusai",
+          "eser": "Kanagawa Oki Nami Ura",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 11,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Ahşap baskı; düz renk alanları ve net kontur",
+          "kanitlar": [
+            "cfcede66aa",
+            "872a82388c",
+            "13416c7943"
+          ],
+          "aciklamalar": [
+            "6070f0f194",
+            "d894b3f5f4"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Asimetrik, yukarıdan ya da kesik kadraj",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 2,
+          "madde": "Dalga, Fuji, oyuncular, kurtizanlar",
+          "kanitlar": [
+            "104753098a",
+            "8aab5712da"
+          ],
+          "aciklamalar": [
+            "d576fac7d9",
+            "755b11db96"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Gölge ve perspektif yerine desen",
+          "kanitlar": [],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Empresyonizm",
+        "Post-Empresyonizm"
+      ],
+      "kapakAnahtar": "q:Q227494"
+    },
+    {
+      "akim": "Post-Empresyonizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "paul-gauguin",
+          "eser": "Nereden geliyoruz? Neyiz? Nereye gidiyoruz?",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "paul-cezanne",
+          "eser": "The Card Players",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "vincent-van-gogh",
+          "eser": "Gece Kahvesi",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 16,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Kalın, yönlü fırça ya da noktalar (puantilizm)",
+          "kanitlar": [
+            "8063cf3cb8",
+            "3693ddc58f",
+            "d57d13b759"
+          ],
+          "aciklamalar": [
+            "fca9ac2694"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Duygu ya da yapı için abartılmış renk",
+          "kanitlar": [
+            "9d786b9ae8",
+            "8235a24e8d",
+            "392eee927c"
+          ],
+          "aciklamalar": [
+            "d7e79e6cfb",
+            "7ec97be8dc"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Geometrik sadeleştirme (Cézanne)",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Kişisel üslup: her sanatçı ayrı yol",
+          "kanitlar": [],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Empresyonizm",
+        "Sembolizm",
+        "Ekspresyonizm"
+      ],
+      "kapakAnahtar": "q:Q45585"
+    },
+    {
+      "akim": "Sembolizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "odilon-redon",
+          "eser": "The Cyclops",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "pierre-puvis-de-chavannes",
+          "eser": "The Sacred Grove, Beloved of the Arts and the Muses",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "gustave-moreau",
+          "eser": "The Apparition",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 15,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Rüya, ölüm, mit ve gizem",
+          "kanitlar": [],
+          "aciklamalar": [
+            "856712abf7"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Gerçek değil ruh hâli; düşsel ışık",
+          "kanitlar": [
+            "19a29c27bf",
+            "c9cda051fe",
+            "a747011947"
+          ],
+          "aciklamalar": []
+        },
+        {
+          "no": 2,
+          "madde": "Ölümcül kadın, melek, sfenks figürleri",
+          "kanitlar": [
+            "a29c0e9df6"
+          ],
+          "aciklamalar": [
+            "f952091bf6",
+            "3f9fdbd556"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Süslü ya da soluk, esrarlı renkler",
+          "kanitlar": [
+            "c5a1be6c62",
+            "5f9babfef8",
+            "d690f611e7"
+          ],
+          "aciklamalar": [
+            "ca8de4f9ff",
+            "65f8bb4124"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Post-Empresyonizm",
+        "Prerafaelitler",
+        "Art Nouveau ve Viyana Secession"
+      ],
+      "kapakAnahtar": "q:Q3818663"
+    },
+    {
+      "akim": "Art Nouveau ve Viyana Secession",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "gustav-klimt",
+          "eser": "Öpücük",
+          "noktaSayisi": 6
+        }
+      ],
+      "gorToplam": 6,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Kıvrılan bitkisel çizgiler",
+          "kanitlar": [],
+          "aciklamalar": [
+            "baab6a22aa"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Altın varak ve mozaik gibi desen (Klimt)",
+          "kanitlar": [
+            "dfb488d087",
+            "d86a585798"
+          ],
+          "aciklamalar": [
+            "467250fc0d",
+            "cd98936294"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Düz, dekoratif yüzey; afiş ve tasarım",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Uzun saçlı, zarif kadın figürleri",
+          "kanitlar": [],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Sembolizm",
+        "Ekspresyonizm"
+      ],
+      "kapakAnahtar": "q:Q698487"
+    },
+    {
+      "akim": "Ekspresyonizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "ernst-ludwig-kirchner",
+          "eser": "Berlin Street Scene",
+          "noktaSayisi": 6
+        },
+        {
+          "sanatci": "edvard-munch",
+          "eser": "Çığlık (tablo)",
+          "noktaSayisi": 5
+        },
+        {
+          "sanatci": "wassily-kandinsky",
+          "eser": "Composition VII",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 16,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Duyguyu bağıran, gerçek dışı renkler",
+          "kanitlar": [
+            "25db3976ec",
+            "1d13c78f8e",
+            "0c131d698f"
+          ],
+          "aciklamalar": [
+            "184e82d021"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Sert, açılı, çarpıtılmış biçimler",
+          "kanitlar": [
+            "1d13c78f8e",
+            "0c131d698f",
+            "2a913383bf"
+          ],
+          "aciklamalar": [
+            "4c4bfcbccb"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Kalın kontur, kaba fırça; ağaç baskı",
+          "kanitlar": [],
+          "aciklamalar": [
+            "4c4bfcbccb"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Kaygı, yalnızlık, kent ve savaş",
+          "kanitlar": [],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Post-Empresyonizm",
+        "Art Nouveau ve Viyana Secession",
+        "Kübizm"
+      ],
+      "kapakAnahtar": "q:Q471379"
+    },
+    {
+      "akim": "Kübizm",
+      "adimlar": [
+        "gor",
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [
+        {
+          "sanatci": "pablo-picasso",
+          "eser": "The Saltimbanques",
+          "noktaSayisi": 5
+        }
+      ],
+      "gorToplam": 5,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Nesne aynı anda birçok açıdan, parçalanmış",
+          "kanitlar": [
+            "4716113c3e"
+          ],
+          "aciklamalar": [
+            "1b26fc3d4e",
+            "d33010503c"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Geometrik düzlemler; kahve, gri, toprak tonları",
+          "kanitlar": [],
+          "aciklamalar": [
+            "1b26fc3d4e",
+            "60c4cb85dd"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Natürmort, gitar, şişe, gazete harfleri",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Kolaj: yapıştırılmış kâğıt ve malzeme",
+          "kanitlar": [],
+          "aciklamalar": [
+            "85c62aa4ab"
+          ]
+        }
+      ],
+      "ayirtKomsu": [
+        "Ekspresyonizm",
+        "Dada"
+      ],
+      "kapakAnahtar": "wikiart:https://uploads1.wikiart.org/images/pablo-picasso/portrait-of-ambroise-vollard-1910.jpg!HalfHD.jpg"
+    },
+    {
+      "akim": "Dada",
+      "adimlar": [
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [],
+      "gorToplam": 0,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Akla ve sanata karşı alay",
+          "kanitlar": [
+            "6a7d16444e",
+            "b018ee8f8c"
+          ],
+          "aciklamalar": [
+            "d552c95e37",
+            "36b8fa1f63"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Hazır nesne (ready-made), kolaj, fotomontaj",
+          "kanitlar": [],
+          "aciklamalar": [
+            "88ecfc024d"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Rastlantı ve saçmalık",
+          "kanitlar": [],
+          "aciklamalar": [
+            "36b8fa1f63"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Savaş karşıtı, kışkırtıcı",
+          "kanitlar": [],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Kübizm",
+        "Sürrealizm"
+      ],
+      "kapakAnahtar": "wikiart:https://uploads5.wikiart.org/images/hannah-hoch/cut-with-the-kitchen-knife-through-the-beer-belly-of-the-weimar-republic-1919.jpg"
+    },
+    {
+      "akim": "Sürrealizm",
+      "adimlar": [
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [],
+      "gorToplam": 0,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Rüya mantığı; imkânsız bir araya gelişler",
+          "kanitlar": [
+            "541898f45b",
+            "a815e89d91"
+          ],
+          "aciklamalar": [
+            "64f3ec1298",
+            "116b3e38e0"
+          ]
+        },
+        {
+          "no": 1,
+          "madde": "Fotoğraf gibi gerçekçi teknik, akıl dışı sahne",
+          "kanitlar": [
+            "0d855288fc"
+          ],
+          "aciklamalar": [
+            "98288ab09c"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Eriyen saatler, boş ufuklar, uzun gölgeler",
+          "kanitlar": [
+            "095e02200d",
+            "a65ea67e76"
+          ],
+          "aciklamalar": [
+            "64f3ec1298",
+            "98288ab09c"
+          ]
+        },
+        {
+          "no": 3,
+          "madde": "Bilinçaltı, arzu ve korku",
+          "kanitlar": [
+            "8f2ac3814e"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Dada",
+        "Sembolizm"
+      ],
+      "kapakAnahtar": "wikiart:https://uploads2.wikiart.org/00475/images/salvador-dali/w1siziisijm4njq3mcjdlfsiccisimnvbnzlcnqilcitcxvhbgl0esa5mcatcmvzaxplidiwmdb4mjawmfx1mdazzsjdxq.jpg!HalfHD.jpg"
+    },
+    {
+      "akim": "Savaş sonrası figürasyon",
+      "adimlar": [
+        "ogren",
+        "ayirt"
+      ],
+      "gorEserler": [],
+      "gorToplam": 0,
+      "ogrenSayisi": 4,
+      "ogrenMaddeler": [
+        {
+          "no": 0,
+          "madde": "Çarpıtılmış, acı çeken insan bedeni",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 1,
+          "madde": "Kafes ya da boş oda içinde yalnız figür",
+          "kanitlar": [
+            "1b496ff26b"
+          ],
+          "aciklamalar": [
+            "0bde7063e5"
+          ]
+        },
+        {
+          "no": 2,
+          "madde": "Kalın, etli boya; çığlık ve şiddet",
+          "kanitlar": [],
+          "aciklamalar": []
+        },
+        {
+          "no": 3,
+          "madde": "Soyutun karşısında figürü sürdürmek",
+          "kanitlar": [
+            "3b94990a32"
+          ],
+          "aciklamalar": []
+        }
+      ],
+      "ayirtKomsu": [
+        "Sürrealizm",
+        "Ekspresyonizm"
+      ],
+      "kapakAnahtar": "wikiart:https://uploads4.wikiart.org/images/francis-bacon/study-after-velazquez-s-portrait-of-pope-innocent-x(1).jpg!HalfHD.jpg"
+    }
+  ],
+  "tumBolumler": [
+    {
+      "id": "2-1",
+      "akim": "Gotik",
+      "sira": 2,
+      "no": 1,
+      "adet": 3,
+      "konular": [
+        3
+      ],
+      "sanatcilar": [
+        "bonaventura-berlinghieri",
+        "cimabue",
+        "giotto-di-bondone"
+      ]
+    },
+    {
+      "id": "2-2",
+      "akim": "Gotik",
+      "sira": 2,
+      "no": 2,
+      "adet": 3,
+      "konular": [
+        5,
+        6
+      ],
+      "sanatcilar": [
+        "duccio-di-buoninsegna",
+        "pietro-lorenzetti",
+        "simone-martini",
+        "ambrogio-lorenzetti"
+      ]
+    },
+    {
+      "id": "3-1",
+      "akim": "Gotik",
+      "sira": 2,
+      "no": 3,
+      "adet": 3,
+      "konular": [
+        6,
+        10
+      ],
+      "sanatcilar": [
+        "limbourg-kardesler",
+        "simone-martini",
+        "ambrogio-lorenzetti",
+        "gentile-da-fabriano"
+      ]
+    },
+    {
+      "id": "4-1",
+      "akim": "Erken Rönesans",
+      "sira": 4,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        1,
+        9,
+        12,
+        18
+      ],
+      "sanatcilar": [
+        "masaccio",
+        "domenico-di-michelino",
+        "fra-angelico",
+        "paolo-uccello",
+        "piero-della-francesca",
+        "andrea-mantegna",
+        "sandro-botticelli",
+        "pietro-perugino"
+      ]
+    },
+    {
+      "id": "5-1",
+      "akim": "Kuzey Rönesansı",
+      "sira": 5,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        9,
+        10
+      ],
+      "sanatcilar": [
+        "albrecht-durer",
+        "robert-campin",
+        "jan-van-eyck",
+        "rogier-van-der-weyden",
+        "petrus-christus",
+        "quentin-metsys"
+      ]
+    },
+    {
+      "id": "5-2",
+      "akim": "Kuzey Rönesansı",
+      "sira": 5,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        17,
+        21,
+        22
+      ],
+      "sanatcilar": [
+        "hans-baldung-grien",
+        "lucas-cranach-yasl",
+        "hans-holbein-genc",
+        "hieronymus-bosch",
+        "pieter-bruegel-yasl"
+      ]
+    },
+    {
+      "id": "6-1",
+      "akim": "Yüksek Rönesans",
+      "sira": 6,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        1,
+        2,
+        18,
+        24,
+        51
+      ],
+      "sanatcilar": [
+        "leonardo-da-vinci",
+        "michelangelo",
+        "donato-bramante",
+        "raphael",
+        "correggio",
+        "marcantonio-raimondi"
+      ]
+    },
+    {
+      "id": "7-1",
+      "akim": "Venedik Rönesansı",
+      "sira": 7,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        17,
+        26
+      ],
+      "sanatcilar": [
+        "giovanni-bellini",
+        "giorgione",
+        "titian",
+        "tintoretto",
+        "paolo-veronese"
+      ]
+    },
+    {
+      "id": "8-1",
+      "akim": "Maniyerizm",
+      "sira": 8,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        12,
+        17
+      ],
+      "sanatcilar": [
+        "jacopo-pontormo",
+        "francesco-salviati",
+        "sofonisba-anguissola"
+      ]
+    },
+    {
+      "id": "8-2",
+      "akim": "Maniyerizm",
+      "sira": 8,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        19,
+        24,
+        26
+      ],
+      "sanatcilar": [
+        "daniele-da-volterra",
+        "rosso-fiorentino",
+        "parmigianino",
+        "agnolo-bronzino",
+        "el-greco",
+        "giulio-romano"
+      ]
+    },
+    {
+      "id": "9-1",
+      "akim": "İtalyan Barok ve Caravaggizm",
+      "sira": 9,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        30
+      ],
+      "sanatcilar": [
+        "annibale-carracci",
+        "guido-reni",
+        "guercino"
+      ]
+    },
+    {
+      "id": "9-2",
+      "akim": "İtalyan Barok ve Caravaggizm",
+      "sira": 9,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        31,
+        32,
+        33
+      ],
+      "sanatcilar": [
+        "caravaggio",
+        "bartolomeo-manfredi",
+        "hendrick-ter-brugghen",
+        "valentin-de-boulogne",
+        "jusepe-de-ribera",
+        "gerrit-van-honthorst",
+        "georges-de-la-tour",
+        "dirck-van-baburen",
+        "artemisia-gentileschi",
+        "orazio-gentileschi"
+      ]
+    },
+    {
+      "id": "10-1",
+      "akim": "İspanyol Barok",
+      "sira": 10,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        34
+      ],
+      "sanatcilar": [
+        "francisco-de-zurbaran",
+        "diego-velazquez"
+      ]
+    },
+    {
+      "id": "11-1",
+      "akim": "Flaman Barok",
+      "sira": 11,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        35
+      ],
+      "sanatcilar": [
+        "peter-paul-rubens",
+        "anthony-van-dyck"
+      ]
+    },
+    {
+      "id": "12-1",
+      "akim": "Hollanda Altın Çağı",
+      "sira": 12,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        32,
+        36
+      ],
+      "sanatcilar": [
+        "frans-hals",
+        "rembrandt-van-rijn",
+        "jan-steen",
+        "jacob-van-ruisdael",
+        "johannes-vermeer"
+      ]
+    },
+    {
+      "id": "13-1",
+      "akim": "Fransız Klasisizmi",
+      "sira": 13,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        37,
+        38
+      ],
+      "sanatcilar": [
+        "charles-le-brun",
+        "hyacinthe-rigaud",
+        "nicolas-poussin",
+        "claude-lorrain"
+      ]
+    },
+    {
+      "id": "14-1",
+      "akim": "Geç İtalyan Barok",
+      "sira": 14,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        38
+      ],
+      "sanatcilar": [
+        "mattia-preti",
+        "salvator-rosa",
+        "luca-giordano",
+        "giovanni-battista-gaulli",
+        "andrea-pozzo",
+        "francesco-solimena",
+        "sebastiano-ricci",
+        "giuseppe-maria-crespi",
+        "alessandro-magnasco",
+        "giovanni-battista-piazzetta"
+      ]
+    },
+    {
+      "id": "15-1",
+      "akim": "Rokoko",
+      "sira": 15,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        38
+      ],
+      "sanatcilar": [
+        "jean-antoine-watteau",
+        "giovanni-battista-tiepolo",
+        "francois-boucher",
+        "jean-honore-fragonard"
+      ]
+    },
+    {
+      "id": "15-2",
+      "akim": "Rokoko",
+      "sira": 15,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        39,
+        40
+      ],
+      "sanatcilar": [
+        "jean-baptiste-simeon-chardin",
+        "jean-baptiste-greuze",
+        "william-hogarth",
+        "canaletto",
+        "thomas-gainsborough"
+      ]
+    },
+    {
+      "id": "16-1",
+      "akim": "Neoklasisizm",
+      "sira": 16,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        41,
+        42
+      ],
+      "sanatcilar": [
+        "benjamin-west",
+        "angelica-kauffman",
+        "jacques-louis-david",
+        "elisabeth-vigee-le-brun"
+      ]
+    },
+    {
+      "id": "17-1",
+      "akim": "Romantizm",
+      "sira": 17,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        43
+      ],
+      "sanatcilar": [
+        "henry-fuseli",
+        "william-blake",
+        "caspar-david-friedrich",
+        "john-constable"
+      ]
+    },
+    {
+      "id": "17-2",
+      "akim": "Romantizm",
+      "sira": 17,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        45,
+        46
+      ],
+      "sanatcilar": [
+        "eugene-delacroix",
+        "francisco-de-goya",
+        "j-m-w-turner",
+        "theodore-gericault"
+      ]
+    },
+    {
+      "id": "18-1",
+      "akim": "Prerafaelitler",
+      "sira": 18,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        46
+      ],
+      "sanatcilar": [
+        "william-holman-hunt",
+        "dante-gabriel-rossetti",
+        "john-everett-millais"
+      ]
+    },
+    {
+      "id": "19-1",
+      "akim": "Akademizm ve Oryantalizm",
+      "sira": 19,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        45
+      ],
+      "sanatcilar": [
+        "jean-auguste-dominique-ingres",
+        "alexandre-cabanel",
+        "jean-leon-gerome",
+        "william-adolphe-bouguereau"
+      ]
+    },
+    {
+      "id": "20-1",
+      "akim": "Barbizon ve Realizm",
+      "sira": 20,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        45,
+        50
+      ],
+      "sanatcilar": [
+        "honore-daumier",
+        "camille-corot",
+        "theodore-rousseau",
+        "jean-francois-millet",
+        "gustave-courbet"
+      ]
+    },
+    {
+      "id": "21-1",
+      "akim": "Empresyonizm",
+      "sira": 21,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        48,
+        51,
+        52
+      ],
+      "sanatcilar": [
+        "gustave-caillebotte",
+        "edouard-manet",
+        "edgar-degas"
+      ]
+    },
+    {
+      "id": "21-2",
+      "akim": "Empresyonizm",
+      "sira": 21,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        53,
+        54
+      ],
+      "sanatcilar": [
+        "berthe-morisot",
+        "mary-cassatt",
+        "camille-pissarro",
+        "alfred-sisley",
+        "claude-monet",
+        "pierre-auguste-renoir"
+      ]
+    },
+    {
+      "id": "22-1",
+      "akim": "Ukiyo-e (Japon baskısı)",
+      "sira": 22,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        52
+      ],
+      "sanatcilar": [
+        "katsushika-hokusai",
+        "utagawa-hiroshige"
+      ]
+    },
+    {
+      "id": "23-1",
+      "akim": "Post-Empresyonizm",
+      "sira": 23,
+      "no": 1,
+      "adet": 2,
+      "konular": [
+        56,
+        57
+      ],
+      "sanatcilar": [
+        "paul-cezanne",
+        "georges-seurat",
+        "paul-signac"
+      ]
+    },
+    {
+      "id": "23-2",
+      "akim": "Post-Empresyonizm",
+      "sira": 23,
+      "no": 2,
+      "adet": 2,
+      "konular": [
+        58,
+        59
+      ],
+      "sanatcilar": [
+        "vincent-van-gogh",
+        "henri-de-toulouse-lautrec",
+        "paul-gauguin"
+      ]
+    },
+    {
+      "id": "24-1",
+      "akim": "Sembolizm",
+      "sira": 24,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        59
+      ],
+      "sanatcilar": [
+        "pierre-puvis-de-chavannes",
+        "gustave-moreau",
+        "arnold-bocklin",
+        "odilon-redon",
+        "fernand-khnopff"
+      ]
+    },
+    {
+      "id": "25-1",
+      "akim": "Art Nouveau ve Viyana Secession",
+      "sira": 25,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        62
+      ],
+      "sanatcilar": [
+        "gustav-klimt"
+      ]
+    },
+    {
+      "id": "26-1",
+      "akim": "Ekspresyonizm",
+      "sira": 26,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        62
+      ],
+      "sanatcilar": [
+        "edvard-munch",
+        "wassily-kandinsky",
+        "emil-nolde",
+        "ernst-ludwig-kirchner",
+        "franz-marc"
+      ]
+    },
+    {
+      "id": "27-1",
+      "akim": "Kübizm",
+      "sira": 27,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        63
+      ],
+      "sanatcilar": [
+        "pablo-picasso"
+      ]
+    },
+    {
+      "id": "28-1",
+      "akim": "Dada",
+      "sira": 28,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        64
+      ],
+      "sanatcilar": [
+        "jean-arp",
+        "marcel-duchamp",
+        "hannah-hoch",
+        "man-ray"
+      ]
+    },
+    {
+      "id": "29-1",
+      "akim": "Sürrealizm",
+      "sira": 29,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        65
+      ],
+      "sanatcilar": [
+        "max-ernst",
+        "joan-miro",
+        "rene-magritte",
+        "salvador-dali"
+      ]
+    },
+    {
+      "id": "30-1",
+      "akim": "Savaş sonrası figürasyon",
+      "sira": 30,
+      "no": 1,
+      "adet": 1,
+      "konular": [
+        66
+      ],
+      "sanatcilar": [
+        "francis-bacon"
+      ]
+    }
+  ],
+  "senaryolar": [
+    {
+      "ad": "yeni-baslayan",
+      "il": {
+        "islenen": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "ayarlar": {
+          "gunlukKart": 20
+        },
+        "skorlar": {},
+        "karisanlar": {},
+        "seviyeler": {},
+        "dersler": {},
+        "bolumler": {},
+        "gunluk": {
+          "tarih": "2026-11-21",
+          "yeni": 0,
+          "kart": 0,
+          "yeniIdler": []
+        }
+      },
+      "yolculukAkimi": "Gotik",
+      "bugunku": "Gotik",
+      "kilitliDersAkimlari": [
+        {
+          "ad": "Kuzey Rönesansı",
+          "acilacagiKonu": 9
+        },
+        {
+          "ad": "Venedik Rönesansı",
+          "acilacagiKonu": 17
+        },
+        {
+          "ad": "Maniyerizm",
+          "acilacagiKonu": 12
+        },
+        {
+          "ad": "İtalyan Barok ve Caravaggizm",
+          "acilacagiKonu": 30
+        },
+        {
+          "ad": "İspanyol Barok",
+          "acilacagiKonu": 34
+        },
+        {
+          "ad": "Flaman Barok",
+          "acilacagiKonu": 35
+        },
+        {
+          "ad": "Hollanda Altın Çağı",
+          "acilacagiKonu": 32
+        },
+        {
+          "ad": "Fransız Klasisizmi",
+          "acilacagiKonu": 37
+        },
+        {
+          "ad": "Geç İtalyan Barok",
+          "acilacagiKonu": 38
+        },
+        {
+          "ad": "Rokoko",
+          "acilacagiKonu": 38
+        },
+        {
+          "ad": "Neoklasisizm",
+          "acilacagiKonu": 41
+        },
+        {
+          "ad": "Romantizm",
+          "acilacagiKonu": 43
+        },
+        {
+          "ad": "Prerafaelitler",
+          "acilacagiKonu": 46
+        },
+        {
+          "ad": "Akademizm ve Oryantalizm",
+          "acilacagiKonu": 45
+        },
+        {
+          "ad": "Barbizon ve Realizm",
+          "acilacagiKonu": 45
+        },
+        {
+          "ad": "Empresyonizm",
+          "acilacagiKonu": 48
+        },
+        {
+          "ad": "Ukiyo-e (Japon baskısı)",
+          "acilacagiKonu": 52
+        },
+        {
+          "ad": "Post-Empresyonizm",
+          "acilacagiKonu": 56
+        },
+        {
+          "ad": "Sembolizm",
+          "acilacagiKonu": 59
+        },
+        {
+          "ad": "Art Nouveau ve Viyana Secession",
+          "acilacagiKonu": 62
+        },
+        {
+          "ad": "Ekspresyonizm",
+          "acilacagiKonu": 62
+        },
+        {
+          "ad": "Kübizm",
+          "acilacagiKonu": 63
+        },
+        {
+          "ad": "Dada",
+          "acilacagiKonu": 64
+        },
+        {
+          "ad": "Sürrealizm",
+          "acilacagiKonu": 65
+        },
+        {
+          "ad": "Savaş sonrası figürasyon",
+          "acilacagiKonu": 66
+        }
+      ],
+      "acikDersler": [
+        {
+          "akim": "Gotik",
+          "hal": "sirada",
+          "kunye": "4 sanatçı · Konu 3–5",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 17 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 17 ayrıntı",
+          "haritaDurak": 3,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Erken Rönesans",
+          "hal": "sirada",
+          "kunye": "2 sanatçı · Konu 1",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 17 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 17 ayrıntı",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Yüksek Rönesans",
+          "hal": "sirada",
+          "kunye": "2 sanatçı · Konu 1–2",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 18 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 18 ayrıntı",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        }
+      ],
+      "karisikTur": {
+        "toplam": 8,
+        "tekrar": 0,
+        "zayif": 0,
+        "yeni": 8,
+        "diger": 0
+      },
+      "karisikAlt": "0 tekrar · 8 yeni",
+      "sahneDestesi": [
+        "bonaventura-berlinghieri",
+        "cimabue",
+        "duccio-di-buoninsegna"
+      ],
+      "hatalar": {
+        "idler": [],
+        "hatalilar": [],
+        "alt": "0 sanatçı · son 7 gün",
+        "ikiliYazi": ""
+      },
+      "bolumTuruSayisi": 8,
+      "karsSecim": {
+        "adres": "#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans",
+        "alt": "Gotik ↔ Erken Rönesans"
+      },
+      "hepsiMozaik": [
+        "bonaventura-berlinghieri",
+        "domenico-di-michelino",
+        "leonardo-da-vinci"
+      ],
+      "salonSiralamalari": {
+        "sira": [
+          {
+            "ad": "Gotik",
+            "acikSayisi": 4,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "4 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ],
+        "tekrar": [
+          {
+            "ad": "Gotik",
+            "acikSayisi": 4,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "4 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ],
+        "zayif": [
+          {
+            "ad": "Gotik",
+            "acikSayisi": 4,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "4 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ]
+      },
+      "gunlukYuk": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "yukYazi": "Tekrarı gelen sanatçı yok"
+    },
+    {
+      "ad": "orta-seviye",
+      "il": {
+        "islenen": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "ayarlar": {
+          "gunlukKart": 15
+        },
+        "skorlar": {
+          "giotto-di-bondone": {
+            "sanatci": {
+              "kutu": 0,
+              "son": "2026-11-20",
+              "sonraki": "2026-11-20",
+              "dogru": 1,
+              "yanlis": 2
+            },
+            "akim": {
+              "kutu": 2,
+              "son": "2026-11-18",
+              "sonraki": "2026-11-21",
+              "dogru": 3,
+              "yanlis": 0
+            }
+          },
+          "simone-martini": {
+            "sanatci": {
+              "kutu": 1,
+              "son": "2026-11-19",
+              "sonraki": "2026-11-21",
+              "dogru": 2,
+              "yanlis": 1
+            },
+            "akim": {
+              "kutu": 1,
+              "son": "2026-11-19",
+              "sonraki": "2026-11-22",
+              "dogru": 1,
+              "yanlis": 1
+            }
+          },
+          "masaccio": {
+            "sanatci": {
+              "kutu": 4,
+              "son": "2026-11-10",
+              "sonraki": "2026-11-24",
+              "dogru": 6,
+              "yanlis": 0
+            },
+            "akim": {
+              "kutu": 4,
+              "son": "2026-11-10",
+              "sonraki": "2026-11-24",
+              "dogru": 5,
+              "yanlis": 0
+            }
+          },
+          "sandro-botticelli": {
+            "sanatci": {
+              "kutu": 0,
+              "son": "2026-11-21",
+              "sonraki": "2026-11-21",
+              "dogru": 0,
+              "yanlis": 3
+            }
+          },
+          "fra-angelico": {
+            "sanatci": {
+              "kutu": 2,
+              "son": "2026-11-19",
+              "sonraki": "2026-11-22",
+              "dogru": 2,
+              "yanlis": 0
+            }
+          }
+        },
+        "karisanlar": {
+          "duccio-di-buoninsegna|giotto-di-bondone": {
+            "n": 3,
+            "son": "2026-11-20"
+          },
+          "fra-angelico|masaccio": {
+            "n": 2,
+            "son": "2026-11-19"
+          }
+        },
+        "seviyeler": {
+          "Gotik": {
+            "s": 1,
+            "son": [
+              1,
+              1,
+              0,
+              1,
+              1
+            ]
+          },
+          "Erken Rönesans": {
+            "s": 0,
+            "son": [
+              1,
+              0,
+              1
+            ]
+          }
+        },
+        "dersler": {
+          "Gotik": {
+            "gor": {
+              "i": 1,
+              "t": "2026-11-18"
+            },
+            "ogren": {
+              "i": 0.5,
+              "t": null
+            },
+            "ayirt": {
+              "i": 0,
+              "t": null
+            }
+          }
+        },
+        "bolumler": {
+          "1-1": {
+            "kolay": 0.875,
+            "orta": 0.8,
+            "tanitim": true
+          }
+        },
+        "gunluk": {
+          "tarih": "2026-11-21",
+          "yeni": 2,
+          "kart": 5,
+          "yeniIdler": [
+            "cimabue",
+            "duccio-di-buoninsegna"
+          ]
+        }
+      },
+      "yolculukAkimi": "Gotik",
+      "bugunku": "Gotik",
+      "kilitliDersAkimlari": [
+        {
+          "ad": "Venedik Rönesansı",
+          "acilacagiKonu": 17
+        },
+        {
+          "ad": "Maniyerizm",
+          "acilacagiKonu": 12
+        },
+        {
+          "ad": "İtalyan Barok ve Caravaggizm",
+          "acilacagiKonu": 30
+        },
+        {
+          "ad": "İspanyol Barok",
+          "acilacagiKonu": 34
+        },
+        {
+          "ad": "Flaman Barok",
+          "acilacagiKonu": 35
+        },
+        {
+          "ad": "Hollanda Altın Çağı",
+          "acilacagiKonu": 32
+        },
+        {
+          "ad": "Fransız Klasisizmi",
+          "acilacagiKonu": 37
+        },
+        {
+          "ad": "Geç İtalyan Barok",
+          "acilacagiKonu": 38
+        },
+        {
+          "ad": "Rokoko",
+          "acilacagiKonu": 38
+        },
+        {
+          "ad": "Neoklasisizm",
+          "acilacagiKonu": 41
+        },
+        {
+          "ad": "Romantizm",
+          "acilacagiKonu": 43
+        },
+        {
+          "ad": "Prerafaelitler",
+          "acilacagiKonu": 46
+        },
+        {
+          "ad": "Akademizm ve Oryantalizm",
+          "acilacagiKonu": 45
+        },
+        {
+          "ad": "Barbizon ve Realizm",
+          "acilacagiKonu": 45
+        },
+        {
+          "ad": "Empresyonizm",
+          "acilacagiKonu": 48
+        },
+        {
+          "ad": "Ukiyo-e (Japon baskısı)",
+          "acilacagiKonu": 52
+        },
+        {
+          "ad": "Post-Empresyonizm",
+          "acilacagiKonu": 56
+        },
+        {
+          "ad": "Sembolizm",
+          "acilacagiKonu": 59
+        },
+        {
+          "ad": "Art Nouveau ve Viyana Secession",
+          "acilacagiKonu": 62
+        },
+        {
+          "ad": "Ekspresyonizm",
+          "acilacagiKonu": 62
+        },
+        {
+          "ad": "Kübizm",
+          "acilacagiKonu": 63
+        },
+        {
+          "ad": "Dada",
+          "acilacagiKonu": 64
+        },
+        {
+          "ad": "Sürrealizm",
+          "acilacagiKonu": 65
+        },
+        {
+          "ad": "Savaş sonrası figürasyon",
+          "acilacagiKonu": 66
+        }
+      ],
+      "acikDersler": [
+        {
+          "akim": "Gotik",
+          "hal": "suruyor",
+          "kunye": "9 sanatçı · Konu 3–10",
+          "siradaki": "ogren",
+          "bitti": false,
+          "davetMetni": "Sıradaki özellik: Zarif, kıvrımlı çizgiler ve süslü giysiler (Uluslararası Gotik). 1 eserde göreceksin.",
+          "devamBaslik": "Öğren adımına devam",
+          "devamAlt": "4 / 7 özellik",
+          "haritaDurak": 3,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Erken Rönesans",
+          "hal": "sirada",
+          "kunye": "6 sanatçı · Konu 1–9",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 17 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 17 ayrıntı",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Kuzey Rönesansı",
+          "hal": "sirada",
+          "kunye": "6 sanatçı · Konu 9–10",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 18 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 18 ayrıntı",
+          "haritaDurak": 2,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Yüksek Rönesans",
+          "hal": "sirada",
+          "kunye": "2 sanatçı · Konu 1–2",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 18 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 18 ayrıntı",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        }
+      ],
+      "karisikTur": {
+        "toplam": 10,
+        "tekrar": 2,
+        "zayif": 0,
+        "yeni": 6,
+        "diger": 2
+      },
+      "karisikAlt": "2 tekrar · 2 pekiştirme · 6 yeni",
+      "sahneDestesi": [
+        "simone-martini",
+        "giotto-di-bondone",
+        "bonaventura-berlinghieri"
+      ],
+      "hatalar": {
+        "idler": [
+          "giotto-di-bondone",
+          "duccio-di-buoninsegna",
+          "masaccio",
+          "fra-angelico"
+        ],
+        "hatalilar": [
+          "giotto-di-bondone"
+        ],
+        "alt": "1 sanatçı · 2 karıştırılan ikili · son 7 gün",
+        "ikiliYazi": "Duccio ↔ Giotto · Angelico ↔ Masaccio"
+      },
+      "bolumTuruSayisi": 15,
+      "karsSecim": {
+        "adres": "#/karsilastir/duccio-di-buoninsegna/giotto-di-bondone",
+        "alt": "Duccio ↔ Giotto"
+      },
+      "hepsiMozaik": [
+        "bonaventura-berlinghieri",
+        "domenico-di-michelino",
+        "albrecht-durer",
+        "leonardo-da-vinci"
+      ],
+      "salonSiralamalari": {
+        "sira": [
+          {
+            "ad": "Gotik",
+            "acikSayisi": 9,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Orta · 4/5 doğru",
+            "turYazisi": "8 kart · 2 tekrar",
+            "dogru": 7,
+            "toplam": 11,
+            "vade": 2,
+            "oranYuzde": 64
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 6,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Kolay · 3/5",
+            "turYazisi": "6 kart",
+            "dogru": 13,
+            "toplam": 13,
+            "vade": 0,
+            "oranYuzde": 100
+          },
+          {
+            "ad": "Kuzey Rönesansı",
+            "acikSayisi": 6,
+            "temsilciId": "albrecht-durer",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "6 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ],
+        "tekrar": [
+          {
+            "ad": "Gotik",
+            "acikSayisi": 9,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Orta · 4/5 doğru",
+            "turYazisi": "8 kart · 2 tekrar",
+            "dogru": 7,
+            "toplam": 11,
+            "vade": 2,
+            "oranYuzde": 64
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 6,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Kolay · 3/5",
+            "turYazisi": "6 kart",
+            "dogru": 13,
+            "toplam": 13,
+            "vade": 0,
+            "oranYuzde": 100
+          },
+          {
+            "ad": "Kuzey Rönesansı",
+            "acikSayisi": 6,
+            "temsilciId": "albrecht-durer",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "6 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ],
+        "zayif": [
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 6,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Kolay · 3/5",
+            "turYazisi": "6 kart",
+            "dogru": 13,
+            "toplam": 13,
+            "vade": 0,
+            "oranYuzde": 100
+          },
+          {
+            "ad": "Kuzey Rönesansı",
+            "acikSayisi": 6,
+            "temsilciId": "albrecht-durer",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "6 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 2,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Gotik",
+            "acikSayisi": 9,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Orta · 4/5 doğru",
+            "turYazisi": "8 kart · 2 tekrar",
+            "dogru": 7,
+            "toplam": 11,
+            "vade": 2,
+            "oranYuzde": 64
+          }
+        ]
+      },
+      "gunlukYuk": [
+        2,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "yukYazi": "Bugün 2 · yarın 1 · 14 günde 4 sanatçı"
+    },
+    {
+      "ad": "ileri-seviye",
+      "il": {
+        "islenen": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "ayarlar": {
+          "gunlukKart": 25
+        },
+        "skorlar": {
+          "leonardo-da-vinci": {
+            "sanatci": {
+              "kutu": 5,
+              "son": "2026-11-01",
+              "sonraki": "2026-12-01",
+              "dogru": 10,
+              "yanlis": 0
+            },
+            "akim": {
+              "kutu": 5,
+              "son": "2026-11-01",
+              "sonraki": "2026-12-01",
+              "dogru": 10,
+              "yanlis": 0
+            }
+          },
+          "michelangelo": {
+            "sanatci": {
+              "kutu": 3,
+              "son": "2026-11-14",
+              "sonraki": "2026-11-21",
+              "dogru": 4,
+              "yanlis": 1
+            },
+            "akim": {
+              "kutu": 2,
+              "son": "2026-11-18",
+              "sonraki": "2026-11-21",
+              "dogru": 2,
+              "yanlis": 1
+            }
+          },
+          "raphael": {
+            "sanatci": {
+              "kutu": 1,
+              "son": "2026-11-20",
+              "sonraki": "2026-11-21",
+              "dogru": 1,
+              "yanlis": 2
+            }
+          },
+          "caravaggio": {
+            "sanatci": {
+              "kutu": 0,
+              "son": "2026-11-21",
+              "sonraki": "2026-11-21",
+              "dogru": 1,
+              "yanlis": 3
+            },
+            "akim": {
+              "kutu": 1,
+              "son": "2026-11-20",
+              "sonraki": "2026-11-21",
+              "dogru": 2,
+              "yanlis": 1
+            }
+          }
+        },
+        "karisanlar": {},
+        "seviyeler": {
+          "Gotik": {
+            "s": 2,
+            "son": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          },
+          "Erken Rönesans": {
+            "s": 1,
+            "son": [
+              1,
+              1,
+              1,
+              0,
+              1,
+              1
+            ]
+          },
+          "Yüksek Rönesans": {
+            "s": 0,
+            "son": [
+              0,
+              1
+            ]
+          }
+        },
+        "dersler": {
+          "Gotik": {
+            "gor": {
+              "i": 1,
+              "t": "2026-11-10"
+            },
+            "ogren": {
+              "i": 1,
+              "t": "2026-11-10"
+            },
+            "ayirt": {
+              "i": 1,
+              "t": "2026-11-10"
+            }
+          },
+          "Erken Rönesans": {
+            "gor": {
+              "i": 1,
+              "t": "2026-11-12"
+            },
+            "ogren": {
+              "i": 1,
+              "t": "2026-11-12"
+            },
+            "ayirt": {
+              "i": 1,
+              "t": "2026-11-12"
+            }
+          },
+          "Kuzey Rönesansı": {
+            "gor": {
+              "i": 0.353,
+              "t": null
+            },
+            "ogren": {
+              "i": 0,
+              "t": null
+            },
+            "ayirt": {
+              "i": 0,
+              "t": null
+            }
+          }
+        },
+        "bolumler": {
+          "1-1": {
+            "kolay": 1,
+            "orta": 0.9,
+            "zor": 0.8,
+            "tanitim": true
+          },
+          "2-1": {
+            "kolay": 0.875,
+            "orta": 0.8,
+            "tanitim": true
+          },
+          "2-2": {
+            "kolay": 0.875,
+            "orta": 0.8,
+            "tanitim": true
+          }
+        },
+        "gunluk": {
+          "tarih": "2026-11-21",
+          "yeni": 6,
+          "kart": 12,
+          "yeniIdler": []
+        }
+      },
+      "yolculukAkimi": "Gotik",
+      "bugunku": "Kuzey Rönesansı",
+      "kilitliDersAkimlari": [
+        {
+          "ad": "İtalyan Barok ve Caravaggizm",
+          "acilacagiKonu": 30
+        },
+        {
+          "ad": "İspanyol Barok",
+          "acilacagiKonu": 34
+        },
+        {
+          "ad": "Flaman Barok",
+          "acilacagiKonu": 35
+        },
+        {
+          "ad": "Hollanda Altın Çağı",
+          "acilacagiKonu": 32
+        },
+        {
+          "ad": "Fransız Klasisizmi",
+          "acilacagiKonu": 37
+        },
+        {
+          "ad": "Geç İtalyan Barok",
+          "acilacagiKonu": 38
+        },
+        {
+          "ad": "Rokoko",
+          "acilacagiKonu": 38
+        },
+        {
+          "ad": "Neoklasisizm",
+          "acilacagiKonu": 41
+        },
+        {
+          "ad": "Romantizm",
+          "acilacagiKonu": 43
+        },
+        {
+          "ad": "Prerafaelitler",
+          "acilacagiKonu": 46
+        },
+        {
+          "ad": "Akademizm ve Oryantalizm",
+          "acilacagiKonu": 45
+        },
+        {
+          "ad": "Barbizon ve Realizm",
+          "acilacagiKonu": 45
+        },
+        {
+          "ad": "Empresyonizm",
+          "acilacagiKonu": 48
+        },
+        {
+          "ad": "Ukiyo-e (Japon baskısı)",
+          "acilacagiKonu": 52
+        },
+        {
+          "ad": "Post-Empresyonizm",
+          "acilacagiKonu": 56
+        },
+        {
+          "ad": "Sembolizm",
+          "acilacagiKonu": 59
+        },
+        {
+          "ad": "Art Nouveau ve Viyana Secession",
+          "acilacagiKonu": 62
+        },
+        {
+          "ad": "Ekspresyonizm",
+          "acilacagiKonu": 62
+        },
+        {
+          "ad": "Kübizm",
+          "acilacagiKonu": 63
+        },
+        {
+          "ad": "Dada",
+          "acilacagiKonu": 64
+        },
+        {
+          "ad": "Sürrealizm",
+          "acilacagiKonu": 65
+        },
+        {
+          "ad": "Savaş sonrası figürasyon",
+          "acilacagiKonu": 66
+        }
+      ],
+      "acikDersler": [
+        {
+          "akim": "Gotik",
+          "hal": "bitti",
+          "kunye": "9 sanatçı · Konu 3–10",
+          "siradaki": null,
+          "bitti": true,
+          "davetMetni": "Ders tamam. Haritada Gotik durakları seni bekliyor; sınavın orada.",
+          "devamBaslik": "Dersi yeniden aç",
+          "devamAlt": "",
+          "haritaDurak": 3,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Erken Rönesans",
+          "hal": "bitti",
+          "kunye": "8 sanatçı · Konu 1–18",
+          "siradaki": null,
+          "bitti": true,
+          "davetMetni": "Ders tamam. Haritada Erken Rönesans durakları seni bekliyor; sınavın orada.",
+          "devamBaslik": "Dersi yeniden aç",
+          "devamAlt": "",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Kuzey Rönesansı",
+          "hal": "suruyor",
+          "kunye": "11 sanatçı · Konu 9–22",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 18 ayrıntı.",
+          "devamBaslik": "Gör adımına devam",
+          "devamAlt": "6 / 18 ayrıntı · 3 eser",
+          "haritaDurak": 2,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Yüksek Rönesans",
+          "hal": "sirada",
+          "kunye": "4 sanatçı · Konu 1–18",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 18 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 18 ayrıntı",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Venedik Rönesansı",
+          "hal": "sirada",
+          "kunye": "3 sanatçı · Konu 17",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 18 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 18 ayrıntı",
+          "haritaDurak": 1,
+          "haritaKilit": ""
+        },
+        {
+          "akim": "Maniyerizm",
+          "hal": "sirada",
+          "kunye": "4 sanatçı · Konu 12–19",
+          "siradaki": "gor",
+          "bitti": false,
+          "davetMetni": "Önce bak: 3 eserde 17 ayrıntı.",
+          "devamBaslik": "Gör adımını aç",
+          "devamAlt": "3 eserde 17 ayrıntı",
+          "haritaDurak": 2,
+          "haritaKilit": ""
+        }
+      ],
+      "karisikTur": {
+        "toplam": 5,
+        "tekrar": 2,
+        "zayif": 0,
+        "yeni": 2,
+        "diger": 1
+      },
+      "karisikAlt": "2 tekrar · 1 pekiştirme · 2 yeni",
+      "sahneDestesi": [
+        "michelangelo",
+        "raphael",
+        "bonaventura-berlinghieri"
+      ],
+      "hatalar": {
+        "idler": [],
+        "hatalilar": [],
+        "alt": "0 sanatçı · son 7 gün",
+        "ikiliYazi": ""
+      },
+      "bolumTuruSayisi": 25,
+      "karsSecim": {
+        "adres": "#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans",
+        "alt": "Gotik ↔ Erken Rönesans"
+      },
+      "hepsiMozaik": [
+        "bonaventura-berlinghieri",
+        "domenico-di-michelino",
+        "albrecht-durer",
+        "leonardo-da-vinci"
+      ],
+      "salonSiralamalari": {
+        "sira": [
+          {
+            "ad": "Gotik",
+            "acikSayisi": 9,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Zor · usta",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 8,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Orta · 5/6 doğru",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Kuzey Rönesansı",
+            "acikSayisi": 11,
+            "temsilciId": "albrecht-durer",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 4,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 2/5",
+            "turYazisi": "4 kart · 2 tekrar",
+            "dogru": 27,
+            "toplam": 31,
+            "vade": 2,
+            "oranYuzde": 87
+          },
+          {
+            "ad": "Venedik Rönesansı",
+            "acikSayisi": 3,
+            "temsilciId": "titian",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Maniyerizm",
+            "acikSayisi": 4,
+            "temsilciId": "jacopo-pontormo",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ],
+        "tekrar": [
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 4,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 2/5",
+            "turYazisi": "4 kart · 2 tekrar",
+            "dogru": 27,
+            "toplam": 31,
+            "vade": 2,
+            "oranYuzde": 87
+          },
+          {
+            "ad": "Gotik",
+            "acikSayisi": 9,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Zor · usta",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 8,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Orta · 5/6 doğru",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Kuzey Rönesansı",
+            "acikSayisi": 11,
+            "temsilciId": "albrecht-durer",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Venedik Rönesansı",
+            "acikSayisi": 3,
+            "temsilciId": "titian",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Maniyerizm",
+            "acikSayisi": 4,
+            "temsilciId": "jacopo-pontormo",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ],
+        "zayif": [
+          {
+            "ad": "Yüksek Rönesans",
+            "acikSayisi": 4,
+            "temsilciId": "leonardo-da-vinci",
+            "seviyeRozeti": "Kolay · 2/5",
+            "turYazisi": "4 kart · 2 tekrar",
+            "dogru": 27,
+            "toplam": 31,
+            "vade": 2,
+            "oranYuzde": 87
+          },
+          {
+            "ad": "Kuzey Rönesansı",
+            "acikSayisi": 11,
+            "temsilciId": "albrecht-durer",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Venedik Rönesansı",
+            "acikSayisi": 3,
+            "temsilciId": "titian",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Maniyerizm",
+            "acikSayisi": 4,
+            "temsilciId": "jacopo-pontormo",
+            "seviyeRozeti": "Kolay · 0/5",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Erken Rönesans",
+            "acikSayisi": 8,
+            "temsilciId": "domenico-di-michelino",
+            "seviyeRozeti": "Orta · 5/6 doğru",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          },
+          {
+            "ad": "Gotik",
+            "acikSayisi": 9,
+            "temsilciId": "bonaventura-berlinghieri",
+            "seviyeRozeti": "Zor · usta",
+            "turYazisi": "2 kart",
+            "dogru": 0,
+            "toplam": 0,
+            "vade": 0,
+            "oranYuzde": null
+          }
+        ]
+      },
+      "gunlukYuk": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "yukYazi": "Bugün 2 · yarın 0 · 14 günde 3 sanatçı"
+    }
+  ],
+  "kursBolumleriSonuc": [
+    {
+      "id": "Bölüm 1",
+      "no": 1,
+      "ad": "Florence and the Beginning of the Renaissance",
+      "kisaAd": "Floransa’da Rönesans",
+      "konular": [
+        1
+      ],
+      "yuzyilAraligi": "15. yüzyıl"
+    },
+    {
+      "id": "Bölüm 2",
+      "no": 2,
+      "ad": "Classic stuff you should know before you study the Renaissance",
+      "kisaAd": "Antik klasikler",
+      "konular": [
+        2
+      ],
+      "yuzyilAraligi": "16. yüzyıl"
+    },
+    {
+      "id": "Bölüm 3",
+      "no": 3,
+      "ad": "13th to 14th C Gothic and Early Renaissance",
+      "kisaAd": "Gotik, erken Rönesans",
+      "konular": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "yuzyilAraligi": "13.–14. yüzyıl"
+    },
+    {
+      "id": "Bölüm 4",
+      "no": 4,
+      "ad": "15th C Art",
+      "kisaAd": "15th C Art",
+      "konular": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "yuzyilAraligi": "15.–16. yüzyıl"
+    },
+    {
+      "id": "Bölüm 5",
+      "no": 5,
+      "ad": "16th Century Art",
+      "kisaAd": "16th Century Art",
+      "konular": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "yuzyilAraligi": "15.–16. yüzyıl"
+    },
+    {
+      "id": "Bölüm 6",
+      "no": 6,
+      "ad": "17th Century",
+      "kisaAd": "17th Century",
+      "konular": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "yuzyilAraligi": "17. yüzyıl"
+    },
+    {
+      "id": "Bölüm 7",
+      "no": 7,
+      "ad": "18th Century",
+      "kisaAd": "18th Century",
+      "konular": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "yuzyilAraligi": "17.–18. yüzyıl"
+    },
+    {
+      "id": "Bölüm 8",
+      "no": 8,
+      "ad": "19th Century",
+      "kisaAd": "19th Century",
+      "konular": [
+        45,
+        46,
+        47,
+        48,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "yuzyilAraligi": "19. yüzyıl"
+    },
+    {
+      "id": "Bölüm 9",
+      "no": 9,
+      "ad": "20th Century",
+      "kisaAd": "20th Century",
+      "konular": [
+        61,
+        62,
+        63,
+        64,
+        65,
+        66
+      ],
+      "yuzyilAraligi": "19.–20. yüzyıl"
+    }
+  ],
+  "ikonoToplam": 371,
+  "ikonoSonuc": [
+    {
+      "id": "madonna-and-child",
+      "ad": "Meryem ve Çocuk İsa",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Meryem'in bebek İsa'yı kucağında ya da yanında tuttuğu, belirli bir olayı değil Tanrı'nın insan olarak doğduğu inancını yansıtan, dua ve tefekkür için yapılmış imge.",
+      "kaynak": "Yeni Ahit, Matta ve Luka İncilleri (doğrudan bir sahne değil, sonradan oluşan kilise ve ikonografi geleneği)",
+      "hikayeSayisi": 4,
+      "eserSayisi": 346
+    },
+    {
+      "id": "crucifixion",
+      "ad": "Çarmıha Geriliş",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Roma valisi Pilatus tarafından ölüme mahkûm edilen İsa, Golgota tepesinde iki haydut arasında çarmıha gerilir ve orada ölür.",
+      "kaynak": "Yeni Ahit, Matta, Markos, Luka ve Yuhanna İncilleri",
+      "hikayeSayisi": 3,
+      "eserSayisi": 81
+    },
+    {
+      "id": "annunciation",
+      "ad": "Müjde",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Melek Cebrail, Nasıralı genç kız Meryem'e Kutsal Ruh aracılığıyla gebe kalacağını ve doğuracağı oğlunun adını İsa koyacağını bildirir.",
+      "kaynak": "Yeni Ahit, Luka İncili",
+      "hikayeSayisi": 3,
+      "eserSayisi": 45
+    },
+    {
+      "id": "holy-family",
+      "ad": "Kutsal Aile",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Bebek ya da çocuk İsa'nın annesi Meryem ve Meryem'in kocası Yusuf ile birlikte, çoğu zaman sakin ve sevecen bir aile ortamında gösterildiği adanmışlık konusu.",
+      "kaynak": "Yeni Ahit, Matta İncili ve Luka İncili",
+      "hikayeSayisi": 3,
+      "eserSayisi": 45
+    },
+    {
+      "id": "adoration-of-the-magi",
+      "ad": "Müneccimlerin Tapınması",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Doğudan gelen müneccimler bir yıldızı izleyerek Beytüllahim'e ulaşır, yeni doğmuş İsa'ya secde eder ve ona altın, günnük ve mür sunarlar.",
+      "kaynak": "Yeni Ahit, Matta İncili",
+      "hikayeSayisi": 4,
+      "eserSayisi": 41
+    },
+    {
+      "id": "adam-and-eve",
+      "ad": "Âdem ile Havva",
+      "tur": "eski_ahit",
+      "turAdi": "Eski Ahit",
+      "ozet": "Tanrı'nın yarattığı ilk insanlar Âdem ile Havva, yılanın ayartmasıyla yasak ağacın meyvesini yer ve Aden bahçesinden kovulur.",
+      "kaynak": "Eski Ahit, Yaratılış",
+      "hikayeSayisi": 4,
+      "eserSayisi": 37
+    },
+    {
+      "id": "saint-jerome",
+      "ad": "Aziz Hieronymus",
+      "tur": "aziz",
+      "turAdi": "Azizler",
+      "ozet": "Kitab-ı Mukaddes'i Latinceye çeviren dört büyük Latin Kilise Babası'ndan Hieronymus, resimde ya çölde tövbe eden bir münzevi ya da çalışma odasında kitaplarına eğilmiş bir bilgin olarak tasvir edilir.",
+      "kaynak": "Hieronymus'un kendi mektupları ve yazıları; aslan öyküsü için Jacobus de Voragine, Altın Efsane (sonraki gelenek)",
+      "hikayeSayisi": 4,
+      "eserSayisi": 37
+    },
+    {
+      "id": "saint-francis",
+      "ad": "Assisili Aziz Franciscus",
+      "tur": "aziz",
+      "turAdi": "Azizler",
+      "ozet": "Varlıklı bir tüccar ailesinin oğluyken her şeyini bırakıp yoksulluğu seçen, Fransisken tarikatını kuran ve İsa'nın yaralarını (stigmata) bedeninde taşıdığına inanılan İtalyan aziz.",
+      "kaynak": "Kitab-ı Mukaddes'te yer almaz; Celanolu Thomas'ın yaşam öyküleri ve Bonaventura'nın Legenda Maior'u; ayrıca sonraki dönemden Fioretti (Küçük Çiçekler) ve Altın Efsane",
+      "hikayeSayisi": 4,
+      "eserSayisi": 34
+    },
+    {
+      "id": "judith-and-holofernes",
+      "ad": "Judith ve Holofernes",
+      "tur": "eski_ahit",
+      "turAdi": "Eski Ahit",
+      "ozet": "Dindar ve güzel dul Judith, kuşatma altındaki şehrini kurtarmak için düşman komutanı Holofernes'in çadırına girer, onu sarhoş bir hâlde uyurken onun kendi kılıcıyla başını keserek halkını zafere taşır.",
+      "kaynak": "Eski Ahit, Judith (Yudit) Kitabı (Katolik ve Ortodoks kanonunda yer alan deuterokanonik kitap; Yahudi ve Protestan geleneğinde apokrif sayılır)",
+      "hikayeSayisi": 4,
+      "eserSayisi": 30
+    },
+    {
+      "id": "mary-magdalene",
+      "ad": "Mecdelli Meryem",
+      "tur": "aziz",
+      "turAdi": "Azizler",
+      "ozet": "İsa'nın çarmıha gerilişine tanıklık eden ve dirilişini ilk gören kadın olan Mecdelli Meryem, Batı geleneğinde tövbekâr günahkârın simgesi olarak resmedilmiştir.",
+      "kaynak": "Yeni Ahit, Matta, Markos, Luka ve Yuhanna İncilleri · sonraki gelenek: Jacobus de Voragine, Altın Efsane",
+      "hikayeSayisi": 4,
+      "eserSayisi": 29
+    },
+    {
+      "id": "lamentation",
+      "ad": "Ölü İsa'ya Ağıt",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Çarmıhtan indirilen İsa'nın cansız bedeni, gömülmeden önce annesi Meryem ve yakınları tarafından kucaklanıp ağlanarak yas tutulur.",
+      "kaynak": "Yeni Ahit, Matta, Markos, Luka ve Yuhanna İncilleri (sahnenin kendisi sonraki dinsel ve sanatsal gelenekten gelir)",
+      "hikayeSayisi": 4,
+      "eserSayisi": 29
+    },
+    {
+      "id": "saint-john-the-baptist",
+      "ad": "Vaftizci Yahya",
+      "tur": "aziz",
+      "turAdi": "Azizler",
+      "ozet": "Çölde tövbe çağrısı yapan, Ürdün Irmağı'nda insanları vaftiz eden, İsa'nın gelişini duyuran ve sonunda Hirodes Antipas'ın emriyle başı kesilen peygamber.",
+      "kaynak": "Yeni Ahit, Matta, Markos, Luka ve Yuhanna İncilleri",
+      "hikayeSayisi": 4,
+      "eserSayisi": 28
+    },
+    {
+      "id": "saint-sebastian",
+      "ad": "Aziz Sebastian",
+      "tur": "aziz",
+      "turAdi": "Azizler",
+      "ozet": "Hristiyan olduğu için okçulara hedef yaptırılan, bu işkenceden kurtulduktan sonra sopalarla öldürülen Romalı asker-aziz Sebastian'ın şehitliği.",
+      "kaynak": "Kitab-ı Mukaddes'te yer almaz; geleneksel azizlik anlatısı: Passio Sancti Sebastiani (5. yüzyıl) · Jacobus de Voragine, Altın Efsane",
+      "hikayeSayisi": 4,
+      "eserSayisi": 25
+    },
+    {
+      "id": "nativity",
+      "ad": "İsa'nın Doğuşu",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Meryem'in Beytlehem'de İsa'yı dünyaya getirip yemliğe yatırması ve çobanların meleklerden gelen müjdeyle doğan çocuğu görmeye gelmesi.",
+      "kaynak": "Yeni Ahit, Luka İncili ve Matta İncili",
+      "hikayeSayisi": 3,
+      "eserSayisi": 25
+    },
+    {
+      "id": "resurrection",
+      "ad": "İsa'nın Dirilişi",
+      "tur": "yeni_ahit",
+      "turAdi": "Yeni Ahit",
+      "ozet": "Çarmıha gerilip gömülen İsa'nın üçüncü gün ölümden dirilmesi ve mezarının boş bulunması.",
+      "kaynak": "Yeni Ahit, Matta, Markos, Luka ve Yuhanna İncilleri",
+      "hikayeSayisi": 4,
+      "eserSayisi": 25
+    }
+  ],
+  "yelpazeSonuclari": [
+    {
+      "x": -1,
+      "hedef": {
+        "acilim": 1,
+        "yatma": 6
+      }
+    },
+    {
+      "x": -0.65,
+      "hedef": {
+        "acilim": 0.65,
+        "yatma": 3.9000000000000004
+      }
+    },
+    {
+      "x": -0.25,
+      "hedef": {
+        "acilim": 0.25,
+        "yatma": 1.5
+      }
+    },
+    {
+      "x": 0,
+      "hedef": {
+        "acilim": 0,
+        "yatma": 0
+      }
+    },
+    {
+      "x": 0.35,
+      "hedef": {
+        "acilim": 0.35,
+        "yatma": -2.0999999999999996
+      }
+    },
+    {
+      "x": 0.8,
+      "hedef": {
+        "acilim": 0.8,
+        "yatma": -4.800000000000001
+      }
+    },
+    {
+      "x": 1.4,
+      "hedef": {
+        "acilim": 1,
+        "yatma": -8.399999999999999
+      }
+    }
+  ],
+  "sarkacIzleri": [
+    {
+      "acilim": {
+        "aci": 0.01728,
+        "hiz": 1.08
+      },
+      "yatma": {
+        "aci": -0.10368000000000001,
+        "hiz": -6.48
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.0497829888,
+        "hiz": 2.0314368
+      },
+      "yatma": {
+        "aci": -0.29869793280000007,
+        "hiz": -12.188620800000002
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.095298690613248,
+        "hiz": 2.844731363328
+      },
+      "yatma": {
+        "aci": -0.5717921436794882,
+        "hiz": -17.068388179968004
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.15152920322069496,
+        "hiz": 3.514407037965435
+      },
+      "yatma": {
+        "aci": -0.90917521932417,
+        "hiz": -21.086442227792613
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.2161503537756222,
+        "hiz": 4.0388219096829525
+      },
+      "yatma": {
+        "aci": -1.2969021226537336,
+        "hiz": -24.232931458097717
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.2868677697262861,
+        "hiz": 4.419838496916493
+      },
+      "yatma": {
+        "aci": -1.721206618357717,
+        "hiz": -26.519030981498958
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.3614668803311926,
+        "hiz": 4.662444412806658
+      },
+      "yatma": {
+        "aci": -2.168801281987156,
+        "hiz": -27.974666476839946
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.43785627939519745,
+        "hiz": 4.774337441500301
+      },
+      "yatma": {
+        "aci": -2.627137676371185,
+        "hiz": -28.646024649001806
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.5141040874717925,
+        "hiz": 4.765488004787188
+      },
+      "yatma": {
+        "aci": -3.084624524830755,
+        "hiz": -28.592928028723126
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.5884671477976843,
+        "hiz": 4.647691270368236
+      },
+      "yatma": {
+        "aci": -3.530802886786106,
+        "hiz": -27.886147622209418
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.6594130712470319,
+        "hiz": 4.43412021558422
+      },
+      "yatma": {
+        "aci": -3.956478427482191,
+        "hiz": -26.60472129350532
+      },
+      "durgun": false
+    },
+    {
+      "acilim": {
+        "aci": 0.7256353088837104,
+        "hiz": 4.138889852292409
+      },
+      "yatma": {
+        "aci": -4.353811853302262,
+        "hiz": -24.833339113754455
+      },
+      "durgun": false
+    }
+  ],
+  "egimIzleri": [
+    {
+      "donus": {
+        "x": -0.6,
+        "y": 0.3
+      },
+      "egim": {
+        "x": -0.02727272727272727,
+        "y": 0.013636363636363636,
+        "eksen": "-0.014 -0.027 0 0.15deg"
+      }
+    },
+    {
+      "donus": {
+        "x": -1.0925466802963288,
+        "y": 0.49627334014816443
+      },
+      "egim": {
+        "x": -0.04966121274074222,
+        "y": 0.022557879097643837,
+        "eksen": "-0.023 -0.050 0 0.27deg"
+      }
+    },
+    {
+      "donus": {
+        "x": 0.12774771544030483,
+        "y": 0.3370549078924586
+      },
+      "egim": {
+        "x": 0.005806714338195674,
+        "y": 0.015320677631475392,
+        "eksen": "-0.015 0.006 0 0.08deg"
+      }
+    },
+    {
+      "donus": {
+        "x": 0.09346222517835524,
+        "y": 0.24659463842729354
+      },
+      "egim": {
+        "x": 0.0042482829626525115,
+        "y": 0.011208847201240615,
+        "eksen": "-0.011 0.004 0 0.06deg"
+      }
+    }
+  ],
+  "aciOrnekleri": [
+    {
+      "b": 45,
+      "g": 20,
+      "acilar": {
+        "on": 46.78082110628581,
+        "yan": 13.995445358891418
+      },
+      "hesap": {
+        "x": 0.9090909090909091,
+        "y": 0.22727272727272727,
+        "eksen": "-0.227 0.909 0 4.69deg"
+      }
+    },
+    {
+      "b": 70,
+      "g": -15,
+      "acilar": {
+        "on": 70.62994479145986,
+        "yan": -5.0785458159693935
+      },
+      "hesap": {
+        "x": -0.6818181818181818,
+        "y": 1,
+        "eksen": "-1.000 -0.682 0 5.00deg"
+      }
+    },
+    {
+      "b": 10,
+      "g": 5,
+      "acilar": {
+        "on": 10.037423045910712,
+        "yan": 4.923849754810795
+      },
+      "hesap": {
+        "x": 0.22727272727272727,
+        "y": -1,
+        "eksen": "1.000 0.227 0 5.00deg"
+      }
+    }
+  ]
+}

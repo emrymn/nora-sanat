@@ -18,10 +18,12 @@ struct KartGorunumu: View {
     let tur: TurKaydi
     let k: TurKarti
     let kapat: () -> Void
+    var disAdreseGit: ((String) -> Void)? = nil
     @Environment(TemaDeposu.self) private var tema
     @State private var gosterim: GosterimIstegi?
     @State private var tersBuyuk: Int?
     @State private var ipucuAcik = false
+    @State private var hikayeAcik = false
     @State private var ayrintiAcik = false
 
     private var r: TemaRenkleri { tema.renkler }
@@ -144,23 +146,31 @@ struct KartGorunumu: View {
     private var soruYazisi: String {
         if k.ikinci { return "Hangi akım?" }
         switch tur.kip {
-        case .kursBolumu: return "Hangi bölüm?"
-        case .ikonografi: return "Konusu ne?"
+        case .kursBolumu: return "Bu eser hangi bölümde?"
+        case .ikonografi: return "Bu eserin konusu ne?"
         case .sanatci: return "Bu eser kimin?"
         }
     }
 
     private var soruEtiketi: String {
-        let soru = karisik ? "Soru \(k.ikinci ? 2 : 1) / 2" : "Soru 1 / 1"
-        guard case .sanatci = tur.kip else { return soru }
-        return "\(soru) · \(Seviye.bul(k.seviye ?? 0).ad)"
+        switch tur.kip {
+        case .kursBolumu: return "Kursun bölümleri"
+        case .ikonografi: return "Resmin konusu"
+        case .sanatci:
+            let soru = karisik ? "Soru \(k.ikinci ? 2 : 1) / 2" : "Soru 1 / 1"
+            return "\(soru) · \(Seviye.bul(k.seviye ?? 0).ad)"
+        }
     }
 
     private func ad(_ id: String) -> String {
         if k.ikinci { return id }
         switch tur.kip {
         case .ikonografi: return model.veri.ad(id)
-        case .kursBolumu: return model.katalog?.konular.first { $0.bolum == id }.map { "\(id) · \($0.bolumAd)" } ?? id
+        case .kursBolumu:
+            if let b = model.kursBolumleri().first(where: { $0.id == id }) {
+                return "\(b.id) · \(b.kisaAd)"
+            }
+            return model.katalog?.konular.first { $0.bolum == id }.map { "\(id) · \($0.bolumAd)" } ?? id
         case .sanatci: return model.sanatci(id)?.ad ?? id
         }
     }
@@ -285,7 +295,7 @@ struct KartGorunumu: View {
         return false
     }
 
-    /// Yaprağın üst satırları: sonuç, bilgi, ipucu (`kartGoster`, `tersGoster`)
+    /// Yaprağın üst satırları: sonuç, bilgi, ipucu (`kartGoster`, `tersGoster`, `soruTurlari.js` `yaprakAc`)
     private func yaprakBilgisi() -> (sonuc: (String, String), dogru: Bool, bilgi: (String, String), not: String) {
         let s = sanatci
         let dogru = k.sonuc == true
@@ -295,8 +305,25 @@ struct KartGorunumu: View {
                     CevapYazilari.akimNotu(akim: s.akim, akimlar: model.katalog?.akimlar ?? [], ipucu: model.ipucu(s.id)))
         }
         let sonuc = CevapYazilari.sonuc(dogru: dogru, bilmiyorum: k.bilmiyorum)
-        guard sanatciTuru else {
-            return (sonuc, dogru, (ad(k.dogru), "\(CevapYazilari.eserAdi(k.resim.eser)) · \(s?.ad ?? "")"), "")
+        let eserSatiri: String = {
+            guard let s else { return CevapYazilari.eserAdi(k.resim.eser) }
+            let yil = CevapYazilari.yillar(s)
+            return "\(s.ad)\(yil.isEmpty ? "" : " (\(yil))") · \(CevapYazilari.eserAdi(k.resim.eser))"
+        }()
+        if case .kursBolumu = tur.kip {
+            let b = model.kursBolumleri().first(where: { $0.id == k.dogru })
+            let baslik = b.map { "\($0.id) · \($0.ad)" } ?? ad(k.dogru)
+            let aralik = b.map { CalisKurallari.yuzyilAraligi(konular: $0.konular, sanatcilar: model.katalog?.sanatcilar ?? []) } ?? ""
+            let alt = aralik.isEmpty ? eserSatiri : "\(aralik) · \(eserSatiri)"
+            let not = s.map { "\($0.ad) kursta \($0.konu ?? 0). konuda işleniyor (\($0.akim))." } ?? ""
+            return (sonuc, dogru, (baslik, alt), not)
+        }
+        if case .ikonografi = tur.kip {
+            if let konu = model.ikonografiKonusu(k.dogru) {
+                let alt = konu.turAdi.isEmpty ? eserSatiri : "\(konu.turAdi) · \(eserSatiri)"
+                return (sonuc, dogru, (konu.ad, alt), konu.ozet)
+            }
+            return (sonuc, dogru, (ad(k.dogru), eserSatiri), "")
         }
         let ipucu = model.ipucu(k.resim.id)
         if k.ters != nil {
@@ -305,6 +332,15 @@ struct KartGorunumu: View {
         // karışıkta akım henüz söylenmez
         let not = karisik && CevapYazilari.akimiAciklarMi(ipucu, s?.akim ?? "") ? "" : ipucu
         return (sonuc, dogru, (s?.ad ?? "", CevapYazilari.eserAdi(k.resim.eser)), not)
+    }
+
+    private func adreseGit(_ adres: String) {
+        if let disAdreseGit {
+            disAdreseGit(adres)
+        } else {
+            kapat()
+            Gezgin.shared.git(adres)
+        }
     }
 
     private var yaprak: some View {
@@ -329,12 +365,11 @@ struct KartGorunumu: View {
                     .font(Yazi.sans(13)).foregroundStyle(Color(r.murekkep2))
             }
             if !not.isEmpty { ipucuKutusu(not) }
+            ikonografiHikaye
             karsilastirma
             ayrintilar
             HStack(spacing: 10) {
-                if sanatciTuru {
-                    PkSanatciDugmesi { Gezgin.shared.git("#/sanatci/\(SiteYazisi.uriBileseni(k.resim.id))") }
-                }
+                PkSanatciDugmesi { adreseGit("#/sanatci/\(SiteYazisi.uriBileseni(k.resim.id))") }
                 YaprakDugmesi(yazi: k.akimBekliyor ? "Hangi akım?" : tur.oturum.simdiki == nil ? "Turu bitir" : "Sonraki kart") {
                     Task { await model.sonraki() }
                 }
@@ -347,6 +382,43 @@ struct KartGorunumu: View {
         .background(RoundedRectangle(cornerRadius: 24).fill(Color(r.zemin).opacity(0.88)))
         .overlay(RoundedRectangle(cornerRadius: 24).stroke(Color(r.murekkep).opacity(0.14), lineWidth: 1))
         .shadow(color: .black.opacity(0.7), radius: 24, y: 24)
+    }
+
+    /// İkonografi turunda açılır hikâye ve konu sayfası bağlantısı (`soruTurlari.js` `yaprakAc`)
+    @ViewBuilder private var ikonografiHikaye: some View {
+        if case .ikonografi = tur.kip, let konu = model.ikonografiKonusu(k.dogru) {
+            if !konu.hikaye.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Button {
+                        withAnimation(.easeOut(duration: 0.2)) { hikayeAcik.toggle() }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text("Hikâyesi").font(Yazi.sans(13, agirlik: 600)).foregroundStyle(Color(r.murekkep))
+                            Image(systemName: hikayeAcik ? "chevron.up" : "chevron.down")
+                                .font(.system(size: 11, weight: .semibold)).foregroundStyle(Color(r.murekkep2))
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    if hikayeAcik {
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(Array(konu.hikaye.enumerated()), id: \.offset) { _, p in
+                                Text(p).font(Yazi.sans(13.5)).foregroundStyle(Color(r.murekkep2)).lineSpacing(3)
+                            }
+                        }
+                        .padding(.top, 2)
+                    }
+                }
+            }
+            Button {
+                adreseGit("#/konu/\(SiteYazisi.uriBileseni(konu.id))")
+            } label: {
+                HStack(spacing: 6) {
+                    Text("Konu sayfası: \(konu.ad)").font(Yazi.sans(14, agirlik: 600)).foregroundStyle(Color(r.murekkep))
+                    Image(systemName: "arrow.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Color(r.murekkep2))
+                }
+            }
+            .buttonStyle(.plain).padding(.vertical, 4)
+        }
     }
 
     /// İpucu sığmıyorsa dokununca tamamı açılır ("Devamı ↓" / "Kısalt ↑")
@@ -382,7 +454,7 @@ struct KartGorunumu: View {
                 .accessibilityIdentifier("karsi-serit")
             }
             Button {
-                Gezgin.shared.git(GoruntuleyiciKurallari.karsilastirmaAdresi(s.id, c))
+                adreseGit(GoruntuleyiciKurallari.karsilastirmaAdresi(s.id, c))
             } label: {
                 Label("Karşılaştır: \(kisaAd(s.id)) ↔ \(kisaAd(c))", systemImage: "square.split.2x1")
                     .font(Yazi.sans(14, agirlik: 600)).foregroundStyle(Color(r.murekkep))
@@ -391,7 +463,7 @@ struct KartGorunumu: View {
             .accessibilityIdentifier("karsilastir")
         } else if k.ikinci, let a = k.akimCevabi, let s = sanatci, a != s.akim {
             Button {
-                Gezgin.shared.git("#/akim-karsilastir/\(SiteYazisi.uriBileseni(s.akim))/\(SiteYazisi.uriBileseni(a))")
+                adreseGit("#/akim-karsilastir/\(SiteYazisi.uriBileseni(s.akim))/\(SiteYazisi.uriBileseni(a))")
             } label: {
                 Label("Karşılaştır: \(s.akim) ↔ \(a)", systemImage: "square.split.2x1")
                     .font(Yazi.sans(14, agirlik: 600)).foregroundStyle(Color(r.murekkep))
