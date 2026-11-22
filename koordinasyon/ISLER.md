@@ -154,7 +154,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
-| G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | sürüyor (ChatGPT, 2026-11-22) |
+| G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | PR açık (#20): G5a ChatGPT, G5b (görünüş) Claude |
 | C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
@@ -794,7 +794,40 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - `js/harita.js`, `js/bolum.js`, `js/ekranlar/harita.js`, `js/surukleKapat.js`, `js/sallanma.js`
 - `js/zaman.js`, `js/ekranlar/zaman.js`
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-22 · [PR #20](https://github.com/emrymn/nora-sanat/pull/20) · dal `is/G5-yolculuk`. İş iki parça: **G5a** (ChatGPT: çekirdek, kâhin, ilk ekranlar ve CI karşılaştırması) ve **G5b** (kullanıcının isteğiyle Claude: ara denetimdeki 11 maddeyle görünüş sitedeki gibi). ChatGPT not yazmamıştı; ikisini de bu not anlatıyor.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/harita.js`: `BOLGELER`, `W`, `H`, `ARA`, `SEPYA_PAY`, `SEPYA_GECIS`, `vakit`, `haritaKur`, `sepyaSiniri`, `yolcuYeri`, `yolcuYolu` (tek parça), adres kalıpları
+  - `js/ekranlar/harita.js`: `haritaSayfasi`, `durakHtml`, `madalyonHtml`, `siradakiSeviye`, `siradakiIs`, `motifHtml`, `resimHtml`, `gecisHtml`, `yolcuHtml`, `yuru`, `konumaKaydir`, `kaydirmaIzle` (dönem göstergesi), `kursRozetiHtml`, `kursPenceresi`, `durakPenceresi` (1.89 "G2"), `motifPenceresi`, `motifEseri`, `kapakDoldur`, `motifKapakDoldur`, `olaylariBagla`
+  - `js/bolum.js`: `bolumKaydi`, `gectiMi`, `yildizSayisi`, `bolumSonucuIsle`, `gorulenGruplar`, `tanismaGrubuGoruldu`, `tanitimGoruldu`, `BOLUM_SORU`, `BOLUM_GECME` (bölümleri kurmak ve kilitler C2'nin `CalisDersKurallari`'nda)
+  - `js/ekranlar/pekistir.js` (bölüm dalı): `konuTanismaGoster`, `kartCiz` (`tanitimIsaret`), `kartiBitir`, `sergiyeEkle`, `grupOzeti`, `bolumOzeti`, `seviyeTamamHtml`, `tamamlananDonem`, `pkUst`, `kipKisa`, `BOLUM_SV_AD`, `BOLUM_YONELME`
+  - `js/zaman.js`, `js/ekranlar/zaman.js` (hepsi)
+  - `css/app.css`: `.harita-ust`, `.harita-ozet`, `.kurs-rozet*`, `.harita-vakit`, `.harita-zaman*`, `.harita-durak*`, `.durak-halka`, `.durak-yildizlar`, `.durak-kilit`, `.durak-etiket`, `.harita-gecis-yazi*`, `.harita-resim.sepya`, `.harita-pencere*`, `.hp-kapak*`, `.hp-basla`, `.kurs-pencere`, `.kurs-siradaki`, `.motif-kapak`, `#uygulama .hp2*`, `.ozet`, `.grup-ozet`, `.bolum-sonuc`, `.sergi-*`, `.asi*`, `.seviye-tamam`, `.st-*`, `.skor*`, `.yol*`, `.durak-nokta`, `.durak-ad`, `.gecis*`, `.sonuc-harita`, `.zm-*`
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/harita.js js/bolum.js js/ekranlar/harita.js js/ekranlar/pekistir.js js/zaman.js js/ekranlar/zaman.js css/app.css`
+- **Çekirdek** (`NoraCekirdek/Yolculuk/`):
+  - `YolculukHaritasi.kur`: durakların dönemi, meydanı, sembolü, ölçüsü, kilit yazısı ve kaydı (`haritaKur` + `bolumDurumlari`, İş 191 ders kapısıyla). `YolcuPatikasi`: öğrencinin patikası, süresi, pozu. `ZamanKadrani`: `yasayanlar`, `yogunluk`, `yuzyilEvresi`, başlangıç yılı.
+  - `BolumTuru.swift` (G5b'de yeniden): `BolumKurallari` (kayıt, yıldız, `sonucuIsle`, `grubuGoruldu`, `tanitimGoruldu`, `gorulenGruplar`), `BolumSonucu`, `BolumTuru` (pekiştirme turu `TurKaydi` + yalnız ilk denemelerin sergisi + bitişte kayıt; `baslik` = `kipKisa`, `tanismaYazilari`).
+  - Kâhin `node Testler/kahin/yolculuk.mjs /tmp/sa` (sitenin kendi modülleri) → `Ornekler/yolculuk/cevaplar.json`: bütün durakların adı, sanatçıları, grupları, yeri, sembolü, kilit yazısı, yıldızı; yedi yılın evresi ve yaşayanları; 75 cetvel çubuğu; grup ve tanıtım işaretleri; beş `bolumSonucuIsle` dönüşü (G5b ekledi; öbür cevaplar aynı kaldı). `YolculukTests` (3 test). `Testler/kahin/yolculuk-olculeri.mjs` hesaplanmış ölçüleri yazar (CI'da yalnız bu dalda ayrı iş).
+- **Ekranlar** (`NoraSanat/Ekranlar/Yolculuk/`):
+  - `YolculukSekmesi.swift`: harita (dokuz dönem alttan üste; köprülerde yüzyıl, elmaslı çizgi, ad, "n bölüm · k açık"; son açık durağın üstü sepya), durak madalyonu (halka genişlik + 34, yıldız / 3 pirinç; üç yıldız; kilitlide kesik halka ve kilit; `scale 1.14`), "buradasın" etiketi, öğrenci ve yürüyüş, saklı motif alanları, sabit kurs rozeti, gündüz/gece, ortadaki döneme göre değişen dönem göstergesi. Açılışta "buradasın" durağının üstü ekranın %55'inde (`konumaKaydir`).
+  - `YolculukPencereleri.swift`: sekme çubuğunun 10 üstünde yüzen, aşağı çekince kapanan kartlar: `DurakPenceresi` (hp2: bulanık kapak zemini, kapak, tek beyaz düğme, gruplar, seviyeler, Orta eserleri, Akım sayfası; kilitlide kilit yazısı ve "Derse git"), `KursPenceresi` (Türkçe konu adı `konular_tr.json`, "k sanatçı açılacak", İşlendi yap, Bütün konular), `MotifPenceresi` (yaldız çerçeveli eser ve künye levhası, dokununca görüntüleyici; uzun hikâye `harita_motifler.json`).
+  - `BolumTuruEkrani.swift`: `BolumOyunu` (tur `noraYolculuk-<id>`'ye yazılır, yarım kalırsa aynı seviyede sürer). Tanışma ve sorular Çalış'ın `TanismaGorunumu` / `KartGorunumu`'yla (sitede de aynı pekiştirme ekranı); tur sonu yerli: `GrupOzeti`, `BolumSonucuGorunumu` (sergi duvarı, madalyon, yıldızlar, dönem kutlaması, skor, salonlar, geçiş hapları).
+  - `ZamanEkrani.swift`: **Galeri'nin sekmesi** (`GaleriYolu.zaman`, `#/zaman`; G3'ün Safari yaprağı kalktı): yapışkan panel, cetvel (çubuklar, çentikler, ibre, kenarlarda solma), akım akım liste.
+- **Ortak dosyalarda küçük değişiklikler:**
+  - `Calis/Pekistir/PekistirmeModeli.swift`: isteğe bağlı `disEylem`, `turBasligi`, `tanismaYazilari` (yalnız Yolculuk verir; Çalış'ta davranış aynı). `KartGorunumu`, `TanismaGorunumu` başlığı ve tanışma yazılarını buradan alır.
+  - `Galeri/GaleriSekmesi.swift`: `GaleriYolu.zaman`; `SiteBolumu` ve `SFSafariViewController` kalktı.
+  - `Hatirlatici.swift`: DEBUG `-izinSorma` (CI'da bildirim izni penceresi çıkmasın). `NoraSanatApp.swift`: DEBUG `YolculukProva.siteyiHazirla()` (eski Obj-C kurucu `YolculukSiteProva.m` silindi).
+  - `Gecis.swift`'e dokunulmadı: **Yolculuk hâlâ yerli değil**; denetimden sonra Claude ekler.
+- **CI karşılaştırması:** `-yolculukProva <ad>`; solda site (`-yalnizSite`), sağda yerli (`-yerliSekme yolculuk`; Zaman `-adres "#/zaman"` ile yerli Galeri'de). Hazır olunca `tmp/yolculuk-hazir`. Görüntüler `yan-yana-yolculuk-<ad>.png`: harita, zaman, kurs, motif, kilit, durak, tanisma, soru, cevap, grup-sonu, sergi, seviye-tamam. Tur provaları durak 4-1'de (Erken Rönesans), ilerleme yerlide yalnız bellekte; sitede sonda `geri-yukle`. Her açılışta `-izinSorma`.
+- **Bilinen farklar / kalan:**
+  - Hareketler: durakların yere konması, nabız, kıvılcımlar ve ışık sütunu, köprülerin kaydırmaya bağlı sis/yarık hareketi, sergide asılış ve sallanma (`sallanma.js`), yıldızların sırayla gelişi, yaldız yaprakları yok. Gündüz/gece geçişi anında.
+  - Sembollerin ayak ölçümü (`ayakOlc`) yok: halka sembolün ortasında. Kontur filtresi (`#durak-kontur`) yerine açık bir gölge.
+  - "Buradasın" hapı (şimdiki durak ekrandan çıkınca) yok. Köprü adları dönemin harfiyle (`harfUygula`) değil, Bodoni.
+  - Sergide çerçeve türleri (`cerceveTipi`: kemer, tabernakel, barok…) yok, hepsi vurgu degradesi. "Hareketi aç" düğmesi yok.
+  - Bölüm turunda sekme çubuğu görünür kalır (sitede de görünür).
+- **Tuzaklar:**
+  - `.position` uygulanan görünüm bütün kabı kaplar: `scrollTo` hedefi olarak dolguyla yerleştirilmiş ayrı 1×1 görünüm (`"konum"`) kullan.
+  - Tur kaydı `BolumTuru` Codable; yeni alan eklersen isteğe bağlı yap (eski kayıt çözülemezse tur sıfırdan başlar).
+- **CI:** (yazılacak)
 
 ### C5 · Çevrimdışı görseller (ChatGPT şeridi; kullanıcının isteğiyle Claude)
 **Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "En büyük kopyaları telefona indir" (`js/ekranlar/ayarlar.js`), `js/gorsel.js`, `js/eserler.js` `gosterilenGorseller`.
