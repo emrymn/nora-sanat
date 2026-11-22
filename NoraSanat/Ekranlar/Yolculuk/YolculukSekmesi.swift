@@ -219,8 +219,13 @@ private struct YolculukHaritaEkrani: View {
                     gorunenDonem = yerler.min { abs($0.value - orta) < abs($1.value - orta) }?.key
                 }
                 .task {
-                    await Task.yield()
-                    vekil.scrollTo(depo.simdiki == nil ? "son" : "konum", anchor: UnitPoint(x: 0.5, y: 0.55))
+                    // `konumaKaydir` sitede de iki kez (çizimden hemen sonra ve bir kare sonra): düzen oturmadan
+                    // yapılan ilk kaydırma `defaultScrollAnchor(.bottom)`'ın altında kalabiliyor
+                    let hedef = depo.simdiki == nil ? "son" : "konum"
+                    for bekle in [50, 250] {
+                        try? await Task.sleep(for: .milliseconds(bekle))
+                        vekil.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.55))
+                    }
                     #if DEBUG && targetEnvironment(simulator)
                     await prova()
                     #endif

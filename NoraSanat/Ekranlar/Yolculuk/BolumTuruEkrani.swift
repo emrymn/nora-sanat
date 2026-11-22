@@ -183,7 +183,7 @@ struct BolumTuruEkrani: View {
 
 // MARK: Ortak
 
-/// `ust(baslik, '#/harita', { ustEtiket })`: geri düğmesi, vurgulu etiket, büyük başlık (pkUst'te 48, öbüründe 40)
+/// `ust(baslik, '#/harita', { ustEtiket })`: geri düğmesi, vurgulu etiket, 40 px başlık (`.ust h1`; `.pk-ust` sarmalı yok)
 private struct TurSonuUst: View {
     let etiket: String
     let baslik: String
@@ -249,7 +249,7 @@ private struct GrupOzeti: View {
         let svAd = orta ? "Orta" : "Kolay"
         ScrollView {
             VStack(spacing: 0) {
-                TurSonuUst(etiket: "Grup tamam", baslik: b.baslik(oyun.durak.ad), boyut: 48, geri: haritaya)
+                TurSonuUst(etiket: "Grup tamam", baslik: b.baslik(oyun.durak.ad), boyut: 40, geri: haritaya)
                 // `.ozet`: 40 üst boşluk, ortalı, 6 aralık
                 VStack(spacing: 6) {
                     VurguEtiket("\(oyun.durak.ad) · \(grup + 1). grup")

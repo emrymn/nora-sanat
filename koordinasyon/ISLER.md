@@ -827,7 +827,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Tuzaklar:**
   - `.position` uygulanan görünüm bütün kabı kaplar: `scrollTo` hedefi olarak dolguyla yerleştirilmiş ayrı 1×1 görünüm (`"konum"`) kullan.
   - Tur kaydı `BolumTuru` Codable; yeni alan eklersen isteğe bağlı yap (eski kayıt çözülemezse tur sıfırdan başlar).
-- **CI:** (yazılacak)
+- **CI:** a3a4da5 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/45038413846): çekirdek 115 test (1 atlanan), derleme, bütün görüntüler. İlk koşu derlemede kaldı (`AkisDuzeni` adı Ben'dekiyle çakışıyordu → `OrtaliAkis`). On iki `yan-yana-yolculuk-*.png`'ye bakıldı: kurs, motif, durak, kilit ve Zaman sitedekiyle neredeyse birebir (aynı kart, yazı, renk, kırılım); tanışma, soru, cevap aynı bileşen (sorulan eser rastgele, farklı); grup sonu, sergi, seviye tamam sitenin düzeninde; hiçbirinde izin penceresi yok. Sonra düzeltilen: harita "buradasın"a kaymıyordu (ilk `scrollTo` düzenden önce; sitedeki gibi iki kez), grup sonu başlığı 48 → 40.
 
 ### C5 · Çevrimdışı görseller (ChatGPT şeridi; kullanıcının isteğiyle Claude)
 **Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "En büyük kopyaları telefona indir" (`js/ekranlar/ayarlar.js`), `js/gorsel.js`, `js/eserler.js` `gosterilenGorseller`.
