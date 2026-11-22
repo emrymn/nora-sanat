@@ -156,7 +156,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bitti (#20): G5a ChatGPT, G5b (görünüş) Claude |
-| Z3a | Yolculuk cilası | G | G5 | 1 | sürüyor |
+| Z3a | Yolculuk cilası | G | G5 | 1 | PR açık (#27) |
 | C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
@@ -849,6 +849,15 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 
 **Denetim (G5):** Claude, 2026-11-22 — **onay** (PR #20 yorumu). Linux'ta 115 test geçti; `yolculuk.mjs` site deposunda (`a866b86`) yeniden çalıştırıldı, çıktı `yolculuk/cevaplar.json` ile aynı. İlk ara denetimin 11 maddesi G5b'de yapıldı: 12 yan yana görüntüde harita, durak, kilit, kurs, motif, grup sonu, seviye tamam, sergi ve Zaman sitedekine çok yakın; Zaman Galeri'nin altında; bildirim penceresi yok; `.m` dosyası kalktı. Kalan küçük farklar (Z3'e): harita ilk kaydırma konumu ve üstteki durak simgesi; Tanış'ta sitede eser tam genişlik en üstte, yerlide üst şerit + başlık + çerçeveli eser; grup sonu başlığı yerlide büyük (3 satır, sitede 2); soru/cevapta eser sitedekinden küçük; sergide "Hareketi aç" düğmesi yok.
+
+### Z3a · Yolculuk cilası (ChatGPT)
+
+**Devir notu:** [PR #27](https://github.com/emrymn/nora-sanat/pull/27). Kaynak `sanat-atlasi@a866b86`, `js/ekranlar/harita.js`, `js/ekranlar/pekistir.js`, `js/sallanma.js` ve `css/app.css`.
+- Harita dönemlerin yerleşimi tamamlandığında şimdiki durağın üst kenarına kayar. Kurs hapının yanındaki madalyon aynı durağın penceresini açar.
+- Tanış ekranında tam genişlikte eser önce gelir. Küçük eser seçimi, büyütme ve sanatçılar arasında ilerleme korunur.
+- Grup özeti başlığı 34 pt. Soru görseli ekran yüksekliğine göre, cevap görseli de başlık, seçenekler ve cevap yaprağından kalan alana göre boyutlanır.
+- Sergide hareket düğmesi tablolara yer açar. Telefonda hareket açıldıktan sonra eğim asılara yansır. Hareketi azalt ayarı etkinse veya eğim kapalıysa algılayıcı başlamaz.
+- Telefonda haritayı açıp madalyona dokun, bir grupla tanış, soruyu yanıtla ve sergide hareketi açıp telefonu eğ. Görünüş karşılaştırması için CI arşivindeki `yan-yana-yolculuk-{harita,tanisma,grup-sonu,soru,cevap,sergi}.png` dosyaları kullanılır.
 
 ### C5 · Çevrimdışı görseller (ChatGPT şeridi; kullanıcının isteğiyle Claude)
 **Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "En büyük kopyaları telefona indir" (`js/ekranlar/ayarlar.js`), `js/gorsel.js`, `js/eserler.js` `gosterilenGorseller`.

@@ -2,9 +2,9 @@
 // grupOzeti, bolumOzeti, seviyeTamamHtml, tamamlananDonem, pkUst, kipKisa), js/ekranlar/ortak.js (ust),
 // css/app.css (.ust, .ust-yazi, .pk-ust, .ozet, .ozet .ad, .grup-ozet, .bolum-sonuc, .sergi-duvar, .sergi-asilar, .asi*,
 // .sergi-isik, .sonuc-alt, .seviye-tamam, .st-*, .skor*, .yol*, .durak-nokta, .durak-ad, .gecis*, .sonuc-harita) @ a866b86
-// Sitede bölüm turu pekiştirme ekranında oynar (`#/pekistir/bolum/<id>/<seviye>`): tanışma ve sorular Çalış'ın yerli
-// `TanismaGorunumu` / `KartGorunumu`'yla aynen çizilir; tur sonu (grup tamam, sergi, seviye tamam) burada.
+// Bölüm turu, Çalış ile aynı modeli kullanır; Yolculuk kendi ekran ölçülerini uygular.
 import NoraCekirdek
+import CoreMotion
 import SwiftUI
 
 /// Bir durağın süren turu. Tur ilerlemeye `noraYolculuk-<id>` olarak yazılır (yarım kalırsa sürer).
@@ -157,9 +157,16 @@ struct BolumTuruEkrani: View {
         let tur = oyun.bolum.tur
         Group {
             if tur.tanismaBekliyor || tur.kart?.tanisma != nil {
-                TanismaGorunumu(model: oyun.model, tur: tur, kapat: haritaya)
+                BolumTanismasi(model: oyun.model, tur: tur, kapat: haritaya)
+                    .id(tur.tanisma?.simdiki ?? tur.kart?.resim.id)
             } else if let k = tur.kart {
-                KartGorunumu(model: oyun.model, tur: tur, k: k, kapat: haritaya, disAdreseGit: adreseGit)
+                Group {
+                    if k.ters == nil {
+                        BolumSoruKarti(model: oyun.model, tur: tur, k: k, kapat: haritaya, disAdreseGit: adreseGit)
+                    } else {
+                        KartGorunumu(model: oyun.model, tur: tur, k: k, kapat: haritaya, disAdreseGit: adreseGit)
+                    }
+                }
                     .id("\(tur.gorunenKonum)|\(k.resim.eser.anahtar)|\(k.ikinci)")
             } else if oyun.bolum.seviye.grup != nil {
                 GrupOzeti(oyun: oyun, haritaya: haritaya, yeniTur: yeniTur)
@@ -249,7 +256,8 @@ private struct GrupOzeti: View {
         let svAd = orta ? "Orta" : "Kolay"
         ScrollView {
             VStack(spacing: 0) {
-                TurSonuUst(etiket: "Grup tamam", baslik: b.baslik(oyun.durak.ad), boyut: 40, geri: haritaya)
+                // pekistir.js grupOzeti → pkUst, app.css .ust h1: uzun grup adını iki satıra sığdır.
+                TurSonuUst(etiket: "Grup tamam", baslik: b.baslik(oyun.durak.ad), boyut: 34, geri: haritaya)
                 // `.ozet`: 40 üst boşluk, ortalı, 6 aralık
                 VStack(spacing: 6) {
                     VurguEtiket("\(oyun.durak.ad) · \(grup + 1). grup")
@@ -285,6 +293,14 @@ private struct BolumSonucuGorunumu: View {
     @Environment(TemaDeposu.self) private var tema
 
     private var r: TemaRenkleri { tema.renkler }
+    @Environment(\.accessibilityReduceMotion) private var hareketAz
+    @State private var sensor = CMMotionManager()
+    @State private var sallanma = 0.0
+    @State private var hareketAcik = false
+    @State private var sensorYok = false
+    private var hareketUygun: Bool {
+        !hareketAz && !tema.ayar.hareketAzaltilmis && oyun.ilerleme.ayar("egim")?.mantik != false
+    }
     private var sv: String { oyun.bolum.seviye.anahtar }
     private var svAd: String { oyun.bolum.seviye.ad }
     private var sonrakiSv: String? { sv == "kolay" ? "orta" : sv == "orta" ? "zor" : nil }
@@ -319,6 +335,8 @@ private struct BolumSonucuGorunumu: View {
             }
             #endif
         }
+        .onDisappear(perform: durdur)
+        .onChange(of: hareketUygun) { _, uygun in if !uygun { durdur() } }
         .accessibilityIdentifier("bolum-ozet")
     }
 
@@ -333,13 +351,43 @@ private struct BolumSonucuGorunumu: View {
             OrtaliAkis(yatay: 12, dikey: 18) {
                 ForEach(Array(l.enumerated()), id: \.offset) { i, e in asi(i, e) }
             }
-            .padding(.top, 26).padding(.bottom, 18).padding(.horizontal, 4)
+            .padding(.top, hareketUygun && !hareketAcik ? 64 : 26).padding(.bottom, 18).padding(.horizontal, 4)
+            // pekistir.js bolumOzeti, app.css .sergi-duvar.egim-izinsiz .egim-dugme
+            if hareketUygun && !hareketAcik {
+                Button(action: hareketiAc) {
+                    Label("Hareketi aç", systemImage: "move.3d")
+                        .font(Yazi.sans(13, agirlik: 600)).padding(.horizontal, 14).frame(minHeight: 44)
+                        .background(Capsule().fill(Color(r.zemin).opacity(0.62)))
+                        .overlay(Capsule().strokeBorder(Color(r.pirinc).opacity(0.7)))
+                }
+                .buttonStyle(.plain).padding(.top, 18).padding(.trailing, 10)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .alert("Bu aygıtta hareket algılayıcısı kullanılamıyor.", isPresented: $sensorYok) { Button("Tamam") {} }
+            }
         }
         .background(RoundedRectangle(cornerRadius: 6).fill(Color(r.yuzey)))
         .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(Color(r.kenar), lineWidth: 1))
         .clipShape(RoundedRectangle(cornerRadius: 6))
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Bu bölümde karşına çıkan eserler")
+    }
+
+    // js/sallanma.js: telefon sağa eğildiğinde asılar sola döner.
+    private func hareketiAc() {
+        guard sensor.isDeviceMotionAvailable else { sensorYok = true; return }
+        hareketAcik = true
+        sensor.deviceMotionUpdateInterval = 1.0 / 30
+        sensor.startDeviceMotionUpdates(to: .main) { veri, hata in
+            guard hareketAcik else { return }
+            guard let veri, hata == nil else { durdur(); sensorYok = true; return }
+            sallanma = -9 * max(-1, min(1, veri.gravity.x))
+        }
+    }
+
+    private func durdur() {
+        sensor.stopDeviceMotionUpdates()
+        hareketAcik = false
+        sallanma = 0
     }
 
     /// `.asi`: ip (10–28 pt), 4:5 yaldız çerçeve (vurgu degradesi, 4 pt), eğim; tanınmayan soluk ve "?" pullu
@@ -373,7 +421,7 @@ private struct BolumSonucuGorunumu: View {
             }
         }
         .frame(width: 84)
-        .rotationEffect(.degrees(egim * 0.5), anchor: UnitPoint(x: 0.5, y: -0.1))
+        .rotationEffect(.degrees(egim * 0.5 + sallanma), anchor: UnitPoint(x: 0.5, y: -0.1))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(oyun.katalog.harita[e.resim.id]?.ad ?? ""): \(e.dogru ? "tanıdın" : "tanıyamadın")")
     }
