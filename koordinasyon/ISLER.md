@@ -735,12 +735,42 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### C5 · Çevrimdışı görseller (ChatGPT)
-**Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "Görselleri çevrimdışı indir".
+### C5 · Çevrimdışı görseller (ChatGPT şeridi; kullanıcının isteğiyle Claude)
+**Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "En büyük kopyaları telefona indir" (`js/ekranlar/ayarlar.js`), `js/gorsel.js`, `js/eserler.js` `gosterilenGorseller`.
 
-**Kapsam:** Arka planda indirme, boyut ve ilerleme göstergesi, iptal.
+**Kapsam:** Arka planda indirme, boyut ve ilerleme göstergesi, durdurma, silme. İndirilenler uygulamanın görsel önbelleğinde önce kullanılır, internet yokken de görünür.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-22 · [PR #21](https://github.com/emrymn/nora-sanat/pull/21) · dal `claude/eager-ramanujan-l5weox` (oturumun zorunlu dalı). C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/gorsel.js`: `devasaSuz`, `suzulduMu`, `devasaAdresleri`, `telefonAdresleri`, `tahminiBayt`, `telefonToplamBayt`, `B_ORTALAMA_BAYT`, `K_ORTALAMA_BAYT`
+  - `js/eserler.js`: `gosterilenGorseller`
+  - `js/ekranlar/ayarlar.js`: Ayarlar'daki `data-test="devasa-indir"` bölümü, `devasaBilgisi`, `devasaGoster`, `devasaIndir` (parça seçimi, `d.devasaIndirme`, bitiş kuralları), `devasaSurdur`, `devasaSil`, durdurma
+  - `js/devasaOnbellek.js`: `kaliciYaz/Oku`, `kaliciAdresler` (listede olmayanların silinmesi, %20 koruması), `kaliciSil`, `defterAdi` (dosya adı kalıbı), `PARCA`
+  - `css/app.css`: `.ayar .dugme`, `progress`, `.mesaj`, `.mesaj.hata`, `.mesaj.tamam`
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/gorsel.js js/eserler.js js/ekranlar/ayarlar.js js/devasaOnbellek.js`
+- **Çekirdek** (`NoraCekirdek/Cevrimdisi/`):
+  - `CevrimdisiListe`: indirme listesi sitedeki sırayla (en büyük kopyalar, en büyüğü olmayanların 1280'likleri, bütün 400'lükler, kalan 1280'likler), `tahminiBayt`, `toplamBayt`, `parca(telefonda:)` (parça planı: ~0,7 GB ya da 1000 dosya, kaçıncı / kaç parça). Bugün: **5624 eser, 19 402 dosya, 21,0 GB, 33 parça** (iş tablosundaki "321 MB" eskiydi).
+  - `CevrimdisiDurumu` (`d.devasaIndirme`, `bitir`), `CevrimdisiGorunum` (Ayarlar'ın açıklaması, iletisi, ileti rengi, İndir / Durdur / Telefondan sil düğmeleri, çubuk), `gb`.
+  - `CevrimdisiDepo`: Application Support/CevrimdisiGorseller (Caches değil: iOS yer daralınca silmesin; iCloud yedeğine girmez). Dosya adı adresin türü ve adı (`d-<ad>[-sürüm].jpg`, `b-…`, `k-…`): klasörün listesi hangi adreslerin telefonda olduğunu söyler, defter gerekmez. `telefondakiler` listede olmayan eski sürümleri siler (sitedeki %20 korumasıyla).
+  - `SiteKatalogu.gosterilenGorseller()`; `SiteKatalogu.onbellekSirasi` ve `GorselAdresleri.devasaListesi` eklendi (sıra için; T1 dosyalarında küçük değişiklik).
+  - `GorselDeposu` (T3): bir adresi önce `CevrimdisiDepo`'da arar (`veri`, `diskte`). `UzakGorsel`, görüntüleyici ve büyük kopya hep buradan geçtiği için indirilenler internetsiz de görünür.
+- **Uygulama** (`NoraSanat/Ekranlar/Ben/`):
+  - `CevrimdisiIndirici.swift`: arka plan `URLSession` (`com.emrymn.norasanat.cevrimdisi`). Bir parçanın dosyaları birden verilir (aynı sunucuya 3 bağlantı, 90 sn zaman aşımı), parça bitince sıradaki başlar; uygulama arka plandayken ve iOS onu kapatınca da sürer, iş bitince iOS uygulamayı uyandırır, sıradaki parça orada verilir. Kullanıcı uygulamayı kaydırıp kapatırsa iOS görevleri iptal eder: açılışta kaldığı yerden sürer (sitenin `devasaSurdur`'u; işaret `UserDefaults` `cevrimdisi.surdur`, durum `cevrimdisi.durum`, liste `Application Support/CevrimdisiListe.json`). İnen dosya, yanıt 2xx ve `image/` ise temsilcide hemen yerine taşınır; yer yoksa indirme durur ("Telefonda yer kalmadı").
+  - Açılışta sitenin eski indirmesi durdurulur ve sürdürme işareti (`sanat-atlasi:devasa-surdur`) silinir: gizli site artık arkada ayrıca indirmez. "Telefondan sil" sitenin eskiden IndexedDB'ye indirdiklerini de siler.
+  - `BenCevrimdisi.swift`: bölüm `CevrimdisiIndirici` ve `CevrimdisiGorunum`'la; sıra sitedeki gibi (açıklama, düğmeler, çubuk, ileti). **C4b tuzağı kalktı:** Ayarlar açılınca gizli site artık `#/ayarlar`'a gitmiyor, bölüm sitenin sayfasını okumuyor.
+  - `NoraSanatApp.swift` (ortak, küçük): `@UIApplicationDelegateAdaptor(NoraSanatUygulamaTemsilcisi.self)` (`handleEventsForBackgroundURLSession`; açılışta `baslat()`).
+- **Kâhin:** `Testler/kahin/cevrimdisi.mjs` → `Ornekler/cevrimdisi/cevaplar.json`. Önce canlı sitenin veri dosyalarının `Ornekler/site_verisi/`'ndekilerle aynı olduğunu denetler (Swift testi listeyi oradan kurar). Sınananlar: listenin sayıları, **19 402 adresin sıralı MD5'i** ve her 97. adres, toplam bayt, `tahminiBayt`; sekiz "telefondakiler" kümesiyle parça planı (`devasaIndir`'in parça kodu kâhinde aynen); Ayarlar'ın açıklaması (telefonda 0 ve 5 görsel: sitenin IndexedDB'sine sahte kayıt) ve on indirme durumunun iletisi, ileti sınıfı, düğmeleri, çubuğu (sayfa her durumda yeniden çizilip okunur). `CevrimdisiTests` (8 test); Linux'ta paket testleri: 96 test, 1 atlanan. Listenin sırası bilerek bozulunca yakalıyor.
+- **Bilinçli farklar:**
+  - Açıklamanın "Wi-Fi’de indir." sonrası: sitede "her parçadan sonra uygulama kendini yenileyip…, iPhone kapalı uygulamanın indirmesine izin vermiyor"; uygulamada "uygulamadan çıksan da arka planda sürer; kaydırıp kapatırsan bir dahaki açışında kaldığı yerden devam eder" (`CevrimdisiGorunum.indirmeNotu`). Test o cümleye kadar karşılaştırır.
+  - Parça bitince sitede sayfa yenilenir; burada sıradaki parça hemen başlar ("Parça 2 / 33 bitti · … Sıradaki parça başlıyor…").
+  - Sitenin indirme izi / hata günlüğü (`izBirak`, `hataEkle`, `depoDurumu`, defter doğrulaması) yok: dosya sistemi güvenilir, defter gerekmiyor. "Kaydedilemedi" iletisinde sitenin hata adı yerine dosya sistemi hatası yazar.
+  - Ekran açık tutma (`wakeLock`) yok: arka planda indiği için gerek yok.
+  - Sitenin önceden IndexedDB'ye indirdikleri Swift'e taşınmaz (WebKit deposundan GB'larca veriyi köprüden geçirmek pratik değil); yerli ekranlar onları kullanmaz, taşınmamış site sekmeleri kullanmaya devam eder. Telefonda ikisi birden yer kaplayabilir; "Telefondan sil" ikisini de siler.
+- **Tuzaklar:**
+  - Arka plan oturumu tek kimlikle kurulur (`baslat()`, bir kez). Uygulama arka planda yeniden açılınca görevlerin sonuçları görev listesinden önce gelebilir (`erkenBiten`).
+  - Simülatörde arka plan oturumu çalışır, gerçek arka plan davranışı (uyandırma) yalnız telefonda sınanabilir.
+  - Liste 19 bin adres: `toplamBayt` bir kez hesaplanır; her çizimde listeyi dolaşma.
+- **CI:** (aşağıda)
 
 ### T5 · Hareket izni penceresi çıkmasın (Claude)
 - Sorun: site (ya da yerli koddan çağrılan betik) `DeviceMotionEvent.requestPermission()` isteyince iOS'un "Harekete ve Yöne Erişmek İstiyor" penceresi çıkıyordu (C4b'nin ilk CI'ı, G2b'nin 5743b49 koşusu). `WebKabugu`'daki temsilci `.grant` dönüyordu ama `async` biçimiydi.
