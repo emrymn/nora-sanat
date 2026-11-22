@@ -72,7 +72,7 @@ struct BugunSekmesi: View {
       tarih = GunTarihi.gun(Date())
     }
     .onChange(of: evre) { _, yeni in if yeni == .active { tarih = GunTarihi.gun(Date()) } }
-    .onChange(of: algilama) { _, ac in if ac { hareket.baslat() } else { hareket.durdur() } }
+    .onChange(of: algilama, initial: true) { _, ac in if ac { hareket.baslat() } else { hareket.durdur() } }
     .onDisappear {
       hareket.durdur()
       izleme?.cancel()
@@ -218,6 +218,7 @@ struct BugunSekmesi: View {
         do {
           try await Task.sleep(for: .milliseconds(400))
           switch bolum {
+          case "kapak": break
           case "ayrinti-alt", "ayrinti-ust":
             guard let n = Int(NoraSanatApp.arguman("-bugunAdim") ?? ""),
                   s.kayit.noktalar.indices.contains(n - 2),
@@ -242,7 +243,7 @@ struct BugunSekmesi: View {
           }
           let ip = min(Double(son), max(0, izlenenAdim))
           let dd = adimlar[Int(ip)].ara(adimlar[min(Int(ip) + 1, son)], pay: ip - Double(Int(ip)))
-          let c = kamera.cerceve(dd, buyut: 1, egim: nil)
+          let c = kamera.cerceve(dd, buyut: 1, egim: hareket.deger)
           let durum = "kayma \(Int(kayma)) adim \(String(format: "%.3f", izlenenAdim)) ekran \(Int(h)) ust \(ust) alt \(alt) "
             + "kart \(boylar[Int(ip.rounded())].map { String(format: "%.1f", $0) } ?? "-") "
             + "cerceve \(String(format: "%.1f %.1f %.4f", c.minX, c.minY, c.width / kamera.resim.width))"

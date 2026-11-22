@@ -13,6 +13,15 @@ async function bolumuAc(bolum) {
   await hazir(() => document.querySelector('.yur-kapak'));
   const ortak = await import('/js/ekranlar/ortak.js');
   const bugun = await import('/js/ekranlar/bugun.js');
+  if (bolum === 'kapak') {
+    // G4b: kapak da betikle çekilir; düz açılışta eğim (izin) henüz dinlenmiyor, betikli bölümlerde dinleniyordu.
+    // Telefonda izin hatırlandığı için eğim açıktır; burada da sayfa yeniden çizilip eğimin oturması beklenir.
+    bugun.anaSayfa();
+    await document.fonts.ready;
+    await bekle(4500);
+    const img = document.querySelector('.yur-sahne img');
+    return ['kapak', ortak.gununId(), 0, 'Hayat', '', `resim ${img ? img.style.transform : '-'}`].join('|');
+  }
   // Yalnız o WebView oturumunda seçim yap. Kartların konumunu site belirlesin.
   for (const id of ['andrea-mantegna', 'ambrogio-lorenzetti', 'fra-angelico', 'sandro-botticelli']) {
     ortak.d.ilerleme.gununDegisim = {tarih:ortak.bugun(), id};
@@ -56,5 +65,5 @@ async function bolumuAc(bolum) {
   throw Error('İki konumda ayrıntı bulunamadı');
 }
 const bolum = process.argv[2];
-if (!['ayrinti-ust','ayrinti-alt','hayati','eserler','tur'].includes(bolum)) throw Error('Bilinmeyen bölüm');
+if (!['kapak','ayrinti-ust','ayrinti-alt','hayati','eserler','tur'].includes(bolum)) throw Error('Bilinmeyen bölüm');
 console.log('return await (' + bolumuAc.toString() + ')(' + JSON.stringify(bolum) + ');');
