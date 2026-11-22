@@ -28,6 +28,7 @@ struct BugunSekmesi: View {
   @State private var cubukGizli = false
   @State private var ekranUstu = 0.0
   @State private var ekranAlti = 0.0
+  @State private var konumHedefi: Double?
 
   private enum Acilis: String, Identifiable {
     case resim, hikaye, incele
@@ -138,12 +139,17 @@ struct BugunSekmesi: View {
               .init(color: YurRenk.zemin(0.96), location: 1),
             ], startPoint: .top, endPoint: .bottom)
         }
-        // `.yur-bulanik`: rgba(18, 17, 16, 0.6) + backdrop-filter blur(18px), saydamlığı perde (asma)
-        .blur(radius: asma * 18, opaque: true).accessibilityHidden(true)
+        .accessibilityHidden(true)
         Color(tema.renkler.zemin)
           .scaleEffect(x: 1, y: perde || durgun ? 0 : 1, anchor: .top)
           .animation(durgun ? nil : .timingCurve(0.7, 0, 0.2, 1, duration: 1.1), value: perde)
-        YurRenk.zemin(0.6).opacity(asma)
+        // `.yur-bulanik`: backdrop-filter blur(18px) + rgba(18, 17, 16, 0.6), saydamlığı perde (asma). Büyük resmin
+        // kendisine .blur verince (G4b ilk deneme) görüntü bantlı ve karanlık çıktı; arka plan bulanıklığı sitedekinin aynısı.
+        ZStack {
+          Rectangle().fill(.ultraThinMaterial)
+          YurRenk.zemin(0.6)
+        }
+        .environment(\.colorScheme, .dark).opacity(asma).allowsHitTesting(false).accessibilityHidden(true)
         ScrollView {
           VStack(spacing: 0) {
             kapak(s) { suzul(hedef: son) { kaydir.scrollTo("hayat", anchor: .top) } }
@@ -165,13 +171,6 @@ struct BugunSekmesi: View {
             }
             .padding(.top, ekranUstu + 84).padding(.bottom, alt + 14)
             .frame(minHeight: h, alignment: .top)
-            #if DEBUG
-              .overlay(alignment: .top) {
-                if let konum = NoraSanatApp.arguman("-bugunKonum").flatMap(Double.init) {
-                  Color.clear.frame(height: 1).id("bugunKonum").padding(.top, max(0, konum))
-                }
-              }
-            #endif
             .id("hayat")
           }
           .opacity(yaziGizli ? 0 : 1)
@@ -180,6 +179,9 @@ struct BugunSekmesi: View {
         .scrollIndicators(.hidden)
         .scrollTargetBehavior(BugunOturmasi(boy: h, hayat: Double(son + 1) * h))
         .modifier(BugunKaymaIzi(icerik: false) { kaydi($0, son: son, h: h) })
+        #if DEBUG
+          .modifier(BugunKonumaGit(y: konumHedefi))
+        #endif
         .onPreferenceChange(BugunKartBoyu.self) { boylar = $0 }
         ustCubuk(perde: asma)
         if p >= 0.5 && asma < 0.3 {
@@ -222,8 +224,11 @@ struct BugunSekmesi: View {
                   adimlar[n].kartUstte == (bolum == "ayrinti-ust") else { return }
             kaydir.scrollTo(n, anchor: .top)
           case "hayati", "eserler", "tur":
-            if NoraSanatApp.arguman("-bugunKonum") != nil {
-              kaydir.scrollTo("bugunKonum", anchor: .top)
+            if let konum = NoraSanatApp.arguman("-bugunKonum").flatMap(Double.init) {
+              // Hayatı, kapak ve son + 1 adımdan sonra başlar; site de aynı konumda
+              kaydir.scrollTo("hayat", anchor: .top)
+              try await Task.sleep(for: .milliseconds(300))
+              konumHedefi = Double(son + 1) * h + konum
             } else if bolum == "hayati" {
               kaydir.scrollTo("hayat", anchor: .top)
             } else {
@@ -232,6 +237,9 @@ struct BugunSekmesi: View {
           default: return
           }
           try await Task.sleep(for: .seconds(4))
+          for _ in 0..<40 where abs(izlenenAdim - hedefAdim) > 0.001 {
+            try await Task.sleep(for: .milliseconds(250))
+          }
           let durum = "kayma \(Int(kayma)) adim \(String(format: "%.3f", izlenenAdim)) ekran \(Int(h))"
           try Data(durum.utf8).write(to: FileManager.default.temporaryDirectory
             .appendingPathComponent("bugun-durum"), options: .atomic)
@@ -424,7 +432,12 @@ struct BugunSekmesi: View {
       .padding(.bottom, 20)
       // `.yur-kart`: rgba(24, 22, 20, 0.5) + blur(14px) saturate(1.1), 1 px rgba(235, 229, 218, 0.14) çizgi
       .foregroundStyle(YurRenk.yazi)
-      .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+      .background {
+        ZStack {
+          RoundedRectangle(cornerRadius: 20).fill(.ultraThinMaterial)
+          RoundedRectangle(cornerRadius: 20).fill(YurRenk.cam(0.5))
+        }
+      }
       .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(YurRenk.acik(0.14), lineWidth: 1))
       .environment(\.colorScheme, .dark)
       .background {
@@ -462,6 +475,32 @@ private struct BugunKaymaIzi: ViewModifier {
     }
   }
 }
+#if DEBUG
+  /// CI: Hayatı'nda sitenin kaydırdığı yere git (iOS 18 ScrollPosition; iOS 17'de yalnız bölüm başı)
+  private struct BugunKonumaGit: ViewModifier {
+    let y: Double?
+    func body(content: Content) -> some View {
+      if NoraSanatApp.arguman("-bugunKonum") == nil {
+        content
+      } else if #available(iOS 18, *) {
+        content.modifier(Konum18(y: y))
+      } else {
+        content
+      }
+    }
+  }
+  @available(iOS 18, *)
+  private struct Konum18: ViewModifier {
+    let y: Double?
+    @State private var konum = ScrollPosition()
+    func body(content: Content) -> some View {
+      content.scrollPosition($konum).onChange(of: y) { _, y in
+        if let y { konum.scrollTo(y: y) }
+      }
+    }
+  }
+#endif
+
 private struct BugunKartBoyu: PreferenceKey {
   static let defaultValue: [Int: Double] = [:]
   static func reduce(value: inout [Int: Double], nextValue: () -> [Int: Double]) {
