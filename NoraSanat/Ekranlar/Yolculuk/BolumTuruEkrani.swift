@@ -330,7 +330,7 @@ private struct BolumSonucuGorunumu: View {
                 .scaleEffect(x: 0.76, y: 1.4, anchor: .top)
             Capsule().fill(LinearGradient(colors: [Color(r.kenar), Color(r.vurgu), Color(r.kenar)], startPoint: .leading, endPoint: .trailing))
                 .frame(height: 3).padding(.horizontal, 10).padding(.top, 10)
-            AkisDuzeni(yatay: 12, dikey: 18) {
+            OrtaliAkis(yatay: 12, dikey: 18) {
                 ForEach(Array(l.enumerated()), id: \.offset) { i, e in asi(i, e) }
             }
             .padding(.top, 26).padding(.bottom, 18).padding(.horizontal, 4)
@@ -595,7 +595,7 @@ struct UzakGorselSaydam: View {
 }
 
 /// Satır satır akan, satırları ortalanan düzen (`display: flex; flex-wrap: wrap; justify-content: center`)
-struct AkisDuzeni: Layout {
+struct OrtaliAkis: Layout {
     var yatay: CGFloat
     var dikey: CGFloat
 
