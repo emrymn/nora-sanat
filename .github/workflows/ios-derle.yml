@@ -33,6 +33,13 @@ jobs:
           NODE_PATH="$RUNNER_TEMP/galeri-kahin/node_modules" GALERI_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/galeri.mjs > "$RUNNER_TEMP/galeri.json"
           node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/galeri/cevaplar.json" "$RUNNER_TEMP/galeri.json"
 
+      - name: Çalış kâhinini canlı sitenin modülleriyle karşılaştır
+        if: github.head_ref == 'is/C2-calis' || github.event_name == 'workflow_dispatch'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/calis-kahin" --no-audit --no-fund playwright@1.56.1
+          NODE_PATH="$RUNNER_TEMP/calis-kahin/node_modules" CALIS_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/calis.mjs > "$RUNNER_TEMP/calis-cevaplar.json"
+          node -e "const assert = require('node:assert/strict'); const yuvarla = (v) => typeof v === 'number' && !Number.isInteger(v) ? Number(v.toFixed(11)) : Array.isArray(v) ? v.map(yuvarla) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, yuvarla(x)])) : v; assert.deepEqual(yuvarla(require(process.argv[1])), yuvarla(require(process.argv[2])));" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/calis/cevaplar.json" "$RUNNER_TEMP/calis-cevaplar.json"
+
       - name: Xcode sürümü
         run: xcodebuild -version
 
@@ -257,6 +264,39 @@ jobs:
             sleep 22
             xcrun simctl io "$UDID" screenshot "ekranlar/site-galeri-$AD.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-galeri-$AD.png" "ekranlar/galeri-$AD.png" "ekranlar/galeri-yan-yana-$AD.png"
+          done
+          # C2: Çalış ana ekranı (#/pekistir, #/calis) ve Turlar (#/pekistir/donem): yerli ekran ile sitenin yan yana görünümü
+          for IS in calis: calis:turlar calis:yuk donem: donem:salon; do
+            SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
+            AD="calis-$SAYFA${BOLUM:+-$BOLUM}"
+            ADRES="#/pekistir"
+            ARGS=(-yerliSekme calis,ben -adres "#/pekistir")
+            if [ "$SAYFA" = donem ]; then
+              ADRES="#/pekistir/donem"
+              ARGS=(-yerliSekme calis,ben -adres "#/pekistir/donem" -calisSayfa donem)
+            fi
+            if [ -n "$BOLUM" ]; then
+              ARGS+=("-calisKaydir" "$BOLUM")
+            fi
+            xcrun simctl terminate "$UDID" "$PAKET"
+            VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+            rm -f "$VERI/tmp/calis-hazir"
+            xcrun simctl launch "$UDID" "$PAKET" "${ARGS[@]}"
+            for _ in {1..90}; do
+              test -f "$VERI/tmp/calis-hazir" && break
+              sleep 1
+            done
+            test -f "$VERI/tmp/calis-hazir"
+            sleep 3
+            xcrun simctl io "$UDID" screenshot "ekranlar/$AD.png"
+            if [ "$SAYFA" = calis ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Bugünün dersi"; fi
+            if [ "$SAYFA" = donem ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Turu başlat"; fi
+            # Site: -yalnizSite ile aynı adres
+            xcrun simctl terminate "$UDID" "$PAKET"
+            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "$ADRES"
+            sleep 22
+            xcrun simctl io "$UDID" screenshot "ekranlar/site-calis-$SAYFA${BOLUM:+-$BOLUM}.png"
+            "$RUNNER_TEMP/yan-yana" "ekranlar/site-calis-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-calis-$SAYFA${BOLUM:+-$BOLUM}.png"
           done
           # T5: site hareket izni isteyince iOS penceresi çıkmamalı (uygulama izni kendisi verir)
           xcrun simctl terminate "$UDID" "$PAKET" || true
