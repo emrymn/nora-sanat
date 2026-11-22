@@ -203,6 +203,37 @@ jobs:
           CGImageDestinationFinalize(hedef)
           SWIFT
           xcrun swiftc "$RUNNER_TEMP/yan-yana.swift" -o "$RUNNER_TEMP/yan-yana"
+          VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+          # G4: aynı veri ve tarihte site ile yerli kapak; iki ekranda da eylem görünene kadar bekle.
+          for KIP in site yerli; do
+            xcrun simctl terminate "$UDID" "$PAKET"
+            if [ "$KIP" = site ]; then
+              EK=(-yalnizSite)
+            else
+              EK=(-yerliSekme bugun -bugunKarsilastir)
+              rm -f "$VERI/tmp/bugun-hazir"
+            fi
+            xcrun simctl launch "$UDID" "$PAKET" "${EK[@]}" -adres "#/"
+            for DENEME in {1..24}; do
+              sleep 4
+              if [ "$KIP" = yerli ] && [ ! -s "$VERI/tmp/bugun-hazir" ]; then
+                if [ "$DENEME" = 24 ]; then exit 1; fi
+                continue
+              fi
+              xcrun simctl io "$UDID" screenshot "ekranlar/bugun-$KIP.png"
+              if "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-$KIP.png" "Hayat"; then break; fi
+              if [ "$DENEME" = 24 ]; then exit 1; fi
+            done
+          done
+          "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
+          # Taslak denetiminde arşivin tamamını indirmeden karşılaştırmayı okuyabilmek için küçük önizleme.
+          if [ "$GITHUB_HEAD_REF" = "is/G4-bugun" ]; then
+            sips -s format jpeg -s formatOptions 65 --resampleWidth 720 ekranlar/yan-yana-bugun.png --out "$RUNNER_TEMP/bugun-onizleme.jpg" >/dev/null
+            echo '::group::G4 karşılaştırma önizlemesi (JPEG)'
+            base64 -i "$RUNNER_TEMP/bugun-onizleme.jpg" | fold -w 1024 | sed 's/^/G4-JPEG /'
+            echo
+            echo '::endgroup::'
+          fi
           for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek; do
             SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
             AD="ben-$SAYFA${BOLUM:+-$BOLUM}"
@@ -261,36 +292,6 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-galeri-$AD.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-galeri-$AD.png" "ekranlar/galeri-$AD.png" "ekranlar/galeri-yan-yana-$AD.png"
           done
-          # G4: aynı veri ve tarihte site ile yerli kapak; iki ekranda da eylem görünene kadar bekle.
-          for KIP in site yerli; do
-            xcrun simctl terminate "$UDID" "$PAKET"
-            if [ "$KIP" = site ]; then
-              EK=(-yalnizSite)
-            else
-              EK=(-yerliSekme bugun -bugunKarsilastir)
-              rm -f "$VERI/tmp/bugun-hazir"
-            fi
-            xcrun simctl launch "$UDID" "$PAKET" "${EK[@]}" -adres "#/"
-            for DENEME in {1..24}; do
-              sleep 4
-              if [ "$KIP" = yerli ] && [ ! -s "$VERI/tmp/bugun-hazir" ]; then
-                if [ "$DENEME" = 24 ]; then exit 1; fi
-                continue
-              fi
-              xcrun simctl io "$UDID" screenshot "ekranlar/bugun-$KIP.png"
-              if "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-$KIP.png" "Hayatı"; then break; fi
-              if [ "$DENEME" = 24 ]; then exit 1; fi
-            done
-          done
-          "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
-          # Taslak denetiminde arşivin tamamını indirmeden karşılaştırmayı okuyabilmek için küçük önizleme.
-          if [ "$GITHUB_HEAD_REF" = "is/G4-bugun" ]; then
-            sips -s format jpeg -s formatOptions 65 --resampleWidth 720 ekranlar/yan-yana-bugun.png --out "$RUNNER_TEMP/bugun-onizleme.jpg" >/dev/null
-            echo '::group::G4 karşılaştırma önizlemesi (JPEG)'
-            base64 -i "$RUNNER_TEMP/bugun-onizleme.jpg" | fold -w 1024 | sed 's/^/G4-JPEG /'
-            echo
-            echo '::endgroup::'
-          fi
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"
