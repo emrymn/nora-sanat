@@ -193,6 +193,7 @@ private struct YolculukHaritaEkrani: View {
     @Environment(TemaDeposu.self) private var tema
     @State private var pencere: Pencere?
     @State private var gorunenDonem: Int?
+    @State private var ilkKonumKuruldu = false
     @State private var motifEser: Eser?
     @Environment(\.accessibilityReduceMotion) private var hareketAz
     @State private var animasyonYeri: YolcuPatikasi.Nokta?
@@ -222,24 +223,24 @@ private struct YolculukHaritaEkrani: View {
                 }
                 .coordinateSpace(name: "harita")
                 .scrollIndicators(.hidden)
-                .defaultScrollAnchor(.bottom)
                 .onPreferenceChange(DonemYerleri.self) { yerler in
+                    // js/ekranlar/harita.js konumaKaydir, .harita-durak.simdiki (@ a866b86).
+                    // Hedefi dönemler gerçek yerlerini bildirdiğinde bir kez yerleştir.
+                    if !ilkKonumKuruldu, yerler.count == bolgeler.count {
+                        ilkKonumKuruldu = true
+                        if depo.simdiki != nil {
+                            vekil.scrollTo("konum", anchor: UnitPoint(x: 0.5, y: 0.55))
+                        } else {
+                            vekil.scrollTo("son", anchor: .bottom)
+                        }
+                    }
                     // `kaydirmaIzle`: ekranın ortasına en yakın dönem
                     let orta = g.size.height / 2
                     gorunenDonem = yerler.min { abs($0.value - orta) < abs($1.value - orta) }?.key
                 }
-                .task {
-                    // `konumaKaydir` sitede de iki kez (çizimden hemen sonra ve bir kare sonra): düzen oturmadan
-                    // yapılan ilk kaydırma `defaultScrollAnchor(.bottom)`'ın altında kalabiliyor
-                    let hedef = depo.simdiki == nil ? "son" : "konum"
-                    for bekle in [50, 250] {
-                        try? await Task.sleep(for: .milliseconds(bekle))
-                        vekil.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.55))
-                    }
-                    #if DEBUG && targetEnvironment(simulator)
-                    await prova()
-                    #endif
-                }
+                #if DEBUG && targetEnvironment(simulator)
+                .task { await prova() }
+                #endif
             }
             .overlay(alignment: .top) { ustDugmeler }
             .overlay {
@@ -299,6 +300,18 @@ private struct YolculukHaritaEkrani: View {
     private var ustDugmeler: some View {
         HStack(alignment: .top) {
             kursRozeti
+            // js/ekranlar/harita.js madalyonHtml, css/app.css .durak-halka:
+            // ilerleme hapının yanında şimdiki durağın kendi simgesi.
+            if let d = depo.simdiki {
+                Button { pencere = .durak(d.id) } label: {
+                    UzakGorselSaydam(url: haritaGorseli("sembol_\(d.bolge)_\(d.sembol)_\(tur)"))
+                        .padding(5).frame(width: 44, height: 44)
+                        .background(Circle().fill(HaritaRenk.rozetZemin.opacity(0.8)))
+                        .overlay(Circle().strokeBorder(HaritaRenk.pirinc, lineWidth: 2))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Buradasın: \(d.ad)")
+            }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 8) {
                 vakitDugmesi
@@ -410,16 +423,19 @@ private struct YolculukHaritaEkrani: View {
             ForEach(motifler.indices, id: \.self) { j in motifDugmesi(motifler[j], no: j, en: en) }
             ForEach(bunlar) { d in durakDugmesi(d, en: en) }
             if let d = depo.yolcu, d.bolge == bolge { yolcu(d, en: en) }
-            // "Buradasın"a kaydırma hedefi: durağın üst kenarı (`konumaKaydir`: durak ekranın %55'inde)
-            if let d = depo.simdiki, d.bolge == bolge {
-                let olcek = en / 390
-                Color.clear.frame(width: 1, height: 1).id("konum")
-                    .padding(.top, max(0, CGFloat(d.y) * en * 3 - CGFloat(d.ay * d.boy) * olcek))
-                    .padding(.leading, CGFloat(d.x) * en)
-                    .allowsHitTesting(false)
-            }
+
         }
         .frame(width: en, height: en * 3, alignment: .topLeading).clipped()
+        .overlay(alignment: .topLeading) {
+            if let d = depo.simdiki, d.bolge == bolge {
+                let ust = CGFloat(d.y) * en * 3 - CGFloat(d.ay * d.boy) * en / 390
+                VStack(spacing: 0) {
+                    Color.clear.frame(height: max(0, ust))
+                    Color.clear.frame(width: 1, height: 1).id("konum")
+                }
+                .allowsHitTesting(false).accessibilityHidden(true)
+            }
+        }
     }
 
     /// `resimHtml`: son açık durağın SEPYA_PAY üstü sepya (`grayscale(1) sepia(0.55)`), sınırda 0.04'lük yumuşak geçiş
