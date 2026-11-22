@@ -166,6 +166,17 @@ struct CalisSekmesi: View {
 
     private var hareketYok: Bool { tema.ayar.hareketAzaltilmis }
 
+    /// CI (C3): adım adresleri sitede sekmesiz olduğundan Kabuk onları siteye bırakır; yerli adım ekranı ders sayfasının
+    /// adresi ve `-calisSayfa ders:<akım>:<adım>` ile açılır. Açılıştaki `#/pekistir/ders/<akım>` adresi o adıma gider.
+    static func ciAdimi(_ akim: String) -> DersAdimi? {
+        #if DEBUG
+        if let s = NoraSanatApp.arguman("-calisSayfa"), s.hasPrefix("ders:\(akim):") {
+            return DersAdimi(rawValue: String(s.dropFirst("ders:\(akim):".count)))
+        }
+        #endif
+        return nil
+    }
+
     /// Adım ekranları tam ekrandır (sitede `#/pekistir/ders/<akım>/<adım>` sekme çubuğu göstermez)
     private var adimAcik: Bool {
         if case .adim = altSayfa { return true }
@@ -253,6 +264,8 @@ struct CalisSekmesi: View {
                 model.turAcik = false
                 // `#/pekistir/ders/<akım>/sina` (eski adres) ders sayfasını açar
                 if parcalar.count >= 4, let adim = DersAdimi(rawValue: parcalar[3]) {
+                    gecis { altSayfa = .adim(akim, adim) }
+                } else if let adim = Self.ciAdimi(akim) {
                     gecis { altSayfa = .adim(akim, adim) }
                 } else {
                     gecis { altSayfa = .ders(akim) }

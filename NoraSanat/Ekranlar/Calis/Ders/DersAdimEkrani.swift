@@ -154,7 +154,7 @@ struct DersAdimEkrani: View {
 
 #if DEBUG
 /// CI karşılaştırması (C3): `-calisSayfa ders:<akım>:<adım>` adım ekranını açar; ekran hazır olunca `tmp/ders-hazir`
-/// işaret dosyası yazılır. `-dersCevapla`: Ayırt et'te soldaki esere dokunur (fark bölümü görünsün).
+/// işaret dosyası yazılır. `-dersCevapla`: Ayırt et ikilisi soldaki eser seçilmiş kurulur (fark bölümü görünsün).
 enum DersKarsilastirma {
     static let hazir = FileManager.default.temporaryDirectory.appendingPathComponent("ders-hazir")
     static func hazirYaz() { try? Data().write(to: hazir) }
