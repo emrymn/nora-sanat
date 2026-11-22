@@ -128,11 +128,6 @@ struct DersAyirtAdimi: View {
             guard ik != nil else { return }
             try? await Task.sleep(nanoseconds: 3_000_000_000)
             guard !Task.isCancelled else { return }
-            if NoraSanatApp.arguman("-dersCevapla") != nil {
-                if ikili?.cevap == nil { sec(0) }
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                guard ikili?.cevap != nil else { return }
-            }
             DersKarsilastirma.hazirYaz()
         }
         #endif
@@ -298,7 +293,12 @@ struct DersAyirtAdimi: View {
         let kendi = ilkEser(c.kendi)
         let karsi = ilkEser(c.karsi)
         let kendiSolda = Bool.random()
-        ikili = Ikili(konum: konum, yanlar: kendiSolda ? [kendi, karsi] : [karsi, kendi], dogru: kendiSolda ? 0 : 1, cevap: nil)
+        var yeni = Ikili(konum: konum, yanlar: kendiSolda ? [kendi, karsi] : [karsi, kendi], dogru: kendiSolda ? 0 : 1, cevap: nil)
+        #if DEBUG
+        // CI: `-dersCevapla` ikiliyi soldaki eser seçilmiş kurar (fark bölümü görünsün; ilerleme yazılmaz)
+        if NoraSanatApp.arguman("-dersCevapla") != nil { yeni.cevap = 0 }
+        #endif
+        ikili = yeni
     }
 
     /// `ayirtSec(i)`: ilk dokunuş cevaptır (ilerleme yazılır); sonrakiler tam ekranı açar
