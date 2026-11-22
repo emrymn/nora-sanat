@@ -150,7 +150,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C2 | Çalış ana ekranı | C | C1 | 1 | bitti (#16) |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
-| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | sürüyor (Claude, 2026-11-22) |
+| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | PR açık (#22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
@@ -618,7 +618,18 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - `js/ekranlar/ders.js`, `js/ekranlar/dersVerisi.js`, `js/ekranlar/eserDersi.js`
 - `basyapit-dersleri/` (Markdown → SwiftUI)
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-22 · [PR #22](https://github.com/emrymn/nora-sanat/pull/22) · dal `claude/eager-brahmagupta-tnbnm5` (oturumun zorunlu dalı). C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **G3'e dayanır:** dal G3'ün son hâlinden (PR #19, onaylı ama birleşmemiş) açıldı. Önce #19 birleşmeli; sonra bu PR'ın farkı yalnız C3 kalır.
+- **Kaynak:** sanat-atlasi `a866b86`: `js/kamera.js`, `js/ekranlar/ders.js` (gorAdimi … adimSonu, olaylariBagla), `js/ders.js`, `js/dersIcerik.js`, `js/ekranlar/dersVerisi.js`, `js/tasarim.js` (`roma`), `css/app.css` (`.ders-ust`, `.ders-gor*`, `.ders-noktalar`, `.ders-ogren`, `.ders-kanit*`, `.ders-aciklama`, `.ders-ayirt`, `.ders-ikili*`, `.ders-fark*`, `.ders-son*`, `.ders-alt-cubuk`, `--ders-*`, `html .ders-dugme.dolu` → `--pg-asil` = `--vurgu-acik`).
+- **Çekirdek** (`NoraCekirdek/Calis/DersAdimlari.swift`): `DersKamerasi` (gorusAlani, durusa, kameraYolu, egri, kameraEgrisi, kameraKareleri, `hedef` = gorHedef), `DersAdimKurallari` (gorEserleri: `gorPlani`'nın tam kayıtlı hâli; gorKareleri, gorBaslangici, gorYazilari, gorIlerle; roma, Öğren/Ayırt et başlık ve düğme yazıları, cumleKaynagi; ustEtiketi, sonYazisi, sonrakiAdim, dersBittiYazisi; yuruyusEserAdi, kisaAd).
+- **Kâhin:** `Testler/kahin/ders_adimlari.mjs` sitenin kendi ekranlarını gezer (bütün konular işlenmiş geçici profil): 28 dersin her Gör karesi (yazılar ve kameranın kurduğu duruş), Gör'ün kaldığı yerden açılışı (8 oran), her Öğren maddesi, her Ayırt et ikilisi, adım sonları; 26 kamera yolu, eğriler, `roma`. `DersAdimlariTests` (4 test). Linux'ta paketin bütün testleri geçti (104). Kamera ölçüleri tarayıcının yazı çizimine bağlı olduğundan CI'da yeniden üretilmez.
+- **Ekranlar** (`Ekranlar/Calis/Ders/`): `DersAdimEkrani` (adım seçimi, adım sonu, Gör'süz ders, ders yoksa/kilitliyse `CalisDersSayfasi`), `DersGorAdimi` (koyu sahne; kamera Canvas + TimelineView ile `kameraYolu`'nu örnekler, yeni resim yerine oturur ve eskisiyle çapraz solar, büyük kopya arkadan gelir; metin solup yükselir; Hareket kapalıyken anında), `DersOgrenAdimi`, `DersAyirtAdimi` (sol/sağ rastgele; cevaptan sonra esere dokununca görüntüleyici), `DersAdimOrtak` (üst, çizgiler, düğme, alt çubuk, adım sonu, renkler). İlerleme `PekistirmeModeli.dersAdimiIsle` → `IlerlemeKoprusu` (`adimIsle`, yalnız artar).
+- **Bağlantılar:** `CalisSekmesi` `AltSayfa.adim(akım, adım)`; `#/pekistir/ders/<akım>/<adım>` yerli adıma gider, adım ekranında sekme çubuğu gizli. Bugünün dersi kartındaki halkalar ve devam satırı, ders sayfasındaki adım satırları ve devam düğmesi adımları açar (önceki devam düğmesi yanlışlıkla dönem turunu başlatıyordu). Adımdan adıma geçiş yer değiştirir; geri ders sayfasına döner.
+- **Eser dersleri:** sitede ayrı ekran yok; başyapıt sayfasının içinde "Daha derine in" (`#/basyapit/<anahtar>/ders`, İş 188). G3'te yerli (`YakinOkuma`, `DersDeposu`, `EserDersi.swift`). `js/eserDersi.js`'teki `kanitDizini` ve `sorulariAl`'ı site ekranları kullanmıyor; taşınmadı.
+- **Görünüş (K5):** ölçüler canlı sitenin hesaplanmış stillerinden (393 pt, Gece). CI: `-yerliSekme calis,ben -adres "#/pekistir/ders/Gotik[/adım]" -calisSayfa ders:Gotik[:adım]`, hazır olunca `tmp/ders-hazir`; `ders-yan-yana-{ders,gor,ogren,ayirt}.png` (solda site), ayrıca yalnız yerli `ders-ayirt-cevap.png` (`-dersCevapla`: soldaki esere dokunur; ilerleme yazdığı için en sonda).
+- **Kalan:** Çalış'ı yerli sekmelere eklemek (`Gecis.tasinanlar`; bu işte Kabuk'a dokunulmadı). Site Gör'de eserin palet rengini (`ekranRengi`) dolu düğmeye verir; yerli taraf temanın `vurguAcik`'ini kullanır (Kabuk sitenin canlı değişkenlerini okuyorsa aynıdır).
+- **Tuzaklar:** Gör'ün ölçü birimi resmin ilk (1280) kopyasının boyudur; büyük kopya gelince ölçü değişmez (sitede de `img.style.width` sabit). Kamera hedefi üst çubuğun altı + 8 ile panelin üstü − 8 arasıdır; panel yazıya göre uzayıp kısalınca kamera yeniden kurulur.
+- **CI sonucu:** (aşağıda)
 
 ### G4 · Bugün (ChatGPT)
 **Site kaynakları:**
