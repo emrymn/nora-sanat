@@ -9,7 +9,9 @@ const [udid, bundle, liste] = process.argv.slice(2);
 const simulator = await getSimulator(udid);
 const socketPath = await simulator.getWebInspectorSocket();
 if (!socketPath) throw Error('Simülatörde Web Inspector bulunamadı.');
-const web = new RemoteDebugger({ bundleId: bundle, socketPath });
+const platformVersion = execFileSync('xcrun', ['simctl','getenv',udid,'SIMULATOR_RUNTIME_VERSION'], {encoding:'utf8'}).trim();
+if (!platformVersion) throw Error('Simülatörün iOS sürümü okunamadı.');
+const web = new RemoteDebugger({ bundleId: bundle, socketPath, platformVersion });
 
 async function beklenen(oku, ad) {
   for (let i = 0; i < 40; i++) {
