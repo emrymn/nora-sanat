@@ -12,6 +12,8 @@ struct CalisAnaGorunumu: View {
     @Binding var masaSekmesi: CalisMasaSekmesi
     let turBaslat: (PekistirmeKipi, Int?) -> Void
     let derseGit: (String) -> Void
+    /// Dersin adımını açar (`dersAdresi(akim, adim)`: adım halkaları ve devam satırı)
+    let adimaGit: (String, DersAdimi) -> Void
     let donemlereGit: (_ salonlaraIn: Bool) -> Void
     let adreseGit: (String) -> Void
 
@@ -286,7 +288,7 @@ struct CalisAnaGorunumu: View {
                 ForEach(b.durum.adimlar, id: \.adim) { s in
                     let simdi = !s.bitti && s.adim == b.durum.siradaki
                     Button {
-                        derseGit(b.akim)
+                        adimaGit(b.akim, s.adim)
                     } label: {
                         dersAdimSutunu(baslik: s.ad, bitti: s.bitti, simdi: simdi, oran: s.i)
                     }
@@ -318,7 +320,7 @@ struct CalisAnaGorunumu: View {
                         .padding(.bottom, 12)
                 }
                 Button {
-                    derseGit(b.akim)
+                    if let a = dugme.adim { adimaGit(b.akim, a) } else { derseGit(b.akim) }
                 } label: {
                     HStack(spacing: 14) {
                         VStack(alignment: .leading, spacing: 3) {
