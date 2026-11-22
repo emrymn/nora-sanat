@@ -14,6 +14,8 @@ public struct CevrimdisiListe: Codable, Sendable, Equatable {
     public let suzuldu: Bool
     let devasaSayisi: Int
     let devasaBayt: Double
+    /// Bütün listenin tahmini boyu; bilinmiyorsa 0 — `telefonToplamBayt()` (bir kez hesaplanır)
+    public private(set) var toplamBayt = 0.0
 
     public static let bOrtalamaBayt = 330.0 * 1024   // B_ORTALAMA_BAYT
     public static let kOrtalamaBayt = 42.0 * 1024    // K_ORTALAMA_BAYT
@@ -28,6 +30,7 @@ public struct CevrimdisiListe: Codable, Sendable, Equatable {
             suzuldu = false
             devasaAdresleri = g.devasaListesi.map(g.devasaYolu)
             telefonAdresleri = devasaAdresleri
+            toplamBayt = hesaplaToplam()
             return
         }
         suzuldu = true
@@ -47,6 +50,7 @@ public struct CevrimdisiListe: Codable, Sendable, Equatable {
             if g.hepsiBuyuk { l += gs.filter { !bK.contains($0) }.map(g.buyukYolu) }
         }
         telefonAdresleri = l
+        toplamBayt = hesaplaToplam()
     }
 
     public init(katalog k: SiteKatalogu) {
@@ -62,8 +66,7 @@ public struct CevrimdisiListe: Codable, Sendable, Equatable {
         return Self.bOrtalamaBayt
     }
 
-    /// Bütün listenin tahmini boyu; bilinmiyorsa 0 — `telefonToplamBayt()`
-    public var toplamBayt: Double {
+    private func hesaplaToplam() -> Double {
         devasaBayt > 0 || telefonAdresleri.count > devasaAdresleri.count
             ? telefonAdresleri.reduce(0) { $0 + tahminiBayt($1) }.rounded() : 0
     }
