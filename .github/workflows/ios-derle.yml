@@ -163,7 +163,7 @@ jobs:
           done
           # C1c: aynı turun sitedeki karşılığı (yan yana karşılaştırma için)
           xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -adres "#/pekistir/karisik"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/pekistir/karisik"
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/10s-site-pekistirme.png
           # C4 + C4b: gerçek ilerleme ile yerli Ben ekranı ve ayarları; her biri sitenin aynı sayfasıyla yan yana
