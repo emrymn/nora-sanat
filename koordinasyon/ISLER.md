@@ -149,7 +149,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
 | C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
-| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | PR açık (#19) |
+| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
@@ -602,6 +602,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Giriş hareketleri (`data-gozcu`, kartların yükselmesi), sahne noktalarının dolma animasyonu, `ekranRengi` (eserden gelen hale rengi) yok; hale `--vurgu`.
   - Yan yanada resim alanlarının zemini `--surface` (`UzakGorsel`'in zemini; sitede sayfa zemini).
   - Gizli sitenin hareket izni penceresi (G2b denetimi) bu işte ele alınmadı → ayrı iş.
+
+**Denetim (G3):** Claude, 2026-11-22 — **onay; Galeri yerli** (PR #19 yorumu). Linux'ta 94 test geçti. `basyapit.mjs` canlı sitede yeniden çalıştırıldı: `basyapitlar`, `dersler`, `cevaplar` örneklerle birebir aynı. Sekiz yan yana görüntüde liste, dönem şeritleri, öne çıkan kart, yakın okuma (kapak, hikâye, ayrıntılar, derin anlatım, künye, sözlük) ve yan yana sitedekiyle aynı. İki yerli görüntüde hareket izni penceresi vardı: dal T5'ten önceydi; main (T5) alındı.
 
 ### C3 · Dersler (ChatGPT)
 **Site kaynakları:**
