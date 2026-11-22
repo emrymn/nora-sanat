@@ -4,6 +4,7 @@
 // (CalisDersSayfasi) kendi boş kutusunu gösterir.
 import NoraCekirdek
 import SwiftUI
+import UIKit
 
 @MainActor
 struct DersAdimEkrani: View {
@@ -19,6 +20,25 @@ struct DersAdimEkrani: View {
     @State private var bitti = false
 
     var body: some View {
+        // Kabuk (KokGorunum) her yerli sekmeye sekme çubuğu kadar alt pay ekler (`safeAreaInset`, ~74 pt); adım ekranında
+        // çubuk gizli olduğu hâlde bu pay kalıyordu. Sitede adım ekranları sekmesiz: `.ders-alt-cubuk` ve `.ders-gor-panel`
+        // yalnız `env(safe-area-inset-bottom)` kadar yukarıda. Z3b: Kabuk'un payı yok sayılır, yerine yalnız pencerenin kendi
+        // alt güvenli alanı konur (CI'da Gör/Öğren düğmeleri sitedekinden 74 pt yukarıdaydı; Öğren'in "Açıklama"sı alt
+        // çubuğun altında kalıyordu).
+        icerik
+            .safeAreaPadding(.bottom, Self.pencereAlti)
+            .ignoresSafeArea(.container, edges: .bottom)
+    }
+
+    /// Pencerenin alt güvenli alanı (ev çizgisi); Kabuk'un eklediği çubuk payı olmadan
+    private static var pencereAlti: CGFloat {
+        let sahneler = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let pencere = sahneler.flatMap(\.windows).first { $0.isKeyWindow } ?? sahneler.first?.windows.first
+        return pencere?.safeAreaInsets.bottom ?? 0
+    }
+
+    @ViewBuilder
+    private var icerik: some View {
         if let katalog = model.katalog, let il = model.ilerleme,
            let b = CalisDersKurallari.dersBilgisi(kaynak: model.dersKaynagi, yuruyus: model.yuruyus, katalog: katalog,
                                                   ilerleme: il, akim: akim),

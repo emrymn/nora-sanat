@@ -440,7 +440,7 @@ struct BugunSekmesi: View {
     VStack(alignment: .leading, spacing: 8) {
       Text(baslik).font(Yazi.serif(26)).cssSatir(.serif, 26, 29.12).accessibilityAddTraits(
         .isHeader)
-      Text(metin).font(Yazi.okuma(18)).bugunOkumaSatiri(18, 27).fixedSize(
+      Text(metin).font(Yazi.okuma(18)).cssSatir(.okuma, 18, 27).fixedSize(
         horizontal: false, vertical: true)
     }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 20).padding(.top, 18)
       .padding(.bottom, 20).padding(1)  // border-box: 1 px kenarlık boyuta dahil

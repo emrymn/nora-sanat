@@ -156,6 +156,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bitti (#20): G5a ChatGPT, G5b (görünüş) Claude |
+| Z3a | Yolculuk cilası | G | G5 | 1 | PR açık (#27) |
 | C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
@@ -164,7 +165,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
-| Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | PR açık |
+| Z3b | Ders ve yazı cilası | C | C3 | 1 | birleşti (#29) |
+| Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | PR açık (#32) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -867,6 +869,15 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Denetim (G5):** Claude, 2026-11-22 — **onay** (PR #20 yorumu). Linux'ta 115 test geçti; `yolculuk.mjs` site deposunda (`a866b86`) yeniden çalıştırıldı, çıktı `yolculuk/cevaplar.json` ile aynı. İlk ara denetimin 11 maddesi G5b'de yapıldı: 12 yan yana görüntüde harita, durak, kilit, kurs, motif, grup sonu, seviye tamam, sergi ve Zaman sitedekine çok yakın; Zaman Galeri'nin altında; bildirim penceresi yok; `.m` dosyası kalktı. Kalan küçük farklar (Z3'e): harita ilk kaydırma konumu ve üstteki durak simgesi; Tanış'ta sitede eser tam genişlik en üstte, yerlide üst şerit + başlık + çerçeveli eser; grup sonu başlığı yerlide büyük (3 satır, sitede 2); soru/cevapta eser sitedekinden küçük; sergide "Hareketi aç" düğmesi yok.
 
+### Z3a · Yolculuk cilası (ChatGPT)
+
+**Devir notu:** [PR #27](https://github.com/emrymn/nora-sanat/pull/27). Kaynak `sanat-atlasi@a866b86`, `js/ekranlar/harita.js`, `js/ekranlar/pekistir.js`, `js/sallanma.js` ve `css/app.css`.
+- Harita dönemlerin yerleşimi tamamlandığında şimdiki durağın üst kenarına kayar. Kurs hapının yanındaki madalyon aynı durağın penceresini açar.
+- Tanış ekranında tam genişlikte eser önce gelir. Küçük eser seçimi, büyütme ve sanatçılar arasında ilerleme korunur.
+- Grup özeti başlığı 34 pt. Soru görseli ekran yüksekliğine göre, cevap görseli de başlık, seçenekler ve cevap yaprağından kalan alana göre boyutlanır.
+- Sergide hareket düğmesi tablolara yer açar. Telefonda hareket açıldıktan sonra eğim asılara yansır. Hareketi azalt ayarı etkinse veya eğim kapalıysa algılayıcı başlamaz.
+- Telefonda haritayı açıp madalyona dokun, bir grupla tanış, soruyu yanıtla ve sergide hareketi açıp telefonu eğ. Görünüş karşılaştırması için CI arşivindeki `yan-yana-yolculuk-{harita,tanisma,grup-sonu,soru,cevap,sergi}.png` dosyaları kullanılır.
+
 ### C5 · Çevrimdışı görseller (ChatGPT şeridi; kullanıcının isteğiyle Claude)
 **Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "En büyük kopyaları telefona indir" (`js/ekranlar/ayarlar.js`), `js/gorsel.js`, `js/eserler.js` `gosterilenGorseller`.
 
@@ -963,6 +974,20 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Son karşılaştırma: sitedeki her ekranla yan yana ekran görüntüsü.
 
 **Devir notu:** –
+
+### Z3b · Ders ve yazı cilası
+- C3 (PR #24 yan yanası) ve G4b'deki "Tuzak"tan kalan farklar: Ders Gör ve Öğren adımlarının görünüşü, ortak `Yazi.Aile.satirOrani` (Newsreader).
+- `Gecis.swift`, `Kabuk/`, `Ekranlar/Yolculuk/` ve `.github/workflows/ios-derle.yml`'e dokunulmaz.
+
+**Devir notu:** Claude, 2026-11-22 · [PR #29](https://github.com/emrymn/nora-sanat/pull/29) · dal `is/Z3b-ders`. C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86`: `css/app.css` (`h1, h2, h3 { text-wrap: balance }`, `.ders-ust`, `.ders-gor .ders-ust`, `--ust-bosluk`, `.ders-gor-panel`, `.ders-gor-panel h2`, `.ders-alt-cubuk`, `.ders-madde`, `.ders-soru`), `js/ekranlar/ders.js` (`gorAdimi`, `ogrenCiz`, `altCubuk`).
+  K7: `git -C /tmp/sa log a866b86..HEAD -- css/app.css js/ekranlar/ders.js`
+- **Kök neden (Gör'de büyük eser + aşağıdaki panel, Öğren'de görünmeyen Açıklama):** Kabuk (`KokGorunum`) her yerli sekmeye sekme çubuğu kadar alt pay ekliyor (`safeAreaInset`, ~74 pt); adım ekranında çubuk gizliyken de kalıyordu. Gör paneli ve Öğren'in alt çubuğu 74 pt yukarıdaydı; Gör'de kamera alanı daraldığı için eser büyük, Öğren'de Açıklama alt çubuğun altında. `DersAdimEkrani` artık bu payı yok sayar (`ignoresSafeArea(.container, edges: .bottom)`) ve yalnız pencerenin alt güvenli alanını koyar (`safeAreaPadding`), sitedeki `env(safe-area-inset-bottom)` gibi. Kabuk'a dokunulmadı; çubuğu gizleyen öbür yerli ekranlarda da aynı pay olabilir (ör. Pekiştirme, Karşılaştır) → Z3'te Kabuk'ta genel çözüm (çubuk gizliyken pay 0).
+- **Gör üst çubuğu:** `.ders-gor .ders-ust`'ta `--ust-bosluk` çubuğun kendi dolgusu ve `min-height: 52px` border-box: içerik ortalanmaz. `DersAdimUst(sahne: true)` en az yüksekliksiz (4 pt yukarı; site 77.3, yerli 81 → 77.3).
+- **`CssBaslik` (`DersAdimOrtak.swift`):** çok satırlı serif başlık; her sözcük ayrı `Text`, `CssBaslikDuzeni` (Layout) açgözlü kırar, birden çok satırda satır sayısını artırmayan en dar genişliği arar (`text-wrap: balance`), her satırı CSS `line-height` yüksekliğinde, yazı ortada dizer. Bodoni'nin 1.525 em'lik kendi satırı artık başlık satır arasını açmıyor (C3'teki "SwiftUI eksi lineSpacing'i yok sayıyor" sorunu). Kullananlar: Gör başlığı (28/30.8), Öğren maddesi (27/31.05), Ayırt et sorusu (26/29.9). Erişilebilirlikte tek öğe (metnin tamamı). Başka ekranlardaki çok satırlı Bodoni başlıklar da buna geçebilir (gerekirse ortak bir yere taşınır).
+- **`Yazi.Aile.satirOrani`:** Newsreader 1.0 → 1.0247 (G4b'deki ölçüm). Bugün'ün yerel `bugunOkumaSatiri`'si kalktı, iki yer `cssSatir(.okuma, …)`'ya bağlandı (Bugün görüntüleri piksel piksel aynı kaldı). Uzun okuma metinlerinde satır başına ~0.4 pt daralma: Galeri Karşılaştır'da Giotto sütunu sitedekiyle aynı yerde bitiyor (önce ~6 pt aşağıdaydı). Yolculuk da `cssSatir(.okuma)` kullanıyor, dosyalarına dokunulmadı.
+- **CI 0f1c683 yeşil.** Yan yana: Gör (eser, başlık "Aziz Maxima ve Aziz / Ansanus ile Müjde (Triptik)", metin, noktalar, düğme) ve Öğren (başlık "Altın zemin ve ahşap / pano üzerine tempera", Açıklama, alt çubuk) sitedekiyle ±1–2 pt. Eski koşuyla karşılaştırma: Ben, Ayarlar, Bugün, Çalış ana/turlar/yük/salon, Galeri ana/konu/ara aynı; Ayırt et, İlerleme, Turlar'daki farklar rastgele seçilen resimler (düzen aynı).
+- **Kalan:** dolu düğmenin rengi yerlide temanın `vurguAcik`'i, site o sayfada nötr `--vurgu-acik` (C3'ten, Z3). Öğren'de eserin alt yazısı (Archivo 13) bir sözcük farklı kırılıyor ("Sahneler ·" / "· 1235"). Kanıt kutusu ~2 pt aşağıda (Archivo'nun 1.088 oranı yuvarlaması).
 
 
 **Denetim:** Claude, 2026-11-21 — **onay** (PR #12 yorumu).
