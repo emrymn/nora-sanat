@@ -22,6 +22,8 @@ public struct GorselAdresleri: Sendable {
     public let adres: String
     public let hepsiBuyuk: Bool
     let devasa: Set<String>
+    /// En büyük kopyası olanlar, dosyadaki sırayla (`[...uzak.devasa]`)
+    let devasaListesi: [String]
     let muze: [String: String]
     public let devasaBayt: Double
     let surumler: [String: String]
@@ -48,7 +50,10 @@ public struct GorselAdresleri: Sendable {
         self.adres = adres
         let var_ = !adres.isEmpty
         hepsiBuyuk = var_ && k?["buyuk"] == .mantik(true)
-        devasa = var_ ? Set((k?["devasa"]?.dizi ?? []).map(\.jsMetni)) : []
+        var dl: [String] = [], ds = Set<String>()
+        if var_ { for a in (k?["devasa"]?.dizi ?? []).map(\.jsMetni) where ds.insert(a).inserted { dl.append(a) } }
+        devasa = ds
+        devasaListesi = dl
         var muze: [String: String] = [:]
         if var_ { for (a, m) in k?["muze"]?.nesne?.ciftler ?? [] { if let m = m.metin, Self.kaynakAdi[m] != nil, m != "wikiart" { muze[a] = m } } }
         self.muze = muze
