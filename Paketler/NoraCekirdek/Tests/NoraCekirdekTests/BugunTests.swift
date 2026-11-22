@@ -111,4 +111,17 @@ final class BugunTests: XCTestCase {
       XCTAssertTrue(eser.gorseller.contains { katalog.gorsel.yerelAd($0) == s.kayit.gorsel })
     }
   }
+  /// Yürüyüş sonundaki künye sitenin `kunye(gs, { bag: false, konuYok: true })` çıktısıyla aynı
+  /// (canlı sitede `.yur-son-kunye`: "1431–1506 · Erken Rönesans").
+  func testYuruyusSonuKunyesi() throws {
+    let (_, katalog) = try XCTUnwrap(SiteVerisiTests.hazir)
+    let veriler = try Dictionary(
+      uniqueKeysWithValues: GununTablosuCozucu.dosyalar.map { ad in
+        (ad, try SiteVerisiTests.dosya(ad))
+      })
+    let degisim = JSONDeger.nesne([("tarih", .metin("2026-11-22")), ("id", .metin("andrea-mantegna"))])
+    let s = try BugunTablosu(tarih: "2026-11-22", degisim: degisim, veriler: veriler, katalog: katalog)
+    XCTAssertEqual(s.tablo.sanatciId, "andrea-mantegna")
+    XCTAssertEqual(s.sonKunye, "1431–1506 · Erken Rönesans")
+  }
 }

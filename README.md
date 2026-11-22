@@ -140,6 +140,10 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - **Öğren**: büyük eser, madde, "Bu eserde" kutusu, üç küçük eser (dokununca büyük eser değişiyor), Açıklama. Büyük esere dokun: görüntüleyici açılıyor. Altta "Anladım · II. özellik".
   - **Ayırt et**: "Hangisi …?" iki eser; birine dokun: doğru yeşil, yanlış kırmızı çerçeve, altında iki sütun ve dönem metinleri. Cevaptan sonra esere dokununca görüntüleyici.
   - Adım bitince yeşil onay, "Sıradaki adım: …" ve "Derse dön"; üç adım da bitince "Haritaya geç". Ben ve sitedeki ders sayfası aynı ilerlemeyi gösteriyor.
+- [ ] (G4b) Bugün henüz yerli değil; Xcode'dan `-yerliSekme bugun -adres "#/"` argümanıyla aç:
+  - Aşağı kaydır: kamera her ayrıntıya yaklaşıyor, sağda pirinç noktalar; yürürken sekme çubuğu ve hareket düğmesi kayboluyor, yukarı kaydırınca çubuk geri geliyor.
+  - Hayatı'na in: resim bulanıklaşıp koyulaşıyor, üstte tarih ve Ben'in arkasında koyu şerit. Sonda pirinç künye, "Resmi gezdin.", desteli tur kartı, iki karo, Dinle, Başa dön halkası.
+  - Telefonu eğ: resim hafifçe kayıyor (Ayarlar'da hareket açıkken, düğmeye basmadan).
 
 ## Geliştirme
 
