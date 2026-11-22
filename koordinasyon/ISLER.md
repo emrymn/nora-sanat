@@ -152,7 +152,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bitti (#22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bitti (#18); görünüş G4b'de |
-| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | sürüyor (Claude, 2026-11-22) |
+| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bitti (#25) |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
@@ -631,7 +631,10 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Görünüş (K5):** ölçüler canlı sitenin hesaplanmış stillerinden (393 pt, Gece). CI: `-yerliSekme calis,ben -adres "#/pekistir/ders/Gotik[/adım]" -calisSayfa ders:Gotik[:adım]`, hazır olunca `tmp/ders-hazir`; `ders-yan-yana-{ders,gor,ogren,ayirt}.png` (solda site), ayrıca yalnız yerli `ders-ayirt-cevap.png` (`-dersCevapla`: soldaki esere dokunur; ilerleme yazdığı için en sonda).
 - **Kalan:** Çalış'ı yerli sekmelere eklemek (`Gecis.tasinanlar`; bu işte Kabuk'a dokunulmadı). Site Gör'de eserin palet rengini (`ekranRengi`) dolu düğmeye verir; yerli taraf temanın `vurguAcik`'ini kullanır (Kabuk sitenin canlı değişkenlerini okuyorsa aynıdır).
 - **Tuzaklar:** Gör'ün ölçü birimi resmin ilk (1280) kopyasının boyudur; büyük kopya gelince ölçü değişmez (sitede de `img.style.width` sabit). Kamera hedefi üst çubuğun altı + 8 ile panelin üstü − 8 arasıdır; panel yazıya göre uzayıp kısalınca kamera yeniden kurulur.
-- **CI:** derleme ve paket testleri yeşil. İş süresi 40 → 60 dk yapıldı: G3 + C2 görüntüleri tek başına ekran görüntüsü adımını 36 dk'ya çıkarıyor, C3 ~5 dk ekliyor (40 dk'da C3'e sıra gelmeden iptal oluyordu). Yan yana: Gör, Öğren, Ayırt et sitedekiyle neredeyse birebir (aynı kare, aynı yazı kırılımları); ders sayfasının dolu düğmesi C2'de köşeli ve pirinçti, sitedeki gibi hap ve `--vurgu-acik` yapıldı.
+- **CI:** derleme ve paket testleri yeşil. İş süresi 40 → 60 dk yapıldı: G3 + C2 görüntüleri tek başına ekran görüntüsü adımını 36 dk'ya çıkarıyor, C3 ~5 dk ekliyor (40 dk'da C3'e sıra gelmeden iptal oluyordu). Ders sayfasının dolu düğmesi C2'de köşeli ve pirinçti, sitedeki gibi hap ve `--vurgu-acik` yapıldı.
+  - **Düzeltme (2026-11-22, Claude):** ilk koşulardaki "yerli" Gör/Öğren/Ayırt et görüntüleri aslında sitenin kendisiydi (o yüzden piksel piksel aynıydı). `Sekme.swift`'in rota tablosunda adım adresleri sekmesiz (`nil`); Kabuk `-adres "#/pekistir/ders/<akım>/<adım>"` ile gelen adresi siteye bırakıyor. CI artık yerli ekranı `-adres "#/pekistir" -calisSayfa ders:Gotik:<adım>` ile açıyor. Yerli adım ekranlarının gerçek yan yana karşılaştırması bu düzeltmeden sonraki koşuda; denetimdeki "yan yana aynı" bulgusu adım ekranları için bu yüzden geçersiz.
+  - **Gerçek yan yana (PR #24, 2026-11-22):** yerli Gör, Öğren, Ayırt et ve cevaplı Ayırt et (fark sütunları) sitedeki düzende. Farklar: çok satırlı serif başlıklarda satır arası yerlide açık (Bodoni'nin kendi satırı 1.525 em, sitede 1.1–1.15; SwiftUI eksi `lineSpacing`'i yok sayıyor, denendi; çözüm UILabel + `maximumLineHeight` gibi ortak bir yazı bileşeni, Z3); Bodoni başlıklar yerlide biraz dar düşüyor, satır kırılımı bir sözcük kayabiliyor; dolu düğmenin rengi o an temanın `vurguAcik`'i (site o sayfada nötr `--vurgu-acik`'i gösteriyordu) → Z3.
+  - **Çalış yerli olurken (Gecis işi):** sitenin içinden gelen `#/pekistir/ders/<akım>/<adım>` adresleri Çalış'a yönlendirilmeli (bugün siteye gider). Uygulamanın kendi düğmeleri adımları zaten doğrudan açıyor.
 
 **Denetim (C3):** Claude, 2026-11-22 — **onay** (PR #22 yorumu). Linux'ta 104 test geçti. `ders_adimlari.mjs` canlı sitede yeniden çalıştırıldı: tek fark Ayırt et'te iki eserin hangi yanda durduğu (sitede rastgele; test sıradan bağımsız karşılaştırıyor), o ayıklanınca cevaplar örnekle aynı. Yan yana görüntülerde ders sayfası, Gör, Öğren ve Ayırt et sitedekiyle aynı; ders sayfasının dolu düğmesi sitede eserin rengini (`ekranRengi`) alıyor, yerlide temanın altını (Z3). Çalış'ın yerli olması (`Gecis.tasinanlar`) ayrı küçük işte (Claude).
 
@@ -659,6 +662,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 ### G4b · Bugün: görünüş sitedeki gibi
 - Yukarıdaki denetimin farkları. Yöntem G2b gibi: `yan-yana-bugun-*.png` çiftleri birebir olana kadar. `Gecis.swift`'e dokunma; Bugün'ün yerli olması G4b denetiminden sonra Claude'da (K).
+
+**Devir notu:** Claude (G4b oturumu), 2026-11-22 · PR #25 · dal `claude/g4b-bugun-screen-8zq61x`. (Oturumun PR açıklamasından, denetimde yazıldı.)
+- Kaydırma konumu iOS 18'de `onScrollGeometryChange` ile okunur. G4'te kaydırınca güncellenmiyordu: alttaki ayrıntıda kamera yaklaşmıyor, Hayatı'nda perde koyulaşmıyor, yürüyüşte sekme çubuğu ve hareket düğmesi kalıyordu.
+- Sahne gradyanı, buğu (`rgba(18,17,16,.6)` + blur 18), üst şeridin `::before` perdesi `css/app.css`'ten. Hareket düğmesi kapakta (`.bugun-notlar`), kapakla kayar. Yürüyüş noktaları pirinç.
+- Hayatı ve yürüyüş sonu: künye (yıllar · akım), üç kartlık deste, halkalı ok, iki karo, Dinle/IPA, Başa dön. Ölçüler canlı sitenin hesaplanmış stillerinden. `BugunTablosu.sonKunye` + test.
+- CI: site betiği Hayatı içindeki gerçek kaydırmayı döndürür; yerli ekran aynı konuma gider (`-bugunKonum`).
+
+**Denetim (G4b):** Claude, 2026-11-22 — **onay** (PR #25 yorumu). CI e415f90 yeşil; altı yan yana görüntü (kapak, alttaki ve üstteki ayrıntı, Hayatı, eserler, tur) sitedekiyle birebire yakın. G4 squash ile girdiği için main'le çakışma Claude'da çözüldü (taban 0f8bd91; sonuç farkı dalın G4b farkıyla aynı).
 
 ### C4 · Ben (ChatGPT)
 **Site kaynakları:** `js/ekranlar/ilerleme.js`, `js/ekranlar/ayarlar.js`, `js/ekranlar/hizliAyar.js`, `js/kurs.js`, `js/yenilikler.js`, `js/rozet.js`.

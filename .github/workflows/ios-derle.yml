@@ -388,7 +388,9 @@ jobs:
           for IS in ders: gor:gor ogren:ogren ayirt:ayirt ayirt-cevap:ayirt; do
             AD="${IS%%:*}"; ADIM="${IS#*:}"
             ADRES="#/pekistir/ders/Gotik${ADIM:+/$ADIM}"
-            ARGS=(-yerliSekme calis,ben -adres "$ADRES" -calisSayfa "ders:Gotik${ADIM:+:$ADIM}")
+            # Adım adresleri (…/gor|ogren|ayirt) sitede sekmesizdir (Sekme.swift): Kabuk onları siteye bırakır. Yerli
+            # ekran ders sayfasının adresinden açılır, adımı -calisSayfa seçer (CalisSekmesi.ciAdimi).
+            ARGS=(-yerliSekme calis,ben -adres "#/pekistir/ders/Gotik" -calisSayfa "ders:Gotik${ADIM:+:$ADIM}")
             if [ "$AD" = ayirt-cevap ]; then ARGS+=(-dersCevapla 1); fi
             xcrun simctl terminate "$UDID" "$PAKET"
             VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
