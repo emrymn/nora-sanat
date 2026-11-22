@@ -768,7 +768,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Sitenin önceden IndexedDB'ye indirdikleri Swift'e taşınmaz (WebKit deposundan GB'larca veriyi köprüden geçirmek pratik değil); yerli ekranlar onları kullanmaz, taşınmamış site sekmeleri kullanmaya devam eder. Telefonda ikisi birden yer kaplayabilir; "Telefondan sil" ikisini de siler.
 - **Tuzaklar:**
   - Arka plan oturumu tek kimlikle kurulur (`baslat()`, bir kez). Uygulama arka planda yeniden açılınca görevlerin sonuçları görev listesinden önce gelebilir (`erkenBiten`).
-  - Simülatörde arka plan oturumu çalışır, gerçek arka plan davranışı (uyandırma) yalnız telefonda sınanabilir.
+  - CI simülatöründe arka plan oturumu her dosyada `NSURLErrorDomain -1` (bilinmeyen hata) veriyor (arka plan aktarım servisi sanal makinede çalışmıyor). Böyle bir oturum hatasında (`-1`, `-996`, `-997`, paylaşılan kap) o dosya uygulama içi oturumla yeniden denenir ve o açılış boyunca uygulama içi oturum kullanılır (arka plana geçince `beginBackgroundTask` ile biraz süre). Telefonda arka plan oturumunun gerçekten çalıştığı (uygulamadan çıkınca sayının artması) yalnız telefonda sınanabilir; README'deki deneme listesinde.
   - Liste 19 bin adres: `toplamBayt` bir kez hesaplanır; her çizimde listeyi dolaşma.
 - **CI:** (aşağıda)
 

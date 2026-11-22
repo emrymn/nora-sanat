@@ -29,6 +29,11 @@ final class CevrimdisiIndirici {
     private(set) var silindi = false
 
     @ObservationIgnored private var oturum: URLSession!
+    /// Arka plan aktarım servisi çalışmazsa (simülatörde `NSURLErrorUnknown`) uygulama içi oturum; o açılış boyunca
+    /// bununla iner, uygulama arka plana geçince iOS'tan biraz süre istenir
+    @ObservationIgnored private var onPlan: URLSession!
+    @ObservationIgnored private var arkaPlanYok = false
+    @ObservationIgnored private var sureIstegi: UIBackgroundTaskIdentifier = .invalid
     @ObservationIgnored private let temsilci = Temsilci()
     @ObservationIgnored private var bekleyen = Set<String>()
     /// Görev listesi gelmeden sonucu gelenler (arka planda yeniden açılışta)
@@ -68,6 +73,12 @@ final class CevrimdisiIndirici {
         ayar.urlCache = nil
         temsilci.sahip = self
         oturum = URLSession(configuration: ayar, delegate: temsilci, delegateQueue: nil)
+        let onAyar = URLSessionConfiguration.default
+        onAyar.httpMaximumConnectionsPerHost = 3
+        onAyar.timeoutIntervalForRequest = 90
+        onAyar.urlCache = nil
+        onPlan = URLSession(configuration: onAyar, delegate: temsilci, delegateQueue: nil)
+        temsilci.arkaPlanOturumu = oturum
         // Sitede durum yalnız o açılışta durur: biten ya da durdurulan eski parçanın iletisi yeni açılışta görünmez
         if let d = UserDefaults.standard.data(forKey: Self.durumAnahtari),
            let x = try? JSONDecoder().decode(CevrimdisiDurumu.self, from: d), x.suruyor || surdur {
@@ -126,15 +137,16 @@ final class CevrimdisiIndirici {
         guard durum?.suruyor == true else { return }
         durdurIstendi = true
         surdur = false
-        oturum.getAllTasks { $0.forEach { $0.cancel() } }
+        hepsiniIptalEt()
         if bekleyen.isEmpty { parcaBitti() }
     }
 
     func sil() async {
         surdur = false
         durdurIstendi = true
-        oturum.getAllTasks { $0.forEach { $0.cancel() } }
+        hepsiniIptalEt()
         bekleyen = []
+        sureyiBitir()
         durum = nil
         kaydet()
         let depo = depo
@@ -169,26 +181,58 @@ final class CevrimdisiIndirici {
             guard let url = URL(string: u) else { bekleyen.remove(u); continue }
             var istek = URLRequest(url: url)
             istek.cachePolicy = .reloadIgnoringLocalCacheData   // `cache: 'no-store'`
-            let g = oturum.downloadTask(with: istek)
-            g.taskDescription = u
-            g.resume()
+            gorevVer(u, istek)
         }
+    }
+
+    private func gorevVer(_ u: String, _ istek: URLRequest) {
+        let g = (arkaPlanYok ? onPlan : oturum).downloadTask(with: istek)
+        g.taskDescription = u
+        g.resume()
+        if arkaPlanYok && sureIstegi == .invalid {
+            sureIstegi = UIApplication.shared.beginBackgroundTask(withName: "cevrimdisi") { [weak self] in
+                MainActor.assumeIsolated { self?.sureyiBitir() }
+            }
+        }
+    }
+
+    private func sureyiBitir() {
+        guard sureIstegi != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(sureIstegi)
+        sureIstegi = .invalid
+    }
+
+    private func hepsiniIptalEt() {
+        oturum.getAllTasks { $0.forEach { $0.cancel() } }
+        onPlan.getAllTasks { $0.forEach { $0.cancel() } }
     }
 
     enum Sonuc: Sendable {
         case indi, hata(String), yerYok(String), yazilamadi(String), kesildi
-        var inmis: Bool { if case .kesildi = self { return false }; return true }
+        /// Arka plan aktarım servisi hatası: uygulama içi oturumla yeniden denenir
+        case yeniden
+        var inmis: Bool {
+            switch self { case .kesildi, .yeniden: return false; default: return true }
+        }
     }
 
     /// Bir dosyanın sonucu (temsilciden)
     fileprivate func sonuc(_ adres: String, _ s: Sonuc) {
+        if case .yeniden = s {
+            guard bekleyen.contains(adres), durum?.suruyor == true, !durdurIstendi, let url = URL(string: adres) else { return }
+            arkaPlanYok = true
+            var istek = URLRequest(url: url)
+            istek.cachePolicy = .reloadIgnoringLocalCacheData
+            gorevVer(adres, istek)
+            return
+        }
         guard bekleyen.remove(adres) != nil else {
             if s.inmis { erkenBiten.insert(adres) }
             return
         }
         guard var i = durum, i.suruyor else { return }
         switch s {
-        case .kesildi:
+        case .kesildi, .yeniden:
             break   // durdurulunca kesilen istek hata da inen de sayılmaz
         case .indi:
             i.biten += 1
@@ -205,7 +249,7 @@ final class CevrimdisiIndirici {
             i.yerYok = true
             i.yazilamadi += 1
             i.sonHata = m
-            oturum.getAllTasks { $0.forEach { $0.cancel() } }
+            hepsiniIptalEt()
         case let .yazilamadi(m):
             i.biten += 1
             i.bitenBayt += liste?.tahminiBayt(adres) ?? 0
@@ -219,6 +263,7 @@ final class CevrimdisiIndirici {
 
     private func parcaBitti() {
         guard var i = durum, i.suruyor else { return }
+        defer { if bekleyen.isEmpty { sureyiBitir() } }
         i.bitir(durduruldu: durdurIstendi)
         durum = i
         // parça bitti, sıradaki parçalar var: sürer. Hiç görsel inemediyse (internet yok) durur
@@ -284,6 +329,7 @@ final class CevrimdisiIndirici {
     /// `URLSession` olaylarını alır (kendi kuyruğunda); inen dosyayı hemen yerine taşır, sonucu ana iş parçacığına verir.
     private final class Temsilci: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
         weak var sahip: CevrimdisiIndirici?
+        weak var arkaPlanOturumu: URLSession?
         private let kilit = NSLock()
         private var sonuclar: [Int: Sonuc] = [:]
         private let depo = CevrimdisiDepo.varsayilan
@@ -314,6 +360,9 @@ final class CevrimdisiIndirici {
             let s: Sonuc
             if let kayitli { s = kayitli }
             else if let e = error as? URLError, e.code == .cancelled { s = .kesildi }
+            else if session === arkaPlanOturumu, let e = error as? URLError,
+                    [.unknown, .backgroundSessionWasDisconnected, .backgroundSessionInUseByAnotherProcess,
+                     .backgroundSessionRequiresSharedContainer].contains(e.code) { s = .yeniden }
             else {
                 let ns = error.map { $0 as NSError }
                 s = .hata(ns.map { "\($0.domain) \($0.code): \($0.localizedDescription)" } ?? "dosya gelmedi")
