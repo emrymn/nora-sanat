@@ -150,7 +150,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C2 | Çalış ana ekranı | C | C1 | 1 | bitti (#16) |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
-| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | PR açık (#22) |
+| C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bitti (#22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bekliyor |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
@@ -630,6 +630,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Kalan:** Çalış'ı yerli sekmelere eklemek (`Gecis.tasinanlar`; bu işte Kabuk'a dokunulmadı). Site Gör'de eserin palet rengini (`ekranRengi`) dolu düğmeye verir; yerli taraf temanın `vurguAcik`'ini kullanır (Kabuk sitenin canlı değişkenlerini okuyorsa aynıdır).
 - **Tuzaklar:** Gör'ün ölçü birimi resmin ilk (1280) kopyasının boyudur; büyük kopya gelince ölçü değişmez (sitede de `img.style.width` sabit). Kamera hedefi üst çubuğun altı + 8 ile panelin üstü − 8 arasıdır; panel yazıya göre uzayıp kısalınca kamera yeniden kurulur.
 - **CI:** derleme ve paket testleri yeşil. İş süresi 40 → 60 dk yapıldı: G3 + C2 görüntüleri tek başına ekran görüntüsü adımını 36 dk'ya çıkarıyor, C3 ~5 dk ekliyor (40 dk'da C3'e sıra gelmeden iptal oluyordu). Yan yana: Gör, Öğren, Ayırt et sitedekiyle neredeyse birebir (aynı kare, aynı yazı kırılımları); ders sayfasının dolu düğmesi C2'de köşeli ve pirinçti, sitedeki gibi hap ve `--vurgu-acik` yapıldı.
+
+**Denetim (C3):** Claude, 2026-11-22 — **onay** (PR #22 yorumu). Linux'ta 104 test geçti. `ders_adimlari.mjs` canlı sitede yeniden çalıştırıldı: tek fark Ayırt et'te iki eserin hangi yanda durduğu (sitede rastgele; test sıradan bağımsız karşılaştırıyor), o ayıklanınca cevaplar örnekle aynı. Yan yana görüntülerde ders sayfası, Gör, Öğren ve Ayırt et sitedekiyle aynı; ders sayfasının dolu düğmesi sitede eserin rengini (`ekranRengi`) alıyor, yerlide temanın altını (Z3). Çalış'ın yerli olması (`Gecis.tasinanlar`) ayrı küçük işte (Claude).
 
 ### G4 · Bugün (ChatGPT)
 **Site kaynakları:**
