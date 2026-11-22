@@ -266,10 +266,10 @@ struct BugunSekmesi: View {
         Spacer()
         Button("BEN") { git("#/ilerleme", .ben) }
           .font(Yazi.sans(11, agirlik: 600)).frame(width: 44, height: 44)
-          .background(.black.opacity(0.5), in: Circle()).accessibilityLabel(
+          .background(.black.opacity(0.35), in: Circle()).overlay(Circle().stroke(.white.opacity(0.18))).accessibilityLabel(
             "Ben: ilerleme ve ayarlar")
       }
-      if hareket.varMi && !durgun && kayma < 1 {
+      if !durgun && kayma < 1 {
         Button {
           let yeni = !algilama
           Task {
@@ -280,8 +280,9 @@ struct BugunSekmesi: View {
             } catch { hareketHatasi = true }
           }
         } label: {
-          BenIkon(simge: .hareket, boyut: 18, kalinlik: 1.6).frame(width: 38, height: 38)
-        }.background(.black.opacity(0.55), in: Circle()).accessibilityLabel(
+          BenIkon(simge: .hareket, boyut: 18, kalinlik: 1.6).frame(width: 44, height: 44)
+        }.background(.black.opacity(0.35), in: Circle())
+          .overlay(Circle().stroke(.white.opacity(0.18))).disabled(!hareket.varMi).accessibilityLabel(
           izin ? "Hareketi kapat" : "Hareketi aç")
       }
     }.foregroundStyle(.white).padding(.horizontal, 24).padding(.top, ekranUstu + 10)
@@ -300,10 +301,10 @@ struct BugunSekmesi: View {
         } label: {
           VStack(alignment: .leading, spacing: 0) {
             if !s.ad.ilk.isEmpty {
-              Text(s.ad.ilk).font(Yazi.serif(19, italik: true)).cssSatir(.serif, 19, 21.85)
+              Text(s.ad.ilk).font(Yazi.serif(22, italik: true)).cssSatir(.serif, 22, 25.3)
             }
-            Text(s.ad.son).font(Yazi.serif(48)).cssSatir(.serif, 48, 47.04).tracking(-0.48)
-              .lineLimit(1).minimumScaleFactor(0.48)
+            Text(s.ad.son).font(Yazi.serif(64)).cssSatir(.serif, 64, 62.72).tracking(-0.64)
+              .lineLimit(1).minimumScaleFactor(34.0 / 64)
           }
         }
         if let imza = depo.imza {
@@ -335,8 +336,15 @@ struct BugunSekmesi: View {
 
   private func hap(_ ad: String, _ simge: String, _ yap: @escaping () -> Void) -> some View {
     Button(action: yap) {
-      Label(ad, systemImage: simge).font(Yazi.sans(15, agirlik: 500))
-        .padding(.horizontal, 12).frame(minHeight: 48)
+      HStack(spacing: 6) {
+        if simge == "arrow.down" {
+          Image(systemName: simge).font(.system(size: 15)).frame(width: 30, height: 30)
+            .background(.white.opacity(0.16), in: Circle())
+        } else {
+          Image(systemName: simge)
+        }
+        Text(ad).font(Yazi.sans(15, agirlik: 600))
+      }.padding(.leading, simge == "arrow.down" ? 7 : 12).padding(.trailing, 12).frame(minHeight: 48)
     }.background(.black.opacity(0.48), in: Capsule()).overlay(
       Capsule().stroke(.white.opacity(0.28)))
   }
