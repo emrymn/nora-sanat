@@ -155,7 +155,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
-| C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | sürüyor (Claude, 2026-11-22) |
+| C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | PR açık (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
@@ -770,7 +770,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Arka plan oturumu tek kimlikle kurulur (`baslat()`, bir kez). Uygulama arka planda yeniden açılınca görevlerin sonuçları görev listesinden önce gelebilir (`erkenBiten`).
   - CI simülatöründe arka plan oturumu her dosyada `NSURLErrorDomain -1` (bilinmeyen hata) veriyor (arka plan aktarım servisi sanal makinede çalışmıyor). Böyle bir oturum hatasında (`-1`, `-996`, `-997`, paylaşılan kap) o dosya uygulama içi oturumla yeniden denenir ve o açılış boyunca uygulama içi oturum kullanılır (arka plana geçince `beginBackgroundTask` ile biraz süre). Telefonda arka plan oturumunun gerçekten çalıştığı (uygulamadan çıkınca sayının artması) yalnız telefonda sınanabilir; README'deki deneme listesinde.
   - Liste 19 bin adres: `toplamBayt` bir kez hesaplanır; her çizimde listeyi dolaşma.
-- **CI:** (aşağıda)
+- **CI:** 4ae9e00 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/45012346929).
+  - `yan-yana-ayarlar-cevrimdisi.png` (`-benKaydir cevrimdisi`, solda site): başlık, açıklama (sayılar aynı: 5624 eser, 19402 dosya, 21,0 GB, Telefonda: 0 / 19402), İndir düğmesi sitedeki gibi; yalnız "Wi-Fi’de indir." sonrası bilinçli farklı. OCR "Telefonda: 0 / " denetler.
+  - `c5-cevrimdisi-indi.png` (`-cevrimdisiIndir -cevrimdisiParca 2`): iki en büyük kopya gerçekten indi (`d-8f8ae43f7bffc40f.jpg` 4,7 MB, `d-00061aac1c2ec3d5.jpg`), ekranda "Telefonda: 2 / 19402", "Telefondan sil" ve "Parça 1 / 3213 bitti". CI dosya sayısını ve OCR "bitti"yi denetler.
+  - İlk koşular: arka plan oturumu simülatörde `NSURLErrorDomain -1` verdi (iki dosya da hata) → uygulama içi oturuma geri dönüş eklendi (tuzaklarda).
+  - Öbür görüntüler (Ben, Galeri, Çalış, T5) eskisi gibi alındı.
 
 ### T5 · Hareket izni penceresi çıkmasın (Claude)
 - Sorun: site (ya da yerli koddan çağrılan betik) `DeviceMotionEvent.requestPermission()` isteyince iOS'un "Harekete ve Yöne Erişmek İstiyor" penceresi çıkıyordu (C4b'nin ilk CI'ı, G2b'nin 5743b49 koşusu). `WebKabugu`'daki temsilci `.grant` dönüyordu ama `async` biçimiydi.
