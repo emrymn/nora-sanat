@@ -158,6 +158,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
+| T6 | Çalış yerli sekme | K | C3 | 1 | PR açık |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
@@ -166,7 +167,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
 - Bugün: G4
 - Yolculuk: G5
-- Çalış: C1 (C1a, C1b, C1c) + C2 + C3
+- Çalış: C1 (C1a, C1b, C1c) + C2 + C3 → **yerli (T6)**
 - Ben/Ayarlar: C4 + C4b (görünüş)
 - Herhangi bir sekme yerli olmadan önce: T4 (yerli sekme çubuğu)
 
@@ -847,6 +848,12 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI (6a123c4 yeşil): "hareket izni: granted", görüntüde pencere yok. Bu adım artık her PR'da koşar; temsilci bozulursa CI kırmızı olur.
 - Not: eski `async` biçimin neden yetmediği kesin değil (iki koşuda pencere çıktı, her koşuda değil). Yeni biçimle izin isteği hiç bekletilmeden cevaplanıyor.
 - Telefonda: Bugün'de "Telefonu eğince tablo oynasın" açıkken uygulamayı kapatıp aç; izin sorusu çıkmamalı.
+
+### T6 · Çalış yerli sekme (Claude)
+- C1 + C2 + C3 bitti; Çalış `Gecis.tasinanlar`'a girer (`CalisGecisi.sekmeler`, `CalisSekmesi.swift`; DEBUG `-yalnizSite` ile site).
+- CI: sitenin pekiştirme görüntüsü (`10s-site-pekistirme`) artık `-yalnizSite` ile; `4-url-calis` (widget → `norasanat://calis`) yerli Çalış'ı açar.
+
+**Devir notu:** Claude, 2026-11-22. Bağlantılar C2/C3'te hazırdı (`yerliAdres[.calis]`, `yenidenDokunma`, `.sekmeCubuguGizli`); yalnız kayıt ve CI. Yerli olmayan sekmeler: Bugün (G4) ve Yolculuk (G5).
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**

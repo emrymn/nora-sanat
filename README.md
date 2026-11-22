@@ -131,6 +131,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Metnin arasındaki ayrıntı kırpımlarına dokun: görüntüleyici o ayrıntıda açılıyor. Alttaki "Yakından bak · n ayrıntı" incelemeyi baştan açıyor.
   - "Okumayı sürdür": ayrıntılı anlatım aynı sayfada açılıyor; noktalı altı çizili terime dokununca altta sözlük kartı. Resimli bir karşılaştırmaya dokun: iki eser üst üste, "Eserin sayfası" o esere gidiyor.
   - Aramada bir başyapıt adı yaz (ör. "elçiler"): sonuç yerli sayfayı açıyor. Sanatçı sayfasındaki "Yakın okuma" satırları da.
+- [ ] (T6) Çalış artık yerli sekme: Çalış'a dokun, yerli ekran açılıyor (Bugünün dersi, Çalışma masan, Turlar). Widget'taki tekrar sayısına dokununca da yerli Çalış açılıyor. Bir tur başlat: sekme çubuğu gizleniyor, tur bitince geri geliyor.
 - [ ] (C3) Çalış hâlâ sitenin (yerli olması ayrı bir küçük adım). Xcode'da Arguments'a `-yerliSekme calis` ekleyip çalıştır, Çalış'a geç:
   - Bugünün dersi kartında bir adım halkasına (Gör / Öğren / Ayırt et) dokun: doğrudan o adım açılıyor; alttaki devam satırı da sıradaki adımı açıyor. Ders sayfasındaki adım satırları da.
   - **Gör**: koyu sahne, önce eserin tamamı; "Ayrıntılara bak" ile kamera ayrıntıya kayıp yaklaşıyor (uzak ayrıntıda önce biraz geri çekiliyor), alttaki yazı solup yenisi yükseliyor. "Sıradaki eser"de resim çapraz solarak değişiyor. Ayarlar'da Hareket kapalıyken her şey anında.

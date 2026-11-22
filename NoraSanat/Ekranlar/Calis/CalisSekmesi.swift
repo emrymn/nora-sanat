@@ -3,6 +3,16 @@
 import NoraCekirdek
 import SwiftUI
 
+/// T6: Çalış yerli sekme (C1 + C2 + C3). DEBUG `-yalnizSite` ile site.
+enum CalisGecisi {
+    static var sekmeler: Set<Sekme> {
+        #if DEBUG
+        if CommandLine.arguments.contains("-yalnizSite") { return [] }
+        #endif
+        return [.calis]
+    }
+}
+
 /// Çalış sekmesinin yerli ekranı (ISLER.md: C1 + C2 + C3).
 /// - Ana ekran (`#/pekistir`): `CalisAnaGorunumu`
 /// - Döneme göre / Turlar (`#/pekistir/donem`): `DonemTurlariGorunumu`
