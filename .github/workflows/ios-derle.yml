@@ -165,12 +165,20 @@ jobs:
           done
           "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
           # Denetim: aynı sanatçı, aynı gerçek ayrıntı, iki kart konumu ve yürüyüş sonu.
-          npm install --prefix "$RUNNER_TEMP/bugun-cekimi" --no-audit --no-fund appium-remote-debugger@17.4.3 appium-ios-simulator@10.3.0
-          cp Testler/bugun-site-cekimi.mjs "$RUNNER_TEMP/bugun-cekimi/"
-          xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/"
-          node "$RUNNER_TEMP/bugun-cekimi/bugun-site-cekimi.mjs" "$UDID" "$PAKET" "$RUNNER_TEMP/bugun-bolumleri"
-          while IFS='|' read -r BOLUM SANATCI ADIM SOZ; do
+          for BOLUM in ayrinti-alt ayrinti-ust hayati eserler tur; do
+            BETIK=$(node Testler/bugun-site-cekimi.mjs "$BOLUM")
+            xcrun simctl terminate "$UDID" "$PAKET"
+            rm -f "$VERI/tmp/site-betik"
+            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/" -siteBetik "$BETIK"
+            for _ in {1..90}; do
+              test -s "$VERI/tmp/site-betik" && break
+              sleep 1
+            done
+            SONUC=$(cat "$VERI/tmp/site-betik")
+            echo "$SONUC"
+            IFS='|' read -r HEDEF SANATCI ADIM SOZ <<< "$SONUC"
+            test "$HEDEF" = "$BOLUM" && test -n "$SOZ" || exit 1
+            xcrun simctl io "$UDID" screenshot "ekranlar/bugun-site-$BOLUM.png"
             xcrun simctl terminate "$UDID" "$PAKET"
             rm -f "$VERI/tmp/bugun-hazir"
             xcrun simctl launch "$UDID" "$PAKET" -yerliSekme bugun -adres "#/" -bugunKaydir "$BOLUM" -bugunSanatci "$SANATCI" -bugunAdim "$ADIM"
@@ -183,7 +191,7 @@ jobs:
             # OCR bazı Türkçe harfleri düz Latin harflerine çevirir.
             "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-yerli-$BOLUM.png" "${SOZ%% *}"
             "$RUNNER_TEMP/yan-yana" "ekranlar/bugun-site-$BOLUM.png" "ekranlar/bugun-yerli-$BOLUM.png" "ekranlar/yan-yana-bugun-$BOLUM.png"
-          done < "$RUNNER_TEMP/bugun-bolumleri"
+          done
           # Widget'ın üç boyutu, gerçek veriyle (yalnız Debug'da olan önizleme ekranı)
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -widgetOnizleme

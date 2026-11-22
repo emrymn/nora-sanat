@@ -134,6 +134,24 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         Gezgin.shared.yuklemeBitti()
         #if DEBUG
+        if let betik = NoraSanatApp.arguman("-siteBetik") {
+            Task { @MainActor in
+                let metin: String
+                do {
+                    let sonuc = try await webView.callAsyncJavaScript(betik, arguments: [:], in: nil, contentWorld: .page)
+                    if let yazi = sonuc as? String {
+                        metin = yazi
+                    } else {
+                        let veri = try JSONSerialization.data(withJSONObject: sonuc ?? NSNull(), options: [.fragmentsAllowed])
+                        metin = String(decoding: veri, as: UTF8.self)
+                    }
+                } catch {
+                    metin = "Hata: " + error.localizedDescription
+                }
+                try? Data(metin.utf8).write(to: FileManager.default.temporaryDirectory
+                    .appendingPathComponent("site-betik"), options: .atomic)
+            }
+        }
         // T5 (CI): -hareketIzniDene → sayfa hareket izni ister; sonuç tmp/hareket-izni'ye yazılır. Pencere çıkmamalı.
         if CommandLine.arguments.contains("-hareketIzniDene") {
             Task { @MainActor in
