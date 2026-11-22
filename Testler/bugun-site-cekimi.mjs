@@ -48,7 +48,10 @@ async function bolumuAc(bolum) {
     // G4b: Hayatı içindeki gerçek kaydırma (bölümün başından); yerli ekran aynı konuma gider (-bugunKonum)
     const hayat = document.querySelector('.yur-hayat');
     const konum = ayrinti ? '' : Math.round(scrollY - (hayat.getBoundingClientRect().top + scrollY));
-    return [bolum, id, ayrinti ? adimlar.indexOf(el) : 0, soz, konum].join('|');
+    // Denetim için ölçüler: ekran (100svh), --yur-ust, alt boşluk, kartın boyu ve kameranın CSS dönüşümü
+    const st = getComputedStyle(adimlar[1]);
+    const olcu = `H ${adimlar[0].offsetHeight} ic ${innerHeight} ust ${parseFloat(st.getPropertyValue('--yur-ust'))} alt ${parseFloat(st.paddingBottom)} kart ${ayrinti ? icerik.offsetHeight : '-'} resim ${document.querySelector('.yur-sahne img').style.transform}`;
+    return [bolum, id, ayrinti ? adimlar.indexOf(el) : 0, soz, konum, olcu].join('|');
   }
   throw Error('İki konumda ayrıntı bulunamadı');
 }

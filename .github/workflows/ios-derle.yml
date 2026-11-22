@@ -176,7 +176,7 @@ jobs:
             done
             SONUC=$(cat "$VERI/tmp/site-betik")
             echo "$SONUC"
-            IFS='|' read -r HEDEF SANATCI ADIM SOZ KONUM <<< "$SONUC"
+            IFS='|' read -r HEDEF SANATCI ADIM SOZ KONUM OLCU <<< "$SONUC"
             test "$HEDEF" = "$BOLUM" && test -n "$SOZ" || exit 1
             xcrun simctl io "$UDID" screenshot "ekranlar/bugun-site-$BOLUM.png"
             xcrun simctl terminate "$UDID" "$PAKET"

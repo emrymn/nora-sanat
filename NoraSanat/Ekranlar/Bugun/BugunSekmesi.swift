@@ -240,7 +240,12 @@ struct BugunSekmesi: View {
           for _ in 0..<40 where abs(izlenenAdim - hedefAdim) > 0.001 {
             try await Task.sleep(for: .milliseconds(250))
           }
-          let durum = "kayma \(Int(kayma)) adim \(String(format: "%.3f", izlenenAdim)) ekran \(Int(h))"
+          let ip = min(Double(son), max(0, izlenenAdim))
+          let dd = adimlar[Int(ip)].ara(adimlar[min(Int(ip) + 1, son)], pay: ip - Double(Int(ip)))
+          let c = kamera.cerceve(dd, buyut: 1, egim: nil)
+          let durum = "kayma \(Int(kayma)) adim \(String(format: "%.3f", izlenenAdim)) ekran \(Int(h)) ust \(ust) alt \(alt) "
+            + "kart \(boylar[Int(ip.rounded())].map { String(format: "%.1f", $0) } ?? "-") "
+            + "cerceve \(String(format: "%.1f %.1f %.4f", c.minX, c.minY, c.width / kamera.resim.width))"
           try Data(durum.utf8).write(to: FileManager.default.temporaryDirectory
             .appendingPathComponent("bugun-durum"), options: .atomic)
           try Data(bolum.utf8).write(to: FileManager.default.temporaryDirectory
