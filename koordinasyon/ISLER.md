@@ -147,22 +147,23 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C1 | Pekiştirme oturumu (kartlar, sorular) | C | T2, T3 | 2 | bitti: C1a (#7), C1b (#9), C1c (#14) |
 | G2 | Galeri: akımlar, sanatçı, eserler, arama, koleksiyon | G | T3, G1 | 2–3 | bitti (#11); görünüş G2b'de |
 | C1c | Pekiştirme: tanışma ve eksik adımlar | C | C1b | 1 | bitti (#14) |
-| C2 | Çalış ana ekranı | C | C1 | 1 | bekliyor |
+| C2 | Çalış ana ekranı | C | C1 | 1 | bitti (#16) |
 | G2b | Galeri: görünüş sitedeki gibi (K5) | G | G2, C4b | 1 | bitti (#15) |
-| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bekliyor |
+| G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bekliyor |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | PR açık (#18) |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |
-| C5 | Çevrimdışı görseller (321 MB) | C | C4 | 1 | bekliyor |
+| C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
+| T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
-- Galeri: G1 + G2 + G2b (görünüş) + G3
+- Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
 - Bugün: G4
 - Yolculuk: G5
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3
@@ -555,14 +556,61 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Kapsam:** Bugünün dersi kartı, günlük tekrar, başka turlar, 14 günlük yük grafiği.
 
-**Devir notu:** –
+**Devir notu:** Gemini, 2026-11-21 · [PR #16](https://github.com/emrymn/nora-sanat/pull/16) · dal `is/C2-calis`. Gemini'nin hakkı bitince notu ve CI düzeltmesini denetçi Claude yazdı (2026-11-22).
+- **Kaynak:** sanat-atlasi `a866b86`: `js/ekranlar/{ders,pekistir,soruTurlari,calisma,gozat,bugun}.js`, `js/{ders,dersIcerik,bolum,oturum,soruTurlari,ikonografi,gecmis,deste,sallanma,egim}.js`, `css/app.css` (`.ders-*`, `.calis-*`, `.tur-izgara`, `.pk-*`, `.salon`, `.hedef-sec`).
+- **Çekirdek** (`NoraCekirdek/Calis/`): `CalisKurallari` (tur önizlemesi `turOzeti`, soru turları, 14 günlük yük, konum yazısı), `CalisDersKurallari` (ders planı, Gör → Öğren → Ayırt et adımları, harita bölümleri), `DesteFizigi` (destenin yaylı sarkacı ve eğim). Kâhin `Testler/kahin/calis.mjs` → `Ornekler/calis/cevaplar.json` (+ `ders_kaynaklari.json`); `CalisTests` (94 test, Linux).
+- **Ekranlar** (`Ekranlar/Calis/`): `CalisSekmesi` (ana / Turlar / ders alt sayfaları, adresle açılış, tur sürerken `.sekmeCubuguGizli`), `CalisAnaGorunumu` (bugünün dersi kartı, günlük tekrar, Çalışma masan: Dersler / Başka turlar, kilitli dersler, harita satırı, 14 gün), `DonemTurlariGorunumu` (bugünkü tur destesi, günlük hedef, yarım kalan tur, döneme göre salonlar), `CalisDersSayfasi`. `PekistirmeEkrani` dışarıdan model ve `disAdreseGit` alıyor (C1c'nin C2 maddeleri).
+- **CI:** `-yerliSekme calis,ben -adres "#/pekistir" [-calisSayfa donem] [-calisKaydir turlar|yuk|salon]`, hazır olunca `tmp/calis-hazir`; `yan-yana-calis-*.png` (solda site). Kâhin yalnız bu dalda canlı sitede koşar (libm farkı için 11 haneye yuvarlanır).
+- **Kalan:** Dersin adımları (Gör, Öğren, Ayırt et ekranları) hâlâ sitenin sayfasını açar → **C3**. Çalış C3 bitince yerli olur. Yerli "Yarım kalan tur" kartı uygulamanın kendi kaydından (`noraPekistirmeOturumu`) gelir; site bu kaydı bilmediği için sitedeki ekranda görünmez.
 
-### G3 · Başyapıtlar (ChatGPT)
+**Denetim (C2):** Claude, 2026-11-22 — **onay** ([PR #16 yorumu](https://github.com/emrymn/nora-sanat/pull/16)). 94 test geçti; `calis.mjs` canlı sitede yeniden çalıştırıldı, cevaplar örnekle aynı. Yan yana görüntülerde Çalış ana ekranı, Başka turlar ve 14 gün sitenin düzeninde; yerli ekran biraz daha iri (Z3). CI kırmızıydı: Turlar ekranında OCR başlığı resmin üstünde okuyamıyordu ("Turu başlat" aranıyor). Gemini'nin Galeri görüntülerini bu dalda atlatan koşulu kaldırıldı.
+
+### G3 · Başyapıtlar (ChatGPT şeridi; kullanıcının isteğiyle Claude)
 **Site kaynakları:** `js/basyapit.js`, `js/basyapitSayfa.js`, `js/ekranlar/basyapit.js`.
 
 **Kapsam:** Liste (dönem sekmeleri), yakın okuma sayfası, yan yana karşılaştırma.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-21 · [PR #19](https://github.com/emrymn/nora-sanat/pull/19) · dal `claude/happy-keller-hfidv4` (oturumun zorunlu dalı). G2b (#15) birleşti; main ile birleştirildi. Aynı anda C2 başka oturumda sürdüğü için `Ekranlar/Calis/`'e dokunulmadı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/basyapit.js`: `basyapitlariAl`, `basyapitBul`, `sanatcininBasyapitlari`, `eserEslestir`, `oneCikanlar`, `gorunenBaslik`
+  - `js/basyapitSayfa.js`: hepsi (`sade`, `noktalariYerlestir`, `kirpim`, `sozlukAl`, `kunyeSatirlari`, `karsilastirmalariAl`, `terimIsaretle`, `dersBolumleri`, `okumaDakikasi`)
+  - `js/ekranlar/basyapit.js`: `basyapitSayfasi`, `ayrintiHtml`, `kunyeHtml`, `yanYanaAc`, `dersiBagla`, `basyapitDersSayfasi`
+  - `js/ekranlar/gozat.js`: `basyapitVeri`, `basyapitAdresi`, `basyapitListesi`, `bsyGruplari`, `bsyGovdeCiz`, `bsySahne`, `bsyKart`, `bsySahneBagla`, `eserRozetleri`
+  - `js/eserDersi.js`: `yayinAl`, `dersKlasoru`, `dersDurumu`, `dersGorunurMu`, `dersYolu`, `temizle`, `satirIci`, `mdHtml`; `js/ekranlar/eserDersi.js` `dersinDurumu`; `js/hikaye.js` `hikayeHtml`; `js/harita.js` `BOLGELER`; `js/temsil.js` `temsilOlabilir`
+  - `css/app.css`: `.by-*`, `.bsy*`, `.hikaye-bolum`, `.eser-rozet*`, `.vitrin-akim`, `.serit-son`. Ölçüler canlı sitenin **hesaplanmış** stillerinden (Playwright, iPhone 15 Pro, Gece).
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/basyapit.js js/basyapitSayfa.js js/ekranlar/basyapit.js js/ekranlar/gozat.js js/eserDersi.js js/hikaye.js css/app.css`
+- **Çekirdek** (`NoraCekirdek/Basyapit/`):
+  - `Basyapit.swift`: `Basyapit` (`gorunenBaslik`, `ozgunSatiri`, `adres`), `BasyapitKurallari` (`al` = `basyapitlariAl` + temsil dışı eleme, `bul`, `sanatcinin`, `eser`, `sonraki`, `oneCikanlar`, `gruplar`), `Donem` (`BOLGELER`, `bolgeBul`).
+  - `BasyapitSayfasi.swift`: sayfanın saf yardımcıları ve `metinler` (sitenin `terimleriIsle` sırası: bölüm metni, o bölümün tek ayrıntısının açıklaması, sonra ayrıntılı anlatım).
+  - `EserDersi.swift`: `DersYayini` (kapı), `DersMetni.temizle`, `satirIci`, `mdHtml`. C3 (eser dersleri) de kullanabilir.
+  - `MetinBloklari.swift`: sitenin ürettiği HTML'i (kaçırılmış metin, `mdHtml`, `terimIsaretle`) ekran için bloklara çevirir.
+  - `JSDuzen.swift`: JS düzenli ifadeleri; JS'te `\b`/`\w` ASCII'dir (Türkçe harf sözcük dışı), ICU'da Unicode. Desenlerde `⟨b⟩`, `⟨w⟩` ASCII karşılığa çevrilir.
+  - `GaleriKatalogu.basyapitlar` artık `[Basyapit]` (G2'deki satır içi süzme ve "Q3947103" kalktı; `notTemizle` uygulanıyor).
+- **Kâhin:** `node Testler/kahin/basyapit.mjs` (canlı site, Playwright) → `Ornekler/basyapit/` (`basyapitlar.json` ve `dersler.json` girdi, `cevaplar.json` cevap; ~5 MB). 263 başyapıt: liste, 9 dönem grubu, 210 öne çıkan durumu (3 açıklık × 7 gün × Hepsi ve her dönem), her sayfa için eser eşleşmesi, ayrıntı kaydı, ayrıntıların bölümlere yerleşimi, her noktanın 3 oranda iki kırpımı, ders durumu, künye (dersli/derssiz), sözlük, karşılaştırmalar, `temizle`, ders bölümleri, okuma dakikası, terim işaretli bütün HTML'ler (106 dersin hepsi); kenar durumları (`gorunenBaslik`, `sade`, `mdHtml`, `temizle`, `terimIsaretle`). `BasyapitTests` (6 test) bunları karşılaştırır; ayrıntı yerleşiminde kural bilerek bozulunca 445 hata. Linux'ta 94 test (1 atlanan).
+- **Ekranlar** (`NoraSanat/Ekranlar/Galeri/`):
+  - `BasyapitListesi.swift`: Galeri üstü (Başyapıtlar seçili), yapışkan dönem sekmeleri, `BasyapitSahnesi` (372 px, 6 sn'de bir döner, rozetler), Hepsi'de dönem şeritleri ("n eser ›", "Hepsine bak"), dönemde akım başlıkları ve `.ritim` ızgara; `bsyKart` (kilit etiketi, rozetler, akım noktası). `EserRozetleri`.
+  - `YakinOkuma.swift`: kapak (kenardan kenara, %74, dik tabloda başlık 64 pt biner), kalp, başlık (akım → akım sayfası, sanatçı → sanatçı sayfası), hikâye, bölümler ve ayrıntı kırpımları (dokununca görüntüleyici o ayrıntıda), ayrıntı yoksa "Yakından bak" maddeleri, "Daha derine in" kartı ve aynı sayfada ayrıntılı anlatım, karşılaştırmalar, künye, sözlük, sıradaki, not; başlık çıkınca üst cam çubuk, altta "Yakından bak · n ayrıntı" hapı, terime dokununca sözlük kartı. `DersDeposu` (yayın ve ders dosyaları), `MetinGorunumu` (HTML blokları → `Text`; terimler `nora-terim://` bağlantısı, noktalı pirinç altı çizgi), `CamDugme`, `DoluDugme`, `OkumaBolumu`.
+  - `YanYana.swift`: iki eser üst üste, cam etiketler, kapat, kart ve "Eserin sayfası".
+  - `GaleriSekmesi.swift`: `GaleriYolu.basyapitlar / okuma / okumaDers` (`#/basyapitlar`, `#/basyapit/<k>`, `#/basyapit/<k>/ders`); Başyapıtlar hapı yerli listeyi, arama ve sanatçı sayfasındaki yakın okumalar yerli sayfayı açar (G2'nin geçici sade sayfası kalktı). `GaleriEylemleri.goruntule(eser, incele, nokta)`. Zaman G5'e kadar siteyi yaprakta açar. `GaleriGecisi.sekmeler`.
+- **Ortak dosyalarda küçük değişiklikler:**
+  - `Kabuk/Gecis.swift`: `tasinanlar = BenGecisi.sekmeler ∪ GaleriGecisi.sekmeler` (**Galeri artık yerli**; DEBUG `-yalnizSite` site).
+  - `SiteVerisi.kokDosyasi(yol)`: `data/` dışındaki dosyalar (ders klasörleri), önbellekli; .json değilse JSON denetimi yok.
+  - `Goruntuleyici(incelemeNokta:)` (G1): inceleme açılınca doğrudan o ayrıntıya gider (`incelemeNokta`).
+  - `GaleriGorunusu.swift`: `GaleriSimge.kitap`, `.cik`.
+- **CI:** `galeri-yan-yana-*.png` (solda site, sağda yerli): `basyapitlar`, `basyapitlar-serit`, `basyapitlar-donem` (Rönesans), `okuma` (Elçiler), `okuma-ayrinti`, `okuma-derin` (`#/basyapit/Q1212937/ders`), `okuma-son` (künye, sözlük), `yan-yana` (Q979440'ın ilk resimli karşılaştırması). `-galeriKaydir serit|donem|okuma-ayrinti|okuma-derin|okuma-son|yanyana`; sitede tıklanacaklar `||` ile sırayla. 8b (sitenin çubuğu) artık `-yalnizSite` ile (Galeri yerli).
+  - 600ba95 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44940413401). İlk koşu derlemede kaldı: `.ritim` satırlarını kuran tek ifade tür denetimi süresini aşıyordu → ayrı işlev. Main'e G2b squash birleşince çakışma çıktı (içerik aynıydı), giderildi.
+  - Sekiz yan yana görüntünün hepsine bakıldı: Galeri üstü, dönem sekmeleri, öne çıkan kart ve rozetler, dönem şeritleri, Rönesans ızgarası (geniş kart, kilit etiketi), Elçiler'in kapağı, başlığı, hikâyesi, ayrıntı şeritleri, ayrıntılı anlatım, künye ve sözlük kutuları, yan yana karşılaştırma sitedekiyle aynı düzen, yazı tipi ve renklerde. Sonra düzeltilen (3e0f10d): "Yakından bak" hapı dişli dilin altında kalıyordu (49 pt), öne çıkan kartta seçili nokta pirinç değildi, yan yanada üst resim durum çubuğunun altından başlıyordu. 9213f9c yeşil (https://github.com/emrymn/nora-sanat/actions/runs/44943856095): hap dişlinin üstünde, sitedekinden ~11 pt aşağıda (kabul edildi).
+  - Yerli sayfada başlık kayınca üst cam çubuk görünüyor; sitenin CI görüntüsünde (`scrollIntoView` atlamasıyla) görünmüyor. Davranış sitenin koduyla aynı (başlık ekrandan çıkınca).
+- **Bilinen farklar / kalan:**
+  - Görsel odağı (`odakliGorsel`, yüzün çevresinden kırpma) yok: kartlar ortadan kırpılıyor (G2b'de de böyle).
+  - Kapak oranı yerel kopya oranından (`gorsel_oranlari.json`); oranı bilinmeyen eserde kapak 4:5 sayılır ve ayrıntı kırpımları çıkmaz (site resmi indirip ölçüyor).
+  - Ayrıntılı anlatım kapatılıp yeniden açılınca site ilk açılışta işaretlenen terimleri ikinci kez işaretlemiyor; burada işaretler korunuyor.
+  - Sitede terimler ders gelince, ayrıntı açıklamaları resim oranı gelince işlenir (sıra yarışa bağlı); burada hep belge sırası.
+  - Giriş hareketleri (`data-gozcu`, kartların yükselmesi), sahne noktalarının dolma animasyonu, `ekranRengi` (eserden gelen hale rengi) yok; hale `--vurgu`.
+  - Yan yanada resim alanlarının zemini `--surface` (`UzakGorsel`'in zemini; sitede sayfa zemini).
+  - Gizli sitenin hareket izni penceresi (G2b denetimi) bu işte ele alınmadı → ayrı iş.
+
+**Denetim (G3):** Claude, 2026-11-22 — **onay; Galeri yerli** (PR #19 yorumu). Linux'ta 94 test geçti. `basyapit.mjs` canlı sitede yeniden çalıştırıldı: `basyapitlar`, `dersler`, `cevaplar` örneklerle birebir aynı. Sekiz yan yana görüntüde liste, dönem şeritleri, öne çıkan kart, yakın okuma (kapak, hikâye, ayrıntılar, derin anlatım, künye, sözlük) ve yan yana sitedekiyle aynı. İki yerli görüntüde hareket izni penceresi vardı: dal T5'ten önceydi; main (T5) alındı.
 
 ### C3 · Dersler (ChatGPT)
 **Site kaynakları:**
@@ -739,12 +787,58 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Devir notu:** –
 
-### C5 · Çevrimdışı görseller (ChatGPT)
-**Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "Görselleri çevrimdışı indir".
+### C5 · Çevrimdışı görseller (ChatGPT şeridi; kullanıcının isteğiyle Claude)
+**Site kaynakları:** `js/devasaOnbellek.js`, Ayarlar'daki "En büyük kopyaları telefona indir" (`js/ekranlar/ayarlar.js`), `js/gorsel.js`, `js/eserler.js` `gosterilenGorseller`.
 
-**Kapsam:** Arka planda indirme, boyut ve ilerleme göstergesi, iptal.
+**Kapsam:** Arka planda indirme, boyut ve ilerleme göstergesi, durdurma, silme. İndirilenler uygulamanın görsel önbelleğinde önce kullanılır, internet yokken de görünür.
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-22 · [PR #21](https://github.com/emrymn/nora-sanat/pull/21) · dal `claude/eager-ramanujan-l5weox` (oturumun zorunlu dalı). C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86` (site 1.90.3). Taşınanlar:
+  - `js/gorsel.js`: `devasaSuz`, `suzulduMu`, `devasaAdresleri`, `telefonAdresleri`, `tahminiBayt`, `telefonToplamBayt`, `B_ORTALAMA_BAYT`, `K_ORTALAMA_BAYT`
+  - `js/eserler.js`: `gosterilenGorseller`
+  - `js/ekranlar/ayarlar.js`: Ayarlar'daki `data-test="devasa-indir"` bölümü, `devasaBilgisi`, `devasaGoster`, `devasaIndir` (parça seçimi, `d.devasaIndirme`, bitiş kuralları), `devasaSurdur`, `devasaSil`, durdurma
+  - `js/devasaOnbellek.js`: `kaliciYaz/Oku`, `kaliciAdresler` (listede olmayanların silinmesi, %20 koruması), `kaliciSil`, `defterAdi` (dosya adı kalıbı), `PARCA`
+  - `css/app.css`: `.ayar .dugme`, `progress`, `.mesaj`, `.mesaj.hata`, `.mesaj.tamam`
+  K7 farkı: `git -C /tmp/sa log a866b86..HEAD -- js/gorsel.js js/eserler.js js/ekranlar/ayarlar.js js/devasaOnbellek.js`
+- **Çekirdek** (`NoraCekirdek/Cevrimdisi/`):
+  - `CevrimdisiListe`: indirme listesi sitedeki sırayla (en büyük kopyalar, en büyüğü olmayanların 1280'likleri, bütün 400'lükler, kalan 1280'likler), `tahminiBayt`, `toplamBayt`, `parca(telefonda:)` (parça planı: ~0,7 GB ya da 1000 dosya, kaçıncı / kaç parça). Bugün: **5624 eser, 19 402 dosya, 21,0 GB, 33 parça** (iş tablosundaki "321 MB" eskiydi).
+  - `CevrimdisiDurumu` (`d.devasaIndirme`, `bitir`), `CevrimdisiGorunum` (Ayarlar'ın açıklaması, iletisi, ileti rengi, İndir / Durdur / Telefondan sil düğmeleri, çubuk), `gb`.
+  - `CevrimdisiDepo`: Application Support/CevrimdisiGorseller (Caches değil: iOS yer daralınca silmesin; iCloud yedeğine girmez). Dosya adı adresin türü ve adı (`d-<ad>[-sürüm].jpg`, `b-…`, `k-…`): klasörün listesi hangi adreslerin telefonda olduğunu söyler, defter gerekmez. `telefondakiler` listede olmayan eski sürümleri siler (sitedeki %20 korumasıyla).
+  - `SiteKatalogu.gosterilenGorseller()`; `SiteKatalogu.onbellekSirasi` ve `GorselAdresleri.devasaListesi` eklendi (sıra için; T1 dosyalarında küçük değişiklik).
+  - `GorselDeposu` (T3): bir adresi önce `CevrimdisiDepo`'da arar (`veri`, `diskte`). `UzakGorsel`, görüntüleyici ve büyük kopya hep buradan geçtiği için indirilenler internetsiz de görünür.
+- **Uygulama** (`NoraSanat/Ekranlar/Ben/`):
+  - `CevrimdisiIndirici.swift`: arka plan `URLSession` (`com.emrymn.norasanat.cevrimdisi`). Bir parçanın dosyaları birden verilir (aynı sunucuya 3 bağlantı, 90 sn zaman aşımı), parça bitince sıradaki başlar; uygulama arka plandayken ve iOS onu kapatınca da sürer, iş bitince iOS uygulamayı uyandırır, sıradaki parça orada verilir. Kullanıcı uygulamayı kaydırıp kapatırsa iOS görevleri iptal eder: açılışta kaldığı yerden sürer (sitenin `devasaSurdur`'u; işaret `UserDefaults` `cevrimdisi.surdur`, durum `cevrimdisi.durum`, liste `Application Support/CevrimdisiListe.json`). İnen dosya, yanıt 2xx ve `image/` ise temsilcide hemen yerine taşınır; yer yoksa indirme durur ("Telefonda yer kalmadı").
+  - Açılışta sitenin eski indirmesi durdurulur ve sürdürme işareti (`sanat-atlasi:devasa-surdur`) silinir: gizli site artık arkada ayrıca indirmez. "Telefondan sil" sitenin eskiden IndexedDB'ye indirdiklerini de siler.
+  - `BenCevrimdisi.swift`: bölüm `CevrimdisiIndirici` ve `CevrimdisiGorunum`'la; sıra sitedeki gibi (açıklama, düğmeler, çubuk, ileti). **C4b tuzağı kalktı:** Ayarlar açılınca gizli site artık `#/ayarlar`'a gitmiyor, bölüm sitenin sayfasını okumuyor.
+  - `NoraSanatApp.swift` (ortak, küçük): `@UIApplicationDelegateAdaptor(NoraSanatUygulamaTemsilcisi.self)` (`handleEventsForBackgroundURLSession`; açılışta `baslat()`).
+- **Kâhin:** `Testler/kahin/cevrimdisi.mjs` → `Ornekler/cevrimdisi/cevaplar.json`. Önce canlı sitenin veri dosyalarının `Ornekler/site_verisi/`'ndekilerle aynı olduğunu denetler (Swift testi listeyi oradan kurar). Sınananlar: listenin sayıları, **19 402 adresin sıralı MD5'i** ve her 97. adres, toplam bayt, `tahminiBayt`; sekiz "telefondakiler" kümesiyle parça planı (`devasaIndir`'in parça kodu kâhinde aynen); Ayarlar'ın açıklaması (telefonda 0 ve 5 görsel: sitenin IndexedDB'sine sahte kayıt) ve on indirme durumunun iletisi, ileti sınıfı, düğmeleri, çubuğu (sayfa her durumda yeniden çizilip okunur). `CevrimdisiTests` (8 test); Linux'ta paket testleri: 96 test, 1 atlanan. Listenin sırası bilerek bozulunca yakalıyor.
+- **Bilinçli farklar:**
+  - Açıklamanın "Wi-Fi’de indir." sonrası: sitede "her parçadan sonra uygulama kendini yenileyip…, iPhone kapalı uygulamanın indirmesine izin vermiyor"; uygulamada "uygulamadan çıksan da arka planda sürer; kaydırıp kapatırsan bir dahaki açışında kaldığı yerden devam eder" (`CevrimdisiGorunum.indirmeNotu`). Test o cümleye kadar karşılaştırır.
+  - Parça bitince sitede sayfa yenilenir; burada sıradaki parça hemen başlar ("Parça 2 / 33 bitti · … Sıradaki parça başlıyor…").
+  - Sitenin indirme izi / hata günlüğü (`izBirak`, `hataEkle`, `depoDurumu`, defter doğrulaması) yok: dosya sistemi güvenilir, defter gerekmiyor. "Kaydedilemedi" iletisinde sitenin hata adı yerine dosya sistemi hatası yazar.
+  - Ekran açık tutma (`wakeLock`) yok: arka planda indiği için gerek yok.
+  - Sitenin önceden IndexedDB'ye indirdikleri Swift'e taşınmaz (WebKit deposundan GB'larca veriyi köprüden geçirmek pratik değil); yerli ekranlar onları kullanmaz, taşınmamış site sekmeleri kullanmaya devam eder. Telefonda ikisi birden yer kaplayabilir; "Telefondan sil" ikisini de siler.
+- **Tuzaklar:**
+  - Arka plan oturumu tek kimlikle kurulur (`baslat()`, bir kez). Uygulama arka planda yeniden açılınca görevlerin sonuçları görev listesinden önce gelebilir (`erkenBiten`).
+  - CI simülatöründe arka plan oturumu her dosyada `NSURLErrorDomain -1` (bilinmeyen hata) veriyor (arka plan aktarım servisi sanal makinede çalışmıyor). Böyle bir oturum hatasında (`-1`, `-996`, `-997`, paylaşılan kap) o dosya uygulama içi oturumla yeniden denenir ve o açılış boyunca uygulama içi oturum kullanılır (arka plana geçince `beginBackgroundTask` ile biraz süre). Telefonda arka plan oturumunun gerçekten çalıştığı (uygulamadan çıkınca sayının artması) yalnız telefonda sınanabilir; README'deki deneme listesinde.
+  - Liste 19 bin adres: `toplamBayt` bir kez hesaplanır; her çizimde listeyi dolaşma.
+- **CI:** 4ae9e00 yeşil (https://github.com/emrymn/nora-sanat/actions/runs/45012346929).
+  - `yan-yana-ayarlar-cevrimdisi.png` (`-benKaydir cevrimdisi`, solda site): başlık, açıklama (sayılar aynı: 5624 eser, 19402 dosya, 21,0 GB, Telefonda: 0 / 19402), İndir düğmesi sitedeki gibi; yalnız "Wi-Fi’de indir." sonrası bilinçli farklı. OCR "Telefonda: 0 / " denetler.
+  - `c5-cevrimdisi-indi.png` (`-cevrimdisiIndir -cevrimdisiParca 2`): iki en büyük kopya gerçekten indi (`d-8f8ae43f7bffc40f.jpg` 4,7 MB, `d-00061aac1c2ec3d5.jpg`), ekranda "Telefonda: 2 / 19402", "Telefondan sil" ve "Parça 1 / 3213 bitti". CI dosya sayısını ve OCR "bitti"yi denetler.
+  - İlk koşular: arka plan oturumu simülatörde `NSURLErrorDomain -1` verdi (iki dosya da hata) → uygulama içi oturuma geri dönüş eklendi (tuzaklarda).
+  - Öbür görüntüler (Ben, Galeri, Çalış, T5) eskisi gibi alındı.
+
+**Denetim (C5):** Claude, 2026-11-22 — **onay** (PR #21 yorumu). Linux'ta 96 test geçti. `cevrimdisi.mjs` canlı sitede yeniden çalıştırıldı: cevaplar örnekle aynı (19 402 adresin sıralı MD5'i dahil). `yan-yana-ayarlar-cevrimdisi`: bölüm sitedekiyle aynı (yalnız bilinçli farklı indirme notu); `c5-cevrimdisi-indi`: iki en büyük kopya gerçekten indi, "Telefondan sil" ve ilerleme iletisi görünüyor. C4b'nin `#/ayarlar` tuzağı kalktı. Arka plan oturumunun telefonda çalıştığı yalnız telefonda sınanabilir (README).
+
+### T5 · Hareket izni penceresi çıkmasın (Claude)
+- Sorun: site (ya da yerli koddan çağrılan betik) `DeviceMotionEvent.requestPermission()` isteyince iOS'un "Harekete ve Yöne Erişmek İstiyor" penceresi çıkıyordu (C4b'nin ilk CI'ı, G2b'nin 5743b49 koşusu). `WebKabugu`'daki temsilci `.grant` dönüyordu ama `async` biçimiydi.
+- Yapılan: temsilci tamamlama bloklu biçime geçti. CI: `-yalnizSite -hareketIzniDene` ile site izin ister; sonuç `granted` olmalı ve ekranda pencere (OCR "Erişmek") olmamalı (`t5-hareket-izni.png`).
+
+**Devir notu:** Claude, 2026-11-21 · PR #17 · dal `claude/T5-hareket-izni`.
+- `NoraSanat/WebKabugu.swift`: `Koordinator.webView(_:requestDeviceOrientationAndMotionPermissionFor:initiatedByFrame:decisionHandler:)` → `.grant`. DEBUG `-hareketIzniDene`: sayfa yüklenince `requestPermission()` çağrılır, sonuç `tmp/hareket-izni`'ye yazılır.
+- CI (6a123c4 yeşil): "hareket izni: granted", görüntüde pencere yok. Bu adım artık her PR'da koşar; temsilci bozulursa CI kırmızı olur.
+- Not: eski `async` biçimin neden yetmediği kesin değil (iki koşuda pencere çıktı, her koşuda değil). Yeni biçimle izin isteği hiç bekletilmeden cevaplanıyor.
+- Telefonda: Bugün'de "Telefonu eğince tablo oynasın" açıkken uygulamayı kapatıp aç; izin sorusu çıkmamalı.
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**

@@ -3,6 +3,9 @@ import UIKit
 
 @main
 struct NoraSanatApp: App {
+    /// C5: çevrimdışı görsellerin arka plan indirmesi (uygulama arka planda uyandırılınca da)
+    @UIApplicationDelegateAdaptor(NoraSanatUygulamaTemsilcisi.self) private var uygulamaTemsilcisi
+
     init() {
         Hatirlatici.shared.baslat()   // bildirime dokununca açılacak sayfa için, açılışta kurulmalı
         Yazi.kaydet()                 // sitenin yazı tipleri (NoraSanat/YaziTipleri)

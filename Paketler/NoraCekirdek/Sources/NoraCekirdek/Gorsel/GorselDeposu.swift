@@ -3,6 +3,8 @@
 // - Dosya: Caches/Gorseller/<adresin MD5'i>. iOS yer daralınca Caches'i boşaltabilir; öyle olursa yeniden iner.
 // - Aynı adres için aynı anda tek indirme yapılır; bekleyenler aynı sonucu alır.
 // - Toplam boyut `sinir`'ı aşınca en uzun süredir kullanılmayanlar silinir.
+// - C5: telefona indirilmiş görseller (`CevrimdisiDepo`, Ayarlar'daki "En büyük kopyaları telefona indir") önce oradan
+//   okunur; internet yokken de görünür.
 // Çözme ve küçültme (ImageIO) uygulamada: NoraSanat/Kabuk/Gorsel.swift.
 import Foundation
 #if canImport(FoundationNetworking)
@@ -24,10 +26,14 @@ public actor GorselDeposu {
     /// Bayt; aşılınca en eski kullanılanlar silinir
     public let sinir: Int
     private let indirici: Indirici
+    /// Telefona indirilmiş görseller (C5); önce burada aranır
+    public nonisolated let cevrimdisi: CevrimdisiDepo?
     private var surenler: [URL: Task<Data, Error>] = [:]
     private var yazilanBayt = 0
 
-    public init(klasor: URL? = nil, sinir: Int = 400 * 1024 * 1024, indirici: Indirici? = nil) {
+    public init(klasor: URL? = nil, sinir: Int = 400 * 1024 * 1024, indirici: Indirici? = nil,
+                cevrimdisi: CevrimdisiDepo? = .varsayilan) {
+        self.cevrimdisi = cevrimdisi
         let k = klasor ?? FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Gorseller", isDirectory: true)
         try? FileManager.default.createDirectory(at: k, withIntermediateDirectories: true)
@@ -52,11 +58,12 @@ public actor GorselDeposu {
 
     /// Diskte varsa (indirmeden)
     public nonisolated func diskte(_ url: URL) -> Data? {
-        try? Data(contentsOf: dosya(url))
+        cevrimdisi?.veri(url.absoluteString) ?? (try? Data(contentsOf: dosya(url)))
     }
 
     /// Görselin baytları: diskte varsa oradan (kullanım zamanı tazelenir), yoksa indirip diske yazar.
     public func veri(_ url: URL) async throws -> Data {
+        if let d = cevrimdisi?.veri(url.absoluteString) { return d }
         let yer = dosya(url)
         if let d = try? Data(contentsOf: yer), !d.isEmpty {
             try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: yer.path)

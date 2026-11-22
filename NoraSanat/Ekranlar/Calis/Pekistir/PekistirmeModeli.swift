@@ -10,12 +10,21 @@ final class PekistirmeModeli {
     private static let alan = "noraPekistirmeOturumu"
     var katalog: SiteKatalogu?
     var veri = PekistirmeVerileri(ikonografi: nil, zorluk: nil)
+    var dersKaynagi: JSONDeger?
+    var yuruyus: JSONDeger?
+    var konularTr: JSONDeger?
+    var ikonografiKonulari: [IkonografiKonusu] = []
     var ilerleme: Ilerleme?
     var kayit: TurKaydi?
     var turAcik = false
     var mesgul = false
     var hata: String?
+    var kapakSanatciId: String?
+    var kapakEserAnahtari: String?
+    private var sonKapakSanatciId: String?
     private var beklenen: JSONDeger?
+
+    var bugun: String { GunTarihi.gun(Date()) }
 
     func yukle() async {
         guard !mesgul else { return }
@@ -23,11 +32,23 @@ final class PekistirmeModeli {
         defer { mesgul = false }
         do {
             async let k = Self.depo.katalog()
-            async let ek = Self.depo.veriler(["eser_zorluk.json", "ikonografi.json", "tanima_notlari.json"])
+            async let ek = Self.depo.veriler([
+                "eser_zorluk.json",
+                "ikonografi.json",
+                "tanima_notlari.json",
+                "ders_kaynaklari.json",
+                "yuruyus.json",
+                "konular_tr.json",
+            ])
             let il = try await IlerlemeKoprusu.shared.oku()
-            katalog = try await k
+            let kat = try await k
+            katalog = kat
             let d = await ek
             veri = .init(ikonografi: d["ikonografi.json"], zorluk: d["eser_zorluk.json"], tanima: d["tanima_notlari.json"])
+            dersKaynagi = d["ders_kaynaklari.json"].flatMap { try? JSONDeger.coz($0) }
+            yuruyus = d["yuruyus.json"].flatMap { try? JSONDeger.coz($0) }
+            konularTr = d["konular_tr.json"].flatMap { try? JSONDeger.coz($0) }
+            ikonografiKonulari = CalisKurallari.ikonografiKonulari(d["ikonografi.json"], varMi: { kat.harita[$0] != nil })
             ilerleme = il
             beklenen = il.ayar(Self.alan)
             kayit = nil
@@ -36,10 +57,64 @@ final class PekistirmeModeli {
                Date().timeIntervalSince(eski.zaman) <= 7 * 86400, !eski.bitti {
                 kayit = eski
             }
+            if kapakSanatciId == nil {
+                yeniZiyaretKapagiSec(katalog: kat, ilerleme: il)
+            }
             turAcik = false
             hata = nil
         } catch {
             hata = "Katalog ve ilerleme okunamadı. Bağlantını kontrol edip yeniden dene."
+        }
+    }
+
+    /// İş 138 / İş 143 (`kapakSanatcisi`, `kapakDoldur`): Turlar sahnesi ziyareti boyunca sabit arka plan eseri
+    func yeniZiyaretKapagiSec(katalog: SiteKatalogu? = nil, ilerleme: Ilerleme? = nil) {
+        guard let k = katalog ?? self.katalog, let il = ilerleme ?? self.ilerleme else { return }
+        let acik = il.acikSanatcilar(k.sanatcilar)
+        guard !acik.isEmpty else { kapakSanatciId = nil; kapakEserAnahtari = nil; return }
+        let adaylar = acik.count > 1 ? acik.filter { $0.id != sonKapakSanatciId } : acik
+        let secilen = adaylar.randomElement() ?? acik[0]
+        sonKapakSanatciId = secilen.id
+        kapakSanatciId = secilen.id
+        let uygun = Temsil.bilinirlikSirasi(
+            k.eserler(secilen.id).filter { GorselAdresleri.secilen($0, kotuler: il.kotuGorseller) != nil && $0.pekistirme }
+        ).prefix(8)
+        kapakEserAnahtari = uygun.randomElement()?.anahtar
+    }
+
+    /// Yarım kalan turu siler (`yarimSil`)
+    func yarimBitir() async {
+        guard !mesgul else { return }
+        mesgul = true
+        defer { mesgul = false }
+        do {
+            let il = try await IlerlemeKoprusu.shared.degistir { il in
+                il.ayarla(Self.alan, nil)
+            }
+            ilerleme = il
+            beklenen = nil
+            kayit = nil
+            turAcik = false
+            hata = nil
+        } catch {
+            hata = "İlerleme kaydedilemedi."
+        }
+    }
+
+    /// Günlük kart hedefini değiştirir (`data-gunluk-hedef`)
+    func gunlukHedefSec(_ hedef: Int) async {
+        guard !mesgul else { return }
+        mesgul = true
+        defer { mesgul = false }
+        do {
+            let yeni = min(100, max(5, hedef))
+            let il = try await IlerlemeKoprusu.shared.degistir { il in
+                il.ayarla("gunlukKart", .sayi(yeni))
+            }
+            ilerleme = il
+            hata = nil
+        } catch {
+            hata = "Günlük hedef kaydedilemedi."
         }
     }
 
@@ -158,5 +233,14 @@ final class PekistirmeModeli {
 
     func karsiEserler(_ id: String, haric: String?) -> [Eser] {
         KartEseri.karsiEserler(katalog?.eserler(id) ?? [], kotuler: ilerleme?.kotuGorseller ?? [:], haric: haric)
+    }
+
+    func kursBolumleri() -> [KursBolumuBilgisi] {
+        guard let katalog else { return [] }
+        return CalisKurallari.kursBolumleri(konular: katalog.konular, konularTr: konularTr)
+    }
+
+    func ikonografiKonusu(_ id: String) -> IkonografiKonusu? {
+        ikonografiKonulari.first { $0.id == id }
     }
 }

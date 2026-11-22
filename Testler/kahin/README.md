@@ -44,3 +44,12 @@ node Testler/kahin/pekistir_tanisma.mjs > Paketler/NoraCekirdek/Tests/NoraCekird
 # kötü işaretli görsellerle seçim, TEMSIL_DISI ve `bilinirlikSirasi` (tablo düğmesinin yelpazesi). ~1,5 MB.
 node Testler/kahin/temsil.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/temsil/cevaplar.json
 ```
+
+## Çevrimdışı görseller (C5)
+
+```bash
+# İndirme listesi (gösterilen görsellerin en büyük / 1280 / 400 kopyaları, sırayla; ~19 bin adres: sayılar, MD5, örnekler),
+# parça planı ve Ayarlar'daki yazılar (bilgi ve her indirme durumunun iletisi, sayfanın kendisinden okunur).
+# Site verisi Ornekler/site_verisi/'ndekilerden farklıysa durur: önce site_verisi.mjs ile örnekleri yenile.
+node Testler/kahin/cevrimdisi.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/cevrimdisi/cevaplar.json
+```

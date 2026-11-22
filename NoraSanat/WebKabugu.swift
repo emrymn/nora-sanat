@@ -133,6 +133,19 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         Gezgin.shared.yuklemeBitti()
+        #if DEBUG
+        // T5 (CI): -hareketIzniDene → sayfa hareket izni ister; sonuç tmp/hareket-izni'ye yazılır. Pencere çıkmamalı.
+        if CommandLine.arguments.contains("-hareketIzniDene") {
+            Task { @MainActor in
+                let betik = """
+                const t = [window.DeviceMotionEvent, window.DeviceOrientationEvent].find((x) => x && typeof x.requestPermission === 'function');
+                return t ? await t.requestPermission() : 'gerekmiyor';
+                """
+                let sonuc = (try? await webView.callAsyncJavaScript(betik, arguments: [:], in: nil, contentWorld: .page)) as? String ?? "hata"
+                try? Data(sonuc.utf8).write(to: FileManager.default.temporaryDirectory.appendingPathComponent("hareket-izni"))
+            }
+        }
+        #endif
     }
 
     /// İlk açılışta internet yoksa (önbellek henüz dolmadıysa) sade bir bilgi sayfası.
@@ -190,9 +203,11 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     }
 
     /// "Telefonu eğince tablo hareketi" için hareket izni: uygulama zaten izin istediği için doğrudan ver.
+    /// T5: tamamlama bloklu biçim. `async` karşılığı WebKit'e ulaşmıyordu; site ya da yerli kod (`izinVarMi`)
+    /// izin isteyince iOS'un "Harekete ve Yöne Erişmek İstiyor" penceresi çıkıyordu (C4b ve G2b CI'ları).
     func webView(_ webView: WKWebView, requestDeviceOrientationAndMotionPermissionFor origin: WKSecurityOrigin,
-                 initiatedByFrame frame: WKFrameInfo) async -> WKPermissionDecision {
-        .grant
+                 initiatedByFrame frame: WKFrameInfo, decisionHandler: @escaping (WKPermissionDecision) -> Void) {
+        decisionHandler(.grant)
     }
 
     // MARK: Titreşim
