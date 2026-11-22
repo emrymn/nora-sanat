@@ -16,6 +16,10 @@ struct NoraSanatApp: App {
         BenKarsilastirma.siteyiKaydir()
         // -galeriKaydir dizin: site Galeri'nin o bölümüne kayar (G2b karşılaştırma görüntüleri)
         GaleriKarsilastirma.siteyiKaydir()
+        #if targetEnvironment(simulator)
+        // -yolculukProva durak -yalnizSite: sitede haritanın o durumu kurulur (G5 karşılaştırma görüntüleri)
+        YolculukProva.siteyiHazirla()
+        #endif
         #endif
     }
 

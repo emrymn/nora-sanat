@@ -99,6 +99,10 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
         switch durum {
         case .authorized, .provisional, .ephemeral: return true
         case .notDetermined:
+            #if DEBUG
+            // CI karşılaştırma görüntüleri (G5): izin penceresi ekranın üstüne binmesin
+            if CommandLine.arguments.contains("-izinSorma") { return false }
+            #endif
             guard sor else { return false }
             return (try? await merkez.requestAuthorization(options: [.alert, .sound, .badge])) ?? false
         default: return false

@@ -156,3 +156,10 @@ Paketler/NoraCekirdek/  Arayüzden bağımsız mantık + testler (Linux'ta: swif
 Testler/                Köprü betiğinin testleri (node --test Testler/tekrarTakvimi.test.mjs)
 .github/workflows/      Her PR'da: derleme + simülatörde açılış ekran görüntüsü
 ```
+- [ ] (G5) Galeri → **Zaman** (Galeri'nin dördüncü sekmesi): üstte yıl, "n sanatçı hayatta", altında renkli çubuklu cetvel ve pirinç ibre. Cetveli parmakla kaydır ya da bir yere dokun: yıl ve aşağıdaki akım akım liste değişiyor; açık sanatçıya dokununca sanatçı sayfası. Kilitli satırda "Konu n'de açılır".
+- [ ] (G5) Yolculuk henüz sitenin. Xcode'da Arguments'a `-yerliSekme yolculuk` ekleyip çalıştır, Yolculuk'a dokun:
+  - Harita "buradasın" durağında açılıyor (durak ekranın ortasının biraz altında, altında adı ve "Kolay · 8 soru seni bekliyor"). Sol üstte kurs rozeti, sağ üstte güneş/ay ve kaydırdıkça değişen dönem etiketi.
+  - Durakların çevresinde halka ve altında üç yıldız; kilitlilerde kesik halka ve kilit.
+  - Açık bir durağa dokun: öğrenci patikadan yürüyor, altta koyu kart açılıyor (kapak, "Dönem · n sanatçı", ad, beyaz düğme, tanışma grupları, Kolay / Orta / Zor, Akım sayfası). Aşağı çekince kapanıyor.
+  - Kurs rozetine dokun: "n / 57 konu işlendi", sıradaki konunun Türkçe adı, "k sanatçı açılacak", **İşlendi yap**. Resimdeki saklı bir motife dokun: çerçeveli eser, hikâye, "… sayfası".
+  - Kartta "1. grupla tanış" ya da "Kolay'a başla": tanışma ve sorular Çalış'taki turun aynısı. Grup bitince "Grup tamam" ve "2. grupla tanış"; seviye bitince sergi duvarı, madalyon, yıldızlar, skor, salonlar ve "Orta salonuna geç".

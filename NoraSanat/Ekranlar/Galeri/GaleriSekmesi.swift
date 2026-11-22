@@ -1,7 +1,6 @@
-// Kaynak: sanat-atlasi js/ekranlar/{gozat,akim,arama,koleksiyon,basyapit}.js @ a866b86
+// Kaynak: sanat-atlasi js/ekranlar/{gozat,akim,arama,koleksiyon,basyapit,zaman}.js @ a866b86
 import NoraCekirdek
 import SwiftUI
-import SafariServices
 
 /// Galeri yerli sekmedir: G1 + G2 + G2b + G3. DEBUG `-yalnizSite` ile site (CI karşılaştırması).
 enum GaleriGecisi {
@@ -17,6 +16,8 @@ enum GaleriYolu: Hashable {
     case akim(String), sanatci(String), eserler(String), konular(String), konu(String), ara, koleksiyon
     /// `#/basyapitlar`, `#/basyapit/<anahtar>` ve `#/basyapit/<anahtar>/ders` (ayrıntılı anlatım açık)
     case basyapitlar, okuma(String), okumaDers(String)
+    /// `#/zaman` (G5): Galeri'nin dördüncü sekmesi
+    case zaman
     case akimKarsilastir(String, String), sanatciKarsilastir(String, String)
     init?(adres: String) {
         let p = adres.drop(while: { $0 == "#" || $0 == "/" }).split(separator: "/").map { String($0).removingPercentEncoding ?? String($0) }
@@ -31,6 +32,7 @@ enum GaleriYolu: Hashable {
         case "konu": self = .konu(id)
         case "konular": self = .konular(id)
         case "basyapitlar": self = .basyapitlar
+        case "zaman": self = .zaman
         case "basyapit" where p.count == 3 && p[2] == "ders": self = .okumaDers(id)
         case "basyapit": self = .okuma(id)
         default: return nil
@@ -58,7 +60,6 @@ struct GaleriSekmesi: View {
     @State private var yol: [GaleriYolu] = []
     @State private var acilan: AcilanEserler?
     @State private var sayfa = 0
-    @State private var siteBolumu: SiteBolumu?
     @State private var sorgu = ""
     @State private var hata: String?
     @State private var deneme = 0
@@ -151,9 +152,6 @@ struct GaleriSekmesi: View {
                 yol.append(.konu(id))
             }
         }
-        .sheet(item: $siteBolumu) { bolum in
-            GaleriSiteSayfasi(adres: bolum.adres).ignoresSafeArea()
-        }
         .alert("Koleksiyon güncellenemedi.", isPresented: $yenilemeHatasi) {
             Button("Yeniden dene") { deneme += 1 }
             Button("Kapat", role: .cancel) {}
@@ -178,7 +176,7 @@ struct GaleriSekmesi: View {
             goruntule: { e, incele, nokta in acilan = AcilanEserler(eserler: [e], sira: 0, incele: incele, nokta: nokta) })
     }
 
-    /// `gozAtUst`: bölüm sekmeleri; Zaman G5'e kadar sitenin sayfasını açar
+    /// `gozAtUst`: bölüm sekmeleri (Zaman G5'te yerli)
     private func ust(_ etkin: GaleriUst.Bolum, _ g: GaleriKatalogu, _ il: Ilerleme) -> GaleriUst {
         GaleriUst(etkin: etkin, koleksiyonDolu: !g.koleksiyon(il).isEmpty,
                   ara: { yol.append(.ara) }, koleksiyon: { yol.append(.koleksiyon) }) { b in
@@ -186,7 +184,7 @@ struct GaleriSekmesi: View {
             case .akimlar: if etkin != .akimlar { yol = [] }
             case .basyapitlar: if etkin != .basyapitlar { yol = [.basyapitlar] }
             case .konular: if etkin != .konular { yol = [.konular("")] }
-            case .zaman: siteBolumu = .zaman
+            case .zaman: if etkin != .zaman { yol = [.zaman] }
             }
         }
     }
@@ -246,6 +244,8 @@ struct GaleriSekmesi: View {
             SanatciKarsilastir(a: a, b: b, galeri: g, il: il, eylem: e)
         case .ara:
             AramaSayfasi(galeri: g, il: il, dizin: dizin, sorgu: $sorgu, eylem: e)
+        case .zaman:
+            ZamanEkrani(katalog: g.katalog, ilerleme: il, ust: ust(.zaman, g, il)) { e.git(.sanatci($0)) }
         case .basyapitlar:
             BasyapitListesi(galeri: g, il: il, baglam: basyapitBaglami ?? BasyapitBaglami(), donem: $bsyDonem, eylem: e,
                             ust: ust(.basyapitlar, g, il))
@@ -332,23 +332,6 @@ private struct GaleriGoruntuleyicisi: View {
             if !Task.isCancelled { baglam = yeni }
         }
     }
-}
-
-/// G5 kendi ekranını bağlayana kadar Zaman yayındaki siteden açılır.
-private enum SiteBolumu: String, Identifiable {
-    case zaman
-    var id: String { rawValue }
-    var adres: URL {
-        var bilesenler = URLComponents(url: SiteVerisi.site, resolvingAgainstBaseURL: false)
-        bilesenler?.fragment = "/" + rawValue
-        return bilesenler?.url ?? SiteVerisi.site
-    }
-}
-
-private struct GaleriSiteSayfasi: UIViewControllerRepresentable {
-    let adres: URL
-    func makeUIViewController(context: Context) -> SFSafariViewController { SFSafariViewController(url: adres) }
-    func updateUIViewController(_ denetleyici: SFSafariViewController, context: Context) {}
 }
 
 #if DEBUG

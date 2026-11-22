@@ -40,7 +40,7 @@ struct KartGorunumu: View {
                 SoruIsigi(url: model.gorsel(k.resim.eser, 400))
                 ScrollView {
                     VStack(spacing: 0) {
-                        SoruUstu(baslik: CevapYazilari.kipAdi(tur.kip), sayac: "\(sira) / \(toplam)", kapat: kapat)
+                        SoruUstu(baslik: model.turBasligi ?? CevapYazilari.kipAdi(tur.kip), sayac: "\(sira) / \(toplam)", kapat: kapat)
                         TurCubugu(toplam: toplam, konum: tur.gorunenKonum)
                             .padding(.horizontal, 24).padding(.top, 8)
                         seviyeHaplari

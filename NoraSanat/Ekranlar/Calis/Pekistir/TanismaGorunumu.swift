@@ -29,7 +29,7 @@ struct TanismaGorunumu: View {
             Color(r.zemin).ignoresSafeArea()
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    SoruUstu(baslik: CevapYazilari.kipAdi(tur.kip), sayac: sayac, kapat: kapat)
+                    SoruUstu(baslik: model.turBasligi ?? CevapYazilari.kipAdi(tur.kip), sayac: sayac, kapat: kapat)
                     if let s { kartela(s).padding(.horizontal, 24).padding(.top, 14) }
                     if !eserler.isEmpty { vitrin.padding(.top, 20) }
                     if let s { ipucu(s).padding(.horizontal, 24).padding(.top, 20) }
@@ -55,6 +55,7 @@ struct TanismaGorunumu: View {
     }
 
     private var yazilar: (etiket: String, not: String, ust: String, ana: String) {
+        if konuTanismasi, let ozel = model.tanismaYazilari { return ozel(tur) }
         guard konuTanismasi, let t = tur.tanisma else {
             return ("Yeni sanatçı · önce tanış", "Birazdan bu sanatçının burada görmediğin bir eseri sorulacak.", "Tanıdım", "Soruya geç")
         }

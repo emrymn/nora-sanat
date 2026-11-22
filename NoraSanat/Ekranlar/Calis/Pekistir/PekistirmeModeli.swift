@@ -24,6 +24,16 @@ final class PekistirmeModeli {
     private var sonKapakSanatciId: String?
     private var beklenen: JSONDeger?
 
+    // MARK: G5 · Yolculuk'un bölüm turu
+    /// Sitede bölüm turu da pekiştirme ekranında oynar (`#/pekistir/bolum/…`). Yolculuk bu modeli yalnız çizim için
+    /// kullanır (`TanismaGorunumu`, `KartGorunumu`): eylemler `disEylem`'e gider, Yolculuk kendi kaydını ve sergisini tutar.
+    enum DisEylem { case cevapla(String?), sonraki, tanismaGec, tanismaGeri, baskaEser }
+    var disEylem: ((DisEylem) async -> Void)?
+    /// Tur ekranlarının başlığı (`kipKisa`); verilmezse `CevapYazilari.kipAdi`
+    var turBasligi: String?
+    /// Tanışmanın yazıları (`konuTanismaGoster`'in bölüm dalı); verilmezse konu turununkiler
+    var tanismaYazilari: ((TurKaydi) -> (etiket: String, not: String, ust: String, ana: String))?
+
     var bugun: String { GunTarihi.gun(Date()) }
 
     func yukle() async {
@@ -172,6 +182,7 @@ final class PekistirmeModeli {
     }
 
     func cevapla(_ secim: String?) async {
+        if let disEylem { await disEylem(.cevapla(secim)); return }
         guard let once = kayit, once.kart?.sonuc == nil, once.kart?.tanisma == nil, let katalog else { return }
         let kura = Double.random(in: 0..<1)
         let gun = GunTarihi.gun(Date())
@@ -186,6 +197,7 @@ final class PekistirmeModeli {
     }
 
     func sonraki() async {
+        if let disEylem { await disEylem(.sonraki); return }
         guard let once = kayit, let katalog, once.kart?.sonuc != nil else { return }
         await yaz { il in
             var tur = once
@@ -196,6 +208,7 @@ final class PekistirmeModeli {
 
     /// "Tanıdım · Soruya geç", "Sıradaki sanatçı", "Tura başla"
     func tanismaGec() async {
+        if let disEylem { await disEylem(.tanismaGec); return }
         guard let once = kayit, let katalog else { return }
         await yaz { il in
             var tur = once
@@ -205,6 +218,7 @@ final class PekistirmeModeli {
     }
 
     func tanismaGeri() async {
+        if let disEylem { await disEylem(.tanismaGeri); return }
         guard let once = kayit, let katalog else { return }
         await yaz { il in
             var tur = once
@@ -215,6 +229,7 @@ final class PekistirmeModeli {
 
     /// Soru görseli açılmadı: aynı sanatçının başka eseri (`baskaEser`)
     func baskaEser() async {
+        if let disEylem { await disEylem(.baskaEser); return }
         guard let once = kayit, let katalog, once.kart?.sonuc == nil else { return }
         await yaz { il in
             var tur = once
