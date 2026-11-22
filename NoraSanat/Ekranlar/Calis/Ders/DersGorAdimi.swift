@@ -116,7 +116,7 @@ struct DersGorAdimi: View {
                     .foregroundStyle(s.yazi2)
                 Text(y.baslik)
                     .font(Yazi.serif(28))
-                    .cssSatir(.serif, 28, 30.8)
+                    .dersSatir(.serif, 28, 30.8)
                     .foregroundStyle(s.yazi)
                     .accessibilityAddTraits(.isHeader)
                 GorMetni(metin: y.metin, enCok: ekranBoyu * 0.34)

@@ -59,7 +59,7 @@ struct DersAyirtAdimi: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(DersAdimKurallari.ayirtSorusu(b.akim))
                         .font(Yazi.serif(26))
-                        .cssSatir(.serif, 26, 29.9)
+                        .dersSatir(.serif, 26, 29.9)
                         .foregroundStyle(Color(r.murekkep))
                         .accessibilityAddTraits(.isHeader)
                     Text(DersAdimKurallari.ayirtAltYazisi(c))

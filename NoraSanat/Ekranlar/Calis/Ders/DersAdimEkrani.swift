@@ -81,7 +81,7 @@ struct DersAdimEkrani: View {
                 VStack(spacing: 12) {
                     Text("Gör adımı yakında")
                         .font(Yazi.serif(34, stil: .largeTitle))
-                        .cssSatir(.serif, 34, 37.4)
+                        .dersSatir(.serif, 34, 37.4)
                         .foregroundStyle(Color(r.murekkep))
                     Text("Bu dönemin eserleri için yürüyüş henüz yazılmadı. Ders Öğren adımıyla başlar.")
                         .font(Yazi.okuma(17))
