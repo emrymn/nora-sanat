@@ -24,6 +24,12 @@ public struct GorusAlani: Equatable, Sendable {
     public var ux: Double
     public var uy: Double
     public var w: Double
+
+    public init(ux: Double, uy: Double, w: Double) {
+        self.ux = ux
+        self.uy = uy
+        self.w = w
+    }
 }
 
 /// İki duruş arasındaki yumuşak yol (van Wijk ve Nuij; d3 `interpolateZoom` ile aynı formül)
