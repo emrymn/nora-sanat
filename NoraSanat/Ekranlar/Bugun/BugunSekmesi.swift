@@ -20,7 +20,6 @@ struct BugunSekmesi: View {
   @State private var yukari = false
   @State private var boylar: [Int: Double] = [:]
   @State private var perde = false
-  @State private var izin = false
   @State private var hareketHatasi = false
   @State private var atlama: Int?
   @State private var atlamaIsi: Task<Void, Never>?
@@ -36,7 +35,8 @@ struct BugunSekmesi: View {
   }
   private var durgun: Bool { hareketAz || tema.ayar.hareket == "kapali" }
   private var etkin: Bool { evre == .active && kabuk.secili == .bugun }
-  private var algilama: Bool { etkin && izin && depo.egimAcik && !durgun && acilan == nil }
+  // js/egim.js egimBaslat: izin gerekmiyorsa (yerlide CoreMotion izin istemez) ayar açıkken hemen dinlenir
+  private var algilama: Bool { etkin && depo.egimAcik && !durgun && acilan == nil }
 
   var body: some View {
     Group {
@@ -349,7 +349,6 @@ struct BugunSekmesi: View {
           do {
             _ = try await IlerlemeKoprusu.shared.degistir { $0.ayarla("egim", .mantik(yeni)) }
             depo.egimAcik = yeni
-            izin = yeni
           } catch { hareketHatasi = true }
         }
       } label: {
@@ -360,7 +359,7 @@ struct BugunSekmesi: View {
           .contentShape(Circle())
       }
       .buttonStyle(.plain).disabled(!hareket.varMi)
-      .accessibilityLabel(izin ? "Hareketi kapat" : "Hareketi aç")
+      .accessibilityLabel(algilama ? "Hareketi kapat" : "Hareketi aç")
       .padding(.top, ekranUstu + 66).padding(.trailing, 24)
     }
   }
@@ -434,7 +433,7 @@ struct BugunSekmesi: View {
       Text(metin).font(Yazi.okuma(18)).bugunOkumaSatiri(18, 27).fixedSize(
         horizontal: false, vertical: true)
     }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 20).padding(.top, 18)
-      .padding(.bottom, 20)
+      .padding(.bottom, 20).padding(1)  // border-box: 1 px kenarlık boyuta dahil
       // `.yur-kart`: rgba(24, 22, 20, 0.5) + blur(14px) saturate(1.1), 1 px rgba(235, 229, 218, 0.14) çizgi
       .foregroundStyle(YurRenk.yazi)
       .background {
