@@ -31,6 +31,8 @@ final class CevrimdisiIndirici {
     @ObservationIgnored private var oturum: URLSession!
     @ObservationIgnored private let temsilci = Temsilci()
     @ObservationIgnored private var bekleyen = Set<String>()
+    /// Görev listesi gelmeden sonucu gelenler (arka planda yeniden açılışta)
+    @ObservationIgnored private var erkenBiten = Set<String>()
     @ObservationIgnored private var durdurIstendi = false
     @ObservationIgnored private var kuruldu = false
     @ObservationIgnored var arkaPlanBitti: (() -> Void)?
@@ -66,8 +68,10 @@ final class CevrimdisiIndirici {
         ayar.urlCache = nil
         temsilci.sahip = self
         oturum = URLSession(configuration: ayar, delegate: temsilci, delegateQueue: nil)
-        if let d = UserDefaults.standard.data(forKey: Self.durumAnahtari) {
-            durum = try? JSONDecoder().decode(CevrimdisiDurumu.self, from: d)
+        // Sitede durum yalnız o açılışta durur: biten ya da durdurulan eski parçanın iletisi yeni açılışta görünmez
+        if let d = UserDefaults.standard.data(forKey: Self.durumAnahtari),
+           let x = try? JSONDecoder().decode(CevrimdisiDurumu.self, from: d), x.suruyor || surdur {
+            durum = x
         }
         if liste == nil, let d = try? Data(contentsOf: listeDosyasi) {
             liste = try? JSONDecoder().decode(CevrimdisiListe.self, from: d)
@@ -75,7 +79,8 @@ final class CevrimdisiIndirici {
         oturum.getAllTasks { gorevler in
             let suren = Set(gorevler.filter { $0.state == .running || $0.state == .suspended }.compactMap(\.taskDescription))
             Task { @MainActor in
-                self.bekleyen = suren
+                self.bekleyen = suren.subtracting(self.erkenBiten)
+                self.erkenBiten = []
                 if suren.isEmpty, self.surdur { self.parcaBaslat() }   // kapanmadan önce başlamıştı
                 else if suren.isEmpty, self.durum?.bitti == false { self.parcaBitti() }
             }
@@ -170,11 +175,18 @@ final class CevrimdisiIndirici {
         }
     }
 
-    enum Sonuc: Sendable { case indi, hata, yerYok(String), yazilamadi(String), kesildi }
+    enum Sonuc: Sendable {
+        case indi, hata, yerYok(String), yazilamadi(String), kesildi
+        var inmis: Bool { if case .kesildi = self { return false }; return true }
+    }
 
     /// Bir dosyanın sonucu (temsilciden)
     fileprivate func sonuc(_ adres: String, _ s: Sonuc) {
-        guard bekleyen.remove(adres) != nil, var i = durum, i.suruyor else { return }
+        guard bekleyen.remove(adres) != nil else {
+            if s.inmis { erkenBiten.insert(adres) }
+            return
+        }
+        guard var i = durum, i.suruyor else { return }
         switch s {
         case .kesildi:
             break   // durdurulunca kesilen istek hata da inen de sayılmaz
