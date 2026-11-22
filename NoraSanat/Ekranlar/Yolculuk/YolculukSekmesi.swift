@@ -20,7 +20,15 @@ final class YolculukDeposu {
                 guard dosyalar["harita.json"] != nil else { throw URLError(.cannotDecodeContentData) }
                 katalog = try await k
             }
-            guncelle(try await IlerlemeKoprusu.shared.oku())
+            var il = try await IlerlemeKoprusu.shared.oku()
+            #if DEBUG && targetEnvironment(simulator)
+            if let ad = YolculukProva.ad {
+                if ad == "durak" || YolculukProva.turlar.contains(ad) { YolculukProva.ornek(&il) }
+                guncelle(il)
+                return
+            }
+            #endif
+            guncelle(il)
             let eski = ilerleme?[alan:"haritaGorulen"]?.dizi ?? []
             let yeni = duraklar.filter { $0.acik && !eski.contains(.metin($0.id)) }.map(\.id)
             if !yeni.isEmpty {
@@ -70,16 +78,14 @@ struct YolculukSekmesi: View {
          .background(Color(tema.renkler.zemin)).foregroundStyle(Color(tema.renkler.murekkep))
          .task {
              await depo.yukle()
-             #if DEBUG
-             if depo.ilerleme != nil, NoraSanatApp.arguman("-yolculukSayfa") != nil {
-                 try? Data().write(to:FileManager.default.temporaryDirectory.appendingPathComponent("yolculuk-hazir"))
-             }
+             #if DEBUG && targetEnvironment(simulator)
+             if depo.ilerleme != nil, YolculukProva.ad == "zaman" { YolculukProva.hazir("zaman") }
              #endif
          }
          .onChange(of:kabuk.yerliAdres[.yolculuk],initial:true) { _, adres in
              if let adres { zaman = adres == "#/zaman"; kabuk.adresIslendi(.yolculuk) }
              #if DEBUG
-             if NoraSanatApp.arguman("-yolculukSayfa") == "zaman" { zaman = true }
+             if NoraSanatApp.arguman("-yolculukProva") == "zaman" { zaman = true }
              #endif
          }
          .onChange(of:kabuk.yenidenDokunma[.yolculuk]) { _,_ in zaman = false; yenile += 1 }
@@ -122,6 +128,20 @@ private struct YolculukHaritaEkrani: View {
                 }.defaultScrollAnchor(.bottom)
                  .task {
                      await Task.yield()
+                     #if DEBUG && targetEnvironment(simulator)
+                     if let ad = YolculukProva.ad {
+                         switch ad {
+                         case "harita": YolculukProva.hazir(ad)
+                         case "kurs": kurs = true; YolculukProva.hazir(ad)
+                         case "motif":
+                             if let id = depo.dosyalar["harita.json"]?["bolgeler"]?["ortacag"]?["motifler"]?.dizi?.first?["eser"]?.metin {
+                                 motif = id; YolculukProva.hazir(ad)
+                             }
+                         case "kilit": durak = depo.duraklar.first { !$0.acik }
+                         default: if ad == "durak" || YolculukProva.turlar.contains(ad) { durak = depo.duraklar.first { $0.id == "4-1" } }
+                         }
+                     }
+                     #endif
                      vekil.scrollTo(depo.simdiki?.id ?? "son",anchor:UnitPoint(x:0.5,y:0.55))
                  }
             }
@@ -169,7 +189,7 @@ private struct YolculukHaritaEkrani: View {
                     Text(eser["eser_tr"]?.metin ?? id).font(Yazi.serif(32))
                     Text([eser["sanatci"],eser["yil"],eser["yer"]].compactMap{$0?.metin}.joined(separator:" · ")).font(Yazi.sans(14))
                     Text(eser["hikaye"]?.metin ?? "").font(Yazi.okuma(18))
-                    ForEach(depo.dosyalar["harita_motifler.json"]?["eserler"]?[id]?["hikaye"]?.dizi?.compactMap(\.metin) ?? [],id:\.self) { Text($0).font(Yazi.okuma(18)) }
+                    ForEach(depo.dosyalar["harita_motifler.json"]?["motifler"]?[id]?["hikaye"]?.dizi?.compactMap(\.metin) ?? [],id:\.self) { Text($0).font(Yazi.okuma(18)) }
                 }.padding(24) }.presentationDragIndicator(.visible)
             }
         }

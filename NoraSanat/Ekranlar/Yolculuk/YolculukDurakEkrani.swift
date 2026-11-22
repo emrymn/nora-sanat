@@ -20,7 +20,7 @@ struct YolculukDurakEkrani: View {
     private func gecti(_ ad:String) -> Bool { (kayit?[ad]?.sayi ?? 0) >= 0.75 }
 
     var body: some View {
-        ScrollView {
+        ScrollViewReader { vekil in ScrollView {
             VStack(alignment:.leading,spacing:16) {
                 HStack { Spacer(); Button { kapat() } label: { GaleriIkon(simge:.kapat) }.buttonStyle(YuvarlakDugme()).accessibilityLabel("Kapat") }
                 if let hata {
@@ -30,6 +30,12 @@ struct YolculukDurakEkrani: View {
                 else if il == nil { ProgressView() }
                 else { icerik }
             }.padding(24)
+        }
+        #if DEBUG && targetEnvironment(simulator)
+        .onChange(of:oyun?.tur.bitti) { _,son in
+            if son == true && YolculukProva.ad == "seviye-tamam" { vekil.scrollTo("madalyon",anchor:.top) }
+        }
+        #endif
         }.background(Color(tema.renkler.zemin)).foregroundStyle(Color(tema.renkler.murekkep))
          .disabled(mesgul).task { await yukle() }
     }
@@ -38,7 +44,31 @@ struct YolculukDurakEkrani: View {
         do {
             let ek = await SiteVerisi().veriler(["eser_zorluk.json","tanima_notlari.json"])
             veri = .init(ikonografi:nil,zorluk:ek["eser_zorluk.json"],tanima:ek["tanima_notlari.json"])
-            let gelen = try await IlerlemeKoprusu.shared.oku()
+            var gelen = try await IlerlemeKoprusu.shared.oku()
+            #if DEBUG && targetEnvironment(simulator)
+            if let ad = YolculukProva.ad {
+                if ad != "kilit" { YolculukProva.ornek(&gelen) }
+                if YolculukProva.turlar.contains(ad) {
+                    let grup = ad == "tanisma" || ad == "grup-sonu"
+                    let sv: BolumSeviyesi = grup ? .tanitim(orta:false,grup:0) : .kolay
+                    var o = BolumTuru(durak:durak,seviye:sv,katalog:katalog,veri:veri,il:&gelen)
+                    for _ in 0..<350 {
+                        if o.tur.bitti || (ad == "tanisma" && o.tur.tanismaBekliyor) { break }
+                        if let kart = o.tur.kart, kart.tanisma == nil, !o.tur.tanismaBekliyor {
+                            if ad == "soru" && kart.sonuc == nil { break }
+                            if ad == "cevap" && kart.sonuc != nil { break }
+                            if kart.sonuc == nil {
+                                o.cevapla(kart.ikinci ? katalog.harita[kart.resim.id]?.akim : kart.dogru,katalog:katalog,il:&gelen)
+                                continue
+                            }
+                        }
+                        o.ilerle(katalog:katalog,veri:veri,il:&gelen)
+                    }
+                    oyun = o
+                }
+                il = gelen; YolculukProva.hazir(ad); return
+            }
+            #endif
             il = gelen; beklenen = gelen.ayar(alan)
             if let s = beklenen?.metin { oyun = try JSONDecoder().decode(BolumTuru.self,from:Data(s.utf8)) }
             else { oyun = nil }
@@ -159,6 +189,7 @@ struct YolculukDurakEkrani: View {
                 }.padding(8) }
                 UzakGorsel(url:haritaGorseli("sembol_\(durak.bolge)_\(durak.sembol)_\(tur)"),icerik:.fit)
                     .frame(width:64,height:64).overlay(Circle().stroke(Color(tema.renkler.vurguAcik),lineWidth:2))
+                 .id("madalyon")
                 Text(o.oran >= 0.75 ? "Seviye tamam" : "Az kaldı").font(Yazi.serif(28))
                 yildizlar
                 OranCubugu(oran:o.oran)

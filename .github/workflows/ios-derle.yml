@@ -359,24 +359,37 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-ders-$AD.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-ders-$AD.png" "ekranlar/ders-$AD.png" "ekranlar/ders-yan-yana-$AD.png"
           done
-          # G5: iki açılış da aynı kullanıcı kaydıyla çalışır.
-          for SAYFA in harita zaman; do
-            xcrun simctl terminate "$UDID" "$PAKET" || true
-            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/$SAYFA"
-            sleep 10
-            xcrun simctl io "$UDID" screenshot "ekranlar/site-yolculuk-$SAYFA.png"
-            xcrun simctl terminate "$UDID" "$PAKET"
-            rm -f "$VERI/tmp/yolculuk-hazir"
-            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme yolculuk -adres "#/harita" -yolculukSayfa "$SAYFA"
-            for _ in {1..60}; do
-              test -f "$VERI/tmp/yolculuk-hazir" && break
+          # G5 karşılaştırmaları, solda zorunlu site, sağda yerli ekran.
+          hazir_yolculuk() {
+            for _ in {1..120}; do
+              [ -f "$VERI/tmp/yolculuk-hata" ] && { cat "$VERI/tmp/yolculuk-hata"; return 1; }
+              [ "$(cat "$VERI/tmp/yolculuk-hazir" 2>/dev/null)" = "$1" ] && return 0
               sleep 1
             done
-            test -f "$VERI/tmp/yolculuk-hazir"
-            sleep 4
-            xcrun simctl io "$UDID" screenshot "ekranlar/yerli-yolculuk-$SAYFA.png"
-            "$RUNNER_TEMP/yan-yana" "ekranlar/site-yolculuk-$SAYFA.png" "ekranlar/yerli-yolculuk-$SAYFA.png" "ekranlar/yan-yana-$SAYFA.png"
+            echo "::error::Yolculuk $1 hazır olmadı"
+            return 1
+          }
+          for AD in harita zaman kurs motif kilit durak tanisma soru cevap grup-sonu sergi seviye-tamam; do
+            for TARAF in site yerli; do
+              xcrun simctl terminate "$UDID" "$PAKET" || true
+              rm -f "$VERI/tmp/yolculuk-hazir" "$VERI/tmp/yolculuk-hata"
+              ARGS=(-yerliSekme yolculuk -adres "#/harita")
+              if [ "$TARAF" = site ]; then
+                ADRES="#/harita"
+                [ "$AD" = zaman ] && ADRES="#/zaman"
+                ARGS=(-yalnizSite -adres "$ADRES")
+              fi
+              xcrun simctl launch "$UDID" "$PAKET" "${ARGS[@]}" -yolculukProva "$AD"
+              hazir_yolculuk "$AD"
+              sleep 3
+              xcrun simctl io "$UDID" screenshot "ekranlar/$TARAF-yolculuk-$AD.png"
+            done
+            "$RUNNER_TEMP/yan-yana" "ekranlar/site-yolculuk-$AD.png" "ekranlar/yerli-yolculuk-$AD.png" "ekranlar/yan-yana-yolculuk-$AD.png"
           done
+          xcrun simctl terminate "$UDID" "$PAKET"
+          rm -f "$VERI/tmp/yolculuk-hazir"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/harita" -yolculukProva geri-yukle
+          hazir_yolculuk geri-yukle
           # T5: site hareket izni isteyince iOS penceresi çıkmamalı (uygulama izni kendisi verir)
           xcrun simctl terminate "$UDID" "$PAKET" || true
           VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
