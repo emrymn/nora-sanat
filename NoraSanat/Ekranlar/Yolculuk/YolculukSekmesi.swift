@@ -6,6 +6,16 @@
 import SwiftUI
 import NoraCekirdek
 
+/// T7: Yolculuk yerli sekme (G5 + G5b). DEBUG `-yalnizSite` ile site.
+enum YolculukGecisi {
+    static var sekmeler: Set<Sekme> {
+        #if DEBUG
+        if CommandLine.arguments.contains("-yalnizSite") { return [] }
+        #endif
+        return [.yolculuk]
+    }
+}
+
 @MainActor @Observable
 final class YolculukDeposu {
     let site = SiteVerisi()

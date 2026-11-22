@@ -152,7 +152,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bitti (#22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bitti (#18); görünüş G4b'de |
-| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bekliyor |
+| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bitti (#25) |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bitti (#20): G5a ChatGPT, G5b (görünüş) Claude |
@@ -161,16 +161,18 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
+| T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
+| T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
-- Bugün: G4
-- Yolculuk: G5
+- Bugün: G4 + G4b (görünüş) → **yerli (T7)**
+- Yolculuk: G5 (G5a + G5b) → **yerli (T7)**
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3 → **yerli (T6)**
-- Ben/Ayarlar: C4 + C4b (görünüş)
+- Ben/Ayarlar: C4 + C4b (görünüş) → **yerli (C4b, #13)**
 - Herhangi bir sekme yerli olmadan önce: T4 (yerli sekme çubuğu)
 
 ---
@@ -664,6 +666,21 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 ### G4b · Bugün: görünüş sitedeki gibi
 - Yukarıdaki denetimin farkları. Yöntem G2b gibi: `yan-yana-bugun-*.png` çiftleri birebir olana kadar. `Gecis.swift`'e dokunma; Bugün'ün yerli olması G4b denetiminden sonra Claude'da (K).
 
+**Devir notu:** Claude, 2026-11-22 · [taslak PR #25](https://github.com/emrymn/nora-sanat/pull/25) · dal `claude/g4b-bugun-screen-8zq61x` (oturumun zorunlu dalı). G şeridi işi; kullanıcının isteğiyle Claude yaptı. G4 (#18) main'de olmadığı için dal origin/main + `is/G4-bugun` birleşimi üstünde; #18 birleşince PR farkı yalnız G4b'ye iner.
+- **Kaynak:** sanat-atlasi `a866b86`: `js/yuruyus.js` (`yuruyusBaslat`: `boya`, `kare`, `perdeYaz`), `js/egim.js` (`egimBaslat`, `egimDegeri`), `js/ekranlar/bugun.js` (`ustHtml`, `kapakHtml`, `yuruyusSonu`, `yuruyusKur`), `js/ekranlar/ortak.js` `kunye`, `js/kunye.js` `dinleEkle`, `css/app.css` (`.bugun-ust`, `.bugun-tarih`, `.bugun-ben`, `.yur-sahne::after`, `.yur-bulanik`, `.bugun-yuruyus > .bugun-ust::before`, `.yur-noktalar`, `.yur-kart`, `.yur-hayat`, `.yur-son*`, `.yur-tur*`, `.yur-deste*`, `.yur-karo*`, `.yur-harf`, `.yur-kare*`, `.isim-ek`, `.yur-basa*`, `.bugun-notlar .egim-dugme`). Ölçüler canlı sitenin hesaplanmış stillerinden (Playwright, 393 pt).
+  K7: `git -C /tmp/sa log a866b86..HEAD -- js/yuruyus.js js/egim.js js/ekranlar/bugun.js js/ekranlar/ortak.js js/kunye.js css/app.css`
+- **Kök neden (G4 denetimindeki farkların çoğu):** kaydırma konumu okunmuyordu. İçeriğin arkasındaki `GeometryReader` tercihi kaydırınca güncellenmiyordu; kayma hep 0 kaldı. Bu yüzden kamera ayrıntıya yaklaşmıyor, perde koyulaşmıyor, yürüyüşte sekme çubuğu ve hareket düğmesi duruyordu. Şimdi `BugunKaymaIzi`: iOS 18'de `onScrollGeometryChange`, iOS 17'de içeriğin `.scrollView` uzayındaki yeri (`onGeometryChange`).
+- **Eğim:** sitede eğim izni gerekmiyorsa ayar açıkken hemen dinlenir ve `egimDegeri()` ilk örnekten önce `{0, 0}` döner; resim her yandan 26 px taşar. Yerlide `izin` düğmeye basılana kadar kapalıydı ve ilk jiroskop örneği bekleniyordu; aslan karesindeki ~30 pt dikey fark bu paydan (CI günlüğünde site dönüşümü `perspective … translate3d(-26px, …)`). Artık `algilama` = ayar açık; `BugunHareketi.baslat` değeri hemen `.zero` yapar; simülatörde `varMi` sitenin `egimVar()`ı gibi doğru.
+- **Görünüş:** sahne gradyanı `rgba(18,17,16)` .5/0/0/.8/.96; buğu malzeme + `rgba(18,17,16,.6)`, saydamlığı perde (resmin kendisine `.blur` bantlı ve karanlık çıktı). Üst şerit: tarih 11.5/600 aralık 2.3 `#aca498`, Ben `rgba(18,17,16,.5)`; Hayatı'na inerken arkasında `::before` perdesi (0.92 → 0, ekran üstünden şeridin 40 pt altına). Hareket düğmesi kapakta (kapakla kayar). Yürüyüş noktaları pirinç. Ayrıntı kartı malzeme + `rgba(24,22,20,.5)`, 1 px `rgba(235,229,218,.14)` çizgi (boyuta dahil).
+- **Hayatı ve son** (`BugunHayati.swift`, baştan): h2 34/37.4, metin 19/29.45, kaynak 13/18.2 `--yur-ikincil` (alt 40); künye `BugunTablosu.sonKunye` (yıllar · akım, pirinç, testli); "Resmi gezdin." 40/42; tur kartı (deste 70 × 66, ±8° kartlar `#4e3d2c`/`#6d5236`, sayı kartı `#26221e` + pirinç 1.5, halkalı ok 40); iki karo (harf halkası 52, 2 × 2 kareler 30 × 26, en az 150, eşit boy); Dinle/IPA (Galeri'deki `.isim-ek` gibi); Başa dön halkası 56 + BAŞA DÖN 11/600 aralık 2.2.
+- **Tuzak:** Newsreader'ın iOS'taki doğal satırı ~1.0247 × boyut (ortak `cssSatir`'ın varsaydığı 1.0 değil). Hayatı'nın uzun metninde satır başına +0.47 pt, 20 satırda ~10 pt kayma ölçüldü. Bugün'de yerel `bugunOkumaSatiri` kullanılıyor; ortak `Yazi.Aile.satirOrani` (Ben, T4 dosyası) Z3'te düzeltilmeli (uzun okuma metinlerini etkiler).
+- **CI:** site betiği (`Testler/bugun-site-cekimi.mjs`) Hayatı içindeki gerçek kaydırmayı (`konum`) ve ölçüleri (`H`, alt pay, kart, resim dönüşümü) döndürür; yerli `-bugunKonum` ile aynı yere gider (iOS 18 `ScrollPosition`, yalnız DEBUG), kamera hedefe oturunca `tmp/bugun-durum`'a kayma/adım/çerçeve yazar, günlükte `yerli <bölüm>: …`. Eserler OCR sözcüğü `Izgara` (karonun başlığı sitede de sekme çubuğunun arkasında).
+- **Yan yana** (e415f90, eğimden önce): kapak, iki ayrıntı, Hayatı, eserler, tur aynı düzen, yazı ve renkte; satırlar ±1 pt. Kalan fark aslan karesinde kameranın 26 px payıydı (yukarıda).
+- **Kalan / bilinen:** tur kartındaki parıltı (`yur-parilti`) ve dokunma hareketleri (deste açılır, ok kayar) yok. Hareket düğmesinin basılı/basısız simge tonu yok. Gündüz temasında yürüyüş renkleri sabit koyu (sitede de `.bugun-yuruyus` her temada koyu).
+- **Ortak dosya:** dokunulmadı (`Gecis.swift` dahil). Bugün'ün yerli olması denetimden sonra Claude'da.
+
+**Denetim (G4b):** Claude, 2026-11-22 — **onay** (PR #25 yorumu). CI e415f90 yeşil (eğim payı düzeltmesi 387cf47 sonrası CI birleştirmeden önce); altı yan yana görüntü (kapak, alttaki ve üstteki ayrıntı, Hayatı, eserler, tur) sitedekiyle birebire yakın. G4 squash ile girdiği için main'le çakışma Claude'da çözüldü (taban 0f8bd91; sonuç farkı dalın G4b farkıyla aynı).
+
 ### C4 · Ben (ChatGPT)
 **Site kaynakları:** `js/ekranlar/ilerleme.js`, `js/ekranlar/ayarlar.js`, `js/ekranlar/hizliAyar.js`, `js/kurs.js`, `js/yenilikler.js`, `js/rozet.js`.
 
@@ -917,6 +934,20 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI: sitenin pekiştirme görüntüsü (`10s-site-pekistirme`) artık `-yalnizSite` ile; `4-url-calis` (widget → `norasanat://calis`) yerli Çalış'ı açar.
 
 **Devir notu:** Claude, 2026-11-22. Bağlantılar C2/C3'te hazırdı (`yerliAdres[.calis]`, `yenidenDokunma`, `.sekmeCubuguGizli`); yalnız kayıt ve CI. Yerli olmayan sekmeler: Bugün (G4) ve Yolculuk (G5).
+
+### T7 · Bugün ve Yolculuk yerli sekme (Claude)
+- G4 + G4b ve G5 bitti; `BugunGecisi`, `YolculukGecisi` `Gecis.tasinanlar`'a girer. **Beş sekme de yerli**: site görünmez, yalnız ilerleme köprüsü için arkada (Z2'ye kadar). DEBUG `-yalnizSite` ile site.
+- `SiteRotalari.yerliSekme` (testli): sitede sekmesiz sayfalar da yerli sekmeye gider: `#/pekistir/…` (tur, ders adımları; C3 #24 notu) Çalış'a, `#/karsilastir/…`, `#/akim-karsilastir/…` Galeri'ye. `#/pekistir/bolum/<id>/<seviye>` (Yolculuk bölüm turu) nil. `Gezgin.git` → `yerliyeGit` bunu kullanır: Galeri'deki "Pekiştir" (`#/pekistir/donem/<akım>`) T6'dan beri gizli siteye gidiyordu, artık yerli Çalış'ta turu açar.
+- `SiteRotalari.secim`: sitenin bildirdiği adres öncekiyle aynıysa seçim değişmez. Bugün yerli olunca sitenin açılıştaki "#/" bildirimi widget'la açılmış sekmeyi Bugün'e çeviriyordu.
+
+**Devir notu:** Claude, 2026-11-22. Bilinen: siteden yerli Yolculuk'a gelen adres yalnız haritayı açar (durak/bölüm adresle açılmaz).
+
+### T8 · CI'ı paralel makinelere böl (Claude)
+- Ekran görüntüsü adımı tek simülatörde sırayla ~55 dk (102 görüntü; G5 ile ~70, sınır 75). Uygulama bir kez derlenir (artifact), Ben / Galeri / Çalış+dersler / Bugün / Yolculuk / genel kontroller ayrı macOS işlerinde aynı anda çekilir. Depo açık: macOS dakikası ücretsiz.
+- `derle` işi: kâhinler, paket testleri, derleme, uygulamanın içi; `.app` → `uygulama` arşivi. `ekran` matrisi (`galeri-1`, `galeri-2`, `calis`, `yolculuk`, `genel`, `ben`, `bugun`; uzunlar önce) her biri kendi simülatöründe `Testler/ci/ekran.sh <grup>`; görüntüler `ekranlar-<grup>` arşivinde (adlar eskisi gibi).
+- Her grup temiz simülatörle başlar: ilk açılış, sonra (Ben, Galeri, Çalış, Yolculuk) T2'nin deneme ilerlemesi. Yeni ekran adımı eklerken ilgili grubun işlevine yaz; widget adresi (`4-url-calis`) `genel`in sonunda kalmalı.
+- PR'ların CI'ını beklerken tek bir "derle" yerine bütün kontrol koşularına bak (8 iş).
+- İlk koşu (c14c543): derle 3 dk; gruplar 10–23 dk; hesapta aynı anda çalışan macOS işi sınırlı (başka PR'ların CI'ıyla paylaşılıyor), bu yüzden toplam 51 dk. Galeri (23 dk) ikiye bölündü.
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**

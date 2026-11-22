@@ -11,9 +11,11 @@ import SwiftUI
 /// - Bir sekmenin bütün işleri bitince (Sekmeler ne zaman yerli olur: ISLER.md) adı `tasinanlar`'a eklenir. Ekranı
 ///   `NoraSanat/Ekranlar/<Sekme>/<Sekme>Sekmesi.swift`'tedir.
 enum Gecis {
-    /// Swift'e taşınmış sekmeler. Ben: C4 + C4b; Galeri: G1 + G2 + G2b + G3; Çalış: C1 + C2 + C3 (T6). DEBUG `-yalnizSite`
-    /// ile site; bkz. `BenGecisi`, `GaleriGecisi`, `CalisGecisi`.
+    /// Swift'e taşınmış sekmeler. Ben: C4 + C4b; Galeri: G1 + G2 + G2b + G3; Çalış: C1 + C2 + C3 (T6);
+    /// Bugün: G4 + G4b, Yolculuk: G5 + G5b (T7). Hepsi yerli: site artık görünmez (yalnız ilerleme köprüsü, Z2'ye kadar).
+    /// DEBUG `-yalnizSite` ile site; bkz. `BenGecisi`, `GaleriGecisi`, `CalisGecisi`, `BugunGecisi`, `YolculukGecisi`.
     static let tasinanlar: Set<Sekme> = BenGecisi.sekmeler.union(GaleriGecisi.sekmeler).union(CalisGecisi.sekmeler)
+        .union(BugunGecisi.sekmeler).union(YolculukGecisi.sekmeler)
 
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
     static let yerliSekmeler: Set<Sekme> = {
@@ -89,14 +91,14 @@ final class KabukDurumu {
     func siteAdresiGeldi(_ adres: String) {
         let onceki = siteAdresi
         siteAdresi = SiteRotalari.hash(adres)
-        if let s = SiteRotalari.sekme(siteAdresi), Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
+        if siteAdresi != onceki, let s = SiteRotalari.yerliSekme(siteAdresi), Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
         if let s = SiteRotalari.secim(onceki: onceki, yeni: siteAdresi, secili: secili, yerli: Gecis.yerli) { secili = s }
         rozetiYenile()   // sitenin rozeti de her sayfa çiziminde yenilenir (sekmeleriCiz)
     }
 
     /// Widget, bildirim, `-adres`: hedef yerli bir sekmedeyse orada açılır (true); değilse site gider (false)
     func yerliyeGit(_ adres: String) -> Bool {
-        guard let s = SiteRotalari.sekme(adres), Gecis.yerli(s) else { return false }
+        guard let s = SiteRotalari.yerliSekme(adres), Gecis.yerli(s) else { return false }
         yerliAdres[s] = SiteRotalari.hash(adres)
         secili = s
         return true
