@@ -90,7 +90,14 @@ final class BugunDeposu {
 final class BugunHareketi {
   private let aygit = CMMotionManager()
   var deger: CGPoint?
-  var varMi: Bool { aygit.isGyroAvailable }
+  /// Sitedeki `egimVar()` gibi: simülatörde de eğim "var" (WKWebView orada da devicemotion verir; CI site ile aynı kalsın)
+  var varMi: Bool {
+    #if targetEnvironment(simulator)
+      true
+    #else
+      aygit.isGyroAvailable
+    #endif
+  }
 
   func durdur() {
     aygit.stopGyroUpdates()
@@ -98,7 +105,9 @@ final class BugunHareketi {
   }
 
   func baslat() {
-    guard varMi, !aygit.isGyroActive else { return }
+    // js/egim.js egimDegeri: dinleme başlayınca değer hemen {0, 0}; resim her yandan 26 px taşar (ilk örneği beklemez)
+    if deger == nil { deger = .zero }
+    guard aygit.isGyroAvailable, !aygit.isGyroActive else { return }
     var iz = YuruyusEgimi()
     var son: TimeInterval?
     aygit.gyroUpdateInterval = 1 / 30
