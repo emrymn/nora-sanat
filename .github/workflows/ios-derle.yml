@@ -232,7 +232,6 @@ jobs:
           # G2 + G2b: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
           # AD|adres|bölüm: -galeriKaydir aynı bölüme kaydırır (dizin: "Bütün akımlar" açık). Yerli Galeri hazır olunca
           # (veri ve görseller yüklendi, istendiyse kaydı) tmp/galeri-hazir yazar; ana ekranda OCR "Salona gir"i arar.
-          if [ "${{ github.head_ref }}" != "is/C2-calis" ]; then
           for IS in \
             "ana|#/gozat|" "ana-dizin|#/gozat|dizin" \
             "akim|#/akim/Gotik|" "akim-eserler|#/akim/Gotik|eserler" "akim-pekistir|#/akim/Gotik|pekistir" \
@@ -261,7 +260,6 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-galeri-$AD.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-galeri-$AD.png" "ekranlar/galeri-$AD.png" "ekranlar/galeri-yan-yana-$AD.png"
           done
-          fi
           # C2: Çalış ana ekranı (#/pekistir, #/calis) ve Turlar (#/pekistir/donem): yerli ekran ile sitenin yan yana görünümü
           for IS in calis: calis:turlar calis:yuk donem: donem:salon; do
             SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
@@ -287,7 +285,7 @@ jobs:
             sleep 3
             xcrun simctl io "$UDID" screenshot "ekranlar/$AD.png"
             if [ "$SAYFA" = calis ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Bugünün dersi"; fi
-            if [ "$SAYFA" = donem ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Turlar"; fi
+            if [ "$SAYFA" = donem ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Turu başlat"; fi
             # Site: -yalnizSite ile aynı adres
             xcrun simctl terminate "$UDID" "$PAKET"
             xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "$ADRES"
@@ -295,6 +293,20 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-calis-$SAYFA${BOLUM:+-$BOLUM}.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-calis-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-calis-$SAYFA${BOLUM:+-$BOLUM}.png"
           done
+          # T5: site hareket izni isteyince iOS penceresi çıkmamalı (uygulama izni kendisi verir)
+          xcrun simctl terminate "$UDID" "$PAKET" || true
+          VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+          rm -f "$VERI/tmp/hareket-izni"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -hareketIzniDene
+          for _ in {1..60}; do
+            test -f "$VERI/tmp/hareket-izni" && break
+            sleep 1
+          done
+          sleep 2
+          xcrun simctl io "$UDID" screenshot ekranlar/t5-hareket-izni.png
+          echo "hareket izni: $(cat "$VERI/tmp/hareket-izni" 2>/dev/null || echo yok)"
+          test "$(cat "$VERI/tmp/hareket-izni")" = granted
+          if "$RUNNER_TEMP/ben-ekran" ekranlar/t5-hareket-izni.png "Erişmek"; then echo "izin penceresi çıktı"; exit 1; fi
           # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
           # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
           xcrun simctl terminate "$UDID" "$PAKET"
