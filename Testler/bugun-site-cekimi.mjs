@@ -11,12 +11,16 @@ const socketPath = await simulator.getWebInspectorSocket();
 if (!socketPath) throw Error('Simülatörde Web Inspector bulunamadı.');
 const platformVersion = execFileSync('xcrun', ['simctl','getenv',udid,'SIMULATOR_RUNTIME_VERSION'], {encoding:'utf8'}).trim();
 if (!platformVersion) throw Error('Simülatörün iOS sürümü okunamadı.');
-const web = new RemoteDebugger({ bundleId: bundle, socketPath, platformVersion });
+const web = new RemoteDebugger({ bundleId: bundle, socketPath, platformVersion, logFullResponse: false });
 
 async function beklenen(oku, ad) {
   for (let i = 0; i < 40; i++) {
-    const sonuc = await oku();
-    if (sonuc) return sonuc;
+    try {
+      const sonuc = await oku();
+      if (sonuc) return sonuc;
+    } catch (hata) {
+      if (i === 39) throw hata;
+    }
     await bekle(750);
   }
   throw Error(ad + ' hazır olmadı');
