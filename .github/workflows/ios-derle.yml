@@ -15,7 +15,7 @@ concurrency:
 jobs:
   derle:
     runs-on: macos-15
-    timeout-minutes: 40
+    timeout-minutes: 75   # her yerli ekranın site ile yan yana görüntüsü (Ben, Galeri, Çalış, Bugün…) süreyi uzatıyor
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +32,13 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/galeri-kahin" --no-audit --no-fund playwright@1.56.1
           NODE_PATH="$RUNNER_TEMP/galeri-kahin/node_modules" GALERI_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/galeri.mjs > "$RUNNER_TEMP/galeri.json"
           node -e "require('node:assert/strict').deepEqual(require(process.argv[1]), require(process.argv[2]))" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/galeri/cevaplar.json" "$RUNNER_TEMP/galeri.json"
+
+      - name: Çalış kâhinini canlı sitenin modülleriyle karşılaştır
+        if: github.head_ref == 'is/C2-calis' || github.event_name == 'workflow_dispatch'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/calis-kahin" --no-audit --no-fund playwright@1.56.1
+          NODE_PATH="$RUNNER_TEMP/calis-kahin/node_modules" CALIS_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node Testler/kahin/calis.mjs > "$RUNNER_TEMP/calis-cevaplar.json"
+          node -e "const assert = require('node:assert/strict'); const yuvarla = (v) => typeof v === 'number' && !Number.isInteger(v) ? Number(v.toFixed(11)) : Array.isArray(v) ? v.map(yuvarla) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, yuvarla(x)])) : v; assert.deepEqual(yuvarla(require(process.argv[1])), yuvarla(require(process.argv[2])));" "./Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/calis/cevaplar.json" "$RUNNER_TEMP/calis-cevaplar.json"
 
       - name: Xcode sürümü
         run: xcodebuild -version
@@ -117,9 +124,10 @@ jobs:
           xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8-yerli-sekme.png
-          # T4: aynı adreste sitenin kendi çubuğu (8 ile yan yana: çubuk aynı yerde, aynı görünüşte olmalı)
+          # T4: aynı adreste sitenin kendi çubuğu (8 ile yan yana: çubuk aynı yerde, aynı görünüşte olmalı).
+          # G3'ten beri Galeri yerli: sitenin Galeri'si yalnız -yalnizSite ile görünür.
           xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET" -adres "#/gozat"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/gozat"
           sleep 15
           xcrun simctl io "$UDID" screenshot ekranlar/8b-site-cubuk.png
           # T4: yerli çubuğun hızlı ayarlar yaprağı (sitedeki dişli dil)
@@ -243,7 +251,7 @@ jobs:
           ls -la "$VERI/Library/Application Support/CevrimdisiGorseller" || true
           test "$INEN" -ge 2
           "$RUNNER_TEMP/ben-ekran" ekranlar/c5-cevrimdisi-indi.png "bitti"
-          # G2 + G2b: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
+          # G2 + G2b + G3: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
           # AD|adres|bölüm: -galeriKaydir aynı bölüme kaydırır (dizin: "Bütün akımlar" açık). Yerli Galeri hazır olunca
           # (veri ve görseller yüklendi, istendiyse kaydı) tmp/galeri-hazir yazar; ana ekranda OCR "Salona gir"i arar.
           for IS in \
@@ -252,7 +260,11 @@ jobs:
             "sanatci|#/sanatci/giotto-di-bondone|" "eserler|#/sanatci/giotto-di-bondone/eserler|" \
             "konular|#/konular|" "konu|#/konu/annunciation|" "ara|#/ara|" "koleksiyon|#/koleksiyon|" \
             "karsilastir|#/karsilastir/giotto-di-bondone/duccio-di-buoninsegna|" \
-            "akim-karsilastir|#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans|"; do
+            "akim-karsilastir|#/akim-karsilastir/Gotik/Erken%20R%C3%B6nesans|" \
+            "basyapitlar|#/basyapitlar|" "basyapitlar-serit|#/basyapitlar|serit" "basyapitlar-donem|#/basyapitlar|donem" \
+            "okuma|#/basyapit/Q1212937|" "okuma-ayrinti|#/basyapit/Q1212937|okuma-ayrinti" \
+            "okuma-derin|#/basyapit/Q1212937/ders|okuma-derin" "okuma-son|#/basyapit/Q1212937|okuma-son" \
+            "yan-yana|#/basyapit/Q979440|yanyana"; do
             AD="${IS%%|*}"; KALAN="${IS#*|}"; ADRES="${KALAN%%|*}"; BOLUM="${KALAN#*|}"
             KAYDIR=()
             if [ -n "$BOLUM" ]; then KAYDIR=(-galeriKaydir "$BOLUM"); fi
@@ -273,6 +285,39 @@ jobs:
             sleep 22
             xcrun simctl io "$UDID" screenshot "ekranlar/site-galeri-$AD.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-galeri-$AD.png" "ekranlar/galeri-$AD.png" "ekranlar/galeri-yan-yana-$AD.png"
+          done
+          # C2: Çalış ana ekranı (#/pekistir, #/calis) ve Turlar (#/pekistir/donem): yerli ekran ile sitenin yan yana görünümü
+          for IS in calis: calis:turlar calis:yuk donem: donem:salon; do
+            SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
+            AD="calis-$SAYFA${BOLUM:+-$BOLUM}"
+            ADRES="#/pekistir"
+            ARGS=(-yerliSekme calis,ben -adres "#/pekistir")
+            if [ "$SAYFA" = donem ]; then
+              ADRES="#/pekistir/donem"
+              ARGS=(-yerliSekme calis,ben -adres "#/pekistir/donem" -calisSayfa donem)
+            fi
+            if [ -n "$BOLUM" ]; then
+              ARGS+=("-calisKaydir" "$BOLUM")
+            fi
+            xcrun simctl terminate "$UDID" "$PAKET"
+            VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+            rm -f "$VERI/tmp/calis-hazir"
+            xcrun simctl launch "$UDID" "$PAKET" "${ARGS[@]}"
+            for _ in {1..90}; do
+              test -f "$VERI/tmp/calis-hazir" && break
+              sleep 1
+            done
+            test -f "$VERI/tmp/calis-hazir"
+            sleep 3
+            xcrun simctl io "$UDID" screenshot "ekranlar/$AD.png"
+            if [ "$SAYFA" = calis ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Bugünün dersi"; fi
+            if [ "$SAYFA" = donem ] && [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Turu başlat"; fi
+            # Site: -yalnizSite ile aynı adres
+            xcrun simctl terminate "$UDID" "$PAKET"
+            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "$ADRES"
+            sleep 22
+            xcrun simctl io "$UDID" screenshot "ekranlar/site-calis-$SAYFA${BOLUM:+-$BOLUM}.png"
+            "$RUNNER_TEMP/yan-yana" "ekranlar/site-calis-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-calis-$SAYFA${BOLUM:+-$BOLUM}.png"
           done
           # T5: site hareket izni isteyince iOS penceresi çıkmamalı (uygulama izni kendisi verir)
           xcrun simctl terminate "$UDID" "$PAKET" || true

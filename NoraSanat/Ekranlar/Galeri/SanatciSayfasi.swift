@@ -84,13 +84,13 @@ struct SanatciSayfasi: View {
                     }
                 }
                 // `basyapitBaglariniDoldur`: "Yakın okuma"
-                let okumalar = galeri.basyapitlar.filter { $0["sanatci"]?.metin == s.id }
+                let okumalar = BasyapitKurallari.sanatcinin(galeri.basyapitlar, s.id)
                 if !okumalar.isEmpty {
                     GaleriBolum(etiket: "Yakın okuma") {
                         VStack(spacing: 0) {
-                            ForEach(Array(okumalar.enumerated()), id: \.offset) { _, b in
-                                GaleriSatir(ad: b["baslik"]?.metin ?? "", alt: b["ozet"]?.metin ?? "", kareVar: false) {
-                                    eylem.git(.okuma(b["anahtar"]?.metin ?? ""))
+                            ForEach(okumalar) { b in
+                                GaleriSatir(ad: b.baslik, alt: b.ozet, kareVar: false) {
+                                    eylem.git(.okuma(b.anahtar))
                                 }
                             }
                         }
