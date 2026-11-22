@@ -15,7 +15,7 @@ concurrency:
 jobs:
   derle:
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 75   # her yerli ekranın site ile yan yana görüntüsü (Ben, Galeri, Çalış, Bugün…) süreyi uzatıyor
     steps:
       - uses: actions/checkout@v4
 
