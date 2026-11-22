@@ -31,8 +31,14 @@ final class BugunDeposu {
       guard let katalog = b.katalog else { throw URLError(.notConnectedToInternet) }
       let ilerleme = await kayitOku
       let veriler = await dosyalar
+      var degisim = ilerleme?[alan: "gununDegisim"]
+      #if DEBUG
+        if NoraSanatApp.arguman("-bugunKaydir") != nil, let id = NoraSanatApp.arguman("-bugunSanatci") {
+          degisim = .nesne([("tarih", .metin(tarih)), ("id", .metin(id))])
+        }
+      #endif
       let s = try BugunTablosu(
-        tarih: tarih, degisim: ilerleme?[alan: "gununDegisim"],
+        tarih: tarih, degisim: degisim,
         veriler: veriler, katalog: katalog)
       let ayar =
         try? await kopru.benBetigi(

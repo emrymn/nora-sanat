@@ -50,11 +50,11 @@ struct BugunHayati: View {
         }.padding(16).frame(minHeight: 104)
           .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 22))
           .overlay(RoundedRectangle(cornerRadius: 22).stroke(.white.opacity(0.28)))
-      }
+      }.id("tur")
       HStack(spacing: 12) {
         karo(s.ad.son, "Sanatçı sayfası", "#/sanatci/" + s.tablo.sanatciId)
         karo("Bütün eserleri", "Izgara, tam ekran", "#/sanatci/" + s.tablo.sanatciId + "/eserler")
-      }
+      }.id("eserler")
       if let kunye {
         HStack {
           Button { dinle(kunye) } label: {

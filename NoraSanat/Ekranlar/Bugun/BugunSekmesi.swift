@@ -207,9 +207,31 @@ struct BugunSekmesi: View {
         }
         kabuk.adresIslendi(.bugun)
       }
+      #if DEBUG
+      .task(id: boylar) {
+        guard let bolum = NoraSanatApp.arguman("-bugunKaydir"), boylar.count >= son else { return }
+        do {
+          try await Task.sleep(for: .milliseconds(400))
+          switch bolum {
+          case "ayrinti-alt", "ayrinti-ust":
+            guard let n = Int(NoraSanatApp.arguman("-bugunAdim") ?? ""),
+                  s.kayit.noktalar.indices.contains(n - 2),
+                  adimlar[n].kartUstte == (bolum == "ayrinti-ust") else { return }
+            kaydir.scrollTo(n, anchor: .top)
+          case "hayati": kaydir.scrollTo("hayat", anchor: .top)
+          case "eserler": kaydir.scrollTo("eserler", anchor: .center)
+          case "tur": kaydir.scrollTo("tur", anchor: UnitPoint(x: 0.5, y: 0.85))
+          default: return
+          }
+          try await Task.sleep(for: .seconds(4))
+          try Data(bolum.utf8).write(to: FileManager.default.temporaryDirectory
+            .appendingPathComponent("bugun-hazir"), options: .atomic)
+        } catch {}
+      }
+      #endif
       .onAppear {
         #if DEBUG
-          if CommandLine.arguments.contains("-bugunKarsilastir") {
+          if CommandLine.arguments.contains("-bugunKarsilastir"), NoraSanatApp.arguman("-bugunKaydir") == nil {
             try? Data(s.tablo.sanatciId.utf8).write(
               to: FileManager.default.temporaryDirectory.appendingPathComponent("bugun-hazir"),
               options: .atomic)

@@ -15,7 +15,7 @@ concurrency:
 jobs:
   derle:
     runs-on: macos-15
-    timeout-minutes: 40
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
 
@@ -226,14 +226,26 @@ jobs:
             done
           done
           "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
-          # Taslak denetiminde arşivin tamamını indirmeden karşılaştırmayı okuyabilmek için küçük önizleme.
-          if [ "$GITHUB_HEAD_REF" = "is/G4-bugun" ]; then
-            sips -s format jpeg -s formatOptions 65 --resampleWidth 720 ekranlar/yan-yana-bugun.png --out "$RUNNER_TEMP/bugun-onizleme.jpg" >/dev/null
-            echo '::group::G4 karşılaştırma önizlemesi (JPEG)'
-            base64 -i "$RUNNER_TEMP/bugun-onizleme.jpg" | fold -w 1024 | sed 's/^/G4-JPEG /'
-            echo
-            echo '::endgroup::'
-          fi
+          # Denetim: aynı sanatçı, aynı gerçek ayrıntı, iki kart konumu ve yürüyüş sonu.
+          npm install --prefix "$RUNNER_TEMP/bugun-cekimi" --no-audit --no-fund appium-remote-debugger@17.4.3 appium-ios-simulator@10.3.0
+          cp Testler/bugun-site-cekimi.mjs "$RUNNER_TEMP/bugun-cekimi/"
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/"
+          node "$RUNNER_TEMP/bugun-cekimi/bugun-site-cekimi.mjs" "$UDID" "$PAKET" "$RUNNER_TEMP/bugun-bolumleri"
+          while IFS='|' read -r BOLUM SANATCI ADIM SOZ; do
+            xcrun simctl terminate "$UDID" "$PAKET"
+            rm -f "$VERI/tmp/bugun-hazir"
+            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme bugun -adres "#/" -bugunKaydir "$BOLUM" -bugunSanatci "$SANATCI" -bugunAdim "$ADIM"
+            for _ in {1..60}; do
+              test -s "$VERI/tmp/bugun-hazir" && break
+              sleep 1
+            done
+            test "$(cat "$VERI/tmp/bugun-hazir")" = "$BOLUM"
+            xcrun simctl io "$UDID" screenshot "ekranlar/bugun-yerli-$BOLUM.png"
+            # OCR bazı Türkçe harfleri düz Latin harflerine çevirir.
+            "$RUNNER_TEMP/ben-ekran" "ekranlar/bugun-yerli-$BOLUM.png" "${SOZ%% *}"
+            "$RUNNER_TEMP/yan-yana" "ekranlar/bugun-site-$BOLUM.png" "ekranlar/bugun-yerli-$BOLUM.png" "ekranlar/yan-yana-bugun-$BOLUM.png"
+          done < "$RUNNER_TEMP/bugun-bolumleri"
           for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek; do
             SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
             AD="ben-$SAYFA${BOLUM:+-$BOLUM}"
