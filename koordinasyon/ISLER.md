@@ -163,7 +163,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
 | T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
-| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
+| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | sürüyor: Z2a bitti (#30), Z2b PR açık |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Z3b | Ders ve yazı cilası | C | C3 | 1 | PR açık (#29) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
@@ -957,7 +957,17 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - `TekrarKoprusu`'nun işi `Hatirlatici`'ye geçer: sayılar doğrudan Swift'ten hesaplanır.
 - App-Bound Domains kaldırılır.
 
-**Devir notu:** –
+**Plan (kullanıcı onayladı, 2026-11-22):** üç PR.
+- **Z2a · kurallar** (uygulama değişmez): `IlerlemeKurallari` (js/depo.js doğrulama, varsayılan, yedek metni/çözümü, günlük, son çalışılanlar, yedek hatırlatması, en yeni kayıt, geliştirici modu) ve `IlerlemeDosyasi` (Application Support'ta `ilerleme.json` + `onceki.json`, artan `kayitNo`, çakışma, bozuk kaydı saklama, okunamazsa kilit).
+- **Z2b · geçiş**: ilk açılışta site ilerlemesi bir kez okunup Swift dosyasına yazılır (site verisi silinmez). `IlerlemeKoprusu` aynı arayüzle dosyaya döner; Ben'in site betikleri (yedek, geri yükleme, ayar bilgisi, hareket izni…), rozet, tema/hareket ayarları ve `TekrarKoprusu` sayıları Swift'ten. Site yalnız taşıma için yüklenir.
+- **Z2c · temizlik**: `WebKabugu`, köprüler, App-Bound Domains kalkar; site yalnız DEBUG `-yalnizSite` ile (CI karşılaştırmaları).
+- Kullanıcı Z2b'yi yüklemeden önce Ben → Ayarlar → Yedekle ile yedek alır; yükledikten sonra işlenen konular, tekrar sayısı ve yarım turun aynı olduğuna bakar.
+
+**Z2a devir notu:** Claude, 2026-11-22.
+- `NoraCekirdek/Ilerleme/IlerlemeKurallari.swift`: kurallar JSONDeger üzerinde, sitenin alt doğrulamaları dahil (karisanlar, seviyeler + birleşen akımlar, dersler, geçmiş, koleksiyon, harita görülenleri, bölümler, bildirimler). JS ayrıntıları birebir: `parseInt`, doğruluk, `{...x}` yayılımı (dizi/metin), `Math.round`, UTF-16 sıralama ve uzunluk. Bilinmeyen üst düzey alanlar sitedeki gibi atılır (Swift'e özel her şey `ayarlar` içinde durmalı: ör. `calis.tur`).
+- Kâhin `Testler/kahin/depo.mjs` (Node, tarayıcısız): 413 doğrulama vakası (96'sı sitenin hata metniyle), 25 yedek metni, 15 çözüm, 57 küçük kural, 20 en yeni kayıt, 12 geliştirici aç/kapat. Hepsi aynı.
+- Tuzak: sitenin doğrulaması tam sabit değil (`derslerDogrula` günü olup ilerlemesi 0 olan adımı ilk geçişte `{i:0}` bırakır, ikincide siler); test "iki geçişten sonra sabit".
+- `IlerlemeDosyasi` testleri: yaz/oku, önceki kopya, çakışma, bozuk ana kayıttan öncekine dönüş (bozuk dosya saklanır), hiçbir kopya okunamazsa kilit.
 
 ### Z3 · Cila + yetişme (Claude)
 **Kapsam:**
