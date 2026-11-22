@@ -160,6 +160,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
+| T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
+| T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Z3b | Ders ve yazı cilası | C | C3 | 1 | PR açık (#29) |
@@ -167,10 +169,10 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
-- Bugün: G4
-- Yolculuk: G5
+- Bugün: G4 + G4b (görünüş) → **yerli (T7)**
+- Yolculuk: G5 (G5a + G5b) → **yerli (T7)**
 - Çalış: C1 (C1a, C1b, C1c) + C2 + C3 → **yerli (T6)**
-- Ben/Ayarlar: C4 + C4b (görünüş)
+- Ben/Ayarlar: C4 + C4b (görünüş) → **yerli (C4b, #13)**
 - Herhangi bir sekme yerli olmadan önce: T4 (yerli sekme çubuğu)
 
 ---
@@ -923,6 +925,20 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI: sitenin pekiştirme görüntüsü (`10s-site-pekistirme`) artık `-yalnizSite` ile; `4-url-calis` (widget → `norasanat://calis`) yerli Çalış'ı açar.
 
 **Devir notu:** Claude, 2026-11-22. Bağlantılar C2/C3'te hazırdı (`yerliAdres[.calis]`, `yenidenDokunma`, `.sekmeCubuguGizli`); yalnız kayıt ve CI. Yerli olmayan sekmeler: Bugün (G4) ve Yolculuk (G5).
+
+### T7 · Bugün ve Yolculuk yerli sekme (Claude)
+- G4 + G4b ve G5 bitti; `BugunGecisi`, `YolculukGecisi` `Gecis.tasinanlar`'a girer. **Beş sekme de yerli**: site görünmez, yalnız ilerleme köprüsü için arkada (Z2'ye kadar). DEBUG `-yalnizSite` ile site.
+- `SiteRotalari.yerliSekme` (testli): sitede sekmesiz sayfalar da yerli sekmeye gider: `#/pekistir/…` (tur, ders adımları; C3 #24 notu) Çalış'a, `#/karsilastir/…`, `#/akim-karsilastir/…` Galeri'ye. `#/pekistir/bolum/<id>/<seviye>` (Yolculuk bölüm turu) nil. `Gezgin.git` → `yerliyeGit` bunu kullanır: Galeri'deki "Pekiştir" (`#/pekistir/donem/<akım>`) T6'dan beri gizli siteye gidiyordu, artık yerli Çalış'ta turu açar.
+- `SiteRotalari.secim`: sitenin bildirdiği adres öncekiyle aynıysa seçim değişmez. Bugün yerli olunca sitenin açılıştaki "#/" bildirimi widget'la açılmış sekmeyi Bugün'e çeviriyordu.
+
+**Devir notu:** Claude, 2026-11-22. Bilinen: siteden yerli Yolculuk'a gelen adres yalnız haritayı açar (durak/bölüm adresle açılmaz).
+
+### T8 · CI'ı paralel makinelere böl (Claude)
+- Ekran görüntüsü adımı tek simülatörde sırayla ~55 dk (102 görüntü; G5 ile ~70, sınır 75). Uygulama bir kez derlenir (artifact), Ben / Galeri / Çalış+dersler / Bugün / Yolculuk / genel kontroller ayrı macOS işlerinde aynı anda çekilir. Depo açık: macOS dakikası ücretsiz.
+- `derle` işi: kâhinler, paket testleri, derleme, uygulamanın içi; `.app` → `uygulama` arşivi. `ekran` matrisi (`galeri-1`, `galeri-2`, `calis`, `yolculuk`, `genel`, `ben`, `bugun`; uzunlar önce) her biri kendi simülatöründe `Testler/ci/ekran.sh <grup>`; görüntüler `ekranlar-<grup>` arşivinde (adlar eskisi gibi).
+- Her grup temiz simülatörle başlar: ilk açılış, sonra (Ben, Galeri, Çalış, Yolculuk) T2'nin deneme ilerlemesi. Yeni ekran adımı eklerken ilgili grubun işlevine yaz; widget adresi (`4-url-calis`) `genel`in sonunda kalmalı.
+- PR'ların CI'ını beklerken tek bir "derle" yerine bütün kontrol koşularına bak (8 iş).
+- İlk koşu (c14c543): derle 3 dk; gruplar 10–23 dk; hesapta aynı anda çalışan macOS işi sınırlı (başka PR'ların CI'ıyla paylaşılıyor), bu yüzden toplam 51 dk. Galeri (23 dk) ikiye bölündü.
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**
