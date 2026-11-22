@@ -468,14 +468,6 @@ jobs:
           echo "hareket izni: $(cat "$VERI/tmp/hareket-izni" 2>/dev/null || echo yok)"
           test "$(cat "$VERI/tmp/hareket-izni")" = granted
           if "$RUNNER_TEMP/ben-ekran" ekranlar/t5-hareket-izni.png "Erişmek"; then echo "izin penceresi çıktı"; exit 1; fi
-          # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
-          # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
-          xcrun simctl terminate "$UDID" "$PAKET"
-          xcrun simctl launch "$UDID" "$PAKET"
-          sleep 10
-          xcrun simctl openurl "$UDID" "norasanat://calis"
-          sleep 6
-          xcrun simctl io "$UDID" screenshot ekranlar/4-url-calis.png
           # T7: beş sekme yerli. Açılışta Çalış istenince site arkada "#/" bildirse de Bugün'e atlamamalı.
           xcrun simctl terminate "$UDID" "$PAKET"
           xcrun simctl launch "$UDID" "$PAKET" -adres "#/pekistir"
@@ -488,6 +480,14 @@ jobs:
           sleep 20
           xcrun simctl io "$UDID" screenshot ekranlar/t7-yolculuk.png
           "$RUNNER_TEMP/ben-ekran" ekranlar/t7-yolculuk.png "konu"
+          # Widget'a dokunma: norasanat://… uygulamayı açmalı. HEP EN SONDA KALSIN: simülatörün "Open in…" onay
+          # penceresi kapanmadan ekranda kalır ve sonraki ekran görüntülerinin üstüne biner.
+          xcrun simctl terminate "$UDID" "$PAKET"
+          xcrun simctl launch "$UDID" "$PAKET"
+          sleep 10
+          xcrun simctl openurl "$UDID" "norasanat://calis"
+          sleep 6
+          xcrun simctl io "$UDID" screenshot ekranlar/4-url-calis.png
 
       - uses: actions/upload-artifact@v4
         if: always()
