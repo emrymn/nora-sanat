@@ -934,9 +934,10 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 
 ### T8 · CI'ı paralel makinelere böl (Claude)
 - Ekran görüntüsü adımı tek simülatörde sırayla ~55 dk (102 görüntü; G5 ile ~70, sınır 75). Uygulama bir kez derlenir (artifact), Ben / Galeri / Çalış+dersler / Bugün / Yolculuk / genel kontroller ayrı macOS işlerinde aynı anda çekilir. Depo açık: macOS dakikası ücretsiz.
-- `derle` işi: kâhinler, paket testleri, derleme, uygulamanın içi; `.app` → `uygulama` arşivi. `ekran` matrisi (`genel`, `bugun`, `ben`, `galeri`, `calis`, `yolculuk`) her biri kendi simülatöründe `Testler/ci/ekran.sh <grup>`; görüntüler `ekranlar-<grup>` arşivinde (adlar eskisi gibi).
+- `derle` işi: kâhinler, paket testleri, derleme, uygulamanın içi; `.app` → `uygulama` arşivi. `ekran` matrisi (`galeri-1`, `galeri-2`, `calis`, `yolculuk`, `genel`, `ben`, `bugun`; uzunlar önce) her biri kendi simülatöründe `Testler/ci/ekran.sh <grup>`; görüntüler `ekranlar-<grup>` arşivinde (adlar eskisi gibi).
 - Her grup temiz simülatörle başlar: ilk açılış, sonra (Ben, Galeri, Çalış, Yolculuk) T2'nin deneme ilerlemesi. Yeni ekran adımı eklerken ilgili grubun işlevine yaz; widget adresi (`4-url-calis`) `genel`in sonunda kalmalı.
-- PR'ların CI'ını beklerken tek bir "derle" yerine bütün kontrol koşularına bak (7 iş).
+- PR'ların CI'ını beklerken tek bir "derle" yerine bütün kontrol koşularına bak (8 iş).
+- İlk koşu (c14c543): derle 3 dk; gruplar 10–23 dk; hesapta aynı anda çalışan macOS işi sınırlı (başka PR'ların CI'ıyla paylaşılıyor), bu yüzden toplam 51 dk. Galeri (23 dk) ikiye bölündü.
 
 ### Z2 · Swift'e devir (Claude)
 **Kapsam:**

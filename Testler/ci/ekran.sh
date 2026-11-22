@@ -1,7 +1,7 @@
 #!/bin/bash
 # T8: CI ekran görüntüleri, grup grup. Her grup ayrı bir macOS işinde, aynı anda çalışır (.github/workflows/ios-derle.yml,
 # `ekran` matrisi). Kullanım: Testler/ci/ekran.sh <grup> <NoraSanat.app>
-# Gruplar: genel, bugun, ben, galeri, calis, yolculuk. Her grup temiz bir simülatörle başlar; Ben, Galeri, Çalış ve
+# Gruplar: genel, bugun, ben, galeri-1, galeri-2, calis, yolculuk. Her grup temiz bir simülatörle başlar; Ben, Galeri, Çalış ve
 # Yolculuk önce T2'nin deneme ilerlemesini yazar (7-8. konular), eskiden tek sırada önceki adımlardan kalan durum buydu.
 # Görüntüler ekranlar/ klasörüne; adlar eskisiyle aynı.
 set -e
@@ -310,7 +310,7 @@ galeri() {
   # G2 + G2b + G3: her Galeri ekranı için solda site (-yalnizSite), sağda yerli ekran; yan yana galeri-yan-yana-*.png.
   # AD|adres|bölüm: -galeriKaydir aynı bölüme kaydırır (dizin: "Bütün akımlar" açık). Yerli Galeri hazır olunca
   # (veri ve görseller yüklendi, istendiyse kaydı) tmp/galeri-hazir yazar; ana ekranda OCR "Salona gir"i arar.
-  for IS in \
+  ISLER=(
     "ana|#/gozat|" "ana-dizin|#/gozat|dizin" \
     "akim|#/akim/Gotik|" "akim-eserler|#/akim/Gotik|eserler" "akim-pekistir|#/akim/Gotik|pekistir" \
     "sanatci|#/sanatci/giotto-di-bondone|" "eserler|#/sanatci/giotto-di-bondone/eserler|" \
@@ -320,7 +320,12 @@ galeri() {
     "basyapitlar|#/basyapitlar|" "basyapitlar-serit|#/basyapitlar|serit" "basyapitlar-donem|#/basyapitlar|donem" \
     "okuma|#/basyapit/Q1212937|" "okuma-ayrinti|#/basyapit/Q1212937|okuma-ayrinti" \
     "okuma-derin|#/basyapit/Q1212937/ders|okuma-derin" "okuma-son|#/basyapit/Q1212937|okuma-son" \
-    "yan-yana|#/basyapit/Q979440|yanyana"; do
+    "yan-yana|#/basyapit/Q979440|yanyana"
+  )
+  # İki makineye bölünür (galeri-1, galeri-2): ilk yarı ya da ikinci yarı
+  YARI=$(( (${#ISLER[@]} + 1) / 2 ))
+  if [ "$1" = 1 ]; then ISLER=("${ISLER[@]:0:$YARI}"); else ISLER=("${ISLER[@]:$YARI}"); fi
+  for IS in "${ISLER[@]}"; do
     AD="${IS%%|*}"; KALAN="${IS#*|}"; ADRES="${KALAN%%|*}"; BOLUM="${KALAN#*|}"
     KAYDIR=()
     if [ -n "$BOLUM" ]; then KAYDIR=(-galeriKaydir "$BOLUM"); fi
@@ -449,6 +454,8 @@ yolculuk() {
 }
 
 case "$GRUP" in
-  genel|bugun|ben|galeri|calis|yolculuk) "$GRUP" ;;
+  genel|bugun|ben|calis|yolculuk) "$GRUP" ;;
+  galeri-1) galeri 1 ;;
+  galeri-2) galeri 2 ;;
   *) echo "Bilinmeyen grup: $GRUP"; exit 1 ;;
 esac
