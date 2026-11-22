@@ -44,7 +44,10 @@ async function bolumuAc(bolum) {
     if (gorunen.top < -2 || gorunen.bottom > innerHeight + 2)
       throw Error(`${bolum} ekran dışında: üst ${Math.round(gorunen.top)}, alt ${Math.round(gorunen.bottom)}, ekran ${innerHeight}, kaydırma ${Math.round(scrollY)}/${document.documentElement.scrollHeight}`);
     const soz = ayrinti ? icerik.querySelector('h2').textContent : {hayati:'Hayat', eserler:'eserleri', tur:'Bugünkü'}[bolum];
-    return [bolum, id, ayrinti ? adimlar.indexOf(el) : 0, soz].join('|');
+    // G4b: Hayatı içindeki gerçek kaydırma (bölümün başından); yerli ekran aynı konuma gider (-bugunKonum)
+    const hayat = document.querySelector('.yur-hayat');
+    const konum = ayrinti ? '' : Math.round(scrollY - (hayat.getBoundingClientRect().top + scrollY));
+    return [bolum, id, ayrinti ? adimlar.indexOf(el) : 0, soz, konum].join('|');
   }
   throw Error('İki konumda ayrıntı bulunamadı');
 }

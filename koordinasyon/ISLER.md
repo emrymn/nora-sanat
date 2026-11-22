@@ -152,7 +152,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | G3 | Başyapıtlar: liste ve yakın okuma | G | G2 | 1 | bitti (#19) |
 | C3 | Dersler (Gör, Öğren, Ayırt et) + eser dersleri | C | C2, G1 | 2 | bitti (#22) |
 | G4 | Bugün (Tuval) + resmin içinde yürüyüş | G | T3, G1 | 2 | bitti (#18); görünüş G4b'de |
-| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | bekliyor |
+| G4b | Bugün: görünüş sitedeki gibi (perde, alttaki ayrıntıda yakınlaşma, tur kartı) | G | G4 | 1 | sürüyor (Claude, 2026-11-22) |
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bekliyor |

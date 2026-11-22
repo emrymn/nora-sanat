@@ -121,23 +121,29 @@ struct BugunSekmesi: View {
     let cerceve = kamera.cerceve(d, buyut: perde || durgun ? 1 : 1.08, egim: hareket.deger)
     return ScrollViewReader { kaydir in
       ZStack(alignment: .topLeading) {
-        Image(uiImage: resim).resizable()
-          .frame(width: cerceve.width, height: cerceve.height)
-          .position(x: cerceve.midX, y: cerceve.midY)
-          .frame(width: boy.width, height: h, alignment: .topLeading)
-          .rotation3DEffect(.degrees(yatayAci), axis: (0, 1, 0))
-          .rotation3DEffect(.degrees(dikeyAci), axis: (1, 0, 0))
-          .blur(radius: asma * 16).accessibilityHidden(true)
-        LinearGradient(
-          stops: [
-            .init(color: .black.opacity(0.6), location: 0), .init(color: .clear, location: 0.18),
-            .init(color: .clear, location: 0.5), .init(color: .black.opacity(0.55), location: 0.74),
-            .init(color: .black.opacity(0.9), location: 1),
-          ], startPoint: .top, endPoint: .bottom)
+        ZStack(alignment: .topLeading) {
+          // `.yur-sahne` zemini #0b0a09; resmi kamera taşır
+          YurRenk.hex("#0b0a09")
+          Image(uiImage: resim).resizable()
+            .frame(width: cerceve.width, height: cerceve.height)
+            .position(x: cerceve.midX, y: cerceve.midY)
+            .frame(width: boy.width, height: h, alignment: .topLeading)
+            .rotation3DEffect(.degrees(yatayAci), axis: (0, 1, 0))
+            .rotation3DEffect(.degrees(dikeyAci), axis: (1, 0, 0))
+          // `.yur-sahne::after`
+          LinearGradient(
+            stops: [
+              .init(color: YurRenk.zemin(0.5), location: 0), .init(color: YurRenk.zemin(0), location: 0.16),
+              .init(color: YurRenk.zemin(0), location: 0.5), .init(color: YurRenk.zemin(0.8), location: 0.78),
+              .init(color: YurRenk.zemin(0.96), location: 1),
+            ], startPoint: .top, endPoint: .bottom)
+        }
+        // `.yur-bulanik`: rgba(18, 17, 16, 0.6) + backdrop-filter blur(18px), saydamlığı perde (asma)
+        .blur(radius: asma * 18, opaque: true).accessibilityHidden(true)
         Color(tema.renkler.zemin)
           .scaleEffect(x: 1, y: perde || durgun ? 0 : 1, anchor: .top)
           .animation(durgun ? nil : .timingCurve(0.7, 0, 0.2, 1, duration: 1.1), value: perde)
-        Color.black.opacity(asma * 0.7)
+        YurRenk.zemin(0.6).opacity(asma)
         ScrollView {
           VStack(spacing: 0) {
             kapak(s) { suzul(hedef: son) { kaydir.scrollTo("hayat", anchor: .top) } }
@@ -157,33 +163,30 @@ struct BugunSekmesi: View {
             ) {
               suzul(hedef: 0) { kaydir.scrollTo(0, anchor: .top) }
             }
-            .padding(.top, ekranUstu + 84).padding(.bottom, alt + 14).id("hayat")
+            .padding(.top, ekranUstu + 84).padding(.bottom, alt + 14)
+            .frame(minHeight: h, alignment: .top)
+            #if DEBUG
+              .overlay(alignment: .top) {
+                if let konum = NoraSanatApp.arguman("-bugunKonum").flatMap(Double.init) {
+                  Color.clear.frame(height: 1).id("bugunKonum").padding(.top, max(0, konum))
+                }
+              }
+            #endif
+            .id("hayat")
           }
           .opacity(yaziGizli ? 0 : 1)
-          .background {
-            GeometryReader { g in
-              Color.clear.preference(
-                key: BugunKayma.self, value: -g.frame(in: .named("bugun")).minY)
-            }
-          }
+          .modifier(BugunKaymaIzi(icerik: true) { kaydi($0, son: son, h: h) })
         }
-        .coordinateSpace(name: "bugun").scrollIndicators(.hidden)
+        .scrollIndicators(.hidden)
         .scrollTargetBehavior(BugunOturmasi(boy: h, hayat: Double(son + 1) * h))
-        .onPreferenceChange(BugunKayma.self) { y in
-          if abs(y - yonKaymasi) > 6 {
-            yukari = y < yonKaymasi
-            yonKaymasi = y
-          }
-          kamerayiIzle(min(Double(son), max(0, y / h)))
-          kayma = y
-        }
+        .modifier(BugunKaymaIzi(icerik: false) { kaydi($0, son: son, h: h) })
         .onPreferenceChange(BugunKartBoyu.self) { boylar = $0 }
-        ustCubuk
+        ustCubuk(perde: asma)
         if p >= 0.5 && asma < 0.3 {
           VStack(spacing: 8) {
             ForEach(0...son, id: \.self) { j in
               Capsule().fill(
-                j == Int(p.rounded()) ? Color(tema.renkler.vurgu) : .white.opacity(0.45)
+                j == Int(p.rounded()) ? Color(tema.renkler.pirinc) : YurRenk.acik(0.45)
               )
               .frame(width: 3, height: j == Int(p.rounded()) ? 26 : 8)
             }
@@ -218,12 +221,20 @@ struct BugunSekmesi: View {
                   s.kayit.noktalar.indices.contains(n - 2),
                   adimlar[n].kartUstte == (bolum == "ayrinti-ust") else { return }
             kaydir.scrollTo(n, anchor: .top)
-          case "hayati": kaydir.scrollTo("hayat", anchor: .top)
-          case "eserler": kaydir.scrollTo("eserler", anchor: .center)
-          case "tur": kaydir.scrollTo("tur", anchor: UnitPoint(x: 0.5, y: 0.85))
+          case "hayati", "eserler", "tur":
+            if NoraSanatApp.arguman("-bugunKonum") != nil {
+              kaydir.scrollTo("bugunKonum", anchor: .top)
+            } else if bolum == "hayati" {
+              kaydir.scrollTo("hayat", anchor: .top)
+            } else {
+              kaydir.scrollTo(bolum, anchor: bolum == "tur" ? UnitPoint(x: 0.5, y: 0.85) : .center)
+            }
           default: return
           }
           try await Task.sleep(for: .seconds(4))
+          let durum = "kayma \(Int(kayma)) adim \(String(format: "%.3f", izlenenAdim)) ekran \(Int(h))"
+          try Data(durum.utf8).write(to: FileManager.default.temporaryDirectory
+            .appendingPathComponent("bugun-durum"), options: .atomic)
           try Data(bolum.utf8).write(to: FileManager.default.temporaryDirectory
             .appendingPathComponent("bugun-hazir"), options: .atomic)
         } catch {}
@@ -240,6 +251,15 @@ struct BugunSekmesi: View {
         withAnimation(durgun ? nil : .easeOut(duration: 2.6)) { perde = true }
       }
     }
+  }
+
+  private func kaydi(_ y: Double, son: Int, h: Double) {
+    if abs(y - yonKaymasi) > 6 {
+      yukari = y < yonKaymasi
+      yonKaymasi = y
+    }
+    kamerayiIzle(min(Double(son), max(0, y / h)))
+    kayma = y
   }
 
   private func kamerayiIzle(_ hedef: Double) {
@@ -277,37 +297,59 @@ struct BugunSekmesi: View {
     }
   }
 
-  private var ustCubuk: some View {
-    VStack(alignment: .trailing, spacing: 12) {
-      HStack {
-        Text(
-          Date().formatted(.dateTime.day().month(.wide).locale(Locale(identifier: "tr_TR")))
-            .uppercased(with: Locale(identifier: "tr_TR"))
-        )
-        .font(Yazi.sans(11, agirlik: 600)).tracking(2)
-        Spacer()
-        Button("BEN") { git("#/ilerleme", .ben) }
-          .font(Yazi.sans(11, agirlik: 600)).frame(width: 44, height: 44)
-          .background(.black.opacity(0.35), in: Circle()).overlay(Circle().stroke(.white.opacity(0.18))).accessibilityLabel(
-            "Ben: ilerleme ve ayarlar")
+  /// `.bugun-ust`: tarih ve Ben sabit; Hayatı'na inerken arkasında koyu bir şerit belirir (`::before`, `--perde`)
+  private func ustCubuk(perde asmaUst: Double) -> some View {
+    HStack {
+      Text(
+        Date().formatted(.dateTime.day().month(.wide).locale(Locale(identifier: "tr_TR")))
+          .uppercased(with: Locale(identifier: "tr_TR"))
+      )
+      .font(Yazi.sans(11.5, agirlik: 600)).tracking(2.3)
+      .foregroundStyle(Color(.sRGB, red: 172 / 255, green: 164 / 255, blue: 152 / 255))
+      Spacer()
+      Button { git("#/ilerleme", .ben) } label: {
+        Text("BEN").font(Yazi.sans(11, agirlik: 600)).tracking(0.66).foregroundStyle(YurRenk.yazi)
+          .frame(width: 44, height: 44)
+          .background(YurRenk.zemin(0.5), in: Circle())
+          .overlay(Circle().strokeBorder(Color(.sRGB, red: 104 / 255, green: 78 / 255, blue: 61 / 255, opacity: 0.28)))
+          .contentShape(Circle())
+      }.buttonStyle(.plain).accessibilityLabel("Ben: ilerleme ve ayarlar")
+    }
+    .frame(height: 44)
+    .padding(.horizontal, 24).padding(.top, ekranUstu + 10)
+    .background(alignment: .top) {
+      LinearGradient(
+        stops: [.init(color: YurRenk.zemin(0.92), location: 0.55), .init(color: YurRenk.zemin(0), location: 1)],
+        startPoint: .top, endPoint: .bottom
+      )
+      .frame(height: ekranUstu + 10 + 44 + 40)
+      .opacity(asmaUst).allowsHitTesting(false)
+    }
+  }
+
+  /// `.bugun-notlar .egim-dugme`: kapakta Ben'in altında (44, aralık 12); kapakla birlikte kayar
+  @ViewBuilder private var egimDugmesi: some View {
+    if !durgun {
+      Button {
+        let yeni = !algilama
+        Task {
+          do {
+            _ = try await IlerlemeKoprusu.shared.degistir { $0.ayarla("egim", .mantik(yeni)) }
+            depo.egimAcik = yeni
+            izin = yeni
+          } catch { hareketHatasi = true }
+        }
+      } label: {
+        BenIkon(simge: .hareket, boyut: 18, kalinlik: 1.6).foregroundStyle(YurRenk.yazi)
+          .frame(width: 44, height: 44)
+          .background(YurRenk.zemin(0.45), in: Circle())
+          .overlay(Circle().strokeBorder(YurRenk.acik(0.18)))
+          .contentShape(Circle())
       }
-      if !durgun && kayma < 1 {
-        Button {
-          let yeni = !algilama
-          Task {
-            do {
-              _ = try await IlerlemeKoprusu.shared.degistir { $0.ayarla("egim", .mantik(yeni)) }
-              depo.egimAcik = yeni
-              izin = yeni
-            } catch { hareketHatasi = true }
-          }
-        } label: {
-          BenIkon(simge: .hareket, boyut: 18, kalinlik: 1.6).frame(width: 44, height: 44)
-        }.background(.black.opacity(0.35), in: Circle())
-          .overlay(Circle().stroke(.white.opacity(0.18))).disabled(!hareket.varMi).accessibilityLabel(
-          izin ? "Hareketi kapat" : "Hareketi aç")
-      }
-    }.foregroundStyle(.white).padding(.horizontal, 24).padding(.top, ekranUstu + 10)
+      .buttonStyle(.plain).disabled(!hareket.varMi)
+      .accessibilityLabel(izin ? "Hareketi kapat" : "Hareketi aç")
+      .padding(.top, ekranUstu + 66).padding(.trailing, 24)
+    }
   }
 
   private func kapak(_ s: BugunTablosu, hayat: @escaping () -> Void) -> some View {
@@ -317,6 +359,7 @@ struct BugunSekmesi: View {
       } label: {
         Color.clear.contentShape(Rectangle()).frame(maxWidth: .infinity, maxHeight: .infinity)
       }.disabled(s.eser == nil).accessibilityLabel("Resmi tam ekran aç")
+      egimDugmesi.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
       VStack(alignment: .leading, spacing: 6) {
         Button {
           git("#/sanatci/" + s.tablo.sanatciId, .galeri)
@@ -379,9 +422,10 @@ struct BugunSekmesi: View {
         horizontal: false, vertical: true)
     }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 20).padding(.top, 18)
       .padding(.bottom, 20)
-      .foregroundStyle(Color(white: 0.92)).background(
-        .ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20)
-      )
+      // `.yur-kart`: rgba(24, 22, 20, 0.5) + blur(14px) saturate(1.1), 1 px rgba(235, 229, 218, 0.14) çizgi
+      .foregroundStyle(YurRenk.yazi)
+      .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+      .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(YurRenk.acik(0.14), lineWidth: 1))
       .environment(\.colorScheme, .dark)
       .background {
         GeometryReader { g in
@@ -396,9 +440,27 @@ struct BugunSekmesi: View {
   }
 }
 
-private struct BugunKayma: PreferenceKey {
-  static let defaultValue = 0.0
-  static func reduce(value: inout Double, nextValue: () -> Double) { value = nextValue() }
+/// Kaydırma konumu. G4'te içeriğin arkasındaki GeometryReader tercihi kaydırınca güncellenmiyordu (CI'da kamera,
+/// perde ve sekme çubuğu yerinde kaldı). iOS 18'de ScrollView'in kaydırma geometrisi doğrudan okunur (`icerik: false`,
+/// ScrollView'e takılır); iOS 17'de içeriğin `.scrollView` uzayındaki yeri (`icerik: true`, içeriğe takılır).
+private struct BugunKaymaIzi: ViewModifier {
+  let icerik: Bool
+  let degisti: (Double) -> Void
+  func body(content: Content) -> some View {
+    if #available(iOS 18, *) {
+      if icerik {
+        content
+      } else {
+        content.onScrollGeometryChange(for: Double.self) { $0.contentOffset.y + $0.contentInsets.top } action: {
+          _, y in degisti(y)
+        }
+      }
+    } else if icerik {
+      content.onGeometryChange(for: Double.self) { -$0.frame(in: .scrollView).minY } action: { degisti($0) }
+    } else {
+      content
+    }
+  }
 }
 private struct BugunKartBoyu: PreferenceKey {
   static let defaultValue: [Int: Double] = [:]
