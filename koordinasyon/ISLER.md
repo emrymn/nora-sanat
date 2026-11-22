@@ -165,6 +165,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
 | Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bekliyor |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
+| Z3b | Ders ve yazı cilası | C | C3 | 1 | PR açık (#29) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -965,6 +966,20 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Son karşılaştırma: sitedeki her ekranla yan yana ekran görüntüsü.
 
 **Devir notu:** –
+
+### Z3b · Ders ve yazı cilası
+- C3 (PR #24 yan yanası) ve G4b'deki "Tuzak"tan kalan farklar: Ders Gör ve Öğren adımlarının görünüşü, ortak `Yazi.Aile.satirOrani` (Newsreader).
+- `Gecis.swift`, `Kabuk/`, `Ekranlar/Yolculuk/` ve `.github/workflows/ios-derle.yml`'e dokunulmaz.
+
+**Devir notu:** Claude, 2026-11-22 · [PR #29](https://github.com/emrymn/nora-sanat/pull/29) · dal `is/Z3b-ders`. C şeridi işi; kullanıcının isteğiyle Claude yaptı.
+- **Kaynak:** sanat-atlasi `a866b86`: `css/app.css` (`h1, h2, h3 { text-wrap: balance }`, `.ders-ust`, `.ders-gor .ders-ust`, `--ust-bosluk`, `.ders-gor-panel`, `.ders-gor-panel h2`, `.ders-alt-cubuk`, `.ders-madde`, `.ders-soru`), `js/ekranlar/ders.js` (`gorAdimi`, `ogrenCiz`, `altCubuk`).
+  K7: `git -C /tmp/sa log a866b86..HEAD -- css/app.css js/ekranlar/ders.js`
+- **Kök neden (Gör'de büyük eser + aşağıdaki panel, Öğren'de görünmeyen Açıklama):** Kabuk (`KokGorunum`) her yerli sekmeye sekme çubuğu kadar alt pay ekliyor (`safeAreaInset`, ~74 pt); adım ekranında çubuk gizliyken de kalıyordu. Gör paneli ve Öğren'in alt çubuğu 74 pt yukarıdaydı; Gör'de kamera alanı daraldığı için eser büyük, Öğren'de Açıklama alt çubuğun altında. `DersAdimEkrani` artık bu payı yok sayar (`ignoresSafeArea(.container, edges: .bottom)`) ve yalnız pencerenin alt güvenli alanını koyar (`safeAreaPadding`), sitedeki `env(safe-area-inset-bottom)` gibi. Kabuk'a dokunulmadı; çubuğu gizleyen öbür yerli ekranlarda da aynı pay olabilir (ör. Pekiştirme, Karşılaştır) → Z3'te Kabuk'ta genel çözüm (çubuk gizliyken pay 0).
+- **Gör üst çubuğu:** `.ders-gor .ders-ust`'ta `--ust-bosluk` çubuğun kendi dolgusu ve `min-height: 52px` border-box: içerik ortalanmaz. `DersAdimUst(sahne: true)` en az yüksekliksiz (4 pt yukarı; site 77.3, yerli 81 → 77.3).
+- **`CssBaslik` (`DersAdimOrtak.swift`):** çok satırlı serif başlık; her sözcük ayrı `Text`, `CssBaslikDuzeni` (Layout) açgözlü kırar, birden çok satırda satır sayısını artırmayan en dar genişliği arar (`text-wrap: balance`), her satırı CSS `line-height` yüksekliğinde, yazı ortada dizer. Bodoni'nin 1.525 em'lik kendi satırı artık başlık satır arasını açmıyor (C3'teki "SwiftUI eksi lineSpacing'i yok sayıyor" sorunu). Kullananlar: Gör başlığı (28/30.8), Öğren maddesi (27/31.05), Ayırt et sorusu (26/29.9). Erişilebilirlikte tek öğe (metnin tamamı). Başka ekranlardaki çok satırlı Bodoni başlıklar da buna geçebilir (gerekirse ortak bir yere taşınır).
+- **`Yazi.Aile.satirOrani`:** Newsreader 1.0 → 1.0247 (G4b'deki ölçüm). Bugün'ün yerel `bugunOkumaSatiri`'si kalktı, iki yer `cssSatir(.okuma, …)`'ya bağlandı (Bugün görüntüleri piksel piksel aynı kaldı). Uzun okuma metinlerinde satır başına ~0.4 pt daralma: Galeri Karşılaştır'da Giotto sütunu sitedekiyle aynı yerde bitiyor (önce ~6 pt aşağıdaydı). Yolculuk da `cssSatir(.okuma)` kullanıyor, dosyalarına dokunulmadı.
+- **CI 0f1c683 yeşil.** Yan yana: Gör (eser, başlık "Aziz Maxima ve Aziz / Ansanus ile Müjde (Triptik)", metin, noktalar, düğme) ve Öğren (başlık "Altın zemin ve ahşap / pano üzerine tempera", Açıklama, alt çubuk) sitedekiyle ±1–2 pt. Eski koşuyla karşılaştırma: Ben, Ayarlar, Bugün, Çalış ana/turlar/yük/salon, Galeri ana/konu/ara aynı; Ayırt et, İlerleme, Turlar'daki farklar rastgele seçilen resimler (düzen aynı).
+- **Kalan:** dolu düğmenin rengi yerlide temanın `vurguAcik`'i, site o sayfada nötr `--vurgu-acik` (C3'ten, Z3). Öğren'de eserin alt yazısı (Archivo 13) bir sözcük farklı kırılıyor ("Sahneler ·" / "· 1235"). Kanıt kutusu ~2 pt aşağıda (Archivo'nun 1.088 oranı yuvarlaması).
 
 
 **Denetim:** Claude, 2026-11-21 — **onay** (PR #12 yorumu).
