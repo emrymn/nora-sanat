@@ -57,3 +57,12 @@ karşılaştırılmaz; `DersAdimlariTests` sitenin girdileriyle (W, üst, alt, r
 ```bash
 node Testler/kahin/ders_adimlari.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/ders_adimlari/cevaplar.json
 ```
+
+## Çevrimdışı görseller (C5)
+
+```bash
+# İndirme listesi (gösterilen görsellerin en büyük / 1280 / 400 kopyaları, sırayla; ~19 bin adres: sayılar, MD5, örnekler),
+# parça planı ve Ayarlar'daki yazılar (bilgi ve her indirme durumunun iletisi, sayfanın kendisinden okunur).
+# Site verisi Ornekler/site_verisi/'ndekilerden farklıysa durur: önce site_verisi.mjs ile örnekleri yenile.
+node Testler/kahin/cevrimdisi.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/cevrimdisi/cevaplar.json
+```

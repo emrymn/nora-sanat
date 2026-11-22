@@ -435,7 +435,7 @@ struct TabloDugme: View {
 }
 
 #if DEBUG
-/// CI karşılaştırması (C4b): `-benKaydir kurs|akim|yedek` yerli ekranı ve sitenin aynı sayfasını aynı bölüme kaydırır.
+/// CI karşılaştırması (C4b, C5): `-benKaydir kurs|akim|yedek|cevrimdisi` yerli ekranı ve sitenin aynı sayfasını aynı bölüme kaydırır.
 /// Sitenin görüntüsü `-yalnizSite` ile alınır; ikisi yan yana konur (.github/workflows/ios-derle.yml).
 enum BenKarsilastirma {
     /// Bölüm → sitedeki karşılığı
@@ -443,6 +443,7 @@ enum BenKarsilastirma {
         "kurs": ".kurs-bolumleri",
         "akim": ".baslik-sira",
         "yedek": ".ayar:has([data-yedekle])",
+        "cevrimdisi": "[data-test=\"devasa-indir\"]",
     ]
 
     static var bolum: String? { NoraSanatApp.arguman("-benKaydir") }
