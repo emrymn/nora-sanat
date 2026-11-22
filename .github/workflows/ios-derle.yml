@@ -326,8 +326,8 @@ jobs:
             AD="${IS%%:*}"; ADIM="${IS#*:}"
             ADRES="#/pekistir/ders/Gotik${ADIM:+/$ADIM}"
             # Adım adresleri (…/gor|ogren|ayirt) sitede sekmesizdir (Sekme.swift): Kabuk onları siteye bırakır. Yerli
-            # ekran Çalış'ın kendi adresinden açılır, adımı -calisSayfa seçer.
-            ARGS=(-yerliSekme calis,ben -adres "#/pekistir" -calisSayfa "ders:Gotik${ADIM:+:$ADIM}")
+            # ekran ders sayfasının adresinden açılır, adımı -calisSayfa seçer (CalisSekmesi.ciAdimi).
+            ARGS=(-yerliSekme calis,ben -adres "#/pekistir/ders/Gotik" -calisSayfa "ders:Gotik${ADIM:+:$ADIM}")
             if [ "$AD" = ayirt-cevap ]; then ARGS+=(-dersCevapla 1); fi
             xcrun simctl terminate "$UDID" "$PAKET"
             VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
