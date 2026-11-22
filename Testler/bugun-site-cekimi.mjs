@@ -43,7 +43,8 @@ async function bolumuAc(bolum) {
     }
     if (gorunen.top < -2 || gorunen.bottom > innerHeight + 2)
       throw Error(`${bolum} ekran dışında: üst ${Math.round(gorunen.top)}, alt ${Math.round(gorunen.bottom)}, ekran ${innerHeight}, kaydırma ${Math.round(scrollY)}/${document.documentElement.scrollHeight}`);
-    const soz = ayrinti ? icerik.querySelector('h2').textContent : {hayati:'Hayat', eserler:'eserleri', tur:'Bugünkü'}[bolum];
+    // eserler: karonun başlığı sitede de sekme çubuğunun arkasında kalır; alt yazısı görünür
+    const soz = ayrinti ? icerik.querySelector('h2').textContent : {hayati:'Hayat', eserler:'Izgara', tur:'Bugünkü'}[bolum];
     // G4b: Hayatı içindeki gerçek kaydırma (bölümün başından); yerli ekran aynı konuma gider (-bugunKonum)
     const hayat = document.querySelector('.yur-hayat');
     const konum = ayrinti ? '' : Math.round(scrollY - (hayat.getBoundingClientRect().top + scrollY));
