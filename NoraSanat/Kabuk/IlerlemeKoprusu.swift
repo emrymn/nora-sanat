@@ -80,8 +80,9 @@ final class IlerlemeKoprusu {
         return String(kaynak[a.upperBound..<b.lowerBound])
     }
 
-    /// Site yüklenene kadar bekler; WKWebView'i verir
-    private func hazirSite() async throws -> WKWebView {
+    /// Site yüklenene kadar bekler (en çok `bekleme`); WKWebView'i verir. Site betiği çalıştıran her yer bunu kullanır:
+    /// Z2b'den beri `oku()` siteyi beklemediği için betikler sitenin yüklenmesini kendileri beklemeli.
+    func hazirSite() async throws -> WKWebView {
         let son = Date().addingTimeInterval(bekleme)
         while Date() < son {
             if Gezgin.shared.yuklendi, let w = Gezgin.shared.webView { return w }

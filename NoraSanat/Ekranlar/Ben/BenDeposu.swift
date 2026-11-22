@@ -7,7 +7,8 @@ import WebKit
 extension IlerlemeKoprusu {
     /// Sitedeki kayıt doğrulaması ve yarım oturum aynı WebKit oturumunda çalışır.
     func benBetigi(_ kaynak: String, _ veri: [String: Any] = [:]) async throws -> Any? {
-        guard let web = Gezgin.shared.webView, Gezgin.shared.yuklendi else { throw Hata.siteYok }
+        let web = try await hazirSite()
+        await aynaBitsin()
         return try await web.callAsyncJavaScript(kaynak, arguments: veri, in: nil, contentWorld: .page)
     }
     /// Geliştirici modunun açtığı her şey: bütün konu numaraları ve harita bölümleri (sitenin listeleri; Z2c'de Swift)
