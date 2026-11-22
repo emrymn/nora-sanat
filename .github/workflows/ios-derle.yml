@@ -373,13 +373,12 @@ jobs:
             for TARAF in site yerli; do
               xcrun simctl terminate "$UDID" "$PAKET" || true
               rm -f "$VERI/tmp/yolculuk-hazir" "$VERI/tmp/yolculuk-hata"
-              ARGS=(-yerliSekme yolculuk -adres "#/harita")
-              if [ "$TARAF" = site ]; then
-                ADRES="#/harita"
-                [ "$AD" = zaman ] && ADRES="#/zaman"
-                ARGS=(-yalnizSite -adres "$ADRES")
-              fi
-              xcrun simctl launch "$UDID" "$PAKET" "${ARGS[@]}" -yolculukProva "$AD"
+              # Zaman Galeri'nin sekmesi (Galeri yerli); öbürleri yerli Yolculuk. -izinSorma: bildirim izni penceresi çıkmasın
+              ADRES="#/harita"
+              [ "$AD" = zaman ] && ADRES="#/zaman"
+              ARGS=(-yerliSekme yolculuk -adres "$ADRES")
+              [ "$TARAF" = site ] && ARGS=(-yalnizSite -adres "$ADRES")
+              xcrun simctl launch "$UDID" "$PAKET" "${ARGS[@]}" -yolculukProva "$AD" -izinSorma
               hazir_yolculuk "$AD"
               sleep 3
               xcrun simctl io "$UDID" screenshot "ekranlar/$TARAF-yolculuk-$AD.png"
@@ -388,7 +387,7 @@ jobs:
           done
           xcrun simctl terminate "$UDID" "$PAKET"
           rm -f "$VERI/tmp/yolculuk-hazir"
-          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/harita" -yolculukProva geri-yukle
+          xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/harita" -yolculukProva geri-yukle -izinSorma
           hazir_yolculuk geri-yukle
           # T5: site hareket izni isteyince iOS penceresi çıkmamalı (uygulama izni kendisi verir)
           xcrun simctl terminate "$UDID" "$PAKET" || true

@@ -30,6 +30,5 @@ const sonuc = {};
 b.tanismaGrubuGoruldu(sonuc,'2-1','kolay',1,2);
 b.tanismaGrubuGoruldu(sonuc,'2-1','kolay',0,2);
 b.tanitimGoruldu(sonuc,'2-1','orta');
-b.bolumSonucuIsle(sonuc,'2-1','kolay',6,8);
-b.bolumSonucuIsle(sonuc,'2-1','kolay',4,8);
-console.log(JSON.stringify({kayitlar,konumlar,duraklar,yillar,cubuklar,sonuc}));
+const sonuclar = [[6,8],[4,8],[7,10],[8,10],[0,0]].map(([d,t],i)=>b.bolumSonucuIsle(sonuc,'2-1',['kolay','kolay','orta','orta','zor'][i],d,t));
+console.log(JSON.stringify({kayitlar,konumlar,duraklar,yillar,cubuklar,sonuc,sonuclar}));

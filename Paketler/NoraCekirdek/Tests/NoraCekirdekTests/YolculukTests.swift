@@ -48,4 +48,31 @@ final class YolculukTests: XCTestCase {
             XCTAssertEqual(d.acik,satir[2].mantik)
         }
     }
+
+    /// `tanismaGrubuGoruldu`, `tanitimGoruldu`, `bolumSonucuIsle`: kâhindeki sırayla aynı kayıt ve aynı dönüşler
+    func testBolumKaydi() throws {
+        let c = try cevaplar()
+        var il = try Ilerleme(json: .nesne(.bos))
+        BolumKurallari.grubuGoruldu(&il, id: "2-1", orta: false, grup: 1, adet: 2)
+        XCTAssertEqual(BolumKurallari.gorulenGruplar(BolumKurallari.kayit(il, "2-1"), orta: false, adet: 2), [1])
+        BolumKurallari.grubuGoruldu(&il, id: "2-1", orta: false, grup: 0, adet: 2)
+        BolumKurallari.tanitimGoruldu(&il, id: "2-1", orta: true)
+        let adimlar: [(String, Int, Int)] = [("kolay", 6, 8), ("kolay", 4, 8), ("orta", 7, 10), ("orta", 8, 10), ("zor", 0, 0)]
+        let beklenen = try XCTUnwrap(c["sonuclar"]?.dizi)
+        XCTAssertEqual(beklenen.count, adimlar.count)
+        for (a, x) in zip(adimlar, beklenen) {
+            let r = BolumKurallari.sonucuIsle(&il, id: "2-1", seviye: a.0, dogru: a.1, toplam: a.2)
+            XCTAssertEqual(r.oran, x["oran"]?.sayi)
+            XCTAssertEqual(r.gecti, x["gecti"]?.mantik)
+            XCTAssertEqual(r.yeniGecti, x["yeniGecti"]?.mantik)
+            XCTAssertEqual(r.yildizOnce, x["yildizOnce"]?.tamSayi)
+            XCTAssertEqual(r.yildizSonra, x["yildizSonra"]?.tamSayi)
+        }
+        let kayit = try XCTUnwrap(c["sonuc"]?["bolumler"]?["2-1"]?.nesne)
+        let bizim = BolumKurallari.kayit(il, "2-1")
+        XCTAssertEqual(Set(bizim.anahtarlar), Set(kayit.anahtarlar))
+        for k in kayit.anahtarlar { XCTAssertEqual(bizim[k], kayit[k], k) }
+        XCTAssertEqual(BolumKurallari.yildiz(bizim), 2)
+        XCTAssertEqual(BolumKurallari.gorulenGruplar(bizim, orta: true, adet: 3), [0, 1, 2])
+    }
 }

@@ -1,15 +1,20 @@
 // Kaynak: sanat-atlasi js/ekranlar/{harita,pekistir,zaman}.js @ a866b86
+// CI karşılaştırması (G5): `-yolculukProva <ad>` aynı durumu solda sitede (`-yalnizSite`), sağda yerli ekranda kurar.
+// Hazır olunca `tmp/yolculuk-hazir`'a adı yazar. İlerleme yerlide yalnız bellekte değişir; sitede en sonda
+// `geri-yukle` eski kaydı geri koyar.
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
 import NoraCekirdek
 
-@_cdecl("NoraYolculukSiteProva")
-func yolculukSiteProva() {
-    Task { @MainActor in await YolculukProva.site() }
-}
-
 @MainActor enum YolculukProva {
     static var ad: String? { NoraSanatApp.arguman("-yolculukProva") }
+
+    /// `NoraSanatApp.init`: `-yalnizSite` açılışında sitenin kendi ekranını kurar
+    static func siteyiHazirla() {
+        guard ad != nil, CommandLine.arguments.contains("-yalnizSite") else { return }
+        Task { await site() }
+    }
+
     static let turlar = ["tanisma","soru","cevap","sergi","seviye-tamam","grup-sonu"]
     static func hazir(_ ad: String) {
         try? Data(ad.utf8).write(to: FileManager.default.temporaryDirectory.appendingPathComponent("yolculuk-hazir"), options: .atomic)
