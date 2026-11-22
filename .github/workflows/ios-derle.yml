@@ -264,6 +264,24 @@ jobs:
             xcrun simctl io "$UDID" screenshot "ekranlar/site-galeri-$AD.png"
             "$RUNNER_TEMP/yan-yana" "ekranlar/site-galeri-$AD.png" "ekranlar/galeri-$AD.png" "ekranlar/galeri-yan-yana-$AD.png"
           done
+          # G5: iki açılış da aynı kullanıcı kaydıyla çalışır.
+          for SAYFA in harita zaman; do
+            xcrun simctl terminate "$UDID" "$PAKET" || true
+            xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/$SAYFA"
+            sleep 10
+            xcrun simctl io "$UDID" screenshot "ekranlar/site-yolculuk-$SAYFA.png"
+            xcrun simctl terminate "$UDID" "$PAKET"
+            rm -f "$VERI/tmp/yolculuk-hazir"
+            xcrun simctl launch "$UDID" "$PAKET" -yerliSekme yolculuk -adres "#/harita" -yolculukSayfa "$SAYFA"
+            for _ in {1..60}; do
+              test -f "$VERI/tmp/yolculuk-hazir" && break
+              sleep 1
+            done
+            test -f "$VERI/tmp/yolculuk-hazir"
+            sleep 4
+            xcrun simctl io "$UDID" screenshot "ekranlar/yerli-yolculuk-$SAYFA.png"
+            "$RUNNER_TEMP/yan-yana" "ekranlar/site-yolculuk-$SAYFA.png" "ekranlar/yerli-yolculuk-$SAYFA.png" "ekranlar/yan-yana-$SAYFA.png"
+          done
           # T5: site hareket izni isteyince iOS penceresi çıkmamalı (uygulama izni kendisi verir)
           xcrun simctl terminate "$UDID" "$PAKET" || true
           VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
