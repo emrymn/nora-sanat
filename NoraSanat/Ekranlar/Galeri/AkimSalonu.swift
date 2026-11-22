@@ -268,7 +268,8 @@ struct AkimSalonu: View {
             #endif
           }
         }
-        .background(SayfaZemini(donem: GaleriDonem.akimin(k, ad)))
+        .background(SayfaZemini(donem: GaleriDonem.akimin(k, ad),
+                                tablo: galeri.enBilinenler(ad, il).first.flatMap { resim.url($0.eser, 400) }))
     }
 
     private func bolum<I: View>(_ ust: String, _ baslik: String, _ uslup: AkimUslubu, _ renk: RGBA,
