@@ -66,7 +66,7 @@ struct BildirimBolumu: View {
                 HStack(spacing: 8) {
                     Button("JSON olarak kopyala") {
                         // bildirimMetni: JSON.stringify({ uygulama, tur, bildirimler }, null, 1)
-                        kopyala(depo, JSONDeger.nesne(SiraliNesne([
+                        kopyala(depo, JSONDeger.nesne(SiraliNesne(ciftler: [
                             ("uygulama", .metin("sanat-atlasi")), ("tur", .metin("gorsel-bildirimleri")),
                             ("bildirimler", depo.il?[alan: "bildirimler"] ?? .dizi([])),
                         ])).girintiliMetin(girinti: 1))

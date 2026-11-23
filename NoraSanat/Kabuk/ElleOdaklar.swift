@@ -28,8 +28,8 @@ enum ElleOdaklar {
 
     /// "Kopyala": `JSON.stringify({ surum: 1, odak })`
     static var metin: String {
-        let odak = SiraliNesne(hepsi.sorted { $0.key < $1.key }.map { ($0.key, JSONDeger.dizi($0.value.map { .sayi($0) })) })
-        return JSONDeger.nesne(SiraliNesne([("surum", .sayi(1)), ("odak", .nesne(odak))])).jsonMetni
+        let odak = SiraliNesne(ciftler: hepsi.sorted { $0.key < $1.key }.map { ($0.key, JSONDeger.dizi($0.value.map { .sayi($0) })) })
+        return JSONDeger.nesne(SiraliNesne(ciftler: [("surum", .sayi(1)), ("odak", .nesne(odak))])).jsonMetni
     }
 
     /// Sitenin localStorage'ındakileri bir kez alır (site kalkmadan önce; cihazdakiler sitedekilerin önündedir)
