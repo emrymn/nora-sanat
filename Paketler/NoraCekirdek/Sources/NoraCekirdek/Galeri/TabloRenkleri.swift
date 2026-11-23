@@ -15,7 +15,7 @@ public enum TabloRenkleri {
 
     /// Tablonun küçültülmüş piksellerinden (0…1 RGB) iki baskın renk: 12 ton diliminde (ağırlık renk yoğunluğu) ikisi de
     /// ağır ve birbirinden en az 60° ayrık ikili; ağır olan sol üste. Ayrık ikinci ton yoksa aynı tonun koyusu. Renkler tasarımdaki
-    /// açıklık ve doygunluğa getirilir (HSL açıklık 0,32–0,42; doygunluk 0,22–0,6). Neredeyse renksiz tabloda nil.
+    /// açıklık ve doygunluğa getirilir (HSL açıklık 0,40–0,50; doygunluk 0,45–0,65). Neredeyse renksiz tabloda nil.
     public static func cift(pikseller: [(Double, Double, Double)]) -> Cift? {
         let dilim = 12
         var agirlik = [Double](repeating: 0, count: dilim)
@@ -51,16 +51,18 @@ public enum TabloRenkleri {
         return Cift(a, b)
     }
 
-    /// Tasarımdaki tonlara: HSL açıklık 0,32–0,42, doygunluk 0,22–0,6
+    /// Tasarımdaki tonlara (rgb(150,60,50), (60,95,150), (190,140,60): doygunluk 0,43–0,52, açıklık 0,39–0,49):
+    /// HSL doygunluk 0,45–0,65, açıklık 0,40–0,50. Tablonun ortalaması çoğu zaman soluk ve kahveye çeker; koyu zeminde
+    /// görünsün diye renk canlandırılır (kullanıcı 2026-11-23: "renk süzmeleri hiç yok").
     static func yumusat(_ c: RGBA) -> RGBA {
         let (h, s, l) = hsl(c.r, c.g, c.b)
-        return rgb(h, min(0.6, max(0.22, s)), min(0.42, max(0.32, l)))
+        return rgb(h, min(0.65, max(0.45, s)), min(0.5, max(0.4, l)))
     }
 
     /// Tek renkli tabloda ikinci süzme: aynı ton, biraz koyu ve 30° kaymış
     static func koyulas(_ c: RGBA) -> RGBA {
         let (h, s, l) = hsl(c.r, c.g, c.b)
-        return rgb((h + 30).truncatingRemainder(dividingBy: 360), s, max(0.26, l - 0.08))
+        return rgb((h + 30).truncatingRemainder(dividingBy: 360), s, max(0.34, l - 0.08))
     }
 
     static func hsl(_ r: Double, _ g: Double, _ b: Double) -> (Double, Double, Double) {
