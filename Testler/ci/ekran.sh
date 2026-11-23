@@ -435,7 +435,7 @@ yolculuk() {
   ilk_acilis
   ilerleme_yaz
   # G5 karşılaştırmaları, solda zorunlu site, sağda yerli ekran.
-  for AD in harita zaman kurs motif kilit durak tanisma soru cevap grup-sonu sergi seviye-tamam; do
+  for AD in harita gecis zaman kurs motif kilit durak tanisma soru cevap grup-sonu sergi seviye-tamam; do
     for TARAF in site yerli; do
       xcrun simctl terminate "$UDID" "$PAKET" || true
       rm -f "$VERI/tmp/yolculuk-hazir" "$VERI/tmp/yolculuk-hata"

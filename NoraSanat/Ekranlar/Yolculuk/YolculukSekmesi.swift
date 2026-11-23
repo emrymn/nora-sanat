@@ -199,6 +199,8 @@ private struct YolculukHaritaEkrani: View {
     @State private var animasyonYeri: YolcuPatikasi.Nokta?
     @State private var animasyonOn = false
     @State private var yuruyus: Task<Void, Never>?
+    /// DEBUG `-yolculukProva gecis`: Rönesans köprüsü ortaya kaydırılır (CI karşılaştırması)
+    @State private var provaKaydir: String?
     private let bolgeler = YolculukHaritasi.bolgeler
     /// `BOLGELER[i].yuzyil`
     private static let yuzyillar = ["Antik çağdan XV. yüzyıla", "XV–XVI. yüzyıl", "XVII. yüzyıl", "XVII–XVIII. yüzyıl", "XVIII. yüzyıl",
@@ -216,7 +218,7 @@ private struct YolculukHaritaEkrani: View {
                                 .background(GeometryReader { r in
                                     Color.clear.preference(key: DonemYerleri.self, value: [i: r.frame(in: .named("harita")).midY])
                                 })
-                            if i > 0 { gecis(i, en) }
+                            if i > 0 { gecis(i, en).id("gecis-\(bolgeler[i])") }
                         }
                         Color.clear.frame(height: 1).id("son")
                     }
@@ -240,6 +242,7 @@ private struct YolculukHaritaEkrani: View {
                 }
                 #if DEBUG && targetEnvironment(simulator)
                 .task { await prova() }
+                .onChange(of: provaKaydir) { _, hedef in if let hedef { vekil.scrollTo(hedef, anchor: .center) } }
                 #endif
             }
             .overlay(alignment: .top) { ustDugmeler }
@@ -266,6 +269,7 @@ private struct YolculukHaritaEkrani: View {
             pencere = .motif(id)
         case "kilit": if let d = depo.duraklar.first(where: { !$0.acik }) { pencere = .durak(d.id) }
         case "durak": pencere = .durak("4-1")
+        case "gecis": provaKaydir = "gecis-ronesans"
         default: return
         }
         try? await Task.sleep(for: .seconds(4))
@@ -442,8 +446,7 @@ private struct YolculukHaritaEkrani: View {
     private func donemResmi(_ i: Int) -> some View {
         let resim = haritaGorseli("donem_\(bolgeler[i])_\(tur)")
         let ust = Double(8 - i) * 1.34
-        let acik = depo.duraklar.filter(\.acik)
-        let sinir = acik.map { d in Double(8 - (bolgeler.firstIndex(of: d.bolge) ?? 0)) * 1.34 + d.y - 0.07 }.min() ?? 11.72
+        let sinir = sepyaSiniri
         let alt = min(1, max(0, sinir - ust))
         let renk: Color = sinir >= ust + 1 ? .white : .clear
         let gecis = Gradient(stops: [.init(color: .white, location: max(0, alt - 0.04)), .init(color: renk, location: alt)])
@@ -607,10 +610,54 @@ private struct YolculukHaritaEkrani: View {
         let yazi = gece ? Color(red: 0.937, green: 0.906, blue: 0.855) : Color(red: 0.208, green: 0.169, blue: 0.129)
         let golge = gece ? Color(red: 20 / 255, green: 16 / 255, blue: 13 / 255) : Color(red: 248 / 255, green: 242 / 255, blue: 230 / 255)
         let cizgi = Color(red: 0.886, green: 0.761, blue: 0.478)
+        // Z3e: sitenin köprüsü (css/app.css .harita-gecis*, İş 43/99). Üstteki dönemin alt kenarı aşağı, alttakinin üst
+        // kenarı yukarı aynalanır; her biri iki katman: bulanık (14 px, yanlardan 36 px taşar, %12 → %92 erir) ve net
+        // (1,5 px, kenardan %32'de biter). Ortada sis tülü, bulut tutamları; alttaki dönem sepyaysa köprü de sepya.
+        // (Önceden iki resim maskesiz ve köprünün tamamında duruyordu: telefonda ters bir "hayalet" görünüyordu.)
+        let gok = gece ? Color(red: 20 / 255, green: 24 / 255, blue: 33 / 255) : Color(red: 216 / 255, green: 210 / 255, blue: 196 / 255)
+        let sis = gece ? Color(red: 118 / 255, green: 130 / 255, blue: 158 / 255) : Color(red: 250 / 255, green: 244 / 255, blue: 232 / 255)
+        let isik = Color(red: 1, green: gece ? 208 / 255 : 224 / 255, blue: gece ? 140 / 255 : 160 / 255)
+        let sepya = Double(8 - (i - 1)) * 1.34 <= sepyaSiniri
+        let h = en * 1.02
+        func kenar(_ ad: String, ust: Bool, yumusak: Bool) -> some View {
+            let tasma: CGFloat = yumusak ? 36 : 4
+            let stops: [Gradient.Stop] = yumusak
+                ? [.init(color: .white, location: 0.12), .init(color: .clear, location: 0.92)]
+                : [.init(color: .white, location: 0), .init(color: .clear, location: 0.32)]
+            return UzakGorsel(url: haritaGorseli(ad))
+                .frame(width: en + 2 * tasma, height: h)
+                .scaleEffect(x: 1, y: -1)
+                .saturation(sepya ? 0 : (yumusak ? 1.08 : 1))
+                .colorMultiply(sepya ? Color(red: 0.93, green: 0.85, blue: 0.72) : .white)
+                .blur(radius: yumusak ? 14 : 1.5)
+                .mask(LinearGradient(stops: stops, startPoint: ust ? .top : .bottom, endPoint: ust ? .bottom : .top))
+        }
         return ZStack {
-            UzakGorsel(url: haritaGorseli("yansima_\(bolgeler[i])_alt_\(tur)")).scaleEffect(x: 1, y: -1)
-            UzakGorsel(url: haritaGorseli("yansima_\(bolgeler[i - 1])_ust_\(tur)")).scaleEffect(x: 1, y: -1)
-                .mask(LinearGradient(colors: [.clear, .white], startPoint: .top, endPoint: .bottom))
+            gok
+            ZStack {
+                kenar("yansima_\(bolgeler[i])_alt_\(tur)", ust: true, yumusak: true)
+                kenar("yansima_\(bolgeler[i - 1])_ust_\(tur)", ust: false, yumusak: true)
+                kenar("yansima_\(bolgeler[i])_alt_\(tur)", ust: true, yumusak: false)
+                kenar("yansima_\(bolgeler[i - 1])_ust_\(tur)", ust: false, yumusak: false)
+            }
+            .frame(width: en, height: h)
+            // `.harita-gecis-sis`: ortada yatay, yumuşak kenarlı tül
+            LinearGradient(stops: [.init(color: sis.opacity(0), location: 0.16), .init(color: sis.opacity(0.32), location: 0.5),
+                                   .init(color: sis.opacity(0), location: 0.84)], startPoint: .top, endPoint: .bottom)
+            Canvas { c, boyut in
+                // `.harita-gecis-sis` ve bulut tutamları (a, b, c): yarı saydam elipsler
+                let tutamlar: [(Double, Double, Double, Double, Double, Color)] = [
+                    (0.28, 0.46, 0.38 * 1.44, 0.46 * 0.68, 0.5, sis), (0.70, 0.56, 0.44 * 1.44, 0.40 * 0.68, 0.45, sis),
+                    (0.20, 0.24 + 0.30 * 0.55, 0.18 * 1.6, 0.46 * 0.30, 0.55, sis), (0.66, 0.24 + 0.30 * 0.58, 0.20 * 1.6, 0.50 * 0.30, 0.5, sis),
+                    (0.46, 0.50 + 0.28 * 0.46, 0.22 * 1.6, 0.52 * 0.28, 0.5, sis), (0.30, 0.38 + 0.24 * 0.5, 0.10 * 1.6, 0.40 * 0.24, 0.32, isik),
+                ]
+                for (x, y, rx, ry, a, renk) in tutamlar {
+                    let r = CGRect(x: (x - rx) * boyut.width, y: (y - ry) * boyut.height, width: 2 * rx * boyut.width, height: 2 * ry * boyut.height)
+                    c.fill(Path(ellipseIn: r), with: .radialGradient(Gradient(colors: [renk.opacity(a), renk.opacity(0)]),
+                                                                     center: CGPoint(x: r.midX, y: r.midY), startRadius: 0, endRadius: max(r.width, r.height) / 2 * 0.72))
+                }
+            }
+            .allowsHitTesting(false)
             VStack(spacing: 6) {
                 Text(Self.yuzyillar[i].uppercased(with: Locale(identifier: "tr_TR"))).font(Yazi.sans(11, agirlik: 600)).tracking(1.76)
                     .foregroundStyle(gece ? Color(red: 0.847, green: 0.702, blue: 0.416) : Color(red: 0.541, green: 0.373, blue: 0.102))
@@ -632,6 +679,11 @@ private struct YolculukHaritaEkrani: View {
             .shadow(color: golge.opacity(0.9), radius: 7)
             .padding(.horizontal, en * 0.08)
         }
-        .frame(width: en, height: en * 1.02).clipped()
+        .frame(width: en, height: h).clipped()
+    }
+
+    /// `sepyaSiniri(harita)`: son açık durağın biraz üstü (resim boyu cinsinden, haritanın üstünden); bkz. `donemResmi`
+    private var sepyaSiniri: Double {
+        depo.duraklar.filter(\.acik).map { d in Double(8 - (bolgeler.firstIndex(of: d.bolge) ?? 0)) * 1.34 + d.y - 0.07 }.min() ?? 11.72
     }
 }
