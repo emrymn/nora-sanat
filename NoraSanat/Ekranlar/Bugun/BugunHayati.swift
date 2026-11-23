@@ -1,4 +1,3 @@
-import AVFoundation
 // Kaynak: sanat-atlasi js/ekranlar/bugun.js (yuruyusKur biyografi, yuruyusSonu), js/kunye.js (dinleEkle, ipaHtml),
 // css/app.css (.yur-hayat, .yur-son, .yur-tur, .yur-deste, .yur-baglar, .yur-karo, .yur-harf, .yur-kare, .isim-ek,
 // .yur-basa) @ a866b86. Ölçüler canlı sitenin hesaplanmış stillerinden (393 pt, Gece).
@@ -27,8 +26,6 @@ struct BugunHayati: View {
   let kucukler: [URL?]
   let kunye: JSONDeger?
   @Environment(TemaDeposu.self) private var tema
-  @State private var oynatici: AVPlayer?
-  @State private var okuma = AVSpeechSynthesizer()
   let adet: Int
   let git: (String, Sekme) -> Void
   let basa: () -> Void
@@ -53,10 +50,7 @@ struct BugunHayati: View {
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .buttonStyle(.plain).padding(.horizontal, 24).foregroundStyle(YurRenk.yazi)
-    .onDisappear {
-      oynatici?.pause()
-      okuma.stopSpeaking(at: .immediate)
-    }
+    .onDisappear { AdOkuyucu.shared.durdur() }
   }
 
   /// `.yur-son`: sütun, aralık 14
@@ -236,16 +230,6 @@ struct BugunHayati: View {
   }
 
   private func oku(_ k: JSONDeger) {
-    if let uzanti = GaleriKatalogu.sesUzantisi(k) {
-      let url = SiteVerisi.site.appendingPathComponent(
-        "gorseller/ses/" + s.tablo.sanatciId + "." + uzanti)
-      oynatici = AVPlayer(url: url)
-      oynatici?.play()
-    } else {
-      okuma.stopSpeaking(at: .immediate)
-      let soz = AVSpeechUtterance(string: GaleriKatalogu.okunacakAd(s.tablo.sanatci))
-      soz.voice = AVSpeechSynthesisVoice(language: k["dil"]?.metin)
-      okuma.speak(soz)
-    }
+    AdOkuyucu.shared.oku(id: s.tablo.sanatciId, ad: s.tablo.sanatci, kunye: k)
   }
 }
