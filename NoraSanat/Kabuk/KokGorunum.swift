@@ -8,6 +8,8 @@ struct KokGorunum: View {
     @State private var durum = KabukDurumu.shared
     @State private var tema = TemaDeposu.shared
     @Environment(\.scenePhase) private var evre
+    /// Z3j: sekme seçilince içeriği sitedeki gibi yükselerek belirir (`GirisHareketi`)
+    @State private var girisSayaci: [Sekme: Int] = [:]
 
     var body: some View {
         ZStack {
@@ -16,6 +18,8 @@ struct KokGorunum: View {
                 TabView(selection: Binding(get: { durum.secili }, set: { durum.sec($0) })) {
                     ForEach(Sekme.allCases) { s in
                         yerliEkran(s)
+                            // Bugün tam ekran resim: yalnız belirir (kayınca üstte boşluk açılırdı)
+                            .girisHareketi(girisSayaci[s] ?? 0, kayma: s == .bugun ? 0 : 12)
                             .toolbar(.hidden, for: .tabBar)
                             // Kaydırılan içerik yüzen çubuğun altında kalmasın (sitede sayfanın alt boşluğu)
                             .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -46,6 +50,7 @@ struct KokGorunum: View {
         .preferredColorScheme(tema.koyu ? .dark : .light)
         // Widget'a dokununca: norasanat://bugun
         .onOpenURL { Gezgin.shared.ac($0) }
+        .onChange(of: durum.secili) { _, yeni in girisSayaci[yeni, default: 0] += 1 }
         // Z2c: renkler (TemaHesabi), rozetler ve hatırlatmalar (SayacDeposu) Swift'teki kayıttan; açılışta ve her
         // dönüşte (gün değişmiş olabilir); kapanırken yarının sayısı
         .task {

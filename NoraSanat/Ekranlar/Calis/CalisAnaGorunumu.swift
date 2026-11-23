@@ -246,6 +246,7 @@ struct CalisAnaGorunumu: View {
                             // Z3c: Çalış'ın zemini bu tablonun renklerinden
                             .task(id: kapakEser.anahtar) { ZeminTablosu.shared.son[.calis] = model.gorsel(kapakEser, 960) }
                             .frame(maxWidth: .infinity, minHeight: 236, maxHeight: 236)
+                            .modifier(KapakYuruyusu())
                             .clipped()
                     }
                     LinearGradient(
@@ -1074,5 +1075,49 @@ struct CalisDevamKarti: View {
             .accessibilityLabel("Yarım kalan turu sil")
             .accessibilityIdentifier("devam-bitir")
         }
+    }
+}
+
+/// Sitenin İş 191'i (css/app.css `kapak-yuru`): Bugünün dersi kapağında resim yavaşça bir ayrıntıya yakınlaşır, geri
+/// döner, öbür ayrıntıya yakınlaşır. 16 sn döngü; duruşlar 0–8 %, 22–38 % (translate(−10 %, 6 %) scale(1,8)),
+/// 50–58 %, 72–90 % (translate(14 %, −4 %) scale(1,9)); eğri cubic-bezier(0.65, 0, 0.35, 1), merkez 50 % 40 %.
+/// Z3j: Swift'e geçişte eksik kalmıştı. Hareket azaltma ya da Ayarlar'da hareket kapalıysa durur.
+private struct KapakYuruyusu: ViewModifier {
+    @Environment(TemaDeposu.self) private var tema
+    @Environment(\.accessibilityReduceMotion) private var hareketAz
+
+    struct Kare {
+        var olcek: CGFloat = 1
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+    }
+
+    func body(content: Content) -> some View {
+        if hareketAz || tema.ayar.hareketAzaltilmis {
+            content
+        } else {
+            content.keyframeAnimator(initialValue: Kare(), repeating: true) { c, k in
+                c.scaleEffect(k.olcek, anchor: UnitPoint(x: 0.5, y: 0.4))
+                    .visualEffect { v, g in v.offset(x: k.x * g.size.width, y: k.y * g.size.height) }
+            } keyframes: { _ in
+                KeyframeTrack(\.olcek) { Self.iz(1, 1.8, 1, 1.9) }
+                KeyframeTrack(\.x) { Self.iz(0, -0.10, 0, 0.14) }
+                KeyframeTrack(\.y) { Self.iz(0, 0.06, 0, -0.04) }
+            }
+        }
+    }
+
+    /// 16 sn: dur 1,28 · git 2,24 · dur 2,56 · dön 1,92 · dur 1,28 · git 2,24 · dur 2,88 · dön 1,6
+    @KeyframeTrackContentBuilder<CGFloat>
+    static func iz(_ bas: CGFloat, _ a: CGFloat, _ orta: CGFloat, _ b: CGFloat) -> some KeyframeTrackContent<CGFloat> {
+        let egri = UnitCurve.bezier(startControlPoint: UnitPoint(x: 0.65, y: 0), endControlPoint: UnitPoint(x: 0.35, y: 1))
+        LinearKeyframe(bas, duration: 1.28)
+        LinearKeyframe(a, duration: 2.24, timingCurve: egri)
+        LinearKeyframe(a, duration: 2.56)
+        LinearKeyframe(orta, duration: 1.92, timingCurve: egri)
+        LinearKeyframe(orta, duration: 1.28)
+        LinearKeyframe(b, duration: 2.24, timingCurve: egri)
+        LinearKeyframe(b, duration: 2.88)
+        LinearKeyframe(bas, duration: 1.6, timingCurve: egri)
     }
 }

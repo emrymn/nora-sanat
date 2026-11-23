@@ -116,10 +116,14 @@ struct SayfaZemini: View {
             ZStack(alignment: .topLeading) {
                 Color(r.zemin)
                 if let c = cift {
-                    // Gündüz'de açık zeminde aynı süzme daha soluk
-                    let k = r.koyu ? 1.0 : 0.6
+                    // Z3j: Gündüz'de süzme kâğıdın üstüne çarpılarak (multiply) boyanır. Önceden aynı süzme %60 güçte ve
+                    // normal karışımla açık zeminde neredeyse görünmüyordu (kullanıcı: "açık temada süzme yok").
+                    let karisim: BlendMode = r.koyu ? .normal : .multiply
+                    let k = r.koyu ? 1.0 : 0.85
                     elips(c.birinci, [(0.5 * k, 0), (0.16 * k, 0.5), (0, 0.85)], rx: 1.2 * w, ry: 0.6 * h, merkez: .topLeading, w: w, h: h)
+                        .blendMode(karisim)
                     elips(c.ikinci, [(0.36 * k, 0), (0.1 * k, 0.45), (0, 0.8)], rx: 0.9 * w, ry: 0.5 * h, merkez: .bottomTrailing, w: w, h: h)
+                        .blendMode(karisim)
                 } else if ustHale {
                     elips(r.vurgu, [(0.11, 0), (0.03, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.8 * 520, merkez: .topLeading, w: w, h: 520)
                 } else {
@@ -169,6 +173,9 @@ struct GaleriUst: View {
     let koleksiyonDolu: Bool
     let ara: () -> Void
     let koleksiyon: () -> Void
+    /// Z3j: arama sayfası bu haptan büyüyerek açılır (iOS 18)
+    var aramaKaynagi: String? = nil
+    var aramaAlani: Namespace.ID? = nil
     let sec: (Bolum) -> Void
     @Environment(TemaDeposu.self) private var tema
 
@@ -193,6 +200,7 @@ struct GaleriUst: View {
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .modifier(BuyuyerekAcilanKaynak(id: aramaKaynagi ?? "ara", alan: aramaKaynagi == nil ? nil : aramaAlani))
                 .accessibilityLabel("Sanatçı, eser, konu ara")
                 Button(action: koleksiyon) {
                     GaleriIkon(simge: .kalp, boyut: 20, kalinlik: 1.6, dolu: koleksiyonDolu)

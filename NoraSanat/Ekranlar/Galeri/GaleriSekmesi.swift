@@ -67,6 +67,11 @@ struct GaleriSekmesi: View {
     @State private var yenilemeHatasi = false
     @State private var basyapitBaglami: BasyapitBaglami?
     @State private var bsyDonem = ""
+    /// Z3j: bölümler (Akımlar, Başyapıtlar, Konular, Zaman) arası geçiş kaymasız; içerik yükselerek belirir
+    @State private var bolumGirisi = 0
+    /// Z3j: arama, dokunulan haptan büyüyerek açılır (iOS 18)
+    @Namespace private var aramaAlani
+    @State private var aramaKaynagi: String?
     private static let depo = SiteVerisi()
     @State private var dersler = DersDeposu(depo: GaleriSekmesi.depo)
 
@@ -95,8 +100,10 @@ struct GaleriSekmesi: View {
                     if let g = galeri, let il = ilerleme { hedefSayfa(hedef, g, il) }
                 }
                 .toolbar(.hidden, for: .navigationBar)
+                .modifier(BuyuyerekAcilanHedef(id: hedef == .ara ? aramaKaynagi : nil, alan: aramaAlani))
             }
         }
+        .girisHareketi(bolumGirisi)
         .task(id: deneme) {
             do {
                 hata = nil
@@ -178,14 +185,24 @@ struct GaleriSekmesi: View {
 
     /// `gozAtUst`: bölüm sekmeleri (Zaman G5'te yerli)
     private func ust(_ etkin: GaleriUst.Bolum, _ g: GaleriKatalogu, _ il: Ilerleme) -> GaleriUst {
-        GaleriUst(etkin: etkin, koleksiyonDolu: !g.koleksiyon(il).isEmpty,
-                  ara: { yol.append(.ara) }, koleksiyon: { yol.append(.koleksiyon) }) { b in
-            switch b {
-            case .akimlar: if etkin != .akimlar { yol = [] }
-            case .basyapitlar: if etkin != .basyapitlar { yol = [.basyapitlar] }
-            case .konular: if etkin != .konular { yol = [.konular("")] }
-            case .zaman: if etkin != .zaman { yol = [.zaman] }
+        let kaynak = "ara-\(etkin.rawValue)"
+        return GaleriUst(etkin: etkin, koleksiyonDolu: !g.koleksiyon(il).isEmpty,
+                         ara: { aramaKaynagi = kaynak; yol.append(.ara) }, koleksiyon: { yol.append(.koleksiyon) },
+                         aramaKaynagi: kaynak, aramaAlani: aramaAlani) { b in
+            guard b != etkin else { return }
+            // Z3j: sitede bölümler arası geçiş kaymaz (js/gecis.js 'bolum'); yeni bölüm yerinde yükselerek belirir.
+            // Önceden Akımlar'dan geçerken yeni sayfa yandan kayıyor, öbürleri arasında birden değişiyordu.
+            var t = Transaction()
+            t.disablesAnimations = true
+            withTransaction(t) {
+                switch b {
+                case .akimlar: yol = []
+                case .basyapitlar: yol = [.basyapitlar]
+                case .konular: yol = [.konular("")]
+                case .zaman: yol = [.zaman]
+                }
             }
+            bolumGirisi += 1
         }
     }
 
@@ -205,8 +222,9 @@ struct GaleriSekmesi: View {
                           },
                           gir: { yol.append(.akim($0)) })
             }
-            // Z3h: "Bütün akımlar" en alta kaydırınca sekme çubuğunun üstündeki dişlinin (hızlı ayar dili) üstünde kalsın
-            .padding(.bottom, 56)
+            // Z3h/Z3j: "Bütün akımlar" en alta kaydırınca sekme çubuğunun üstündeki dişlinin (hızlı ayar dili) üstünde
+            // kalsın; 56 yetmiyordu (telefonda düğme dişlinin hizasındaydı). Çalış'taki sayfalarla aynı pay.
+            .padding(.bottom, 128)
           }
           .scrollIndicators(.hidden)
           #if DEBUG
