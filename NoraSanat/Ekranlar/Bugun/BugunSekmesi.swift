@@ -34,7 +34,6 @@ struct BugunSekmesi: View {
   /// ad 0,55 sn'de belirir (css/app.css `main.perde .sahne-isim`); bu bilinçli bir fark.
   @State private var yaziAcik = false
   @State private var acilisBasladi = false
-  @Environment(\.scenePhase) private var evre
   @State private var hareketHatasi = false
   @State private var atlama: Int?
   @State private var atlamaIsi: Task<Void, Never>?
