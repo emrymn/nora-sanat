@@ -131,6 +131,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Metnin arasındaki ayrıntı kırpımlarına dokun: görüntüleyici o ayrıntıda açılıyor. Alttaki "Yakından bak · n ayrıntı" incelemeyi baştan açıyor.
   - "Okumayı sürdür": ayrıntılı anlatım aynı sayfada açılıyor; noktalı altı çizili terime dokununca altta sözlük kartı. Resimli bir karşılaştırmaya dokun: iki eser üst üste, "Eserin sayfası" o esere gidiyor.
   - Aramada bir başyapıt adı yaz (ör. "elçiler"): sonuç yerli sayfayı açıyor. Sanatçı sayfasındaki "Yakın okuma" satırları da.
+- [ ] (Z2c-1) Çalış rozeti, simge rozeti ve tekrar hatırlatmaları artık siteye sorulmadan Swift'te hesaplanır. Çalış sekmesindeki rozet sayısı Çalış'taki "Günlük tekrar" kart sayısıyla aynı olmalı; bir tur bitirince azalmalı. Ben → Ayarlar → Simge rozeti açıksa uygulamayı kapatınca simgede yarın tekrarı gelecek sanatçı sayısı görünmeli. Hatırlatma saatinde bildirim gelmeli (iOS Ayarlar → Nora Sanat).
 - [ ] (Z2b) **Yüklemeden önce** eski sürümde Ben → Ayarlar → Yedekle ile yedek al (JSON dosyası olarak da kaydet). Yeni sürümü yükleyip aç: ilerleme bir kez Swift'e taşınır. Ben'de işlenen konu sayısı, Çalış'taki tekrar sayısı ve yarım kalan tur aynı olmalı. Hızlı ayarlardan temayı değiştir, uygulamayı kapatıp aç: tema kalmalı. Yedekle → Geri yükle (aynı yedekle) sorunsuz olmalı.
 - [ ] (Z3d) Galeri ve Çalış zeminindeki renk süzmesi artık açıkça görünmeli: sol üstte tablonun canlı bir rengi (ör. Elçiler'de kırmızı), sağ altta öbürü. Hâlâ silik ya da fazla ise söyle.
 - [ ] (Z3c) Galeri ve Çalış'ın zemini o sayfanın tablosunun iki renginden süzülür (sol üstte biri, sağ altta öbürü): Akımlar'da çarkı çevir, renkler salonla değişir; bir sanatçı, konu ya da başyapıt aç; Çalış'ta bugünün dersinin renkleri. Arama ve koleksiyon son bakılan tablonun renklerinde kalır.
@@ -154,14 +155,15 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 NoraSanat.xcodeproj/    Xcode projesi (NoraSanat/ klasörü senkronize: yeni dosyalar kendiliğinden girer)
 Config/                 Base.xcconfig, Info.plist (App-Bound Domains), Local.xcconfig (git'e girmez)
 NoraSanat/              NoraSanatApp.swift (giriş), WebKabugu.swift (WKWebView çerçevesi),
-                        TekrarKoprusu.swift (site ↔ uygulama betiği), Hatirlatici.swift (bildirim, rozet, sayfaya gitme),
+                        Hatirlatici.swift (bildirim, rozet, sayfaya gitme),
                         Settings.bundle (iOS Ayarlar'daki hatırlatma ayarları)
-NoraSanat/Kabuk/        IlerlemeKoprusu.swift (sitenin ilerlemesini Swift'ten okuma/yazma), DEBUG özet ekranı (-ekran ilerleme)
+NoraSanat/Kabuk/        IlerlemeKoprusu.swift (ilerleme dosyası), SayacDeposu.swift (Çalış rozeti, simge rozeti, hatırlatmalar),
+                        DEBUG özet ekranı (-ekran ilerleme)
 NoraSanatWidget/        "Günün tablosu" widget'ı
 Paketler/NoraCekirdek/  Arayüzden bağımsız mantık + testler (Linux'ta: swift test --package-path Paketler/NoraCekirdek)
                         SiteVerisi/: sitenin verisi (indirme, önbellek, sanatçılar, eserler, görsel adresleri)
                         Ilerleme/: ilerleme modeli ve tekrar kuralları (Leitner, geçmiş, seviye, kilit)
-Testler/                Köprü betiğinin testleri (node --test Testler/tekrarTakvimi.test.mjs)
+Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek cevaplar) ve CI betikleri (Testler/ci)
 .github/workflows/      Her PR'da: derleme + simülatörde açılış ekran görüntüsü
 ```
 - [ ] (G5) Galeri → **Zaman** (Galeri'nin dördüncü sekmesi): üstte yıl, "n sanatçı hayatta", altında renkli çubuklu cetvel ve pirinç ibre. Cetveli parmakla kaydır ya da bir yere dokun: yıl ve aşağıdaki akım akım liste değişiyor; açık sanatçıya dokununca sanatçı sayfası. Kilitli satırda "Konu n'de açılır".

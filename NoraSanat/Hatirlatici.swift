@@ -6,10 +6,11 @@ import WebKit
 
 /// Tekrar hatırlatmaları ve simge rozeti.
 ///
-/// - Sayılar Sanat Atlası'nın kendi ilerlemesinden gelir (`WebKabugu` → `TekrarKoprusu.betik`): uygulama her kapanışta ve
-///   açılışta önümüzdeki 14 günün "tekrar bekliyor" sayılarını bildirir; burada her gün için seçilen saatte bir bildirim kurulur.
+/// - Sayılar Swift'teki kayıttan gelir (Z2c: `SayacDeposu.hatirlatmalariYenile`, `TekrarTakvimi.hesapla`): uygulama her
+///   kapanışta ve açılışta önümüzdeki 14 günün "tekrar bekliyor" sayılarını hesaplar; burada her gün için seçilen saatte
+///   bir bildirim kurulur.
 /// - Açma/kapama ve saat iOS Ayarlar'ında: Ayarlar → Uygulamalar → Nora Sanat (Settings.bundle).
-/// - Rozet: sitedeki Ayarlar → "Simge rozeti" açıksa (sitenin `navigator.setAppBadge` çağrıları) ve bildirimlerde.
+/// - Rozet: Ben → Ayarlar → "Simge rozeti" açıksa (`SayacDeposu`) ve bildirimlerde.
 @MainActor
 final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
     static let shared = Hatirlatici()
@@ -109,12 +110,7 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
-    /// Sitenin `Notification.requestPermission()`'ı ("Simge rozeti"ni açarken)
-    func izinIste() async -> String {
-        await izinVar(sor: true) ? "granted" : "denied"
-    }
-
-    /// Sitenin `navigator.setAppBadge(n)` / `clearAppBadge()`'i
+    /// Simgedeki sayı (sitenin `rozetYaz(n)`'ı; 0: temizle)
     func rozet(_ n: Int) {
         Task {
             if n > 0 {
@@ -181,7 +177,6 @@ final class Gezgin {
 
     func yuklemeBitti() {
         yuklendi = true
-        KabukDurumu.shared.rozetiYenile()
         if let b = bekleyen {
             bekleyen = nil
             git(b)

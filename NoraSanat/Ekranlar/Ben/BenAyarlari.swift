@@ -424,7 +424,7 @@ struct BenAyarlari: View {
     private func rozet(_ ac: Bool) {
         depo.yap {
             if ac {
-                guard await Hatirlatici.shared.izinIste() == "granted" else {
+                guard await Hatirlatici.shared.izinVar(sor: true) else {
                     depo.mesaj = "Simge rozeti için iOS Ayarlar’dan bildirim izni ver."; return
                 }
             }

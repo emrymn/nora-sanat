@@ -156,14 +156,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bitti (#20): G5a ChatGPT, G5b (görünüş) Claude |
-| Z3a | Yolculuk cilası | G | G5 | 1 | PR açık (#27) |
+| Z3a | Yolculuk cilası | G | G5 | 1 | bitti (#27) |
 | C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
 | T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
-| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | sürüyor: Z2a bitti (#30), Z2b PR açık (#31) |
+| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | sürüyor: Z2a (#30), Z2b (#31) bitti; Z2c-1 PR açık |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Z3b | Ders ve yazı cilası | C | C3 | 1 | birleşti (#29) |
 | Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | birleşti (#32) |
@@ -985,6 +985,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Sitenin yarım oturumu (`d.yarim`) taşınmaz: yerli turlar zaten `ayarlar['calis.tur']`'da. Yedekteki `yarimOturum` yok sayılır.
 - Kâhin `ilerleme_koprusu.mjs`: taşıma okuması ve ayna canlı sitede (Chromium) geçti.
 - Z2c'ye kalan site okumaları: `TemaKoprusu` (renkli Gündüz, tablonun vurgusu: js/renk.js), rozet (`turBilgisi`), `TekrarKoprusu` (takvim), Ben: ayar bilgisi, günün sanatçısı değiştirme, hata günlüğü, elle odaklar, hareket izni, geliştirici listeleri; `BugunDeposu` odak/gündüz rengi.
+
+**Z2c planı** (Claude, 2026-11-23; kullanıcı: "direkt sen yap hepsini"):
+- **Z2c-1 · sayaçlar**: Çalış rozeti (`CalisKurallari.turBilgisi`), simge rozeti (`Gecmis.vadeSayisi`/`yarinVade`) ve tekrar takvimi (`TekrarTakvimi.hesapla`, kâhin `tekrar_takvimi.mjs`) Swift'te: `NoraSanat/Kabuk/SayacDeposu.swift`. `TekrarKoprusu.swift`, sitenin rozet/izin köprüleri ve `sekme_cubugu.mjs`'nin köprü bölümü kalktı.
+- **Z2c-2 · renkler**: js/renk.js (`paletHesapla`, `vurguSec`, `renkTemasi`, `tonlariHesapla`) ve js/gunduzRenk.js (`resimdenPalet`, hazır paletler) Swift'e; `TemaDeposu` renkleri siteden değil ayarlardan ve günün tablosundan hesaplar.
+- **Z2c-3 · site kalkar**: Ben'in kalan betikleri, Bugün odak rengi, Galeri/Ben bekleme betikleri; `WebKabugu` yalnız DEBUG `-yalnizSite`'ta.
 
 ### Z3 · Cila + yetişme (Claude)
 **Kapsam:**
