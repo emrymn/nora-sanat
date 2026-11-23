@@ -35,6 +35,13 @@ enum TemaHesabi {
         UserDefaults.standard.set(try? JSONEncoder().encode(deger), forKey: anahtar)
     }
 
+    /// Ayarlar'daki örnek daireler (sitenin `gunduzOrnekPaleti`'si): otomatikte bugünkü palet (yoksa yedek)
+    static func gunduzOrnekPaleti(_ secim: String) -> GunduzPaleti? {
+        guard secim == "otomatik" else { return GunduzPaleti.sec(secim, tonlar: nil) }
+        let k: GunduzKaydi? = oku(Anahtar.gunduz)
+        return k?.palet ?? GunduzPaleti.hazir[GunduzPaleti.yedek]
+    }
+
     /// Açılışta, uygulamaya dönünce (gün değişmiş olabilir) ve kayıt her yazıldığında. Tema ayarları, günün sanatçısı
     /// değişimi ve tarih aynıysa bir şey yapmaz.
     static func yenile() {
