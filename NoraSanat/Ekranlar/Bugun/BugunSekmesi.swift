@@ -210,7 +210,12 @@ struct BugunSekmesi: View {
       }
       .frame(width: boy.width, height: h).clipped()
       .onChange(of: gizle, initial: true) { _, yeni in cubukGizli = yeni }
-      .onChange(of: kabuk.yenidenDokunma[.bugun]) { _, _ in kaydir.scrollTo(0, anchor: .top) }
+      // Sekmeye yeniden dokununca en alttaki "Başa dön" ile aynı süzülerek dönüş (Emre'nin isteği; sitede bu dokunuş
+      // animasyonsuz başa atlar). Zaten baştaysa bir şey yapmaz.
+      .onChange(of: kabuk.yenidenDokunma[.bugun]) { _, _ in
+        guard kayma > 1 else { return }
+        suzul(hedef: 0) { kaydir.scrollTo(0, anchor: .top) }
+      }
       .onChange(of: kabuk.yerliAdres[.bugun], initial: true) { _, adres in
         guard let adres else { return }
         if adres.hasPrefix("#/gunun/") {
