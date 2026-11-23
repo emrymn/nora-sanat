@@ -652,9 +652,16 @@ private struct YolculukHaritaEkrani: View {
                     (0.46, 0.50 + 0.28 * 0.46, 0.22 * 1.6, 0.52 * 0.28, 0.5, sis), (0.30, 0.38 + 0.24 * 0.5, 0.10 * 1.6, 0.40 * 0.24, 0.32, isik),
                 ]
                 for (x, y, rx, ry, a, renk) in tutamlar {
-                    let r = CGRect(x: (x - rx) * boyut.width, y: (y - ry) * boyut.height, width: 2 * rx * boyut.width, height: 2 * ry * boyut.height)
-                    c.fill(Path(ellipseIn: r), with: .radialGradient(Gradient(colors: [renk.opacity(a), renk.opacity(0)]),
-                                                                     center: CGPoint(x: r.midX, y: r.midY), startRadius: 0, endRadius: max(r.width, r.height) / 2 * 0.72))
+                    // CSS `radial-gradient(ellipse …, renk, saydam 72%)`: elips boyunca söner (kenarda sert çizgi kalmaz).
+                    // Daire çizip yatayda gerilir.
+                    let w = 2 * rx * boyut.width, h = 2 * ry * boyut.height
+                    var k = c
+                    k.translateBy(x: x * boyut.width, y: y * boyut.height)
+                    k.scaleBy(x: w / h, y: 1)
+                    let yaricap = h / 2
+                    k.fill(Path(ellipseIn: CGRect(x: -yaricap, y: -yaricap, width: h, height: h)),
+                           with: .radialGradient(Gradient(colors: [renk.opacity(a), renk.opacity(0)]),
+                                                 center: .zero, startRadius: 0, endRadius: yaricap * 0.72))
                 }
             }
             .allowsHitTesting(false)
