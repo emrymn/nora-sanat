@@ -1,7 +1,7 @@
 // Kaynak: sanat-atlasi js/ekranlar/ayarlar.js (bildirimBolumu, elleOdakBolumu, gununResmiBolumu, Günün sanatçısı,
 // Sürüm), js/gunun.js (baskaSanatci), js/bildirim.js (bildirimMetni), js/gorsel.js (elle odaklar) @ a866b86
 // C4b: her bölüm sitedeki gibi ayrı bir `.ayar`. Z2c-3: betikler Swift'te; hata günlüğü sitenin kendi günlüğüydü,
-// site kalktığı için bölümü de kalktı. "Sırayla ortala" Z2c-3b'ye kadar sitenin görüntüleyicisini açar.
+// site kalktığı için bölümü de kalktı. "Sırayla ortala" yerli görüntüleyiciyi açar (Z2c-3b).
 import NoraCekirdek
 import SwiftUI
 
@@ -83,38 +83,29 @@ struct BildirimBolumu: View {
     }
 }
 
-/// "Ana ekranın resimleri": yürüyüş eserlerini sırayla ortalama
+/// "Ana ekranın resimleri": yürüyüş eserlerini sırayla ortalama (Z2c-3b: yerli görüntüleyicide)
 struct GununResimleriBolumu: View {
     let depo: BenDeposu
     let yuruyus: Int
-    @Environment(KabukDurumu.self) private var kabuk
+    @Environment(TemaDeposu.self) private var tema
+    @State private var eserler: [Eser] = []
+    @State private var acik = false
 
     var body: some View {
         AyarBolumu(baslik: "Ana ekranın resimleri",
                    aciklama: "Ana ekranda günün ressamının yürüyüş eseri görünür\(yuruyus > 0 ? " (\(yuruyus) eser)" : ""). “Sırayla ortala” bu eserleri sırayla açar: “Odağı işaretle”ye dokun, sonra ekranın ortasına gelecek noktaya; çerçeve ana ekranın açılışında görünen alanı gösterir. Ortaladıkların aşağıdaki “Elle ortalanan tablolar” listesine girer.") {
-            Button("Sırayla ortala") { depo.yap { try await odakAc() } }
-                .buttonStyle(HapDugme()).padding(.top, 8)
+            Button("Sırayla ortala") {
+                depo.yap {
+                    eserler = await depo.yuruyusEserleri()
+                    guard !eserler.isEmpty else { depo.mesaj = "Yürüyüş eserleri bulunamadı."; return }
+                    acik = true
+                }
+            }
+            .buttonStyle(HapDugme()).padding(.top, 8)
         }
-    }
-
-    private func odakAc() async throws {
-        // Görüntüleyici ana sitede kaldığı sürece aynı WebKit oturumunda açılır.
-        kabuk.sec(.galeri)
-        _ = try await depo.kopru.benBetigi("""
-        const { d } = await import('/js/ekranlar/ortak.js');
-        const { sanatciEserleri } = await import('/js/eserler.js');
-        const { gorselAdi } = await import('/js/gorsel.js');
-        const { goruntuleyiciAc } = await import('/js/goruntuleyici.js');
-        const sanatcilar = d.sanatcilar.filter(s => d.yuruyus?.[s.id]);
-        const listeler = await Promise.all(sanatcilar.map(s => sanatciEserleri(s).catch(() => [])));
-        const eserler = sanatcilar.flatMap((s,i) => {
-          const uygun = g => gorselAdi(g) === d.yuruyus[s.id].gorsel;
-          const e = listeler[i].find(e => e.gorseller?.some(uygun));
-          return e ? [{ ...e, gorseller:e.gorseller.filter(uygun) }] : [];
-        });
-        if (!eserler.length) throw Error('Yürüyüş eserleri bulunamadı.');
-        goruntuleyiciAc({eserler, kotuler:{}, ortalama:true});
-        """)
+        .fullScreenCover(isPresented: $acik) {
+            Goruntuleyici(eserler: eserler, ortalama: true).environment(tema)
+        }
     }
 }
 

@@ -181,6 +181,7 @@ final class Gezgin {
 
     func yuklemeBitti() {
         yuklendi = true
+        IlerlemeKoprusu.shared.siteYuklendi()
         Task { await ElleOdaklar.sitedenAl() }   // Z2c-3: site kalkmadan önce cihazdaki elle odaklar
         KabukDurumu.shared.rozetiYenile()
         if let b = bekleyen {

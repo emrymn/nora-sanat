@@ -83,6 +83,8 @@ final class IlerlemeKoprusu {
     /// Site yüklenene kadar bekler (en çok `bekleme`); WKWebView'i verir. Site betiği çalıştıran her yer bunu kullanır:
     /// Z2b'den beri `oku()` siteyi beklemediği için betikler sitenin yüklenmesini kendileri beklemeli.
     func hazirSite() async throws -> WKWebView {
+        // Z2c-3b: site bu açılışta hiç kurulmadıysa beklemeden
+        guard WebKabugu.gerekli else { throw Hata.siteYok }
         let son = Date().addingTimeInterval(bekleme)
         while Date() < son {
             if Gezgin.shared.yuklendi, let w = Gezgin.shared.webView { return w }
@@ -173,12 +175,20 @@ final class IlerlemeKoprusu {
     private var aynaGorevi: Task<Void, Never>?
     /// Kaydı siteye de yazar (sırayla; hata olursa yalnız ayna eksik kalır, asıl kayıt dosyada)
     private func aynala(_ n: SiraliNesne) {
+        guard WebKabugu.gerekli else { return }   // Z2c-3b: site yoksa ayna da yok
         let onceki = aynaGorevi
         let metin = JSONDeger.nesne(n).jsonMetni
         aynaGorevi = Task {
             await onceki?.value
             _ = try? await self.calistir(self.betik(Self.aynaBetigi, "/* AYNA-BASI */", "/* AYNA-SONU */"), ["metin": metin])
         }
+    }
+
+    /// Site yüklenince (taşıma, elle odakların alınması ya da DEBUG `-yalnizSite`): dosyadaki kayıt bir kez siteye
+    /// yazılır; site yokken yapılan yazımlar da böylece siteye geçer (CI'daki site karşılaştırmaları aynı veriyi görür)
+    func siteYuklendi() {
+        guard dosya.varMi, let k = kayit ?? (try? dosya.oku(bugun: Self.bugun, simdi: Self.simdi)) else { return }
+        aynala(k)
     }
 
     /// Ayna yazımı bitene kadar bekler (sitenin hâlâ okuduğu bir şeyden önce: tema, rozet, site betikleri)

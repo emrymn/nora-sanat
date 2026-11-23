@@ -113,6 +113,19 @@ final class BenDeposu {
         return (nolar, bolumler)
     }
 
+    /// "Sırayla ortala": günün resmi olabilecek yürüyüş eserleri, yalnız yürüyüş görseliyle (sitenin `odakAc`'ı)
+    func yuruyusEserleri() async -> [Eser] {
+        guard let k = katalog, let y = await veri.veri("yuruyus.json"),
+              let es = (try? JSONDeger.coz(y))?["eserler"] else { return [] }
+        return k.sanatcilar.compactMap { s -> Eser? in
+            guard let ad = es[s.id]?["gorsel"]?.metin, !ad.isEmpty else { return nil }
+            let uygun: (Gorsel) -> Bool = { k.gorsel.yerelAd($0) == ad }
+            guard var e = k.eserler(s.id).first(where: { $0.gorseller.contains(where: uygun) }) else { return nil }
+            e.gorseller = e.gorseller.filter(uygun)
+            return e
+        }
+    }
+
     /// Ayarlar'ın bilgi satırları (sitenin betiği yerine)
     func ayarBilgisi() async -> AyarBilgisi {
         var b = AyarBilgisi()

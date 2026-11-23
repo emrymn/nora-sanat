@@ -9,6 +9,9 @@ enum ElleOdaklar {
     private static let anahtar = "nora.odak.elle.v1"
     private static let alindi = "nora.odak.elle.sitedenAlindi"
 
+    /// Sitedekiler alındı mı (alınmadıysa site bir kez daha yüklenir; bkz. `WebKabugu.gerekli`)
+    static var alindiMi: Bool { UserDefaults.standard.bool(forKey: alindi) }
+
     static var hepsi: [String: [Double]] {
         (UserDefaults.standard.dictionary(forKey: anahtar) as? [String: [Double]]) ?? [:]
     }
