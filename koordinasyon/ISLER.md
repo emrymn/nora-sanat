@@ -163,10 +163,10 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
 | T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
-| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | sürüyor: Z2a bitti (#30), Z2b PR açık |
+| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | sürüyor: Z2a bitti (#30), Z2b PR açık (#31) |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
 | Z3b | Ders ve yazı cilası | C | C3 | 1 | birleşti (#29) |
-| Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | PR açık (#32) |
+| Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | birleşti (#32) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -976,6 +976,14 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Kâhin `Testler/kahin/depo.mjs` (Node, tarayıcısız): 413 doğrulama vakası (96'sı sitenin hata metniyle), 25 yedek metni, 15 çözüm, 57 küçük kural, 20 en yeni kayıt, 12 geliştirici aç/kapat. Hepsi aynı.
 - Tuzak: sitenin doğrulaması tam sabit değil (`derslerDogrula` günü olup ilerlemesi 0 olan adımı ilk geçişte `{i:0}` bırakır, ikincide siler); test "iki geçişten sonra sabit".
 - `IlerlemeDosyasi` testleri: yaz/oku, önceki kopya, çakışma, bozuk ana kayıttan öncekine dönüş (bozuk dosya saklanır), hiçbir kopya okunamazsa kilit.
+
+**Z2b devir notu:** Claude, 2026-11-22.
+- `IlerlemeKoprusu` (`oku`, `yaz`, `degistir` aynı): kayıt `Application Support/Ilerleme/ilerleme.json`. İlk çağrıda dosya yoksa sitenin `d.ilerleme`'si okunup doğrulanır ve yazılır (taşıma; site kaydı okuyamayıp kilitlediyse `kayitKilitliMi` taşınmaz, `.kilitli`). Site açılmazsa `.siteYok`, sonraki çağrıda yeniden denenir; boş ilerleme hiç yazılmaz.
+- **Ayna:** her yazımdan sonra `aynaBetigi` kaydı sitenin belleğine ve deposuna yazar (`kaydet`, `temaUygula`). Sitenin hâlâ okuduğu şeyler bu sayede doğru: `TemaKoprusu` (renkler), `SekmeCubuguKoprusu.rozet`, `TekrarKoprusu` (localStorage), Ben'in site betikleri (`benBetigi`), CI'daki `-yalnizSite` karşılaştırmaları. Site betiği çalıştırmadan önce `aynaBitsin()`.
+- Swift'e geçenler: Yedekle (`yedekAl`: `sonYedek` + `yedekMetni`), yedeği denetle (`yedekCoz`), Geri yükle (`geriYukle`: numara denetimi, kilit açılır), Geliştirici modu (`gelistirici`; konu/bölüm listeleri hâlâ siteden), hızlı ayarlar (`SekmeCubuguKoprusu.ayarlar/yaz`).
+- Sitenin yarım oturumu (`d.yarim`) taşınmaz: yerli turlar zaten `ayarlar['calis.tur']`'da. Yedekteki `yarimOturum` yok sayılır.
+- Kâhin `ilerleme_koprusu.mjs`: taşıma okuması ve ayna canlı sitede (Chromium) geçti.
+- Z2c'ye kalan site okumaları: `TemaKoprusu` (renkli Gündüz, tablonun vurgusu: js/renk.js), rozet (`turBilgisi`), `TekrarKoprusu` (takvim), Ben: ayar bilgisi, günün sanatçısı değiştirme, hata günlüğü, elle odaklar, hareket izni, geliştirici listeleri; `BugunDeposu` odak/gündüz rengi.
 
 ### Z3 · Cila + yetişme (Claude)
 **Kapsam:**

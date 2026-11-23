@@ -97,6 +97,10 @@ genel() {
   xcrun simctl launch "$UDID" "$PAKET" -ekran ilerleme -ilerlemeYaz
   sleep 30
   xcrun simctl io "$UDID" screenshot ekranlar/5-ilerleme-ozeti.png
+  # Z2b: ilerleme Swift'in dosyasında (ilk açılışta siteden taşındı); deneme yazısı (7-8. konular) orada olmalı
+  IL="$VERI/Library/Application Support/Ilerleme/ilerleme.json"
+  test -s "$IL"
+  python3 -c 'import json,sys; v=json.load(open(sys.argv[1])); print("Swift ilerlemesi: kayitNo", v["kayitNo"], "islenen", len(v["islenen"])); assert 7 in v["islenen"] and 8 in v["islenen"]' "$IL"
   # ...sonra site kendi #/ilerleme sayfasında bunu göstermeli (kayıt kalıcı)
   sleep 3
   xcrun simctl terminate "$UDID" "$PAKET"

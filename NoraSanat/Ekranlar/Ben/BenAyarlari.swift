@@ -176,7 +176,8 @@ struct BenAyarlari: View {
             Alert(title: Text("Mevcut ilerleme değiştirilsin mi?"), message: Text("Yedekte \(y.konu) konu ve \(y.skor) sanatçı skoru var."),
                   primaryButton: .destructive(Text("Geri yükle")) {
                 depo.yap {
-                    _ = try await depo.kopru.benBetigi(IlerlemeKoprusu.benGeriYukle, ["metin": y.metin, "beklenen": y.no])
+                    try await depo.kopru.geriYukle(y.metin, beklenen: y.no)
+                    _ = try? await depo.kopru.benBetigi("(await import('/js/ekranlar/ortak.js')).d.oturum = null;")
                     girdi = ""
                     depo.mesaj = "Yedek geri yüklendi."
                 }
@@ -186,7 +187,14 @@ struct BenAyarlari: View {
                             isPresented: $modOnayi, titleVisibility: .visible) {
             Button("Geliştirici modunu değiştir") {
                 let ac = depo.il?[alan: "gelistirici"]?.nesne == nil
-                depo.yap { _ = try await depo.kopru.benBetigi(IlerlemeKoprusu.benGelistirici, ["ac": ac]) }
+                depo.yap {
+                    let l = try await depo.kopru.benBetigi(IlerlemeKoprusu.benGelistiriciListeleri) as? [String: Any]
+                    guard let nolar = l?["nolar"] as? [NSNumber], let bolumler = l?["bolumler"] as? [String] else {
+                        throw IlerlemeKoprusu.Hata.siteYok
+                    }
+                    try await depo.kopru.gelistirici(ac: ac, konular: nolar.map(\.intValue), bolumIdleri: bolumler)
+                    _ = try? await depo.kopru.benBetigi("(await import('/js/ekranlar/ortak.js')).d.oturum = null;")
+                }
             }
         }
     }
@@ -265,9 +273,7 @@ struct BenAyarlari: View {
         AyarBolumu(baslik: "Yedekle", aciklama: "İlerlemen panoya kopyalanır ve aşağıda görünür. Notlar uygulamasına yapıştırıp sakla.") {
             Button {
                 depo.yap {
-                    guard let sonuc = try await depo.kopru.benBetigi(IlerlemeKoprusu.benYedekAl) as? String else {
-                        throw IlerlemeKoprusu.Hata.siteYok
-                    }
+                    let sonuc = try await depo.kopru.yedekAl()
                     yedek = sonuc
                     UIPasteboard.general.string = sonuc
                     depo.mesaj = "Yedek panoya kopyalandı."
@@ -399,9 +405,7 @@ struct BenAyarlari: View {
         let metin = girdi
         depo.yap {
             let kayit = try await depo.kopru.oku()
-            let sonuc = try await depo.kopru.benBetigi("return JSON.stringify((await import('/js/depo.js')).yedekCoz(metin));",
-                                                        ["metin": metin])
-            guard let json = sonuc as? String else { throw IlerlemeKoprusu.Hata.siteYok }
+            let json = JSONDeger.nesne(try depo.kopru.yedekCoz(metin)).jsonMetni
             let ozet = try BenYedekOzeti(dogrulanmisJSON: json)
             onay = Yukleme(metin: metin, no: kayit.kayitNo, konu: ozet.konu, skor: ozet.skor)
         }
