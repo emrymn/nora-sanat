@@ -96,10 +96,12 @@ final class BenDeposu {
         return String(p[p.index(after: a)...].dropLast())
     }
 
-    /// "Yeni sürüm var mı?": sitenin verisini (katalog, sürüm) yeniden indirir
+    /// "Yeni sürüm var mı?": sitenin verisini yeniden indirir. Katalog hemen; öteki dosyalar (Bugün'ün yürüyüş ve
+    /// odak dosyaları dahil) eskimiş sayılır ve ekran onları ilk istediğinde yenisi iner.
     func veriyiYenile() async -> String {
         let eski = await siteSurumu()
         guard let yeni = await siteSurumu(zorla: true) else { return "Siteye ulaşılamadı; çevrimdışı veriyle devam." }
+        await veri.hepsiniEskit()
         if let k = try? await veri.katalog(zorla: true) { katalog = k }
         return yeni == eski ? "Güncel: \(yeni)" : "\(yeni) indirildi."
     }
