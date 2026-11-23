@@ -17,7 +17,7 @@ Sanat Atlası'nın ekranları sekme sekme Swift'e taşınıyor. **Her oturum ön
 - Sitenin koduna dokunmadan bağlanılır. Uygulama sitenin kurallarını kopyalıyorsa kaynağı yorumda yazılı ve testli olmalı:
   - `Paketler/NoraCekirdek/GununSanatcisi.swift` ↔ `js/gunun.js` (günün sanatçısı), `GununTablosu.swift` ↔ `gununHavuzu`, `yuruyusEserAdi`, `yuruyusAdresleri`.
     Test örnekleri (`Tests/.../Ornekler/site_cevaplari.json`) canlı siteden sitenin kendi modülleriyle alındı. Site bu kuralları değiştirirse örnekleri yeniden al.
-  - `NoraSanat/TekrarKoprusu.swift` betiği ↔ `localStorage['sanat-atlasi:ilerleme'].skorlar` ve `js/gecmis.js` `vadeSayisi`.
+  - `TekrarTakvimi.hesapla` (`TekrarPlani.swift`) ↔ eski köprü betiğinin takvimi (`Testler/kahin/tekrar_takvimi.mjs`); rozet sayıları `Gecmis.vadeSayisi` ↔ `js/gecmis.js`.
 - Widget uygulamayla veri paylaşmaz (ücretsiz Apple ID'de App Group yok); veriyi siteden kendisi indirir.
 - Bildirim/rozet: `Hatirlatici`. Ayarları `NoraSanat/Settings.bundle` (anahtarlar: `hatirlatma`, `hatirlatmaSaati`).
 - Arayüzden bağımsız mantık `Paketler/NoraCekirdek`'e girer ve test edilir (yalnız Foundation; SwiftUI/ImageIO dosyaları `#if canImport` ile korunur).

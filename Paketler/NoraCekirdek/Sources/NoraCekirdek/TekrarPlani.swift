@@ -23,6 +23,30 @@ public struct TekrarTakvimi: Codable, Equatable, Sendable {
     }
 }
 
+extension TekrarTakvimi {
+    /// Z2c: sitenin `TekrarKoprusu.betik` → `takvim(ham, bugun)`'unun Swift'i (artık site yok; kayıt Swift'te).
+    /// Önümüzdeki 14 günün her biri için o güne kadar vadesi gelmiş sanatçı sayısı: bir sanatçının sanatçı ya da akım
+    /// skorundan `son`'u olan ve `sonraki`'si dolu olanların en erkeni sayılır. Kâhin: Testler/kahin/tekrar_takvimi.mjs.
+    public static func hesapla(_ ilerleme: JSONDeger, bugun: String, gun: Int = 14) -> TekrarTakvimi? {
+        var v = ilerleme
+        guard v.nesne != nil else { return nil }
+        if let i = v["ilerleme"], i.nesne != nil { v = i }
+        let sinir = (0..<gun).map { GunTarihi.ekle(bugun, $0) }
+        var gunler = [Int](repeating: 0, count: gun)
+        for c in v["skorlar"]?.nesne?.ciftler ?? [] {
+            let s = c.deger
+            let t = [s["sanatci"], s["akim"]].compactMap { x -> String? in
+                guard let x, x.nesneMi, x["son"]?.dogruMu == true, let n = x["sonraki"]?.metin, !n.isEmpty else { return nil }
+                return n
+            }.sorted()
+            guard let ilk = t.first else { continue }
+            if let i = sinir.firstIndex(where: { ilk <= $0 }) { for j in i..<gun { gunler[j] += 1 } }
+        }
+        let rozet = v["ayarlar"]?["rozet"]?.dogruMu == true
+        return TekrarTakvimi(bugun: bugun, gunler: gunler, rozet: rozet)
+    }
+}
+
 public struct Hatirlatma: Equatable, Sendable {
     public var kimlik: String
     public var gun: String

@@ -160,14 +160,14 @@ final class KabukDurumu {
 
     private var rozetGorevi: Task<Void, Never>?
 
-    /// Rozeti siteden yeniden okur. Yerli çubuk hiç yoksa sormaz. Site (ya da `d.ilerleme`) henüz hazır değilse
-    /// hazır olana kadar saniyede bir, en çok 30 kez yeniden dener (açılışta adres iletisi modüllerden önce gelir).
+    /// Rozeti yeniden hesaplar (Z2c: `SayacDeposu`, Swift'teki kayıttan). Yerli çubuk hiç yoksa hesaplamaz. Katalog
+    /// henüz yoksa (ilk açılış, internet yok) saniyede bir, en çok 30 kez yeniden dener.
     func rozetiYenile() {
         guard !Gecis.yerliSekmeler.isEmpty else { return }
         rozetGorevi?.cancel()
         rozetGorevi = Task {
             for _ in 0..<30 {
-                if let n = await SekmeCubuguKoprusu.rozet() {
+                if let n = await SayacDeposu.calisRozeti() {
                     if n != calisRozeti { calisRozeti = n }
                     return
                 }

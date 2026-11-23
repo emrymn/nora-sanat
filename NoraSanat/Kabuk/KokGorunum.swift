@@ -45,7 +45,23 @@ struct KokGorunum: View {
         .preferredColorScheme(tema.koyu ? .dark : .light)
         // Widget'a dokununca: norasanat://bugun
         .onOpenURL { Gezgin.shared.ac($0) }
-        .onChange(of: evre) { _, yeni in if yeni == .active { durum.rozetiYenile() } }
+        // Z2c: rozetler ve hatırlatmalar Swift'teki kayıttan; açılışta bugünün, kapanırken yarının sayısı
+        .task { await SayacDeposu.hatirlatmalariYenile() }
+        .onChange(of: evre) { _, yeni in
+            switch yeni {
+            case .active:
+                durum.rozetiYenile()
+                Task { await SayacDeposu.hatirlatmalariYenile() }
+            case .background:
+                // Uygulama askıya alınmadan bitsin
+                let gorev = UIApplication.shared.beginBackgroundTask()
+                Task {
+                    await SayacDeposu.hatirlatmalariYenile(kapaniyor: true)
+                    UIApplication.shared.endBackgroundTask(gorev)
+                }
+            default: break
+            }
+        }
     }
 
     private var site: some View {
