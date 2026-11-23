@@ -188,7 +188,8 @@ final class SiteVerisiTests: XCTestCase {
         try icerik.write(to: klasor.appendingPathComponent("yuruyus.json"))
         XCTAssertLessThan(site.yas("yuruyus.json"), 60)
         await site.hepsiniEskit()
-        XCTAssertGreaterThan(site.yas("yuruyus.json"), site.omur)
+        let omur = await site.omur
+        XCTAssertGreaterThan(site.yas("yuruyus.json"), omur)
         // indirilemeyince eski kopya döner
         let d = await site.veri("yuruyus.json")
         XCTAssertEqual(d, icerik)
