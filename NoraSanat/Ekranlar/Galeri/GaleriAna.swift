@@ -40,7 +40,10 @@ struct AkimCarki: View {
                     .frame(height: 150)
                     .padding(.top, -30)
                     .contentShape(Rectangle())
-                    .gesture(cevir(w))
+                    // Z3h: aynı anda (simultaneous): dikey sürükleme sayfayı kaydırsın. Önceden çark her dokunuşu
+                    // yakalıyordu; telefonda çark ekranın altında kaldığı için sayfa aşağı kaydırılamıyor, "Bütün
+                    // akımlar" sekme çubuğunun ve dişlinin altında kalıyordu.
+                    .simultaneousGesture(cevir(w))
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Akımlar çarkı")
                     .accessibilityValue(salonlar.indices.contains(sira) ? "\(sira + 1) / \(salonlar.count), \(salonlar[sira].ad)" : "")
@@ -199,7 +202,10 @@ struct AkimCarki: View {
     private func cevir(_ w: CGFloat) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { v in
-                guard abs(v.translation.width) >= 6 || cevirme != nil else { return }
+                // yalnız yatay sürükleme çevirir; dikey olan sayfanın kaydırmasıdır
+                guard cevirme != nil
+                    || (abs(v.translation.width) >= 6 && abs(v.translation.width) > abs(v.translation.height))
+                else { return }
                 if cevirme == nil { cevirme = (konum, v.startLocation.x) }
                 // `oran`: şeridin bir adımı, çarkın bir adımının yay uzunluğuna
                 let yay = Self.yaricap * Self.carkAdimi * .pi / 180
@@ -218,7 +224,7 @@ struct AkimCarki: View {
                     let hiz = Double(v.predictedEndTranslation.width - v.translation.width) / yay
                     cevirme = nil
                     git(Int((konum - hiz * 0.35).rounded()))
-                } else {
+                } else if hypot(v.translation.width, v.translation.height) < 6 {
                     // dokunuş: ekranın ortasına göre açı
                     let sin = max(-1, min(1, Double(v.location.x - w / 2) / (Self.yaricap + 30)))
                     let kayma = Int((asin(sin) * 180 / .pi / Self.carkAdimi).rounded())
