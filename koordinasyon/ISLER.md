@@ -170,7 +170,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3d | Süzme telefonda görünmüyordu: renkler canlı, süzme güçlü | K | Z3c | 1 | PR açık |
 | Z3e | Telefonda görülen iki hata: Galeri çarkı (iOS 18 kaydırma), Yolculuk dönem köprüsü | K | G2b, Z3a | 1 | PR açık |
 | Z3f | Dönemin harfi: akım başlığı ve harita dönem adları (js/harfler.js, İş 48) | K | G2b, Z3a | 1 | birleşti (#38) |
-| Z3i | Bugün sekmesine yeniden dokununca "Başa dön" gibi süzülerek başa dönüş (kullanıcı isteği; sitede yok) | K | T7 | 1 | PR açık |
+| Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | PR açık |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
