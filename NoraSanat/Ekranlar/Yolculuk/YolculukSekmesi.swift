@@ -677,7 +677,9 @@ private struct YolculukHaritaEkrani: View {
                 }
                 .frame(width: en * 0.84 * 0.78, height: 10)
                 .shadow(color: Color(red: 1, green: 0.925, blue: 0.745).opacity(0.55), radius: 3)
-                Text(YolculukHaritasi.adlar[i]).font(Yazi.serif(30)).tracking(0.6).multilineTextAlignment(.center)
+                // Z3f: dönemin harfi (İş 48; js/harfler.js BOLGE_HARFLERI); `.donem-harfi { letter-spacing: 0 }`
+                DonemYazisi(metin: YolculukHaritasi.adlar[i], harf: DonemHarfleri.bolgeler[bolgeler[i]], boyut: 30, stil: .title1)
+                    .multilineTextAlignment(.center)
                     .opacity(acik > 0 ? 1 : 0.75)
                 Text("\(bunlar.count) bölüm · \(acik > 0 ? "\(acik) açık" : "kilitli")").font(Yazi.sans(13, agirlik: 500)).opacity(0.85)
             }

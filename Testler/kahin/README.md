@@ -87,3 +87,12 @@ işlev kâhinin içinde aynen duruyor) tohumlu rastgele 300 ilerlemeyle (bozuk s
 ```bash
 node Testler/kahin/tekrar_takvimi.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/tekrar_takvimi/cevaplar.json
 ```
+
+## Dönemin harfi (Z3f)
+
+`harfler.mjs` sitenin `js/harfler.js`'ini Node'da yükler: akım ve dönem harf tablosu ve birkaç başlık için Google Fonts
+css2 adresi. `DonemHarfleriTests` Swift tablosunun ve `DonemHarfi.adres`'in aynı olduğunu bekler.
+
+```bash
+node Testler/kahin/harfler.mjs /tmp/sa > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/harfler/cevaplar.json
+```
