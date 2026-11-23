@@ -166,6 +166,7 @@ final class IlerlemeKoprusu {
         kayit = yeni
         aynala(yeni)
         KabukDurumu.shared.rozetiYenile()   // Çalış rozeti (T4): yazılan kart vadeyi değiştirmiş olabilir
+        TemaHesabi.yenile()                 // Z2c-2: tema, renkli Gündüz ya da günün sanatçısı değişmiş olabilir
         return Int(yeni["kayitNo"]?.sayi ?? 0)
     }
 

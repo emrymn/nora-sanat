@@ -16,7 +16,7 @@ Yeni bir kural taşırken aynı kalıpla `Testler/kahin/<konu>.mjs` yaz. Site o 
 ```bash
 # Sitenin sekme çubuğu (adres → seçili sekme) ve gece / gündüz / renkli gündüz renk değişkenleri
 node Testler/kahin/kabuk.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/kabuk/cevaplar.json
-# Swift dosyalarındaki köprü betikleri (Gecis.adresBetigi, TemaKoprusu.betik) canlı sitede; cevap dosyası yazmaz, geçer ya da kalır
+# Swift dosyalarındaki köprü betikleri (Gecis.adresBetigi, sekmeyeGecBetigi) canlı sitede; cevap dosyası yazmaz, geçer ya da kalır
 node Testler/kahin/kabuk_koprusu.mjs
 ```
 
@@ -76,4 +76,17 @@ hatırlatması, `enYeniKayit`, geliştirici modu aç/kapat. `IlerlemeKurallariTe
 
 ```bash
 TZ=UTC node Testler/kahin/depo.mjs /tmp/sa > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/depo/cevaplar.json
+```
+
+## Resim rengi ve renkli Gündüz (Z2c-2)
+
+`renk.mjs` tarayıcısız çalışır: sitenin deposunun bir kopyasındaki `js/renk.js`, `js/gunduzRenk.js` ve `js/tasarim.js`'i
+Node'da yükler. Tohumlu rastgele 70 küçük "tablo" (renk bölgeleri, gürültü, saydam pikseller, vernik, gravür gibi
+renksiz) için palet, vurgu, üç zeminde `renkTemasi`, renk aileleri (`tonlariHesapla`), `resimdenPalet` ve
+`paletDegiskenleri`; ayrıca 200 renk için `hsl`, `acikHal`, `doluButon`, `yumusat`, `kontrast`, `karistir` ve hazır
+paletler. `ResimRengiTests` aynı girdilerle aynı sonucu bekler (ton hesabında kanal başına en çok 1 fark: V8 ile
+glibc'nin `pow`/`cos`/`atan2`'si son basamakta ayrışabilir).
+
+```bash
+node Testler/kahin/renk.mjs /tmp/sa > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/renk/cevaplar.json
 ```

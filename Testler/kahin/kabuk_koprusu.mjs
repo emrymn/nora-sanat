@@ -1,7 +1,6 @@
 // Kabuk köprüleri (T3) canlı sitede: Swift dosyalarındaki betikler aynen eklenir, window.webkit.messageHandlers
 // taklit edilir. Sınananlar:
 //  - Gecis.adresBetigi: açılışta ve her adres değişiminde location.hash gelir
-//  - TemaKoprusu.betik: açılışta tema ve değişkenler gelir; Gündüz'e geçince ve renkli Gündüz'de yeni değerler gelir
 //  - Gecis.sekmeyeGecBetigi (Gezgin.sekmeyeGec): sitenin kendi sekme düğmesine basmak sekmenin kalınan yerini açar;
 //    T4: sitenin hapı yerli çubuğun hapının yerinden (onceki) kayar; bas=false iken yalnız hap kayar
 //
@@ -23,19 +22,15 @@ const coksatir = (kaynak, bas) => {
 };
 const adresBetigi = coksatir(swift('NoraSanat/Kabuk/Gecis.swift'), 'static let adresBetigi');
 const sekmeyeGecBetigi = coksatir(swift('NoraSanat/Kabuk/Gecis.swift'), 'static let sekmeyeGecBetigi');
-const adlar = [...swift('Paketler/NoraCekirdek/Sources/NoraCekirdek/Tema/TemaRenkleri.swift').matchAll(/\("(--[a-z0-9-]+)", \\\./g)].map((m) => `'${m[1]}'`);
-const temaBetigi = coksatir(swift('NoraSanat/Kabuk/Tema.swift'), 'static var betik').replace('\\(adlar)', adlar.join(','));
-assert.ok(adlar.length >= 20, 'değişken adları okunamadı');
 
 const tarayici = await chromium.launch();
 const sayfa = await tarayici.newPage({ viewport: { width: 393, height: 852 } });
 await sayfa.addInitScript(() => {
   window.__ileti = [];
   const h = (ad) => ({ postMessage: (x) => window.__ileti.push([ad, JSON.parse(JSON.stringify(x))]) });
-  window.webkit = { messageHandlers: { adres: h('adres'), tema: h('tema') } };
+  window.webkit = { messageHandlers: { adres: h('adres') } };
 });
 await sayfa.addInitScript(adresBetigi);
-await sayfa.addInitScript(temaBetigi);
 await sayfa.goto('https://sanat-atlasi.pages.dev/', { waitUntil: 'networkidle', timeout: 90000 });
 await sayfa.waitForFunction(() => window.__atlas && window.__atlas.ilerleme, null, { timeout: 60000 });
 await sayfa.waitForTimeout(800);
@@ -51,35 +46,6 @@ await sayfa.waitForTimeout(300);
 adresler = await al('adres');
 assert.deepEqual(adresler.slice(-2), ['#/gozat', '#/sanatci/' + (await sayfa.evaluate(() => window.__atlas.sanatcilar[0].id))]);
 console.log('adres köprüsü:', adresler.join(' → '));
-
-// Tema: açılış
-let temalar = await al('tema');
-assert.ok(temalar.length >= 1, 'açılışta tema iletisi');
-let son = temalar[temalar.length - 1];
-assert.equal(son.tema, 'gece');
-assert.equal(son.degiskenler['--bg'], '#121110');
-assert.equal(Object.keys(son.degiskenler).length, adlar.length);
-assert.ok(Object.values(son.degiskenler).every((v) => v), 'boş değişken yok');
-console.log('tema açılış:', son.tema, son.degiskenler['--bg'], 'hareket', son.hareket);
-
-// Gündüz (nötr) ve renkli Gündüz
-for (const [renk, bekle] of [['notr', '#ece8e1'], ['lapis', null]]) {
-  const once = (await al('tema')).length;
-  await sayfa.evaluate(async (renk) => {
-    const o = await import('/js/ekranlar/ortak.js');
-    o.d.ilerleme.ayarlar.tema = 'gunduz';
-    o.d.ilerleme.ayarlar.gunduzRenk = renk;
-    o.temaUygula();
-  }, renk);
-  await sayfa.waitForTimeout(600);
-  temalar = await al('tema');
-  assert.ok(temalar.length > once, `gündüz (${renk}) iletisi`);
-  son = temalar[temalar.length - 1];
-  assert.equal(son.tema, 'gunduz');
-  if (bekle) assert.equal(son.degiskenler['--bg'], bekle);
-  else assert.notEqual(son.degiskenler['--bg'], '#ece8e1', 'renkli gündüz zemini paletten');
-  console.log(`tema gündüz/${renk}:`, son.degiskenler['--bg'], son.degiskenler['--ink']);
-}
 
 // Sekmeye geçiş: sitenin düğmesi kalınan yeri açar (Galeri'de bir sanatçıdaydık → Bugün → Galeri)
 const kalinan = await sayfa.evaluate(() => location.hash);

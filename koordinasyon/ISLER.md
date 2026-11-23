@@ -156,7 +156,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | C4 | Ben: İlerleme, Ayarlar, yedekle/geri yükle | C | T3 | 1–2 | bitti (#10) |
 | C4b | Ben: görünüş sitedeki gibi (K5) | C | C4, T4 | 1 | bitti (#13) |
 | G5 | Yolculuk haritası + Zaman | G | T3, C1 | 2 | bitti (#20): G5a ChatGPT, G5b (görünüş) Claude |
-| Z3a | Yolculuk cilası | G | G5 | 1 | PR açık (#27) |
+| Z3a | Yolculuk cilası | G | G5 | 1 | bitti (#27) |
 | C5 | Çevrimdışı görseller (21 GB) | C | C4 | 1 | bitti (#21) |
 | T4 | Yerli sekme çubuğu sitenin çubuğu gibi | K | T3 | 1 | bitti (#12) |
 | T5 | Hareket izni penceresi çıkmasın | K | T3 | 1 | bitti (#17) |
@@ -984,6 +984,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Sitenin yarım oturumu (`d.yarim`) taşınmaz: yerli turlar zaten `ayarlar['calis.tur']`'da. Yedekteki `yarimOturum` yok sayılır.
 - Kâhin `ilerleme_koprusu.mjs`: taşıma okuması ve ayna canlı sitede (Chromium) geçti.
 - Z2c'ye kalan site okumaları: `TemaKoprusu` (renkli Gündüz, tablonun vurgusu: js/renk.js), rozet (`turBilgisi`), `TekrarKoprusu` (takvim), Ben: ayar bilgisi, günün sanatçısı değiştirme, hata günlüğü, elle odaklar, hareket izni, geliştirici listeleri; `BugunDeposu` odak/gündüz rengi.
+- **Z2c-2 devir notu** (Claude, 2026-11-23): js/renk.js + js/gunduzRenk.js + kontrast Swift'te: `ResimRengi`, `GunduzPaleti` (`Tema/ResimRengi.swift`), `TemaRenkleri.hesapla/zeminHex`; kâhin `renk.mjs` (70 tablo, 200 renk). Uygulamada `NoraSanat/Kabuk/TemaHesabi.swift`: ayarlar kayıttan, vurgu günün tablosunun paletinden (sitenin `gununRengi`'si; görsel yoksa akım rengi), otomatik Gündüz tablonun renk ailelerinden; paletler UserDefaults'ta saklanır (açılışta beklemeden). `TemaKoprusu` ve themeColor gözlemi kalktı. Fark: site her ekranda o ekranın eserinden renk alır (`ekranRengi`); uygulama şimdilik her yerde günün rengini kullanır (daha önce de gizli sitenin o anki rengiydi).
 
 ### Z3 · Cila + yetişme (Claude)
 **Kapsam:**

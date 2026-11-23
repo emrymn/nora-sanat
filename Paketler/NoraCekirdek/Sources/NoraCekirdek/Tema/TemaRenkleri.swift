@@ -183,6 +183,21 @@ public struct TemaRenkleri: Hashable, Sendable {
 
     /// Koyu zemin mi (durum çubuğu ve sistem öğeleri buna göre)
     public var koyu: Bool { zemin.koyu }
+
+    /// Z2c-2: sitenin `temaUygula` + `gunduzYaz` + `renkleriYaz`'ı (js/ekranlar/ortak.js). Renkli Gündüz'de paletin
+    /// değişkenleri, sonra ekranın vurgusu sabit temanın önüne geçer.
+    public static func hesapla(_ tema: TemaAdi, gunduz: GunduzPaleti?, vurgu: ResimRengi.VurguTemasi?) -> TemaRenkleri {
+        var d: [String: String] = [:]
+        if tema == .gunduz, let gunduz { d.merge(gunduz.degiskenler) { $1 } }
+        if let vurgu { d.merge(vurgu.degiskenler) { $1 } }
+        return TemaRenkleri(degiskenler: d, yedek: sabit(tema)) ?? sabit(tema)
+    }
+
+    /// Sitenin `temaZemini()`'i: vurgunun kontrast hesabı ve pencerenin rengi (`theme-color`)
+    public static func zeminHex(_ tema: TemaAdi, gunduz: GunduzPaleti?) -> String {
+        if tema == .gunduz, let gunduz { return gunduz.bg }
+        return tema == .gece ? "#121110" : "#ECE8E1"
+    }
 }
 
 /// Sitenin ölçüleri (css/app.css `:root`)

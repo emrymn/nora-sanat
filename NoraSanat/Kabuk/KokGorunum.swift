@@ -45,7 +45,11 @@ struct KokGorunum: View {
         .preferredColorScheme(tema.koyu ? .dark : .light)
         // Widget'a dokununca: norasanat://bugun
         .onOpenURL { Gezgin.shared.ac($0) }
-        .onChange(of: evre) { _, yeni in if yeni == .active { durum.rozetiYenile() } }
+        // Z2c-2: renkler ayarlardan ve günün tablosundan (açılışta ve her dönüşte; gün değişmiş olabilir)
+        .task { TemaHesabi.yenile() }
+        .onChange(of: evre) { _, yeni in
+            if yeni == .active { durum.rozetiYenile(); TemaHesabi.yenile() }
+        }
     }
 
     private var site: some View {
