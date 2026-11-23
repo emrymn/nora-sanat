@@ -380,7 +380,10 @@ private struct CarkTekeri: View {
         let yaricap: CGFloat = w * 0.46
         let olcek: CGFloat = 150 * 0.62 / yaricap
         let merkez = UnitPoint(x: 0.5, y: 0.46)
+        // Z3j: kutu önce 150 / ölçek boyuna uzatılır, sonra ölçeklenir. Önceden 150'lik kutu ölçeklenip 78 pt'ye
+        // iniyordu; ışık sönmeden kutunun kenarında kesiliyor, çarkın arkasında "yapıştırılmış" bir bant kalıyordu.
         return RadialGradient(stops: duraklar, center: merkez, startRadius: 0, endRadius: yaricap)
+            .frame(width: w, height: 150 / olcek)
             .scaleEffect(x: 1, y: olcek, anchor: merkez)
             .frame(width: w, height: 150)
     }

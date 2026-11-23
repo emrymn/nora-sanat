@@ -30,6 +30,10 @@ struct BugunSekmesi: View {
   @State private var yukari = false
   @State private var boylar: [Int: Double] = [:]
   @State private var perde = false
+  /// Z3j: yazılar yakınlaşma bittikten sonra gelir (kullanıcı: "önce yakınlaşacak sonra yazı gelecek"). Sitede
+  /// ad 0,55 sn'de belirir (css/app.css `main.perde .sahne-isim`); bu bilinçli bir fark.
+  @State private var yaziAcik = false
+  @State private var acilisBasladi = false
   @State private var hareketHatasi = false
   @State private var atlama: Int?
   @State private var atlamaIsi: Task<Void, Never>?
@@ -293,8 +297,11 @@ struct BugunSekmesi: View {
               options: .atomic)
           }
         #endif
-        withAnimation(durgun ? nil : .easeOut(duration: 2.6)) { perde = true }
+        if evre == .active { acilisiBaslat() }
       }
+      // Uygulama açılırken ekran, açılış görüntüsünün arkasında kurulur: animasyon orada oynayıp bitiyordu.
+      // Uygulama gerçekten öne gelince başlar.
+      .onChange(of: evre) { _, yeni in if yeni == .active { acilisiBaslat() } }
     }
   }
 
@@ -437,10 +444,27 @@ struct BugunSekmesi: View {
           hap("Hayatı", "arrow.down", hayat)
         }.padding(.top, 12)
       }.padding(.horizontal, 24).padding(.bottom, ekranAlti + 124)
-        .opacity(perde || durgun ? 1 : 0)
+        .opacity(yaziAcik || durgun ? 1 : 0)
+        .offset(y: yaziAcik || durgun ? 0 : 14)
+        .blur(radius: yaziAcik || durgun ? 0 : 4)
       Image(systemName: "chevron.down").frame(maxWidth: .infinity).padding(.bottom, ekranAlti + 92)
         .accessibilityHidden(true).allowsHitTesting(false)
     }.buttonStyle(.plain).foregroundStyle(.white)
+  }
+
+  /// Açılış: perde (1,1 sn) ve 1,08 → 1 yakınlaşma (2,6 sn); yakınlaşma büyük ölçüde bitince (1,9 sn) yazılar
+  /// sitedeki `isim-acil` gibi bulanıktan netleşip yükselerek gelir.
+  private func acilisiBaslat() {
+    guard !acilisBasladi else { return }
+    acilisBasladi = true
+    if durgun {
+      perde = true
+      yaziAcik = true
+      return
+    }
+    // js/yuruyus.js: 1 + 0,08·(1 − yumusak(t)), yumusak = kübik gir-çık (ACILIS_MS 2600)
+    withAnimation(.timingCurve(0.65, 0, 0.35, 1, duration: 2.6)) { perde = true }
+    withAnimation(.timingCurve(0.2, 0.7, 0.2, 1, duration: 0.9).delay(1.9)) { yaziAcik = true }
   }
 
   private func hap(_ ad: String, _ simge: String, _ yap: @escaping () -> Void) -> some View {

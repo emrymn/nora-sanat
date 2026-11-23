@@ -131,6 +131,11 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
   - Metnin arasındaki ayrıntı kırpımlarına dokun: görüntüleyici o ayrıntıda açılıyor. Alttaki "Yakından bak · n ayrıntı" incelemeyi baştan açıyor.
   - "Okumayı sürdür": ayrıntılı anlatım aynı sayfada açılıyor; noktalı altı çizili terime dokununca altta sözlük kartı. Resimli bir karşılaştırmaya dokun: iki eser üst üste, "Eserin sayfası" o esere gidiyor.
   - Aramada bir başyapıt adı yaz (ör. "elçiler"): sonuç yerli sayfayı açıyor. Sanatçı sayfasındaki "Yakın okuma" satırları da.
+- [ ] (Z3j) Galeri → Akımlar: çarkın arkasında koyu/kesik bant olmamalı, desen çarkın altından kesintisiz geçmeli; en alta kaydırınca "Bütün akımlar" dişlinin üstünde, dokunulabilir. Akımlar, Başyapıtlar, Konular, Zaman arasında geç: hiçbiri yandan kaymamalı, içerik yerinde hafifçe yükselerek belirmeli. Arama hapına dokun: arama sayfası haptan büyüyerek açılmalı (iOS 18+).
+- [ ] (Z3j) Sekmeler arasında geç: yeni sekmenin içeriği hafifçe yükselerek belirmeli (Bugün yalnız belirir).
+- [ ] (Z3j) Çalış → Bugünün dersi kapağı: resim yavaşça bir ayrıntıya yakınlaşıp dönmeli, sonra öbür ayrıntıya (16 sn döngü).
+- [ ] (Z3j) Uygulamayı kapatıp aç: Bugün'de önce resim hareketini tamamlamalı (≈2 sn), yazılar ondan sonra bulanıktan netleşerek gelmeli.
+- [ ] (Z3j) Hızlı ayarlardan Gündüz'e geç: Galeri ve Çalış zemininde tablonun iki rengi açıkça görülmeli (sol üst, sağ alt).
 - [ ] (Z3i) Bugün'de telefonu sağa sola, öne arkaya çevir: tablo eskisi (site) gibi yumuşak ve ağır kaymalı, ani sıçramamalı; tablonun üstünde eğimle gezen hafif bir ışık hüzmesi görünmeli.
 - [ ] (Z3i) Bugün'de biraz aşağı in (ayrıntılara ya da Hayatı'na), sonra alttaki Bugün sekmesine yeniden dokun: en alttaki "Başa dön" ile aynı biçimde yazılar sönmeli, resim süzülerek başa dönmeli. Zaten en üstteyken dokununca bir şey olmamalı.
 - [ ] (Z3h) Galeri → Akımlar: parmağını çarkın üstüne koyup yukarı kaydır, sayfa kaymalı; en altta "Bütün akımlar" dişlinin ve sekme çubuğunun üstünde kalmalı ve dokununca dizin açılmalı. Çarkı yana çevirmek ve çarka dokunup komşu akıma geçmek eskisi gibi çalışmalı.
