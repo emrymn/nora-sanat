@@ -1,6 +1,5 @@
 // Kaynak: sanat-atlasi js/kunye.js (kunyeGoster, ipaHtml, dinle), js/imza.js (imzaGoster), js/ekranlar/ortak.js isimHtml,
 // css/app.css (.isim-blok, .ad-son, .ad-ilk, .ad-tam, .portre-arka, .imza, .isim-ek, .dinle, .ipa) @ a866b86
-import AVFoundation
 import NoraCekirdek
 import SwiftUI
 
@@ -11,8 +10,6 @@ struct SanatciKunyesi: View {
     let g: GaleriKatalogu
     let il: Ilerleme
     @Environment(TemaDeposu.self) private var tema
-    @State private var oynatici: AVPlayer?
-    @State private var okuyucu = AVSpeechSynthesizer()
 
     var body: some View {
         let r = tema.renkler
@@ -97,19 +94,11 @@ struct SanatciKunyesi: View {
                     .accessibilityHidden(true)
             }
         }
-        .onDisappear { oynatici?.pause(); okuyucu.stopSpeaking(at: .immediate) }
+        .onDisappear { AdOkuyucu.shared.durdur() }
     }
 
     private func dinle(_ k: JSONDeger?, dil: String) {
-        if let uzanti = GaleriKatalogu.sesUzantisi(k) {
-            oynatici = AVPlayer(url: SiteVerisi.site.appendingPathComponent("gorseller/ses/\(s.id).\(uzanti)"))
-            oynatici?.play()
-        } else {
-            okuyucu.stopSpeaking(at: .immediate)
-            let soz = AVSpeechUtterance(string: GaleriKatalogu.okunacakAd(s.ad))
-            soz.voice = AVSpeechSynthesisVoice(language: dil)
-            okuyucu.speak(soz)
-        }
+        AdOkuyucu.shared.oku(id: s.id, ad: s.ad, kunye: k)
     }
 }
 
