@@ -14,6 +14,8 @@ import NoraCekirdek
 /// - Resmin hikâyesi ("Hikâyesi" paneli ve "Karakterleri resimde gör").
 /// - Koleksiyon işareti ve "⋯" hata/kötü görsel bildirim menüsü (`IlerlemeKoprusu` üzerinden ilerlemeye yazar).
 /// - Keskin üst kopya: önce 1280/800 px kopya açılır, 4096 px en büyük kopya arkada inip yerine geçer.
+/// - Z2c-3b: geliştirici modunda ve Ayarlar → "Sırayla ortala"da (`ortalama`) "Odağı işaretle": tabloya dokunulan nokta
+///   bu cihazın elle odağı olur (`ElleOdaklar`); çerçeve Bugün'ün açılışta göstereceği alan (sitenin İş 150/159/161'i).
 @MainActor
 public struct Goruntuleyici: View {
     public let eserler: [Eser]
@@ -26,6 +28,8 @@ public struct Goruntuleyici: View {
     public var baglam: GoruntuleyiciBaglami?
     public var konuSecildi: ((String) -> Void)?
     public var kapaninca: ((Int) -> Void)?
+    /// Ayarlar → "Sırayla ortala": her yeni eserde odak kipi kendiliğinden açılır
+    public var ortalama: Bool
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
@@ -54,6 +58,13 @@ public struct Goruntuleyici: View {
     @State private var ilkAcilisYapildi: Bool = false
     @State private var bekleyenNokta: Int? = nil
 
+    // Z2c-3b: elle odak
+    @State private var gelistirici = false
+    @State private var odakModu = false
+    @State private var kendiliginden: Int? = nil
+    @State private var odakVerisi = OdakVerisi()
+    @State private var elleSurum = 0
+
     public init(
         eserler: [Eser],
         baslangic: Int = 0,
@@ -63,8 +74,10 @@ public struct Goruntuleyici: View {
         hikayeyeBasla: Bool = false,
         baglam: GoruntuleyiciBaglami? = nil,
         konuSecildi: ((String) -> Void)? = nil,
-        kapaninca: ((Int) -> Void)? = nil
+        kapaninca: ((Int) -> Void)? = nil,
+        ortalama: Bool = false
     ) {
+        self.ortalama = ortalama
         self.eserler = eserler
         let guvenliBaslangic = eserler.isEmpty ? 0 : min(max(0, baslangic), eserler.count - 1)
         self.baslangic = guvenliBaslangic
@@ -144,6 +157,14 @@ public struct Goruntuleyici: View {
                         .scaleEffect(olcek * CGFloat(1.0 - cekOrani * 0.45))
                         .offset(x: kayma.width, y: kayma.height)
 
+                        if odakModu, let r = tuvalCercevesi(taban: tabanBoyutu, sahne: sahneBoyutu) {
+                            Rectangle()
+                                .strokeBorder(Color.white.opacity(0.9), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+                                .frame(width: r.width, height: r.height)
+                                .position(x: r.midX, y: r.midY)
+                                .allowsHitTesting(false)
+                        }
+
                         if let inceleme = etkinInceleme {
                             AyrintiNoktalariKatmani(
                                 kayit: inceleme,
@@ -169,7 +190,11 @@ public struct Goruntuleyici: View {
                     .onTapGesture(count: 2) {
                         ciftDokunus(taban: tabanBoyutu, sahne: sahneBoyutu)
                     }
-                    .onTapGesture(count: 1) {
+                    .onTapGesture(count: 1, coordinateSpace: .local) { konum in
+                        if odakModu {
+                            odakIsaretle(konum, taban: tabanBoyutu, sahne: sahneBoyutu)
+                            return
+                        }
                         withAnimation(.easeInOut(duration: 0.25)) {
                             sadeGorunum.toggle()
                         }
@@ -330,6 +355,10 @@ public struct Goruntuleyici: View {
                 }
 
                 eylemSatiri(eser: eser, gorsel: gorsel)
+
+                if odakGorunur {
+                    odakSatiri()
+                }
 
                 if bildirMenuAcik {
                     bildirMenusu(eser: eser, gorsel: gorsel)
@@ -709,6 +738,11 @@ public struct Goruntuleyici: View {
         if let il = try? await IlerlemeKoprusu.shared.oku() {
             kotuler = il.kotuGorseller
             koleksiyonda = KoleksiyonKurallari.koleksiyondaMi(il, eser: simdikiEser)
+            gelistirici = il[alan: "gelistirici"]?.nesne != nil
+        }
+        if (gelistirici || ortalama) && !gizli {
+            odakVerisi = OdakVerisi(veriler: await SiteVerisi().veriler(OdakVerisi.dosyalar))
+            kendiliginOdak()
         }
         if !ilkAcilisYapildi {
             ilkAcilisYapildi = true
@@ -722,6 +756,7 @@ public struct Goruntuleyici: View {
     }
 
     private func eserDegisti() {
+        if odakModu { odakModu = false }
         zorlananGorsel = nil
         sifirla(animasyonlu: false)
         bildirMenuAcik = false
@@ -730,6 +765,7 @@ public struct Goruntuleyici: View {
         if etkinInceleme != nil {
             incelemeBitir(geriDon: false)
         }
+        kendiliginOdak()
         Task {
             if let il = try? await IlerlemeKoprusu.shared.oku() {
                 kotuler = il.kotuGorseller
@@ -781,6 +817,133 @@ public struct Goruntuleyici: View {
         } else {
             mesaj = "Bildirildi: bu eser artık pekiştirmede çıkmayacak."
         }
+    }
+}
+
+// MARK: - Z2c-3b: elle odak (sitenin js/goruntuleyici.js odak kipi, İş 150/159/161)
+
+extension Goruntuleyici {
+    /// Odak düğmesi geliştirici modunda ve "Sırayla ortala"da görünür
+    private var odakGorunur: Bool { !gizli && (gelistirici || ortalama) && simdikiGorsel != nil }
+
+    /// Görselin yerel adı (`gorselAdi(g)`); yoksa odak kaydedilemez
+    private var simdikiAd: String { simdikiGorsel.flatMap { etkinBaglam.gorselAdresleri.yerelAd($0) } ?? "" }
+
+    /// Odak verisi, bu cihazdaki elle odaklarla (her işaretten sonra `elleSurum` artar)
+    private var guncelOdak: OdakVerisi {
+        _ = elleSurum
+        var o = odakVerisi
+        o.cihaz = ElleOdaklar.hepsi
+        return o
+    }
+
+    /// `elleOdakKaynagi(g)`: "cihaz", "depo" ya da nil
+    private func odakKaynagi(_ ad: String) -> String? {
+        let o = guncelOdak
+        if OdakVerisi.gecerli(o.cihaz[ad]) { return "cihaz" }
+        return OdakVerisi.gecerli(o.elleDosya[ad]) ? "depo" : nil
+    }
+
+    private func odakDurumu() -> String {
+        let ad = simdikiAd
+        let yazi: String
+        switch odakKaynagi(ad) {
+        case "cihaz": yazi = "Elle ortalandı ✓"
+        case "depo": yazi = "Elle ortalandı ✓ (kalıcı)"
+        default: yazi = guncelOdak.odak(ad) != nil ? "Otomatik (yüz bulma)" : "Otomatik (ortadan)"
+        }
+        var sayac = ""
+        if ortalama {
+            let n = eserler.filter { e in
+                etkinBaglam.secilenGorsel(e, kotuler: kotuler).flatMap { etkinBaglam.gorselAdresleri.yerelAd($0) }
+                    .map { odakKaynagi($0) != nil } ?? false
+            }.count
+            sayac = " · ortalanan \(n) / \(eserler.count)"
+        }
+        return "Odak: \(yazi)\(sayac)"
+    }
+
+    @ViewBuilder
+    private func odakSatiri() -> some View {
+        HStack(spacing: 8) {
+            Button {
+                if odakModu { odakModu = false; mesaj = "" } else { odakBasla() }
+            } label: {
+                Text(odakModu ? "Bitti" : "Odağı işaretle")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(GoruntuleyiciTema.murekkep)
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 44)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(GoruntuleyiciTema.zemin))
+                    .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(GoruntuleyiciTema.kenar, lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+            if odakModu && odakKaynagi(simdikiAd) == "cihaz" {
+                Button {
+                    ElleOdaklar.koy(simdikiAd, nil)
+                    elleSurum += 1
+                    mesaj = "Elle odak kaldırıldı; otomatik odağa dönüldü."
+                } label: {
+                    Text("Otomatiğe dön")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(GoruntuleyiciTema.murekkep)
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 44)
+                        .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(GoruntuleyiciTema.kenar, lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        Text(odakDurumu())
+            .font(.system(size: 12.5))
+            .foregroundStyle(GoruntuleyiciTema.ikincilMurekkep)
+    }
+
+    private func odakBasla() {
+        sifirla(animasyonlu: true)
+        odakModu = true
+        mesaj = "Ekranın ortasına gelecek noktaya dokun (yüz, ana figür). Çerçeve Tuval’de görünen alan."
+    }
+
+    /// "Sırayla ortala"da her yeni eserde odak kipi kendiliğinden açılır (Bitti ile kapatılan eserde yeniden açılmaz)
+    private func kendiliginOdak() {
+        guard ortalama, odakGorunur, !odakModu, kendiliginden != sira else { return }
+        kendiliginden = sira
+        odakBasla()
+    }
+
+    /// Tablonun ekrandaki dikdörtgeni (sahnenin yerel koordinatında)
+    private func resimCercevesi(taban: CGSize, sahne: CGSize) -> CGRect {
+        let s = olcek * CGFloat(1.0 - cekOrani * 0.45)
+        let w = taban.width * s, h = taban.height * s
+        return CGRect(x: sahne.width / 2 + kayma.width - w / 2, y: sahne.height / 2 + kayma.height - h / 2, width: w, height: h)
+    }
+
+    /// Bugün'ün açılışta göstereceği alan: ekranı kaplar, odak yatayda ortada, dikeyde %36 (`cerceveGoster`)
+    private func tuvalCercevesi(taban: CGSize, sahne: CGSize) -> CGRect? {
+        guard sahne.width > 0, sahne.height > 0, taban.width > 0, taban.height > 0 else { return nil }
+        let r = resimCercevesi(taban: taban, sahne: sahne)
+        let ekranOrani = sahne.width / sahne.height
+        let o = taban.width / taban.height
+        let fw = o > ekranOrani ? ekranOrani / o : 1
+        let fh = o > ekranOrani ? 1 : o / ekranOrani
+        let p = guncelOdak.odak(simdikiAd) ?? [50, 50]
+        let sol = min(1 - fw, max(0, p[0] / 100 - fw * 0.5))
+        let ust = min(1 - fh, max(0, p[1] / 100 - fh * 0.36))
+        return CGRect(x: r.minX + sol * r.width, y: r.minY + ust * r.height, width: fw * r.width, height: fh * r.height)
+    }
+
+    private func odakIsaretle(_ konum: CGPoint, taban: CGSize, sahne: CGSize) {
+        let r = resimCercevesi(taban: taban, sahne: sahne)
+        guard r.contains(konum) else { return }
+        let nokta = [Double((konum.x - r.minX) / r.width * 100), Double((konum.y - r.minY) / r.height * 100)]
+        let ad = simdikiAd
+        guard !ad.isEmpty else { mesaj = "Bu görselin yerel kopyası yok; odak kaydedilemedi."; return }
+        ElleOdaklar.koy(ad, nokta)
+        elleSurum += 1
+        mesaj = ortalama
+            ? "Kaydedildi ✓ Beğenmezsen yeniden dokun; sonraki tabloya kaydır."
+            : "Kaydedildi ✓ (%\(Int(nokta[0].rounded())), %\(Int(nokta[1].rounded()))). Beğenmezsen yeniden dokun, bitince “Bitti”. Kalıcı olması için Ayarlar → Elle odaklar’dan kopyala."
     }
 }
 

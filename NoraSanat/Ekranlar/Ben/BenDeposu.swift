@@ -20,14 +20,6 @@ extension IlerlemeKoprusu {
     for (let i = 0; i < 100 && !o.d.ilerleme; i++) await new Promise((r) => setTimeout(r, 100));
     return !!o.d.ilerleme;
     """
-    /// Geliştirici modunun açtığı her şey: bütün konu numaraları ve harita bölümleri (sitenin listeleri; Z2c'de Swift)
-    static let benGelistiriciListeleri = """
-    const o = await import('/js/ekranlar/ortak.js');
-    const { bolumler } = await import('/js/ekranlar/harita.js');
-    const d = o.d;
-    const nolar = [...d.konular.map(k => k.no), ...d.sanatcilar.map(s => s.konu)].filter(Number.isInteger);
-    return { nolar, bolumler: bolumler().map(b => b.id) };
-    """
 }
 
 @MainActor @Observable
@@ -69,13 +61,88 @@ final class BenDeposu {
             } catch { hata(error) }
         }
     }
-    func degistir(sonra: String? = nil, bitti: (@MainActor (Ilerleme) -> Void)? = nil,
-                  _ islem: @escaping (inout Ilerleme) -> Void) {
+    func degistir(bitti: (@MainActor (Ilerleme) -> Void)? = nil, _ islem: @escaping (inout Ilerleme) -> Void) {
         yap(bitti: bitti) {
             _ = try await self.kopru.degistir(islem)
             await self.kopru.aynaBitsin()
-            if let sonra { _ = try await self.kopru.benBetigi(sonra) }
         }
+    }
+
+    // MARK: Z2c-3: sitenin Ayarlar betikleri Swift'te
+
+    /// Günün sanatçısı havuzu ve bugünkü (sitenin `gununHavuzu()` / `gununId()`'si)
+    private func gunun() async -> (havuz: [String], id: String?) {
+        guard let y = await veri.veri("yuruyus.json") else { return ([], nil) }
+        let havuz = GununTablosuCozucu.havuz(yuruyus: y)
+        let d = il?[alan: "gununDegisim"]
+        if d?["tarih"]?.metin == bugun, let id = d?["id"]?.metin, havuz.contains(id) { return (havuz, id) }
+        return (havuz, GununSanatcisi.sec(havuz: havuz, tarih: bugun))
+    }
+
+    /// "Başka bir sanatçı getir": `baskaSanatci(gununHavuzu(), gununId(), Math.random)`
+    func baskaSanatci() async -> String? {
+        let g = await gunun()
+        guard let id = g.id else { return nil }
+        return GununSanatcisi.baska(havuz: g.havuz, haric: id)
+    }
+
+    /// Sitenin sürümü (`js/surum.js` `SURUM`); `zorla`: önbelleği atlayıp siteden yeniden indir
+    func siteSurumu(zorla: Bool = false) async -> String? {
+        guard let d = await veri.kokDosyasi("js/surum.js", zorla: zorla) else { return nil }
+        let m = String(decoding: d, as: UTF8.self)
+        guard let r = m.range(of: #"SURUM\s*=\s*['"]([^'"]+)['"]"#, options: .regularExpression) else { return nil }
+        let p = m[r]
+        guard let a = p.firstIndex(where: { $0 == "'" || $0 == "\"" }) else { return nil }
+        return String(p[p.index(after: a)...].dropLast())
+    }
+
+    /// "Yeni sürüm var mı?": sitenin verisini (katalog, sürüm) yeniden indirir
+    func veriyiYenile() async -> String {
+        let eski = await siteSurumu()
+        guard let yeni = await siteSurumu(zorla: true) else { return "Siteye ulaşılamadı; çevrimdışı veriyle devam." }
+        if let k = try? await veri.katalog(zorla: true) { katalog = k }
+        return yeni == eski ? "Güncel: \(yeni)" : "\(yeni) indirildi."
+    }
+
+    /// Geliştirici modunun açtığı her şey: bütün konu numaraları ve harita bölümleri
+    /// (`[...d.konular.map(k => k.no), ...d.sanatcilar.map(s => s.konu)].filter(Number.isInteger)`, `bolumler()`)
+    func gelistiriciListeleri() -> (nolar: [Int], bolumler: [String])? {
+        guard let k = katalog else { return nil }
+        let nolar = k.konular.map(\.no) + k.sanatcilar.compactMap(\.konu)
+        let bolumler = CalisDersKurallari.bolumleriKur(akimlar: k.akimlar, sanatcilar: k.sanatcilar).map(\.id)
+        return (nolar, bolumler)
+    }
+
+    /// "Sırayla ortala": günün resmi olabilecek yürüyüş eserleri, yalnız yürüyüş görseliyle (sitenin `odakAc`'ı)
+    func yuruyusEserleri() async -> [Eser] {
+        guard let k = katalog, let y = await veri.veri("yuruyus.json"),
+              let es = (try? JSONDeger.coz(y))?["eserler"] else { return [] }
+        return k.sanatcilar.compactMap { s -> Eser? in
+            guard let ad = es[s.id]?["gorsel"]?.metin, !ad.isEmpty else { return nil }
+            let uygun: (Gorsel) -> Bool = { k.gorsel.yerelAd($0) == ad }
+            guard var e = k.eserler(s.id).first(where: { $0.gorseller.contains(where: uygun) }) else { return nil }
+            e.gorseller = e.gorseller.filter(uygun)
+            return e
+        }
+    }
+
+    /// Ayarlar'ın bilgi satırları (sitenin betiği yerine)
+    func ayarBilgisi() async -> AyarBilgisi {
+        var b = AyarBilgisi()
+        let g = await gunun()
+        if let id = g.id { b.gunun = katalog?.bilinenAd(id) ?? id }
+        b.surum = await siteSurumu() ?? ""
+        b.odak = ElleOdaklar.hepsi.count
+        if let y = await veri.veri("yuruyus.json"), let k = katalog {
+            let havuz = Set(GununTablosuCozucu.havuz(yuruyus: y))
+            let kayitli = (try? JSONDeger.coz(y))?["eserler"]?.nesne.map { Set($0.ciftler.map(\.anahtar)) } ?? havuz
+            b.yuruyus = k.sanatcilar.filter { kayitli.contains($0.id) }.count
+        }
+        b.egimVar = BugunHareketi.egimVarMi
+        for r in GunduzPaleti.renkler {
+            if let p = TemaHesabi.gunduzOrnekPaleti(r) { b.paletler[r] = [p.band, p.altin, p.surface, p.border] }
+        }
+        return b
     }
     func hata(_ error: Error) {
         let e = error as NSError

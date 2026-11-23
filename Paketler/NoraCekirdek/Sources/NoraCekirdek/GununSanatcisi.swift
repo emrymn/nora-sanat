@@ -14,6 +14,13 @@ public enum GununSanatcisi {
         return x ^ (x >> 16)
     }
 
+    /// Z2c-3: `baskaSanatci(havuz, haric, rng)` (js/gunun.js): bugünkünden başka rastgele biri (havuz tekse aynısı)
+    public static func baska(havuz: [String], haric: String, rastgele: () -> Double = { Double.random(in: 0..<1) }) -> String {
+        let adaylar = havuz.filter { $0 != haric }
+        guard !adaylar.isEmpty else { return haric }
+        return adaylar[min(adaylar.count - 1, Int(rastgele() * Double(adaylar.count)))]
+    }
+
     /// havuz: sanatçı kimlikleri (sırası önemsiz). tarih: "YYYY-MM-DD"
     public static func sec(havuz: [String], tarih: String) -> String? {
         // JS'teki sort(): UTF-16 kod birimi sırası

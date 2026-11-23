@@ -21,65 +21,15 @@ private struct YedekBelgesi: FileDocument {
 }
 
 /// Ayarlar sayfasının siteden okunan yazıları (sitenin kendi modülleriyle; bkz. `AyarBilgisi.betik`)
+/// Ayarlar'ın bilgi satırları (Z2c-3: `BenDeposu.ayarBilgisi()`, Swift'te)
 struct AyarBilgisi {
     var gunun = "—"
     var surum = ""
-    var yenilikler: [String] = []
-    var hata = 0
-    var hataSon = ""
     var odak = 0
     var yuruyus = 0
     var egimVar = true
-    var izinGerekli = true
-    /// Hareket izni bu oturumda verildi mi. `izinVarMi()` buradan sorulmaz: yerli koddan çağrılan betik dokunuş sayılır
-    /// ve iOS izin penceresini açar (C4b CI'ında Ayarlar'ı kapattı). Düğme, izin verilene kadar görünür.
-    var izinVar = false
     /// Gündüz rengi örnekleri: seçim → (band, altın, yüzey, kenar); "notr" için yok
     var paletler: [String: [String]] = [:]
-
-    static let betik = """
-    const o = await import('/js/ekranlar/ortak.js');
-    const { SURUM } = await import('/js/surum.js');
-    const y = await import('/js/yenilikler.js');
-    const h = await import('/js/hataGunlugu.js');
-    const g = await import('/js/gorsel.js');
-    const e = await import('/js/egim.js');
-    const { bilinenAd } = await import('/js/adlar.js');
-    const { GUNDUZ_RENKLERI } = await import('/js/gunduzRenk.js');
-    const d = o.d;
-    const s = d.harita.get(o.gununId());
-    const l = h.hatalariOku();
-    const paletler = {};
-    for (const r of GUNDUZ_RENKLERI) {
-      const p = o.gunduzOrnekPaleti(r);
-      if (p) paletler[r] = [p.band, p.altin, p.surface, p.border];
-    }
-    return {
-      gunun: s ? bilinenAd(s.ad, d.kisaAdlar[s.id]) : '—',
-      surum: SURUM,
-      yenilikler: y.YENILIKLER.map(y.yenilikYazisi),
-      hata: l.length,
-      hataSon: l.length ? new Date(l[l.length - 1].z).toLocaleString('tr-TR') : '',
-      odak: Object.keys(g.cihazdakiElleOdaklar()).length,
-      yuruyus: d.yuruyus ? d.sanatcilar.filter((x) => d.yuruyus[x.id]).length : 0,
-      egimVar: e.egimVar(), izinGerekli: e.izinGerekli(),
-      paletler,
-    };
-    """
-
-    init() {}
-    init(_ s: [String: Any]) {
-        gunun = s["gunun"] as? String ?? "—"
-        surum = s["surum"] as? String ?? ""
-        yenilikler = s["yenilikler"] as? [String] ?? []
-        hata = (s["hata"] as? NSNumber)?.intValue ?? 0
-        hataSon = s["hataSon"] as? String ?? ""
-        odak = (s["odak"] as? NSNumber)?.intValue ?? 0
-        yuruyus = (s["yuruyus"] as? NSNumber)?.intValue ?? 0
-        egimVar = s["egimVar"] as? Bool ?? true
-        izinGerekli = s["izinGerekli"] as? Bool ?? true
-        paletler = s["paletler"] as? [String: [String]] ?? [:]
-    }
 }
 
 struct BenAyarlari: View {
@@ -114,7 +64,6 @@ struct BenAyarlari: View {
                 geriYukle
                 if let il = depo.il {
                     BildirimBolumu(depo: depo)
-                    HataBolumu(depo: depo, bilgi: $bilgi)
                     AyarBolumu {
                         Toggle(isOn: Binding(get: { il[alan: "gelistirici"]?.nesne != nil }, set: { _ in modOnayi = true })) {
                             AnahtarYazisi(baslik: "Geliştirici modu",
@@ -128,18 +77,6 @@ struct BenAyarlari: View {
                         ElleOdakBolumu(depo: depo, bilgi: $bilgi)
                     }
                     SurumBolumu(depo: depo, surum: bilgi.surum)
-                }
-                if !bilgi.yenilikler.isEmpty {
-                    AyarBolumu(baslik: "Yenilikler") {
-                        VStack(alignment: .leading, spacing: 10) {
-                            ForEach(bilgi.yenilikler.indices, id: \.self) { i in
-                                Text(bilgi.yenilikler[i]).font(Yazi.sans(14)).lineSpacing(7)
-                                    .foregroundStyle(Color(tema.renkler.murekkep))
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                        .padding(.top, 6)
-                    }
                 }
                 Text("Sanat Atlası \(bilgi.surum) · Görseller: Wikimedia Commons, müze açık erişim koleksiyonları ve WikiArt · Eser listeleri: Wikidata")
                     .font(Yazi.sans(12, stil: .caption1)).foregroundStyle(Color(tema.renkler.murekkep3))
@@ -155,13 +92,7 @@ struct BenAyarlari: View {
         #endif
         }
         .disabled(depo.mesgul)
-        .task(id: depo.il?.kayitNo) {
-            if let s = try? await depo.kopru.benBetigi(AyarBilgisi.betik) as? [String: Any] {
-                let izin = bilgi.izinVar
-                bilgi = AyarBilgisi(s)
-                bilgi.izinVar = izin
-            }
-        }
+        .task(id: depo.il?.kayitNo) { bilgi = await depo.ayarBilgisi() }
         .fileExporter(isPresented: $disa, document: YedekBelgesi(yedek), contentType: .json,
                       defaultFilename: "sanat-atlasi-yedek") { if case let .failure(e) = $0 { depo.hata(e) } }
         .fileImporter(isPresented: $ice, allowedContentTypes: [.json, .plainText]) { sonuc in
@@ -177,7 +108,6 @@ struct BenAyarlari: View {
                   primaryButton: .destructive(Text("Geri yükle")) {
                 depo.yap {
                     try await depo.kopru.geriYukle(y.metin, beklenen: y.no)
-                    _ = try? await depo.kopru.benBetigi("(await import('/js/ekranlar/ortak.js')).d.oturum = null;")
                     girdi = ""
                     depo.mesaj = "Yedek geri yüklendi."
                 }
@@ -188,12 +118,8 @@ struct BenAyarlari: View {
             Button("Geliştirici modunu değiştir") {
                 let ac = depo.il?[alan: "gelistirici"]?.nesne == nil
                 depo.yap {
-                    let l = try await depo.kopru.benBetigi(IlerlemeKoprusu.benGelistiriciListeleri) as? [String: Any]
-                    guard let nolar = l?["nolar"] as? [NSNumber], let bolumler = l?["bolumler"] as? [String] else {
-                        throw IlerlemeKoprusu.Hata.siteYok
-                    }
-                    try await depo.kopru.gelistirici(ac: ac, konular: nolar.map(\.intValue), bolumIdleri: bolumler)
-                    _ = try? await depo.kopru.benBetigi("(await import('/js/ekranlar/ortak.js')).d.oturum = null;")
+                    guard let l = depo.gelistiriciListeleri() else { throw URLError(.notConnectedToInternet) }
+                    try await depo.kopru.gelistirici(ac: ac, konular: l.nolar, bolumIdleri: l.bolumler)
                 }
             }
         }
@@ -251,17 +177,12 @@ struct BenAyarlari: View {
             let egim = il.ayar("egim")?.mantik ?? true
             Toggle(isOn: Binding(get: { egim }, set: egimAyarla)) {
                 AnahtarYazisi(baslik: "Telefonu eğince tablo oynasın", aciklama: bilgi.egimVar
-                    ? "Tuval’deki günün tablosu telefonu sağa sola çevirdikçe, öne arkaya eğdikçe hafifçe döner, ışık üstünden kayar; sergi duvarında ve Koleksiyonum’da tablolar ipinden sallanır, Atölye’deki deste yelpaze açılır." + (bilgi.izinGerekli ? " iPhone hareket izni ister ve uygulama kapanınca çoğu zaman unutur: o zaman Tuval’deki ya da buradaki düğmeyle yeniden ver." : "")
-                    : "Bu tarayıcı hareket algılayıcısını desteklemiyor.")
+                    ? "Tuval’deki günün tablosu telefonu sağa sola çevirdikçe, öne arkaya eğdikçe hafifçe döner, ışık üstünden kayar; sergi duvarında ve Koleksiyonum’da tablolar ipinden sallanır, Atölye’deki deste yelpaze açılır."
+                    : "Bu cihazda hareket algılayıcısı yok.")
             }
             .toggleStyle(AnahtarBicimi()).padding(.vertical, -10)
             .disabled(!bilgi.egimVar)
-            if bilgi.izinGerekli && egim && !bilgi.izinVar {
-                Button { egimAyarla(true) } label: {
-                    Label { Text("Hareket iznini ver") } icon: { BenIkon(simge: .hareket, boyut: 18, kalinlik: 1.6) }
-                }
-                .buttonStyle(HapDugme(ince: true)).padding(.top, 26)
-            }
+            // Z2c-3: uygulama hareketi CoreMotion'dan alır; sitedeki gibi hareket izni gerekmez
         }
         GununSanatcisiBolumu(depo: depo, ad: bilgi.gunun)
         BenCevrimdisi(depo: depo)
@@ -388,7 +309,7 @@ struct BenAyarlari: View {
     }
 
     private func sec(_ alan: String, _ deger: String) {
-        depo.degistir(sonra: "(await import('/js/ekranlar/ortak.js')).temaUygula();") {
+        depo.degistir {
             BenPanosu.sec(alan, deger, il: &$0)
         }
     }
@@ -412,14 +333,7 @@ struct BenAyarlari: View {
     }
     private func kart(_ adim: Int) { depo.degistir { BenPanosu.kart(adim, il: &$0) } }
     private func egimAyarla(_ ac: Bool) {
-        depo.yap {
-            if ac {
-                let izin = try await depo.kopru.benBetigi("return await (await import('/js/egim.js')).egimIzni();")
-                guard izin as? Bool == true else { depo.mesaj = "Hareket izni verilmedi."; return }
-                bilgi.izinVar = true
-            }
-            _ = try await depo.kopru.degistir { $0.ayarla("egim", .mantik(ac)) }
-        }
+        depo.degistir { $0.ayarla("egim", .mantik(ac)) }
     }
     private func rozet(_ ac: Bool) {
         depo.yap {
