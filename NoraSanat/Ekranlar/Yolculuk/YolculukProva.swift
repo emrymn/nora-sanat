@@ -68,6 +68,12 @@ import NoraCekirdek
         await kadar(()=>bul('[data-test="zaman-grup"]')); return ad;
     }
     await h.haritaSayfasi();
+    if(ad==='gecis'){
+        const g=await kadar(()=>bul('[data-gecis="ronesans"]'));
+        // Site açılışta kendi konumuna kayar (konumaKaydir): bekleyip yeniden
+        g.scrollIntoView({block:'center'}); await bekle(3000);
+        g.scrollIntoView({block:'center'}); await bekle(1500); return ad;
+    }
     if(ad==='harita'){await kadar(()=>bul('.harita-resim')?.complete);return ad;}
     if(ad==='kurs'){bul('[data-kurs-rozet]').click();await kadar(()=>bul('[data-test="kurs-pencere"]'));return ad;}
     if(ad==='motif'){bul('[data-motif]').click();await kadar(()=>bul('[data-test="harita-motif-pencere"]'));return ad;}

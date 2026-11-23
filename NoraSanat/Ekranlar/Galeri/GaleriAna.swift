@@ -80,21 +80,35 @@ struct AkimCarki: View {
             })
         }
         .coordinateSpace(name: "serit")
+        // Z3e: iOS 18'de kaydırma içindeki GeometryReader tercihi kaydırırken güncellenmiyor (telefonda kartlar ve
+        // yazı ilk akımda kalıyordu; Bugün'deki `BugunKaymaIzi` ile aynı sorun). iOS 18'de kaydırma geometrisi doğrudan.
+        .modifier(SeritKaymaIzi { yol in konumYaz(yol, kenar: kenar) })
         .contentMargins(.horizontal, kenar, for: .scrollContent)
         .scrollTargetBehavior(.viewAligned)
         .scrollPosition(id: $secim, anchor: .center)
         .scrollIndicators(.hidden)
         .scrollClipDisabled()
         .onPreferenceChange(SeritKaymasi.self) { x in
-            guard cevirme == nil else { return }   // çark çevrilirken konumu parmak verir
-            let p = max(0, min(Double(salonlar.count - 1), Double(kenar - x) / Double(Self.adim)))
-            if abs(p - konum) > 0.001 { konum = p }
-            let yeni = Int(p.rounded())
-            if yeni != sira { sira = yeni }
+            if #available(iOS 18, *) { return }    // iOS 18: SeritKaymaIzi
+            konumYaz(kenar - x, kenar: kenar)
         }
         .onChange(of: sira) { _, yeni in if secim != yeni && cevirme == nil { secim = yeni } }
-        .onChange(of: secim) { _, yeni in if let yeni, cevirme == nil, yeni != sira { sira = yeni } }
+        .onChange(of: secim) { _, yeni in
+            guard let yeni, cevirme == nil else { return }
+            if yeni != sira { sira = yeni }
+            // Şerit bir karta oturduysa konum da orada olmalı (kaydırma bildirimi gelmese bile)
+            if abs(konum - Double(yeni)) > 0.5 { konum = Double(yeni) }
+        }
         .frame(height: Self.seritYuksekligi)
+    }
+
+    /// Şeridin kaydığı yol (içerik başından, nokta) → anlık konum ve seçili akım
+    private func konumYaz(_ yol: CGFloat, kenar: CGFloat) {
+        guard cevirme == nil else { return }   // çark çevrilirken konumu parmak verir
+        let p = max(0, min(Double(salonlar.count - 1), Double(yol) / Double(Self.adim)))
+        if abs(p - konum) > 0.001 { konum = p }
+        let yeni = Int(p.rounded())
+        if yeni != sira { sira = yeni }
     }
 
     private func kart(_ i: Int, _ salon: AkimDurumu, w: CGFloat) -> some View {
@@ -273,6 +287,21 @@ struct AkimCarki: View {
             }
         }
         .padding(.horizontal, BenOlcu.yan)
+    }
+}
+
+/// iOS 18: şeridin kaydırma geometrisi; `degisti`'ye içeriğin başından kayılan yol verilir
+/// (`contentOffset.x + contentInsets.leading`; ilk kart ortadayken 0). iOS 17'de tercih (`SeritKaymasi`) kullanılır.
+private struct SeritKaymaIzi: ViewModifier {
+    let degisti: (CGFloat) -> Void
+    func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content.onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.x + $0.contentInsets.leading } action: { _, x in
+                degisti(x)
+            }
+        } else {
+            content
+        }
     }
 }
 
