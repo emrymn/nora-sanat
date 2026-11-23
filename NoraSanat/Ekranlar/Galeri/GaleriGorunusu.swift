@@ -100,7 +100,7 @@ struct SayfaZemini: View {
     /// `.hale` (sanatçı, konu sayfaları): yalnız üstteki 520 px, sol üstten
     var ustHale = false
     /// Z3c (kullanıcının tasarım tuvali, `TabloRenkleri`): sayfanın ana tablosu. Zemin onun iki renginden süzülür: sol
-    /// üstte birinci %24, sağ altta ikinci %16. Verilmezse bu bölümde (Galeri / Çalış) son bakılan tablonunki; hiç yoksa
+    /// üstte birinci %34, sağ altta ikinci %24 (tasarımda %24 / %16; telefonda seçilmedi, Z3d'de güçlendi). Verilmezse bu bölümde (Galeri / Çalış) son bakılan tablonunki; hiç yoksa
     /// sitenin tek renkli soluk halesi.
     var tablo: URL? = nil
     var alan: ZeminTablosu.Alan = .galeri
@@ -117,8 +117,8 @@ struct SayfaZemini: View {
                 if let c = cift {
                     // Gündüz'de açık zeminde aynı süzme daha soluk
                     let k = r.koyu ? 1.0 : 0.6
-                    elips(c.birinci, [(0.24 * k, 0), (0.06 * k, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.6 * h, merkez: .topLeading, w: w, h: h)
-                    elips(c.ikinci, [(0.16 * k, 0), (0, 0.7)], rx: 0.9 * w, ry: 0.5 * h, merkez: .bottomTrailing, w: w, h: h)
+                    elips(c.birinci, [(0.34 * k, 0), (0.09 * k, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.6 * h, merkez: .topLeading, w: w, h: h)
+                    elips(c.ikinci, [(0.24 * k, 0), (0, 0.7)], rx: 0.9 * w, ry: 0.5 * h, merkez: .bottomTrailing, w: w, h: h)
                 } else if ustHale {
                     elips(r.vurgu, [(0.11, 0), (0.03, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.8 * 520, merkez: .topLeading, w: w, h: 520)
                 } else {
