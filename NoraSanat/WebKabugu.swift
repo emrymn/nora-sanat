@@ -11,7 +11,7 @@ import WebKit
 /// - `confirm()` / `alert()` / `prompt()` iOS'un kendi pencereleriyle gösterilir.
 /// - `navigator.vibrate` iPhone'un titreşim motoruna bağlanır (doğru: tek, yanlış: çift titreşim).
 /// - Başka sitelere giden linkler Safari'de açılır.
-/// - Sitenin adresi (`Gecis.adresBetigi`) ve teması (`TemaKoprusu`) kabuğa bildirilir (T3).
+/// - Sitenin adresi (`Gecis.adresBetigi`) kabuğa bildirilir (T3). Renkler Z2c-2'den beri `TemaHesabi`'nda.
 /// Uygulamada tek örneği vardır; `KokGorunum` onu hep yüklü tutar.
 struct WebKabugu: UIViewRepresentable {
     static let adres = URL(string: "https://sanat-atlasi.pages.dev/")!
@@ -33,8 +33,6 @@ struct WebKabugu: UIViewRepresentable {
         icerik.add(context.coordinator, name: "titresim")
         icerik.addUserScript(WKUserScript(source: Gecis.adresBetigi, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         icerik.add(context.coordinator, name: "adres")
-        icerik.addUserScript(WKUserScript(source: TemaKoprusu.betik, injectionTime: .atDocumentStart, forMainFrameOnly: true))
-        icerik.add(context.coordinator, name: "tema")
         ayar.userContentController = icerik
 
         let w = WKWebView(frame: .zero, configuration: ayar)
@@ -61,7 +59,6 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
 
     private let tema: TemaDeposu
     private weak var webView: WKWebView?
-    private var renkGozlemi: NSKeyValueObservation?
 
     init(tema: TemaDeposu) {
         self.tema = tema
@@ -70,16 +67,9 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     func baglan(_ w: WKWebView) {
         webView = w
         renkUygula(tema.siteRengi)
-        renkGozlemi = w.observe(\.themeColor, options: [.new]) { [weak self] w, _ in
-            let renk = w.themeColor
-            Task { @MainActor in
-                if let renk { self?.renkUygula(renk) }
-            }
-        }
     }
 
     private func renkUygula(_ renk: UIColor) {
-        tema.siteRengiGeldi(renk)
         webView?.backgroundColor = renk
         webView?.underPageBackgroundColor = renk
         webView?.scrollView.backgroundColor = renk
@@ -236,8 +226,6 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
         switch message.name {
         case "adres":
             if let a = message.body as? String { KabukDurumu.shared.siteAdresiGeldi(a) }
-        case "tema":
-            tema.siteBildirdi(message.body)
         case "titresim":
             Titresim.desen((message.body as? [Any])?.compactMap { ($0 as? NSNumber)?.doubleValue } ?? [1])
         default:
