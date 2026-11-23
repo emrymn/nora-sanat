@@ -20,7 +20,7 @@ enum SekmeCubuguKoprusu {
     static func ayarlar() async -> Ayarlar? { (try? await IlerlemeKoprusu.shared.oku()).map(Ayarlar.init) }
 
     /// Sitenin yaprağındaki dinleyicilerle aynı kural (js/ekranlar/hizliAyar.js): `alan` "tema" | "hareket" | "kart";
-    /// değer geçerliyse yazılır. Kayıt siteye aynalanır, site temayı uygular (`TemaKoprusu` oradan okur).
+    /// değer geçerliyse yazılır. Kayıt siteye aynalanır; renkleri `TemaHesabi` yeniden hesaplar.
     static func yaz(_ alan: String, _ deger: Any) async -> Ayarlar? {
         let kopru = IlerlemeKoprusu.shared
         guard let il = try? await kopru.degistir({ il in

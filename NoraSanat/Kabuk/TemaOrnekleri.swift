@@ -3,7 +3,7 @@ import NoraCekirdek
 import SwiftUI
 
 /// Yalnız geliştirme: `-ekran tema` ile açılınca temanın renk ve yazı örnekleri (T3). Solda Gece, sağda Gündüz
-/// (css/app.css sabitleri); altta sitenin şu anki teması (site arkada yüklenir, `TemaKoprusu` canlı değişkenleri getirir).
+/// (css/app.css sabitleri); altta uygulamanın şu anki teması (`TemaHesabi`).
 struct TemaOrnekleri: View {
     @Environment(TemaDeposu.self) private var tema
 

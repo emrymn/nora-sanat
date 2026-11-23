@@ -37,6 +37,16 @@ public enum GununTablosuCozucu {
 
     public enum Hata: Error { case bozukVeri, bosHavuz }
 
+    /// Z2c-3: günün sanatçısı havuzu (`data/yuruyus.json`'da noktaları olanlar; sitenin `yuruyusHavuzu`)
+    public static func havuz(yuruyus: Data) -> [String] {
+        guard let y = (try? JSONSerialization.jsonObject(with: yuruyus)) as? [String: Any],
+              let eserler = y["eserler"] as? [String: Any] else { return [] }
+        return eserler.compactMap { (id, v) -> String? in
+            guard let k = v as? [String: Any], let n = k["noktalar"] as? [Any], !n.isEmpty else { return nil }
+            return id
+        }
+    }
+
     public static func coz(tarih: String, yuruyus: Data, sanatcilar: Data,
                            adlar: Data?, kaynak: Data?) throws -> GununTablosu {
         guard let y = try JSONSerialization.jsonObject(with: yuruyus) as? [String: Any],
