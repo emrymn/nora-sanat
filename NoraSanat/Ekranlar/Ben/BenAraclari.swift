@@ -1,17 +1,15 @@
-// Kaynak: sanat-atlasi js/ekranlar/ayarlar.js (bildirimBolumu, hataBolumu, elleOdakBolumu, gununResmiBolumu, Günün
-// sanatçısı, Sürüm), js/yenilikler.js, js/hataGunlugu.js @ a866b86
-// C4b: her bölüm sitedeki gibi ayrı bir `.ayar`; davranış ve betikler C4'teki gibi.
+// Kaynak: sanat-atlasi js/ekranlar/ayarlar.js (bildirimBolumu, elleOdakBolumu, gununResmiBolumu, Günün sanatçısı,
+// Sürüm), js/gunun.js (baskaSanatci), js/bildirim.js (bildirimMetni), js/gorsel.js (elle odaklar) @ a866b86
+// C4b: her bölüm sitedeki gibi ayrı bir `.ayar`. Z2c-3: betikler Swift'te; hata günlüğü sitenin kendi günlüğüydü,
+// site kalktığı için bölümü de kalktı. "Sırayla ortala" yerli görüntüleyiciyi açar (Z2c-3b).
 import NoraCekirdek
 import SwiftUI
 
-/// Panoya kopyalayan ya da çıktısını gösteren site betiği
+/// Panoya kopyala
 @MainActor
-private func calistir(_ depo: BenDeposu, _ kaynak: String, kopyala: Bool = false, sonuc: ((String) -> Void)? = nil) {
-    depo.yap {
-        let metin = try await depo.kopru.benBetigi(kaynak) as? String ?? ""
-        sonuc?(metin)
-        if kopyala { UIPasteboard.general.string = metin; depo.mesaj = "Panoya kopyalandı." }
-    }
+private func kopyala(_ depo: BenDeposu, _ metin: String) {
+    UIPasteboard.general.string = metin
+    depo.mesaj = "Panoya kopyalandı."
 }
 
 /// "Günün sanatçısı": bugünün adı ve "Başka bir sanatçı getir"
@@ -24,15 +22,11 @@ struct GununSanatcisiBolumu: View {
                    aciklama: "Bugün: \(ad). Başka biriyle değiştirebilirsin; gün boyunca o kalır, yarın yeni sanatçı kendiliğinden gelir.") {
             Button("Başka bir sanatçı getir") {
                 depo.yap {
-                    let sonuc = try await depo.kopru.benBetigi("""
-                    const o = await import('/js/ekranlar/ortak.js');
-                    return (await import('/js/gunun.js')).baskaSanatci(o.gununHavuzu(), o.gununId(), Math.random);
-                    """)
-                    guard let id = sonuc as? String else { throw IlerlemeKoprusu.Hata.siteYok }
+                    // Z2c-3: sitenin baskaSanatci(gununHavuzu(), gununId())'si
+                    guard let id = await depo.baskaSanatci() else { throw URLError(.notConnectedToInternet) }
                     _ = try await depo.kopru.degistir {
                         $0[alan: "gununDegisim"] = .nesne([("tarih", .metin(depo.bugun)), ("id", .metin(id))])
                     }
-                    _ = try await depo.kopru.benBetigi("(await import('/js/ekranlar/ortak.js')).d.perdeAcildi = false;")
                     depo.mesaj = "Bugünün sanatçısı: " + (depo.katalog?.bilinenAd(id) ?? id)
                 }
             }
@@ -71,7 +65,11 @@ struct BildirimBolumu: View {
                 .padding(.top, 6)
                 HStack(spacing: 8) {
                     Button("JSON olarak kopyala") {
-                        calistir(depo, "return (await import('/js/bildirim.js')).bildirimMetni((await import('/js/ekranlar/ortak.js')).d.ilerleme);", kopyala: true)
+                        // bildirimMetni: JSON.stringify({ uygulama, tur, bildirimler }, null, 1)
+                        kopyala(depo, JSONDeger.nesne(SiraliNesne(ciftler: [
+                            ("uygulama", .metin("sanat-atlasi")), ("tur", .metin("gorsel-bildirimleri")),
+                            ("bildirimler", depo.il?[alan: "bildirimler"] ?? .dizi([])),
+                        ])).girintiliMetin(girinti: 1))
                     }
                     Button("Listeyi temizle") { temizle = true }
                 }
@@ -85,72 +83,29 @@ struct BildirimBolumu: View {
     }
 }
 
-/// "Hata günlüğü": kayıt sayısı, Kopyala, Temizle
-struct HataBolumu: View {
-    let depo: BenDeposu
-    @Binding var bilgi: AyarBilgisi
-    @State private var temizle = false
-
-    var body: some View {
-        AyarBolumu(baslik: "Hata günlüğü",
-                   aciklama: bilgi.hata > 0
-                       ? "\(bilgi.hata) kayıt (son: \(bilgi.hataSon)). Bir şey bozulursa kopyalayıp Claude’a gönder."
-                       : "Kayıtlı hata yok.") {
-            if bilgi.hata > 0 {
-                HStack(spacing: 8) {
-                    Button("Kopyala") {
-                        calistir(depo, "const h = await import('/js/hataGunlugu.js'); return h.gunlukMetni(h.hatalariOku());", kopyala: true)
-                    }
-                    .buttonStyle(HapDugme())
-                    Button("Temizle") { temizle = true }.buttonStyle(HapDugme(ince: true))
-                }
-                .padding(.top, 8)
-            }
-        }
-        .alert("Hata günlüğü temizlensin mi?", isPresented: $temizle) {
-            Button("Temizle", role: .destructive) {
-                depo.yap {
-                    _ = try await depo.kopru.benBetigi("(await import('/js/hataGunlugu.js')).hatalariTemizle();")
-                    bilgi.hata = 0
-                }
-            }
-            Button("Vazgeç", role: .cancel) {}
-        }
-    }
-}
-
-/// "Ana ekranın resimleri": yürüyüş eserlerini sırayla ortalama
+/// "Ana ekranın resimleri": yürüyüş eserlerini sırayla ortalama (Z2c-3b: yerli görüntüleyicide)
 struct GununResimleriBolumu: View {
     let depo: BenDeposu
     let yuruyus: Int
-    @Environment(KabukDurumu.self) private var kabuk
+    @Environment(TemaDeposu.self) private var tema
+    @State private var eserler: [Eser] = []
+    @State private var acik = false
 
     var body: some View {
         AyarBolumu(baslik: "Ana ekranın resimleri",
                    aciklama: "Ana ekranda günün ressamının yürüyüş eseri görünür\(yuruyus > 0 ? " (\(yuruyus) eser)" : ""). “Sırayla ortala” bu eserleri sırayla açar: “Odağı işaretle”ye dokun, sonra ekranın ortasına gelecek noktaya; çerçeve ana ekranın açılışında görünen alanı gösterir. Ortaladıkların aşağıdaki “Elle ortalanan tablolar” listesine girer.") {
-            Button("Sırayla ortala") { depo.yap { try await odakAc() } }
-                .buttonStyle(HapDugme()).padding(.top, 8)
+            Button("Sırayla ortala") {
+                depo.yap {
+                    eserler = await depo.yuruyusEserleri()
+                    guard !eserler.isEmpty else { depo.mesaj = "Yürüyüş eserleri bulunamadı."; return }
+                    acik = true
+                }
+            }
+            .buttonStyle(HapDugme()).padding(.top, 8)
         }
-    }
-
-    private func odakAc() async throws {
-        // Görüntüleyici ana sitede kaldığı sürece aynı WebKit oturumunda açılır.
-        kabuk.sec(.galeri)
-        _ = try await depo.kopru.benBetigi("""
-        const { d } = await import('/js/ekranlar/ortak.js');
-        const { sanatciEserleri } = await import('/js/eserler.js');
-        const { gorselAdi } = await import('/js/gorsel.js');
-        const { goruntuleyiciAc } = await import('/js/goruntuleyici.js');
-        const sanatcilar = d.sanatcilar.filter(s => d.yuruyus?.[s.id]);
-        const listeler = await Promise.all(sanatcilar.map(s => sanatciEserleri(s).catch(() => [])));
-        const eserler = sanatcilar.flatMap((s,i) => {
-          const uygun = g => gorselAdi(g) === d.yuruyus[s.id].gorsel;
-          const e = listeler[i].find(e => e.gorseller?.some(uygun));
-          return e ? [{ ...e, gorseller:e.gorseller.filter(uygun) }] : [];
-        });
-        if (!eserler.length) throw Error('Yürüyüş eserleri bulunamadı.');
-        goruntuleyiciAc({eserler, kotuler:{}, ortalama:true});
-        """)
+        .fullScreenCover(isPresented: $acik) {
+            Goruntuleyici(eserler: eserler, ortalama: true).environment(tema)
+        }
     }
 }
 
@@ -167,7 +122,7 @@ struct ElleOdakBolumu: View {
             if bilgi.odak > 0 {
                 HStack(spacing: 8) {
                     Button("Kopyala") {
-                        calistir(depo, "return JSON.stringify({surum:1, odak:(await import('/js/gorsel.js')).cihazdakiElleOdaklar()});", kopyala: true)
+                        kopyala(depo, ElleOdaklar.metin)
                     }
                     Button("Bu cihazdakileri sil") { sil = true }
                 }
@@ -176,10 +131,8 @@ struct ElleOdakBolumu: View {
         }
         .alert("Cihazdaki elle odaklar silinsin mi?", isPresented: $sil) {
             Button("Sil", role: .destructive) {
-                depo.yap {
-                    _ = try await depo.kopru.benBetigi("localStorage.removeItem((await import('/js/gorsel.js')).ELLE_ANAHTAR);")
-                    bilgi.odak = 0
-                }
+                ElleOdaklar.sil()
+                bilgi.odak = 0
             }
             Button("Vazgeç", role: .cancel) {}
         }
@@ -194,17 +147,10 @@ struct SurumBolumu: View {
     @Environment(TemaDeposu.self) private var tema
 
     var body: some View {
-        AyarBolumu(baslik: "Sürüm", aciklama: "Bu cihazda \(surum). Yeni sürüm kendiliğinden gelmezse buradan denetle.") {
+        AyarBolumu(baslik: "Sürüm", aciklama: "Sitenin verisi \(surum.isEmpty ? "—" : surum). Yeni veri kendiliğinden gelmezse buradan denetle.") {
             Button("Yeni sürüm var mı?") {
-                calistir(depo, """
-                const g = await import('/js/guncelleme.js');
-                const { SURUM } = await import('/js/surum.js');
-                const site = await g.sitedekiSurum();
-                if (!site || site === SURUM) return 'Güncel: ' + SURUM;
-                const sonuc = await g.guncellemeyiDene(site);
-                if (sonuc === 'kuruldu') { setTimeout(() => location.reload(), 800); return site + ' kuruldu.'; }
-                return 'Yeni sürüm kurulamadı.';
-                """) { mesaj = $0 }
+                // Z2c-3: sitenin verisi (sanatçılar, eserler, sürüm) yeniden indirilir; uygulamanın kendisi Xcode'dan gelir
+                Task { mesaj = await depo.veriyiYenile() }
             }
             .buttonStyle(HapDugme(ince: true)).padding(.top, 26)
             if !mesaj.isEmpty {

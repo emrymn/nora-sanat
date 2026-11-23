@@ -284,7 +284,7 @@ struct BenSekmesi: View {
         guard let k = depo.katalog, let once = depo.il else { return }
         let onceAcik = Set(once.acikSanatcilar(k.sanatcilar).map(\.id))
         withAnimation { tanis = nil }
-        depo.degistir(sonra: "(await import('/js/ekranlar/ortak.js')).d.oturum = null;", bitti: { il in
+        depo.degistir(bitti: { il in
             guard kartla, islendi, let no = nolar.first else { return }
             let yeni = il.acikSanatcilar(k.sanatcilar).map(\.id).filter { !onceAcik.contains($0) }
             if !yeni.isEmpty {
