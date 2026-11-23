@@ -90,3 +90,13 @@ glibc'nin `pow`/`cos`/`atan2`'si son basamakta ayrışabilir).
 ```bash
 node Testler/kahin/renk.mjs /tmp/sa > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/renk/cevaplar.json
 ```
+
+## Tekrar takvimi (Z2c-1)
+
+`tekrar_takvimi.mjs` tarayıcısız çalışır: uygulamanın eski köprü betiğinin takvim işlevi (TekrarKoprusu.swift silindi;
+işlev kâhinin içinde aynen duruyor) tohumlu rastgele 300 ilerlemeyle (bozuk skorlar, yedek biçimi, ay ve yıl sonları).
+`TekrarTakvimiTests` `TekrarTakvimi.hesapla`'dan aynı sayıları bekler.
+
+```bash
+node Testler/kahin/tekrar_takvimi.mjs > Paketler/NoraCekirdek/Tests/NoraCekirdekTests/Ornekler/tekrar_takvimi/cevaplar.json
+```

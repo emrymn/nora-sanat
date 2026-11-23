@@ -15,4 +15,4 @@ Bütün metinler, yorumlar, commit ve PR'lar **Türkçe**.
 - Bitirince `koordinasyon/ISLER.md`'de **kendi satırını** (durum) ve **kendi bölümündeki Devir notunu** güncelle. Rapor budur.
 - PR'ı birleştirme. Önce Claude denetler, sonra kullanıcı birleştirir.
 - iOS derlemesini GitHub Actions yapar. Ortamında Xcode yoksa bu normaldir.
-- Paket testleri: `swift test --package-path Paketler/NoraCekirdek`. Köprü testleri: `node --test Testler/tekrarTakvimi.test.mjs`.
+- Paket testleri: `swift test --package-path Paketler/NoraCekirdek`. Kâhinler: `Testler/kahin/README.md`.

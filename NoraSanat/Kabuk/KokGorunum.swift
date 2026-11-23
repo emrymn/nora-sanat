@@ -46,10 +46,27 @@ struct KokGorunum: View {
         .preferredColorScheme(tema.koyu ? .dark : .light)
         // Widget'a dokununca: norasanat://bugun
         .onOpenURL { Gezgin.shared.ac($0) }
-        // Z2c-2: renkler ayarlardan ve günün tablosundan (açılışta ve her dönüşte; gün değişmiş olabilir)
-        .task { TemaHesabi.yenile() }
+        // Z2c: renkler (TemaHesabi), rozetler ve hatırlatmalar (SayacDeposu) Swift'teki kayıttan; açılışta ve her
+        // dönüşte (gün değişmiş olabilir); kapanırken yarının sayısı
+        .task {
+            TemaHesabi.yenile()
+            await SayacDeposu.hatirlatmalariYenile()
+        }
         .onChange(of: evre) { _, yeni in
-            if yeni == .active { durum.rozetiYenile(); TemaHesabi.yenile() }
+            switch yeni {
+            case .active:
+                durum.rozetiYenile()
+                TemaHesabi.yenile()
+                Task { await SayacDeposu.hatirlatmalariYenile() }
+            case .background:
+                // Uygulama askıya alınmadan bitsin
+                let gorev = UIApplication.shared.beginBackgroundTask()
+                Task {
+                    await SayacDeposu.hatirlatmalariYenile(kapaniyor: true)
+                    UIApplication.shared.endBackgroundTask(gorev)
+                }
+            default: break
+            }
         }
     }
 
