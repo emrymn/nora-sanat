@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/ekranlar/bugun.js, js/egim.js, js/gunduzRenk.js, js/renk.js @ a866b86
+// Kaynak: sanat-atlasi js/ekranlar/bugun.js, js/egim.js, js/gorsel.js (adlaOdak, yuruyusEki) @ a866b86
 import CoreMotion
 import NoraCekirdek
 import SwiftUI
@@ -27,6 +27,7 @@ final class BugunDeposu {
         ])
       async let kayitOku: Ilerleme? = try? kopru.oku()
       async let baglamYukle = GoruntuleyiciBaglami.yukle(siteVerisi: site)
+      async let odakDosyalari = site.veriler(OdakVerisi.dosyalar)
       let b = await baglamYukle
       guard let katalog = b.katalog else { throw URLError(.notConnectedToInternet) }
       let ilerleme = await kayitOku
@@ -40,14 +41,9 @@ final class BugunDeposu {
       let s = try BugunTablosu(
         tarih: tarih, degisim: degisim,
         veriler: veriler, katalog: katalog)
-      let ayar =
-        try? await kopru.benBetigi(
-          """
-          const o = await import('/js/ekranlar/ortak.js'), g = await import('/js/gorsel.js');
-          o.gunduzRenginiUygula();
-          await o.odaklariYukle();
-          return { ...g.yuruyusEki(ad), odak:g.adlaOdak(ad) || [50,40] };
-          """, ["ad": s.kayit.gorsel]) as? [String: Any]
+      // Z2c-3: odak ve açılış ayarları sitenin veri dosyalarından ve bu cihazdaki elle odaklardan (js/gorsel.js)
+      let odaklar = OdakVerisi(veriler: await odakDosyalari, cihaz: ElleOdaklar.hepsi)
+      let ek = odaklar.yuruyusEki(s.kayit.gorsel)
       let imzalar = veriler["imzalar.json"].flatMap { try? JSONDeger.coz($0) }
       let imzaURL = imzalar?["imzalar"]?[s.tablo.sanatciId]?.metin.map { _ in
         SiteVerisi.site.appendingPathComponent("gorseller/imza/" + s.tablo.sanatciId + ".png")
@@ -58,13 +54,10 @@ final class BugunDeposu {
       try Task.checkCancellation()
       guard let ilk else { throw URLError(.cannotDecodeContentData) }
       egimAcik = ilerleme?.ayar("egim")?.mantik ?? true
-      if let merkez = ayar?["odak"] as? [Double], merkez.count == 2 {
-        odak = CGPoint(x: merkez[0] / 100, y: merkez[1] / 100)
-      } else {
-        odak = CGPoint(x: 0.5, y: 0.4)
-      }
-      yakin = ayar?["yakin"] as? Double ?? 1
-      kirp = s.kayit.kirp ?? (ayar?["kirp"] as? [Double])
+      let merkez = odaklar.adlaOdak(s.kayit.gorsel) ?? [50, 40]
+      odak = CGPoint(x: merkez[0] / 100, y: merkez[1] / 100)
+      yakin = ek.yakin
+      kirp = s.kayit.kirp ?? ek.kirp
       kucukler = (0..<4).map {
         katalog.eserGorselAdresi(
           s.tablo.sanatciId, sira: $0, kotuler: ilerleme?.kotuGorseller ?? [:])
@@ -91,6 +84,14 @@ final class BugunHareketi {
   private let aygit = CMMotionManager()
   var deger: CGPoint?
   /// Sitedeki `egimVar()` gibi: simülatörde de eğim "var" (WKWebView orada da devicemotion verir; CI site ile aynı kalsın)
+  /// Ayarlar'daki "Telefonu eğince tablo oynasın" (sitenin `egimVar()`'ı)
+  static var egimVarMi: Bool {
+    #if targetEnvironment(simulator)
+      true
+    #else
+      CMMotionManager().isGyroAvailable
+    #endif
+  }
   var varMi: Bool {
     #if targetEnvironment(simulator)
       true

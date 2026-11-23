@@ -1,10 +1,8 @@
 import NoraCekirdek
 import SwiftUI
 
-/// Uygulamanın kökü (ISLER.md K1): tek WKWebView (site) ve yerli sekmeler.
-///
-/// Site her zaman yüklü kalır (köprüler, ilerleme, rozet ve hatırlatma onu kullanır); yalnız seçili sekme taşınmamışsa
-/// görünür. Hiç sekme taşınmadıysa yerli çubuk hiç kurulmaz ve uygulama bugünküyle birebir aynıdır. Bkz. `Gecis`.
+/// Uygulamanın kökü (ISLER.md K1): yerli sekmeler. Z2c'den beri site yalnız ilk taşımada ve DEBUG karşılaştırmalarında
+/// kurulur (`WebKabugu.gerekli`); kurulduğunda da yalnız seçili sekme taşınmamışsa görünür. Hiç sekme taşınmadıysa yerli çubuk hiç kurulmaz ve uygulama bugünküyle birebir aynıdır. Bkz. `Gecis`.
 /// Yerli ekranların çubuğu `YerliSekmeCubugu` (T4): sitenin çubuğuyla aynı yerde, aynı görünüşte.
 struct KokGorunum: View {
     @State private var durum = KabukDurumu.shared
@@ -27,10 +25,13 @@ struct KokGorunum: View {
                     }
                 }
             }
-            site
-                .opacity(durum.siteGorunur ? 1 : 0)
-                .allowsHitTesting(durum.siteGorunur)
-                .accessibilityHidden(!durum.siteGorunur)
+            // Z2c-3b: site yalnız gerektiğinde (taşıma, DEBUG karşılaştırma); bkz. `WebKabugu.gerekli`
+            if WebKabugu.gerekli {
+                site
+                    .opacity(durum.siteGorunur ? 1 : 0)
+                    .allowsHitTesting(durum.siteGorunur)
+                    .accessibilityHidden(!durum.siteGorunur)
+            }
             if !Gecis.yerliSekmeler.isEmpty {
                 // Site görünürken de kurulu (saydam): hap sitenin seçimini izler, yerliye geçince oradan kayar
                 YerliSekmeCubugu()

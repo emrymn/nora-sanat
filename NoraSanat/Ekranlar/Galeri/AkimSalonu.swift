@@ -298,7 +298,8 @@ struct AkimSalonu: View {
             ], startPoint: .top, endPoint: .bottom)
             VStack(alignment: .leading, spacing: 6) {
                 VurguEtiket(GaleriSergisi.yuzyillar(uyeler))
-                Text(ad).font(Yazi.serif(64, agirlik: 500, stil: .largeTitle)).cssSatir(.serif, 64, 64)
+                // Z3f: akımın harfi (İş 48; js/harfler.js AKIM_HARFLERI)
+                DonemYazisi(metin: ad, harf: DonemHarfleri.akimlar[ad], boyut: 64, agirlik: 500).cssSatir(.serif, 64, 64)
                     .foregroundStyle(Color(yazi))
                     .lineLimit(2).minimumScaleFactor(0.5)
                     .accessibilityAddTraits(.isHeader)

@@ -16,6 +16,16 @@ import WebKit
 struct WebKabugu: UIViewRepresentable {
     static let adres = URL(string: "https://sanat-atlasi.pages.dev/")!
 
+    /// Z2c-3b: site artık yalnız gerektiğinde kurulur. Bütün ekranlar, ilerleme, renkler ve sayaçlar Swift'te; site
+    /// (1) ilerleme bir kez taşınmadıysa (dosya yok), (2) cihazdaki elle odaklar alınmadıysa ve (3) DEBUG `-yalnizSite`
+    /// (CI karşılaştırmaları) ile açılır. Açılışta bir kez karar verilir.
+    @MainActor static let gerekli: Bool = {
+        #if DEBUG
+        if CommandLine.arguments.contains("-yalnizSite") { return true }
+        #endif
+        return !IlerlemeKoprusu.shared.dosya.varMi || !ElleOdaklar.alindiMi
+    }()
+
     let tema: TemaDeposu
 
     func makeCoordinator() -> Koordinator { Koordinator(tema: tema) }
