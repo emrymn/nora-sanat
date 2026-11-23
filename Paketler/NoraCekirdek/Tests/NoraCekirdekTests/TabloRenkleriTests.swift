@@ -21,7 +21,7 @@ final class TabloRenkleriTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(tonFarki(tonlar[0], tonlar[1]), 45)
         for x in [c.birinci, c.ikinci] {
             let (_, s, l) = TabloRenkleri.hsl(x.r, x.g, x.b)
-            XCTAssert((0.31...0.43).contains(l) && (0.21...0.61).contains(s), "\(x)")
+            XCTAssert((0.39...0.51).contains(l) && (0.44...0.66).contains(s), "\(x)")
         }
     }
 

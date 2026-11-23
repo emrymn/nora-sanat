@@ -11,7 +11,6 @@ import WebKit
 /// - `confirm()` / `alert()` / `prompt()` iOS'un kendi pencereleriyle gösterilir.
 /// - `navigator.vibrate` iPhone'un titreşim motoruna bağlanır (doğru: tek, yanlış: çift titreşim).
 /// - Başka sitelere giden linkler Safari'de açılır.
-/// - Tekrar hatırlatmaları ve simge rozeti için `TekrarKoprusu` betiği eklenir (bkz. `Hatirlatici`).
 /// - Sitenin adresi (`Gecis.adresBetigi`) kabuğa bildirilir (T3). Renkler Z2c-2'den beri `TemaHesabi`'nda.
 /// Uygulamada tek örneği vardır; `KokGorunum` onu hep yüklü tutar.
 struct WebKabugu: UIViewRepresentable {
@@ -32,14 +31,8 @@ struct WebKabugu: UIViewRepresentable {
                                           injectionTime: .atDocumentStart,
                                           forMainFrameOnly: true))
         icerik.add(context.coordinator, name: "titresim")
-        icerik.addUserScript(WKUserScript(source: TekrarKoprusu.betik,
-                                          injectionTime: .atDocumentStart,
-                                          forMainFrameOnly: true))
-        icerik.add(context.coordinator, name: "tekrarTakvimi")
-        icerik.add(context.coordinator, name: "rozet")
         icerik.addUserScript(WKUserScript(source: Gecis.adresBetigi, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         icerik.add(context.coordinator, name: "adres")
-        icerik.addScriptMessageHandler(IzinKoprusu(), contentWorld: .page, name: "bildirimIzni")
         ayar.userContentController = icerik
 
         let w = WKWebView(frame: .zero, configuration: ayar)
@@ -66,7 +59,6 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
 
     private let tema: TemaDeposu
     private weak var webView: WKWebView?
-    private var arkaPlanGozlemi: NSObjectProtocol?
 
     init(tema: TemaDeposu) {
         self.tema = tema
@@ -75,13 +67,6 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
     func baglan(_ w: WKWebView) {
         webView = w
         renkUygula(tema.siteRengi)
-        // Arka plana geçerken tekrar takvimini bir kez daha iste (sayfanın visibilitychange'ine ek güvence)
-        arkaPlanGozlemi = NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak w] _ in
-            Task { @MainActor in
-                w?.evaluateJavaScript("window.__noraKopru && window.__noraKopru.gonder();", completionHandler: nil)
-            }
-        }
     }
 
     private func renkUygula(_ renk: UIColor) {
@@ -239,12 +224,6 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         switch message.name {
-        case "tekrarTakvimi":
-            if let t = TekrarTakvimi(ileti: message.body) { Hatirlatici.shared.takvimGeldi(t) }
-            return
-        case "rozet":
-            Hatirlatici.shared.rozet((message.body as? NSNumber)?.intValue ?? 0)
-            return
         case "adres":
             if let a = message.body as? String { KabukDurumu.shared.siteAdresiGeldi(a) }
         case "titresim":
@@ -272,14 +251,4 @@ final class Koordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptM
       <a href="https://sanat-atlasi.pages.dev/">Tekrar dene</a>
     </body></html>
     """
-}
-
-/// Sitenin `Notification.requestPermission()`'ı → iOS bildirim izni (cevap bekleyen ileti)
-final class IzinKoprusu: NSObject, WKScriptMessageHandlerWithReply {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage,
-                               replyHandler: @escaping (Any?, String?) -> Void) {
-        Task { @MainActor in
-            replyHandler(await Hatirlatici.shared.izinIste(), nil)
-        }
-    }
 }

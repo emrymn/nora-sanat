@@ -1,21 +1,10 @@
-// Kaynak: sanat-atlasi js/ekranlar/ortak.js (sekmeRozetiBagla), js/ekranlar/bugun.js (turBilgisi),
-// js/ekranlar/hizliAyar.js @ a866b86
+// Kaynak: sanat-atlasi js/ekranlar/hizliAyar.js @ a866b86
 import Foundation
 import NoraCekirdek
-import WebKit
 
-/// Yerli sekme çubuğunun (T4) Çalış rozeti (sitenin betiği; Z2b'den beri site Swift'in aynası) ve hızlı ayarlar
-/// (Z2b: Swift'teki kayıt). Betikler `Testler/kahin/sekme_cubugu.mjs` ile canlı sitede sınanır.
+/// Yerli sekme çubuğunun (T4) hızlı ayarları (Z2b: Swift'teki kayıt). Çalış rozeti Z2c'den beri `SayacDeposu`'nda.
 @MainActor
 enum SekmeCubuguKoprusu {
-    /// Çalış rozetindeki sayı: sitenin `sekmeRozetiBagla(() => (d.ilerleme ? turBilgisi('karisik').toplam : 0))`'ı
-    static let rozetBetigi = """
-    const o = await import('/js/ekranlar/ortak.js');
-    if (!o.d.ilerleme) return null;
-    const b = await import('/js/ekranlar/bugun.js');
-    return b.turBilgisi('karisik').toplam;
-    """
-
     struct Ayarlar: Equatable {
         var tema = "gece", hareket = "tam", gunlukKart = 20
 
@@ -26,13 +15,6 @@ enum SekmeCubuguKoprusu {
             gunlukKart = il.ayar("gunlukKart")?.tamSayi ?? gunlukKart
         }
     }
-
-    private static func calistir(_ govde: String, _ arguman: [String: Any] = [:]) async -> Any? {
-        guard Gezgin.shared.yuklendi, let w = Gezgin.shared.webView else { return nil }
-        return try? await w.callAsyncJavaScript(govde, arguments: arguman, in: nil, contentWorld: .page)
-    }
-
-    static func rozet() async -> Int? { (await calistir(rozetBetigi) as? NSNumber)?.intValue }
 
     /// Z2b: ayarlar Swift'teki kayıttan
     static func ayarlar() async -> Ayarlar? { (try? await IlerlemeKoprusu.shared.oku()).map(Ayarlar.init) }
