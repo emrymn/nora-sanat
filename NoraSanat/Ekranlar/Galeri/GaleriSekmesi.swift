@@ -205,7 +205,8 @@ struct GaleriSekmesi: View {
                           },
                           gir: { yol.append(.akim($0)) })
             }
-            .padding(.bottom, 24)
+            // Z3h: "Bütün akımlar" en alta kaydırınca sekme çubuğunun üstündeki dişlinin (hızlı ayar dili) üstünde kalsın
+            .padding(.bottom, 56)
           }
           .scrollIndicators(.hidden)
           #if DEBUG
