@@ -141,6 +141,23 @@ struct BugunSekmesi: View {
             .frame(width: boy.width, height: h, alignment: .topLeading)
             .rotation3DEffect(.degrees(yatayAci), axis: (0, 1, 0))
             .rotation3DEffect(.degrees(dikeyAci), axis: (1, 0, 0))
+          // `.egim-isik` (css/app.css): eğim dinlenirken tablonun üstünde eğimle kayan yumuşak ışık;
+          // radial-gradient(60% 45% at 50%+x·45% 35%+y·35%, rgba(255,246,225,.32) → 0 %70), soft-light
+          if let e = hareket.deger {
+            let w = max(1, boy.width)
+            let merkez = UnitPoint(x: 0.5 + e.x * 0.45, y: 0.35 + e.y * 0.35)
+            let isik = Color(.sRGB, red: 1, green: 246 / 255, blue: 225 / 255)
+            Rectangle()
+              .fill(
+                RadialGradient(
+                  stops: [.init(color: isik.opacity(0.32), location: 0), .init(color: isik.opacity(0), location: 0.7)],
+                  center: merkez, startRadius: 0, endRadius: 0.6 * w)
+              )
+              .scaleEffect(x: 1, y: 0.45 * h / (0.6 * w), anchor: merkez)
+              .frame(width: w, height: h)
+              .blendMode(.softLight)
+              .allowsHitTesting(false).accessibilityHidden(true)
+          }
           // `.yur-sahne::after`
           LinearGradient(
             stops: [
@@ -210,7 +227,12 @@ struct BugunSekmesi: View {
       }
       .frame(width: boy.width, height: h).clipped()
       .onChange(of: gizle, initial: true) { _, yeni in cubukGizli = yeni }
-      .onChange(of: kabuk.yenidenDokunma[.bugun]) { _, _ in kaydir.scrollTo(0, anchor: .top) }
+      // Sekmeye yeniden dokununca en alttaki "Başa dön" ile aynı süzülerek dönüş (Emre'nin isteği; sitede bu dokunuş
+      // animasyonsuz başa atlar). Zaten baştaysa bir şey yapmaz.
+      .onChange(of: kabuk.yenidenDokunma[.bugun]) { _, _ in
+        guard kayma > 1 else { return }
+        suzul(hedef: 0) { kaydir.scrollTo(0, anchor: .top) }
+      }
       .onChange(of: kabuk.yerliAdres[.bugun], initial: true) { _, adres in
         guard let adres else { return }
         if adres.hasPrefix("#/gunun/") {

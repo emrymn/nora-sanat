@@ -179,6 +179,22 @@ final class SiteVerisiTests: XCTestCase {
         XCTAssertGreaterThan(gorulen.count, 60)
     }
 
+    /// "Yeni sürüm var mı?": diskteki kopyalar eskir ama silinmez (çevrimdışıyken yine okunur)
+    func testHepsiniEskit() async throws {
+        let klasor = FileManager.default.temporaryDirectory.appendingPathComponent("SiteVerisiTest-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: klasor) }
+        let site = SiteVerisi(klasor: klasor, kok: URL(string: "https://yok.invalid/")!)
+        let icerik = Data(#"{"eserler":{}}"#.utf8)
+        try icerik.write(to: klasor.appendingPathComponent("yuruyus.json"))
+        XCTAssertLessThan(site.yas("yuruyus.json"), 60)
+        await site.hepsiniEskit()
+        let omur = await site.omur
+        XCTAssertGreaterThan(site.yas("yuruyus.json"), omur)
+        // indirilemeyince eski kopya döner
+        let d = await site.veri("yuruyus.json")
+        XCTAssertEqual(d, icerik)
+    }
+
     /// İndirme katmanı canlı siteye karşı (yalnız CANLI=1 ile; CI'da ağa bağlı test yok)
     func testCanliIndirme() async throws {
         try XCTSkipUnless(ProcessInfo.processInfo.environment["CANLI"] == "1", "CANLI=1 değil")

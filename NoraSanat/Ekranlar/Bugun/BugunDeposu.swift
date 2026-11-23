@@ -110,16 +110,20 @@ final class BugunHareketi {
     if deger == nil { deger = .zero }
     guard aygit.isGyroAvailable, !aygit.isGyroActive else { return }
     var iz = YuruyusEgimi()
+    // js/egim.js: hedef her ölçümde, ekrandaki değer ona her karede %20 yaklaşır (sitede devicemotion ve
+    // requestAnimationFrame ikisi de ~60/sn; burada ölçüm başına bir adım, ölçüm de 60/sn)
+    var yumusak = EgimYumusatici()
     var son: TimeInterval?
-    aygit.gyroUpdateInterval = 1 / 30
+    aygit.gyroUpdateInterval = 1 / 60
     aygit.startGyroUpdates(to: .main) { [weak self] ornek, _ in
       guard let self, self.aygit.isGyroActive, let ornek else { return }
       defer { son = ornek.timestamp }
       guard let son else { return }
       let hiz = ornek.rotationRate
-      self.deger = iz.izle(
-        hiz: CGPoint(x: hiz.y * 180 / .pi, y: hiz.x * 180 / .pi),
-        sure: min(0.05, ornek.timestamp - son))
+      self.deger = yumusak.izle(
+        iz.izle(
+          hiz: CGPoint(x: hiz.y * 180 / .pi, y: hiz.x * 180 / .pi),
+          sure: min(0.05, ornek.timestamp - son)))
     }
   }
 }

@@ -74,6 +74,17 @@ final class BugunTests: XCTestCase {
     }
   }
 
+  /// js/egim.js ciz(): anlik = anlik + (hedef - anlik) * 0.2 (TABLO_IZ)
+  func testEgimYumusatici() {
+    var y = EgimYumusatici()
+    XCTAssertEqual(y.izle(CGPoint(x: 1, y: -0.5)).x, 0.2, accuracy: 1e-12)
+    let ikinci = y.izle(CGPoint(x: 1, y: -0.5))
+    XCTAssertEqual(ikinci.x, 0.36, accuracy: 1e-12)
+    XCTAssertEqual(ikinci.y, -0.18, accuracy: 1e-12)
+    for _ in 0..<60 { _ = y.izle(.zero) }
+    XCTAssertEqual(y.anlik.x, 0, accuracy: 1e-4)
+  }
+
   /// Aynı tarihte Ayarlar'dan değiştirilen sanatçı, eski değişim ve geçersiz kimlik.
   /// Beklenen ad, eser, yıl ve görsel sitenin gunun_tablosu.mjs kâhininden.
   func testGununDegisimiVeGoruntuleyiciEseri() throws {

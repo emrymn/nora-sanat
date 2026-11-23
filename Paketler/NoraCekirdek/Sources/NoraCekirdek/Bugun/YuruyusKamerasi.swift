@@ -111,6 +111,19 @@ public struct YuruyusKamerasi {
   }
 }
 
+/// js/egim.js `ciz()`: ekrandaki eğim, jiroskobun hedefine her karede TABLO_IZ (0,2) kadar yaklaşır (60 kare/sn).
+/// Bu adım olmadan tablo her ölçümde yeni yerine atlıyordu; hareket hızlı ve sert görünüyordu.
+public struct EgimYumusatici {
+  public static let tabloIz = 0.2
+  public private(set) var anlik = CGPoint.zero
+  public init() {}
+  public mutating func izle(_ hedef: CGPoint) -> CGPoint {
+    anlik = CGPoint(
+      x: anlik.x + (hedef.x - anlik.x) * Self.tabloIz, y: anlik.y + (hedef.y - anlik.y) * Self.tabloIz)
+    return anlik
+  }
+}
+
 public struct YuruyusEgimi {
   private var aci = CGPoint.zero
   public init() {}

@@ -66,6 +66,16 @@ public actor SiteVerisi {
         return try? Data(contentsOf: u)
     }
 
+    /// "Yeni sürüm var mı?": diskteki bütün kopyalar eskimiş sayılır; her dosya ilk istendiğinde yeniden indirilir
+    /// (indirilemezse eski kopya kullanılmaya devam eder). Yalnız katalog değil, Bugün'ün yürüyüş ve odak dosyaları da.
+    public func hepsiniEskit() {
+        let fm = FileManager.default
+        for u in (try? fm.contentsOfDirectory(at: klasor, includingPropertiesForKeys: nil)) ?? [] {
+            try? fm.setAttributes([.modificationDate: Date.distantPast], ofItemAtPath: u.path)
+        }
+        katalogBellegi = nil
+    }
+
     /// Birden çok dosya aynı anda; dönen sözlükte yalnız elde edilenler var
     public func veriler(_ dosyalar: [String], zorla: Bool = false) async -> [String: Data] {
         await withTaskGroup(of: (String, Data?).self) { g in
