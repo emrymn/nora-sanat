@@ -1,0 +1,1704 @@
+<!doctype html>
+<html lang="tr" data-tema="gece">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Çalış Ana Ekranı · Yön 2 — Bugün perdesi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Archivo:wght@400;500;600;700&display=swap"
+    />
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* =====================================================================
+         Sanat Atlası — Tema değişkenleri (css/app.css & TemaRenkleri.swift)
+         ===================================================================== */
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --border: #2e2b28;
+        --border-ince: rgba(235, 229, 218, 0.11);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --ink-soluk: #645e57;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --right: #6fb487;
+        --wrong: #d66854;
+        --tab-bg: rgba(24, 22, 20, 0.82);
+        --overlay-btn: rgba(24, 22, 20, 0.66);
+        --cam-kart: rgba(28, 26, 24, 0.72);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.038;
+        --hale-karisim: normal;
+        --hale-1: rgba(56, 98, 166, 0.30);
+        --hale-1-orta: rgba(56, 98, 166, 0.09);
+        --hale-2: rgba(184, 142, 62, 0.22);
+        --hale-2-orta: rgba(184, 142, 62, 0.06);
+        --sekme-golge: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --sayfa-zemin: #0c0b0a;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --border: #d6d0c6;
+        --border-ince: rgba(31, 27, 23, 0.10);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #5f5850;
+        --ink-soluk: #8e867c;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --right: #2a6644;
+        --wrong: #9a3726;
+        --tab-bg: rgba(247, 245, 241, 0.86);
+        --overlay-btn: rgba(247, 245, 241, 0.84);
+        --cam-kart: rgba(247, 245, 241, 0.84);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.044;
+        --hale-karisim: multiply;
+        --hale-1: rgba(56, 98, 166, 0.18);
+        --hale-1-orta: rgba(56, 98, 166, 0.05);
+        --hale-2: rgba(184, 142, 62, 0.14);
+        --hale-2-orta: rgba(184, 142, 62, 0.04);
+        --sekme-golge: 0 10px 28px rgba(20, 17, 14, 0.14);
+        --sayfa-zemin: #e2ddd4;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --okuma: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Önizleme çubuğu */
+      .onizleme-ust {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 28px;
+        background: var(--tab-bg);
+        border-bottom: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+
+      .onizleme-baslik {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .onizleme-baslik .ust-not {
+        font: 600 13px/1.3 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .onizleme-baslik h1 {
+        margin: 0;
+        font: 500 23px/1.15 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+
+      .onizleme-denetimler {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .kare-secici {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .kare-secici button {
+        min-height: 40px;
+        padding: 0 10px;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 13px/1 var(--sans);
+        cursor: pointer;
+      }
+
+      .kare-secici button[aria-pressed='true'] {
+        color: var(--pirinc);
+        border-bottom-color: var(--pirinc);
+        font-weight: 600;
+      }
+
+      .tema-kabi {
+        display: inline-flex;
+        padding: 4px;
+        gap: 2px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+
+      .tema-kabi button {
+        min-height: 36px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 13px/1 var(--sans);
+        cursor: pointer;
+        transition: background 180ms ease, color 180ms ease;
+      }
+
+      .tema-kabi button[aria-pressed='true'] {
+        background: rgba(var(--ink-rgb), 0.14);
+        color: var(--ink);
+      }
+
+      .sahne {
+        display: flex;
+        justify-content: center;
+        padding: 36px 20px 64px;
+      }
+
+      /* 390 × 844 iPhone */
+      .telefon {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        border-radius: 44px;
+        overflow: hidden;
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        box-shadow: 0 32px 84px rgba(0, 0, 0, 0.42);
+        isolation: isolate;
+      }
+
+      .zemin-doku {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        pointer-events: none;
+      }
+
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        mix-blend-mode: var(--hale-karisim);
+        background:
+          radial-gradient(125% 52% at 0% 0%, var(--hale-1) 0%, var(--hale-1-orta) 48%, transparent 84%),
+          radial-gradient(96% 42% at 100% 100%, var(--hale-2) 0%, var(--hale-2-orta) 44%, transparent 80%);
+        pointer-events: none;
+      }
+
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        color: var(--ink);
+        opacity: var(--desen-opaklik);
+        pointer-events: none;
+      }
+
+      .telefon-kaydir {
+        position: relative;
+        z-index: 3;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: clip;
+        scrollbar-width: none;
+      }
+      .telefon-kaydir::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Kenardan kenara kapak üstünde durum çubuğu (resmin üstü koyu perdeli olduğu için açık renk) */
+      .durum-cubugu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 16;
+        height: 48px;
+        padding: 14px 26px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 14px/1 var(--sans);
+        color: #f4f0e8;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+        pointer-events: none;
+        transition: color 200ms ease;
+      }
+
+      .durum-cubugu.koyu-yazi {
+        color: var(--ink);
+        text-shadow: none;
+      }
+
+      .durum-simgeler {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .cam-ust-cubuk {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 14;
+        height: 92px;
+        padding-top: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--tab-bg);
+        border-bottom: 1px solid var(--border-ince);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+        font: 500 18px/1 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: opacity 200ms ease, transform 200ms ease;
+        pointer-events: none;
+      }
+
+      .cam-ust-cubuk.acik {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* =====================================================================
+         1. Kenardan kenara Bugün perdesi + 16 sn yakınlaşma
+         ===================================================================== */
+      .perde-sahne {
+        position: relative;
+        width: 100%;
+        height: 368px;
+        overflow: hidden;
+        background: #161412;
+      }
+
+      .kapak-resim {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform-origin: 50% 40%;
+        animation: kapak-yuru 16s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+        will-change: transform;
+      }
+
+      @keyframes kapak-yuru {
+        0%,
+        8%,
+        50%,
+        58%,
+        100% {
+          transform: none;
+        }
+        22%,
+        38% {
+          transform: translate(-10%, 6%) scale(1.8);
+        }
+        72%,
+        90% {
+          transform: translate(14%, -4%) scale(1.9);
+        }
+      }
+
+      :root[data-kare='bas'] .kapak-resim {
+        animation-delay: 0s;
+        animation-play-state: paused;
+      }
+      :root[data-kare='ayrinti'] .kapak-resim {
+        animation-delay: -4.8s;
+        animation-play-state: paused;
+      }
+      :root[data-kare='donus'] .kapak-resim {
+        animation-delay: -7.04s;
+        animation-play-state: paused;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .kapak-resim {
+          animation: none;
+        }
+      }
+
+      /* Üst hafif okuma gölgesi + altta zemine yumuşak erime */
+      .perde-sahne::before {
+        content: '';
+        position: absolute;
+        inset: 0 0 auto;
+        height: 118px;
+        z-index: 2;
+        background: linear-gradient(180deg, rgba(16, 15, 14, 0.62) 0%, rgba(16, 15, 14, 0) 100%);
+        pointer-events: none;
+      }
+
+      .perde-sahne::after {
+        content: '';
+        position: absolute;
+        inset: auto 0 0;
+        height: 168px;
+        z-index: 2;
+        background: linear-gradient(
+          180deg,
+          rgba(var(--bg-rgb), 0) 0%,
+          rgba(var(--bg-rgb), 0.52) 52%,
+          rgba(var(--bg-rgb), 0.92) 84%,
+          var(--bg) 100%
+        );
+        pointer-events: none;
+      }
+
+      .perde-ust-satir {
+        position: absolute;
+        top: 52px;
+        left: 20px;
+        right: 20px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .perde-ust-satir h2 {
+        margin: 0;
+        font: 500 32px/1 var(--serif);
+        letter-spacing: -0.01em;
+        color: #f4f0e8;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+      }
+
+      .konum-cam-hap {
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(18, 17, 16, 0.46);
+        border: 1px solid rgba(244, 240, 232, 0.22);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        backdrop-filter: blur(20px) saturate(1.5);
+        font: 500 12.5px/1 var(--sans);
+        color: rgba(244, 240, 232, 0.92);
+      }
+
+      /* Erime ucundan doğrudan zemine oturan Bugünün dersi */
+      .ekran-ic {
+        position: relative;
+        z-index: 4;
+        margin-top: -36px;
+        padding: 0 20px 116px;
+      }
+
+      .ders-bas-satir {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .ust-yazi {
+        font: 600 13px/1.3 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .kunye-not {
+        font: 400 13px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .ders-ana-baslik {
+        margin: 6px 0 0;
+        font: 500 38px/1.03 var(--serif);
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+
+      .adimlar {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .adim {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        min-height: 44px;
+        padding-top: 4px;
+        text-decoration: none;
+        color: var(--ink-2);
+      }
+
+      .adim-ray {
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(var(--ink-rgb), 0.14);
+        overflow: hidden;
+      }
+
+      .adim-ray i {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+      }
+
+      .adim.bitti .adim-ray i {
+        width: 100%;
+        background: var(--right);
+      }
+
+      .adim.simdi .adim-ray i {
+        width: 60%;
+        background: var(--pirinc);
+      }
+
+      .adim-ad {
+        font: 400 13px/1.2 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .adim.simdi .adim-ad {
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .adim.kapali {
+        opacity: 0.48;
+      }
+
+      .davet-metin {
+        margin: 10px 0 0;
+        font: 400 18px/1.55 var(--okuma);
+        color: var(--ink);
+        text-wrap: pretty;
+      }
+
+      .davet-metin em {
+        font-style: italic;
+      }
+
+      /* EKRANDAKİ TEK DOLU DÜĞME */
+      .asil-dugme {
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        min-height: 54px;
+        padding: 0 18px 0 22px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .asil-dugme-sol {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      .asil-dugme-sol b {
+        font: 600 15px/1.2 var(--sans);
+      }
+
+      .asil-dugme-sol span {
+        font: 400 12.5px/1.2 var(--sans);
+        opacity: 0.72;
+      }
+
+      /* =====================================================================
+         2. Günlük tekrar (buzlu cam yüzey kartı)
+         ===================================================================== */
+      .tekrar-kart {
+        margin-top: 28px;
+        padding: 18px 18px 16px;
+        border-radius: 24px;
+        background: var(--cam-kart);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(22px) saturate(1.5);
+        backdrop-filter: blur(22px) saturate(1.5);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        text-decoration: none;
+        color: var(--ink);
+      }
+
+      .tekrar-ust {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .mini-deste {
+        position: relative;
+        flex: none;
+        width: 50px;
+        height: 58px;
+      }
+
+      .mini-deste span {
+        position: absolute;
+        top: 4px;
+        left: 6px;
+        width: 38px;
+        height: 50px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid rgba(var(--ink-rgb), 0.18);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+      }
+
+      .mini-deste img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .mini-deste span:nth-child(1) {
+        transform: translate(-6px, 2px) rotate(-8deg);
+      }
+      .mini-deste span:nth-child(2) {
+        transform: translate(0, -1px);
+        z-index: 2;
+      }
+      .mini-deste span:nth-child(3) {
+        transform: translate(6px, 2px) rotate(8deg);
+        z-index: 1;
+      }
+
+      .tekrar-govde {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .tekrar-sayi {
+        font: 500 26px/1.15 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+
+      .tekrar-sayi small {
+        font: 400 18px/1 var(--serif);
+        color: var(--ink-2);
+      }
+
+      .tekrar-alt {
+        font: 400 13px/1.35 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .cam-ok {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        display: grid;
+        place-items: center;
+        color: var(--ink);
+      }
+
+      .karisim-cizgi {
+        height: 3px;
+        display: flex;
+        gap: 3px;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .karisim-cizgi i {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+      }
+
+      /* =====================================================================
+         3. Çalışma masan — Cam sekme filtresi + Yatay Galeri Rafı + Gruplu Turlar
+         ===================================================================== */
+      .bolum {
+        margin-top: 40px;
+      }
+
+      .bolum-ust {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 16px;
+      }
+
+      .bolum-ust h3 {
+        margin: 0;
+        font: 500 28px/1.12 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+
+      .bolum-ust p {
+        margin: 0;
+        font: 400 14px/1.45 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* Bölüm sekmeleri: tek cam kap, ikonsuz, tek dolu düğme kuralını bozmayan yumuşak cam vurgu */
+      .masa-cam-sekme {
+        display: inline-flex;
+        padding: 4px;
+        gap: 2px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        backdrop-filter: blur(20px) saturate(1.5);
+        margin-bottom: 22px;
+      }
+
+      .masa-cam-sekme button {
+        min-height: 38px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 13.5px/1 var(--sans);
+        cursor: pointer;
+        transition: background 180ms ease, color 180ms ease;
+      }
+
+      .masa-cam-sekme button[aria-selected='true'] {
+        background: rgba(var(--ink-rgb), 0.14);
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .panel-gizli {
+        display: none !important;
+      }
+
+      .alt-baslik-satir {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .alt-baslik-not {
+        font: 400 13px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* Yatay galeri rafı (390 px içinde taşmadan kendi içinde kayar; İş 188.2 serit akrabalığı) */
+      .ders-rafi {
+        display: flex;
+        gap: 12px;
+        margin-inline: -20px;
+        padding: 0 20px 6px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 20px;
+        scrollbar-width: none;
+      }
+      .ders-rafi::-webkit-scrollbar {
+        display: none;
+      }
+
+      .raf-kart {
+        flex: 0 0 152px;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--ink);
+      }
+
+      .raf-resim {
+        width: 152px;
+        aspect-ratio: 4 / 5;
+        border-radius: 18px;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border-ince);
+      }
+
+      .raf-resim img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .raf-yazi {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .raf-durum {
+        font: 600 12px/1.2 var(--sans);
+        color: var(--ink-3);
+      }
+      .raf-durum.bugun {
+        color: var(--pirinc);
+      }
+      .raf-durum.bitti {
+        color: var(--right);
+      }
+
+      .raf-yazi b {
+        font: 500 17px/1.18 var(--serif);
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+
+      .raf-yazi small {
+        font: 400 12.5px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .mini-cizgiler {
+        display: flex;
+        gap: 3px;
+        margin-top: auto;
+        padding-top: 6px;
+      }
+
+      .mini-cizgiler i {
+        flex: 1;
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(var(--ink-rgb), 0.14);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .mini-cizgiler i.bitti {
+        background: var(--right);
+      }
+
+      .mini-cizgiler i.suruyor::after {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--oran, 60%);
+        background: var(--pirinc);
+        border-radius: inherit;
+      }
+
+      .kilitli-satir {
+        margin-top: 14px;
+        padding: 13px 16px;
+        border-radius: 16px;
+        border: 1px dashed var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--ink-2);
+      }
+
+      .kilitli-satir-yazi {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .kilitli-satir-yazi b {
+        font: 500 14.5px/1.25 var(--sans);
+        color: var(--ink);
+      }
+
+      .kilitli-satir-yazi span {
+        font: 400 12.5px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* Başka turlar: gruplu liste */
+      .turlar-bolum {
+        margin-top: 32px;
+      }
+
+      .gruplu-liste {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        overflow: hidden;
+      }
+
+      .gruplu-liste > li + li {
+        border-top: 1px solid var(--border-ince);
+      }
+
+      .tur-satir {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 64px;
+        padding: 13px 18px;
+        text-decoration: none;
+        color: var(--ink);
+      }
+
+      .tur-ikon {
+        flex: none;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(var(--ink-rgb), 0.06);
+        display: grid;
+        place-items: center;
+        color: var(--pirinc);
+      }
+
+      .tur-satir-orta {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .tur-satir-orta b {
+        font: 500 18px/1.2 var(--serif);
+        letter-spacing: -0.01em;
+      }
+
+      .tur-satir-orta span {
+        font: 400 13px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .tur-satir-sag {
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font: 500 15px/1 var(--serif);
+        color: var(--pirinc);
+      }
+
+      /* =====================================================================
+         4. Yolculuk bağlantısı (cam kart)
+         ===================================================================== */
+      .yolculuk-kart {
+        margin-top: 36px;
+        padding: 18px;
+        border-radius: 22px;
+        background: var(--cam-kart);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        backdrop-filter: blur(20px) saturate(1.5);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+        color: var(--ink);
+      }
+
+      .yolculuk-yazi {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .yolculuk-yazi b {
+        font: 600 15px/1.3 var(--sans);
+      }
+
+      .yolculuk-yazi span {
+        font: 400 13px/1.35 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* =====================================================================
+         5. 14 günlük yük grafiği (kutusuz, doğrudan zemin üstünde)
+         ===================================================================== */
+      .yuk-bolum {
+        margin-top: 38px;
+      }
+
+      .yuk-ust {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .yuk-ozet {
+        font: 400 13px/1.3 var(--sans);
+        color: var(--ink-2);
+        text-align: right;
+      }
+
+      .yuk-svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      /* Yerli cam sekme çubuğu */
+      .sekme-cubugu {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        z-index: 20;
+        height: 62px;
+        padding: 4px;
+        border-radius: 999px;
+        background: var(--tab-bg);
+        border: 1px solid rgba(var(--ink-rgb), 0.14);
+        box-shadow: var(--sekme-golge);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        align-items: center;
+      }
+
+      .sekme-oge {
+        position: relative;
+        height: 100%;
+        border-radius: 999px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        text-decoration: none;
+        color: var(--ink-2);
+        font: 600 10.5px/1 var(--sans);
+      }
+
+      .sekme-oge.secili {
+        background: rgba(var(--ink-rgb), 0.12);
+        color: var(--ink);
+      }
+
+      .sekme-rozet {
+        position: absolute;
+        top: 5px;
+        left: calc(50% + 6px);
+        min-width: 17px;
+        height: 17px;
+        padding: 0 4px;
+        border-radius: 999px;
+        background: var(--pirinc);
+        color: #121110;
+        font: 700 9.5px/17px var(--sans);
+        text-align: center;
+      }
+
+      /* PNG dışa aktarım kipleri */
+      :root[data-goruntu] body {
+        background: var(--bg);
+      }
+      :root[data-goruntu] .onizleme-ust {
+        display: none;
+      }
+      :root[data-goruntu] .sahne {
+        padding: 0;
+        display: block;
+      }
+      :root[data-goruntu] .telefon {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      :root[data-goruntu='tam'] .telefon {
+        height: auto;
+        min-height: 844px;
+        overflow: visible;
+      }
+      :root[data-goruntu='tam'] .telefon-kaydir {
+        height: auto;
+        overflow: visible;
+      }
+      :root[data-goruntu='tam'] .cam-ust-cubuk {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="onizleme-ust">
+      <div class="onizleme-baslik">
+        <span class="ust-not">Çalış ana ekranı · Yön 2</span>
+        <h1>Bugün perdesi</h1>
+      </div>
+      <div class="onizleme-denetimler">
+        <div class="kare-secici" role="group" aria-label="Kapak yakınlaşma anı">
+          <button type="button" data-kare-sec="canli" aria-pressed="true">Canlı</button>
+          <button type="button" data-kare-sec="bas" aria-pressed="false">Başta</button>
+          <button type="button" data-kare-sec="ayrinti" aria-pressed="false">Ayrıntıda</button>
+          <button type="button" data-kare-sec="donus" aria-pressed="false">Geri dönüşte</button>
+        </div>
+        <div class="tema-kabi" role="group" aria-label="Tema seçimi">
+          <button type="button" data-tema-sec="gece" aria-pressed="true">Gece</button>
+          <button type="button" data-tema-sec="gunduz" aria-pressed="false">Gündüz</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="sahne">
+      <div class="telefon" aria-label="Çalış ana ekranı · 390 çarpı 844">
+        <div class="zemin-doku" aria-hidden="true"></div>
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <svg class="zemin-desen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="desen-pe-2" width="96" height="96" patternUnits="userSpaceOnUse">
+              <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <path d="M48 48c0-5 5-7 9-5 5 3 5 12-1 16-8 5-19 1-21-8-3-11 5-23 17-25 14-3 27 8 28 22 1 16-11 29-27 29-5 0-9-1-13-3" />
+                <path d="M0 0c10 1 17 9 18 19 1 11-7 19-18 20" />
+                <path d="M96 0c-10 1-17 9-18 19-1 11 7 19 18 20" />
+                <path d="M0 96c10-1 17-9 18-19 1-11-7-19-18-20" />
+                <path d="M96 96c-10-1-17-9-18-19-1-11 7-19 18-20" />
+                <circle cx="48" cy="3" r="3" fill="currentColor" stroke="none" />
+                <circle cx="48" cy="93" r="3" fill="currentColor" stroke="none" />
+                <circle cx="3" cy="48" r="3" fill="currentColor" stroke="none" />
+                <circle cx="93" cy="48" r="3" fill="currentColor" stroke="none" />
+              </g>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#desen-pe-2)" />
+        </svg>
+
+        <div class="cam-ust-cubuk" id="cam-ust-cubuk" aria-hidden="true">Çalış</div>
+
+        <div class="durum-cubugu" id="durum-cubugu" aria-hidden="true">
+          <span>9:41</span>
+          <span class="durum-simgeler">
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor">
+              <rect x="0" y="7" width="2.6" height="4" rx="0.8" />
+              <rect x="4.2" y="5" width="2.6" height="6" rx="0.8" />
+              <rect x="8.4" y="2.6" width="2.6" height="8.4" rx="0.8" />
+              <rect x="12.6" y="0" width="2.6" height="11" rx="0.8" />
+            </svg>
+            <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+              <rect x="0.7" y="1" width="19.6" height="10" rx="2.6" stroke="currentColor" stroke-width="1.2" opacity="0.55" />
+              <rect x="2.4" y="2.6" width="14.5" height="6.8" rx="1.4" fill="currentColor" />
+              <path d="M21.8 4.2v3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.55" />
+            </svg>
+          </span>
+        </div>
+
+        <div class="telefon-kaydir" id="kaydir">
+          <!-- 1. Kenardan kenara kapak + 16 sn yakınlaşma -->
+          <section class="perde-sahne" aria-label="Bugünün dersi kapağı">
+            <img
+              class="kapak-resim"
+              src="tablo.jpg"
+              alt="Vincent van Gogh — Yıldızlı Gece, 1889"
+            />
+            <header class="perde-ust-satir">
+              <h2>Çalış</h2>
+              <span class="konum-cam-hap">Konu 13’tesin</span>
+            </header>
+          </section>
+
+          <div class="ekran-ic">
+            <!-- Bugünün dersi: doğrudan zemine eriyen tipografi, adımlar ve tek dolu düğme -->
+            <section aria-label="Bugünün dersi">
+              <div class="ders-bas-satir">
+                <span class="ust-yazi">Bugünün dersi</span>
+                <span class="kunye-not">6 sanatçı · Konu 11–13</span>
+              </div>
+              <h3 class="ders-ana-baslik">Post-Empresyonizm</h3>
+
+              <ol class="adimlar" aria-label="Dersin adımları">
+                <li>
+                  <a class="adim bitti" href="#gor">
+                    <span class="adim-ray"><i></i></span>
+                    <span class="adim-ad">Gör</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="adim simdi" href="#ogren">
+                    <span class="adim-ray"><i></i></span>
+                    <span class="adim-ad">Öğren</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="adim" href="#ayirt">
+                    <span class="adim-ray"><i></i></span>
+                    <span class="adim-ad">Ayırt et</span>
+                  </a>
+                </li>
+                <li>
+                  <span class="adim kapali">
+                    <span class="adim-ray"><i></i></span>
+                    <span class="adim-ad">Harita</span>
+                  </span>
+                </li>
+              </ol>
+
+              <p class="davet-metin">
+                Sıradaki özellik: <em>Renk gölgeden çok duyguyu taşır</em>. 3 eserde göreceksin.
+              </p>
+
+              <a class="asil-dugme" href="#ogren">
+                <span class="asil-dugme-sol">
+                  <b>Öğren adımına devam</b>
+                  <span>Nasıl tanınır? · 2 özellik kaldı</span>
+                </span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+              </a>
+            </section>
+
+            <!-- 2. Günlük tekrar (buzlu cam kart, dolu düğme yok) -->
+            <a class="tekrar-kart" href="#tekrar" aria-label="Günlük tekrar, 14 kart">
+              <div class="tekrar-ust">
+                <span class="mini-deste" aria-hidden="true">
+                  <span><img src="tablo.jpg" style="object-position: 14% 48%" alt="" /></span>
+                  <span><img src="tablo.jpg" style="object-position: 56% 36%" alt="" /></span>
+                  <span><img src="tablo.jpg" style="object-position: 86% 24%" alt="" /></span>
+                </span>
+                <span class="tekrar-govde">
+                  <span class="ust-yazi">Günlük tekrar</span>
+                  <span class="tekrar-sayi">14 <small>kart</small></span>
+                  <span class="tekrar-alt">Yaklaşık 5 dk<br />6 tekrar · 5 pekiştirme · 3 yeni</span>
+                </span>
+                <span class="cam-ok" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m13 6 6 6-6 6" />
+                  </svg>
+                </span>
+              </div>
+              <span class="karisim-cizgi" aria-hidden="true">
+                <i style="flex-grow: 6; background: var(--pirinc)"></i>
+                <i style="flex-grow: 5; background: var(--ink-3)"></i>
+                <i style="flex-grow: 3; background: var(--right)"></i>
+              </span>
+            </a>
+
+            <!-- 3. Çalışma masan: Cam sekme + Yatay Galeri Rafı + Gruplu Turlar -->
+            <section class="bolum" aria-label="Çalışma masan">
+              <div class="bolum-ust">
+                <h3>Çalışma masan</h3>
+                <p>Önce keşfet. Sonra kendini dene.</p>
+              </div>
+
+              <div class="masa-cam-sekme" role="tablist" aria-label="Çalışma masası görünümü">
+                <button type="button" role="tab" data-masa-sec="tumu" aria-selected="true">Tümü</button>
+                <button type="button" role="tab" data-masa-sec="dersler" aria-selected="false">Dersler</button>
+                <button type="button" role="tab" data-masa-sec="turlar" aria-selected="false">Başka turlar</button>
+              </div>
+
+              <!-- Dersler: yatay galeri rafı -->
+              <div data-masa-panel="dersler">
+                <div class="alt-baslik-satir">
+                  <span class="ust-yazi">Dersler</span>
+                  <span class="alt-baslik-not">4 açık · yana kaydır</span>
+                </div>
+
+                <div class="ders-rafi" aria-label="Açık dersler">
+                  <a class="raf-kart" href="#ders-pe">
+                    <span class="raf-resim">
+                      <img src="tablo.jpg" style="object-position: 50% 42%" alt="Post-Empresyonizm" />
+                    </span>
+                    <span class="raf-yazi">
+                      <span class="raf-durum bugun">Bugün</span>
+                      <b>Post-Empresyonizm</b>
+                      <small>6 sanatçı · 3 adım</small>
+                      <span class="mini-cizgiler" aria-hidden="true">
+                        <i class="bitti"></i>
+                        <i class="suruyor" style="--oran: 60%"></i>
+                        <i></i>
+                      </span>
+                    </span>
+                  </a>
+
+                  <a class="raf-kart" href="#ders-emp">
+                    <span class="raf-resim">
+                      <img src="tablo.jpg" style="transform: scale(2.15); transform-origin: 92% 14%; filter: saturate(0.92) brightness(1.06)" alt="Empresyonizm" />
+                    </span>
+                    <span class="raf-yazi">
+                      <span class="raf-durum bitti">Bitti</span>
+                      <b>Empresyonizm</b>
+                      <small>8 sanatçı · 3 adım</small>
+                      <span class="mini-cizgiler" aria-hidden="true">
+                        <i class="bitti"></i>
+                        <i class="bitti"></i>
+                        <i class="bitti"></i>
+                      </span>
+                    </span>
+                  </a>
+
+                  <a class="raf-kart" href="#ders-ger">
+                    <span class="raf-resim">
+                      <img src="tablo.jpg" style="transform: scale(2.4); transform-origin: 58% 92%; filter: sepia(0.28) contrast(0.96)" alt="Gerçekçilik" />
+                    </span>
+                    <span class="raf-yazi">
+                      <span class="raf-durum bitti">Bitti</span>
+                      <b>Gerçekçilik</b>
+                      <small>5 sanatçı · 3 adım</small>
+                      <span class="mini-cizgiler" aria-hidden="true">
+                        <i class="bitti"></i>
+                        <i class="bitti"></i>
+                        <i class="bitti"></i>
+                      </span>
+                    </span>
+                  </a>
+
+                  <a class="raf-kart" href="#ders-rom">
+                    <span class="raf-resim">
+                      <img src="tablo.jpg" style="transform: scale(2.2); transform-origin: 18% 42%; filter: contrast(1.06)" alt="Romantizm" />
+                    </span>
+                    <span class="raf-yazi">
+                      <span class="raf-durum">Sırada</span>
+                      <b>Romantizm</b>
+                      <small>7 sanatçı · 3 adım</small>
+                      <span class="mini-cizgiler" aria-hidden="true">
+                        <i class="suruyor" style="--oran: 35%"></i>
+                        <i></i>
+                        <i></i>
+                      </span>
+                    </span>
+                  </a>
+                </div>
+
+                <div class="kilitli-satir">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="5" y="11" width="14" height="10" rx="2" />
+                    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                  </svg>
+                  <span class="kilitli-satir-yazi">
+                    <b>Sembolizm · Konu 14’te açılır</b>
+                    <span>6 ders daha, konular işlendikçe açılacak.</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Başka turlar: gruplu liste -->
+              <div class="turlar-bolum" data-masa-panel="turlar">
+                <div class="alt-baslik-satir">
+                  <span class="ust-yazi">Başka turlar</span>
+                  <span class="alt-baslik-not">Aynı eserlere farklı sorularla</span>
+                </div>
+
+                <ul class="gruplu-liste">
+                  <li>
+                    <a class="tur-satir" href="#hatalar">
+                      <span class="tur-ikon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                          <path d="M3 3v5h5" />
+                        </svg>
+                      </span>
+                      <span class="tur-satir-orta">
+                        <b>Hatalarım</b>
+                        <span>Son turlarda takıldığın sanatçılar</span>
+                      </span>
+                      <span class="tur-satir-sag">
+                        4
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ink-3)">
+                          <path d="m9 6 6 6-6 6" />
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="tur-satir" href="#donem">
+                      <span class="tur-ikon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M5.5 4.5h13M7 4.5V7h10V4.5M9 7v10M12 7v10M15 7v10M7 19.5V17h10v2.5M5.5 19.5h13" />
+                        </svg>
+                      </span>
+                      <span class="tur-satir-orta">
+                        <b>Döneme göre</b>
+                        <span>Salon salon çalış</span>
+                      </span>
+                      <span class="tur-satir-sag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ink-3)">
+                          <path d="m9 6 6 6-6 6" />
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="tur-satir" href="#bolum">
+                      <span class="tur-ikon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 7h16M4 12h16M4 17h10" />
+                        </svg>
+                      </span>
+                      <span class="tur-satir-orta">
+                        <b>Bölüm turu</b>
+                        <span>Hangi bölümde?</span>
+                      </span>
+                      <span class="tur-satir-sag">
+                        12
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ink-3)">
+                          <path d="m9 6 6 6-6 6" />
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="tur-satir" href="#konu">
+                      <span class="tur-ikon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="5" y="3" width="14" height="18" rx="1.5" />
+                          <circle cx="12" cy="10" r="2.3" />
+                          <path d="M8 18c.6-2.2 2.2-3.3 4-3.3s3.4 1.1 4 3.3" />
+                        </svg>
+                      </span>
+                      <span class="tur-satir-orta">
+                        <b>Konu turu</b>
+                        <span>İncil, mitoloji, tarih</span>
+                      </span>
+                      <span class="tur-satir-sag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ink-3)">
+                          <path d="m9 6 6 6-6 6" />
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="tur-satir" href="#karsilastir">
+                      <span class="tur-ikon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3.5" y="5" width="7" height="14" rx="1.5" />
+                          <rect x="13.5" y="5" width="7" height="14" rx="1.5" />
+                        </svg>
+                      </span>
+                      <span class="tur-satir-orta">
+                        <b>Karşılaştır</b>
+                        <span>Empresyonizm · Post-Empresyonizm</span>
+                      </span>
+                      <span class="tur-satir-sag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ink-3)">
+                          <path d="m9 6 6 6-6 6" />
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 4. Yolculuk bağlantısı -->
+            <a class="yolculuk-kart" href="#harita">
+              <span class="tur-ikon" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z" />
+                  <path d="M9 4v13.5M15 6.5V20" />
+                </svg>
+              </span>
+              <span class="yolculuk-yazi">
+                <b>Bir sonraki durağın seni bekliyor.</b>
+                <span>Yolculuğunu haritada gör</span>
+              </span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ink-2)">
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </a>
+
+            <!-- 5. 14 günlük yük grafiği (kutusuz) -->
+            <section class="yuk-bolum" aria-label="Önümüzdeki 14 gün">
+              <div class="yuk-ust">
+                <span class="ust-yazi">Önümüzdeki 14 gün</span>
+                <span class="yuk-ozet">Bugün 14 · yarın 6 · 52 sanatçı</span>
+              </div>
+              <svg class="yuk-svg" id="yuk-svg" viewBox="0 0 340 114" role="img" aria-label="Önümüzdeki 14 günün vadeli kart yükü: bugün 14, yarın 6, toplam 52 sanatçı"></svg>
+            </section>
+          </div>
+        </div>
+
+        <!-- Yerli cam sekme çubuğu -->
+        <nav class="sekme-cubugu" aria-label="Ana gezinme">
+          <a class="sekme-oge" href="#bugun">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2.5" />
+              <circle cx="9.5" cy="9.5" r="1.5" />
+              <path d="m20 15-4.5-4.5L6 20" />
+            </svg>
+            <span>Bugün</span>
+          </a>
+          <a class="sekme-oge" href="#yolculuk">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z" />
+              <path d="M9 4v13.5M15 6.5V20" />
+            </svg>
+            <span>Yolculuk</span>
+          </a>
+          <a class="sekme-oge" href="#galeri">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="6.5" height="6.5" rx="1.2" />
+              <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2" />
+              <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2" />
+              <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2" />
+            </svg>
+            <span>Galeri</span>
+          </a>
+          <a class="sekme-oge secili" href="#calis" aria-current="page">
+            <span class="sekme-rozet">14</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z" />
+              <path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z" />
+            </svg>
+            <span>Çalış</span>
+          </a>
+          <a class="sekme-oge" href="#ben">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8.5" r="3.5" />
+              <path d="M5.5 19.5c1.2-3.2 3.6-4.8 6.5-4.8s5.3 1.6 6.5 4.8" />
+            </svg>
+            <span>Ben</span>
+          </a>
+        </nav>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var p = new URLSearchParams(location.search);
+
+        var temaBtn = document.querySelectorAll('[data-tema-sec]');
+        function temaAyarla(ad) {
+          root.setAttribute('data-tema', ad);
+          temaBtn.forEach(function (b) {
+            b.setAttribute('aria-pressed', String(b.getAttribute('data-tema-sec') === ad));
+          });
+        }
+        temaBtn.forEach(function (b) {
+          b.addEventListener('click', function () {
+            temaAyarla(b.getAttribute('data-tema-sec'));
+          });
+        });
+        var qTema = p.get('tema');
+        if (qTema === 'gunduz' || qTema === 'gece') temaAyarla(qTema);
+
+        var kareBtn = document.querySelectorAll('[data-kare-sec]');
+        function kareAyarla(ad) {
+          if (ad === 'canli') root.removeAttribute('data-kare');
+          else root.setAttribute('data-kare', ad);
+          kareBtn.forEach(function (b) {
+            b.setAttribute('aria-pressed', String(b.getAttribute('data-kare-sec') === ad));
+          });
+        }
+        kareBtn.forEach(function (b) {
+          b.addEventListener('click', function () {
+            kareAyarla(b.getAttribute('data-kare-sec'));
+          });
+        });
+        var qKare = p.get('kare');
+        if (qKare === 'bas' || qKare === 'ayrinti' || qKare === 'donus') kareAyarla(qKare);
+
+        var qGor = p.get('goruntu');
+        if (qGor === 'tam' || qGor === 'ekran') root.setAttribute('data-goruntu', qGor);
+
+        /* Çalışma masası canlı sekme filtresi */
+        var masaBtn = document.querySelectorAll('[data-masa-sec]');
+        var dersPanel = document.querySelector('[data-masa-panel="dersler"]');
+        var turPanel = document.querySelector('[data-masa-panel="turlar"]');
+        masaBtn.forEach(function (b) {
+          b.addEventListener('click', function () {
+            var v = b.getAttribute('data-masa-sec');
+            masaBtn.forEach(function (x) {
+              x.setAttribute('aria-selected', String(x === b));
+            });
+            dersPanel.classList.toggle('panel-gizli', v === 'turlar');
+            turPanel.classList.toggle('panel-gizli', v === 'dersler');
+          });
+        });
+
+        /* Kaydırma üst cam çubuğu */
+        var kaydir = document.getElementById('kaydir');
+        var cubuk = document.getElementById('cam-ust-cubuk');
+        var durum = document.getElementById('durum-cubugu');
+        kaydir.addEventListener('scroll', function () {
+          var acik = kaydir.scrollTop > 220;
+          cubuk.classList.toggle('acik', acik);
+          durum.classList.toggle('koyu-yazi', acik);
+        });
+
+        /* 14 günlük yük grafiği */
+        var gunluk = [
+          { n: 14, h: 'S', g: 24 },
+          { n: 6, h: 'Ç', g: 25 },
+          { n: 4, h: 'P', g: 26 },
+          { n: 8, h: 'C', g: 27 },
+          { n: 3, h: 'C', g: 28 },
+          { n: 0, h: 'P', g: 29 },
+          { n: 5, h: 'P', g: 30 },
+          { n: 2, h: 'S', g: 1 },
+          { n: 0, h: 'Ç', g: 2 },
+          { n: 4, h: 'P', g: 3 },
+          { n: 1, h: 'C', g: 4 },
+          { n: 3, h: 'C', g: 5 },
+          { n: 0, h: 'P', g: 6 },
+          { n: 2, h: 'P', g: 7 },
+        ];
+        var svg = document.getElementById('yuk-svg');
+        var G = 340,
+          Y = 82,
+          adim = (G - 8) / 14,
+          en = 14;
+        var out = ['<line x1="4" x2="336" y1="' + Y + '" y2="' + Y + '" stroke="var(--border)" stroke-width="1" />'];
+        gunluk.forEach(function (d, i) {
+          var h = d.n ? Math.max(4, (d.n / en) * (Y - 18)) : 0;
+          var cx = 4 + i * adim + adim / 2;
+          var w = adim * 0.52;
+          if (h > 0) {
+            out.push(
+              '<rect x="' +
+                (cx - w / 2).toFixed(1) +
+                '" y="' +
+                (Y - h).toFixed(1) +
+                '" width="' +
+                w.toFixed(1) +
+                '" height="' +
+                h.toFixed(1) +
+                '" rx="3" fill="' +
+                (i === 0 ? 'var(--pirinc)' : 'var(--ink-2)') +
+                '" opacity="' +
+                (i === 0 ? '1' : '0.45') +
+                '" />'
+            );
+            out.push(
+              '<text x="' +
+                cx.toFixed(1) +
+                '" y="' +
+                (Y - h - 5).toFixed(1) +
+                '" text-anchor="middle" font-family="Archivo, sans-serif" font-size="9.5" font-weight="' +
+                (i === 0 ? '600' : '500') +
+                '" fill="' +
+                (i === 0 ? 'var(--pirinc)' : 'var(--ink-3)') +
+                '">' +
+                d.n +
+                '</text>'
+            );
+          }
+          out.push(
+            '<text x="' +
+              cx.toFixed(1) +
+              '" y="' +
+              (Y + 14).toFixed(1) +
+              '" text-anchor="middle" font-family="Archivo, sans-serif" font-size="9.5" font-weight="' +
+              (i === 0 ? '600' : '500') +
+              '" fill="' +
+              (i === 0 ? 'var(--ink)' : 'var(--ink-3)') +
+              '">' +
+              d.h +
+              '</text>'
+          );
+          out.push(
+            '<text x="' +
+              cx.toFixed(1) +
+              '" y="' +
+              (Y + 26).toFixed(1) +
+              '" text-anchor="middle" font-family="Archivo, sans-serif" font-size="8.5" fill="var(--ink-soluk)">' +
+              d.g +
+              '</text>'
+          );
+        });
+        svg.innerHTML = out.join('');
+      })();
+    </script>
+  </body>
+</html>
