@@ -223,6 +223,37 @@
         height: calc(1350px * var(--olcek));
       }
 
+      /* Tek kart dışa aktarım kipi (?tek=hikaye veya ?tek=gonderi) */
+      :root[data-tek] {
+        --olcek: 1 !important;
+      }
+
+      :root[data-tek] body {
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      :root[data-tek] .onizleme-ust,
+      :root[data-tek] .tuval-etiket {
+        display: none;
+      }
+
+      :root[data-tek] .sahne {
+        padding: 0;
+        gap: 0;
+        justify-content: flex-start;
+      }
+
+      :root[data-tek] .tuval-cerceve {
+        border: 0;
+        box-shadow: none;
+      }
+
+      :root[data-tek='hikaye'] .tuval-grup[data-boy='gonderi'],
+      :root[data-tek='gonderi'] .tuval-grup[data-boy='hikaye'] {
+        display: none;
+      }
+
       /* =====================================================================
          PAYLAŞIM KARTI — YÖN 3: YAKIN BAKIŞ
          Eserin bütünü + odak çerçevesi + Kırpım kutusuyla yakın okuma kartı
@@ -286,15 +317,17 @@
       }
 
       .kart.hikaye .kart-ic {
-        padding: 232px 76px 210px;
+        /* Instagram hikâye güvenli alanları: üst 220 px, alt 204 px */
+        padding: 220px 64px 204px;
       }
 
       .kart.gonderi .kart-ic {
-        padding: 52px 88px 46px;
+        padding: 58px 94px 74px;
       }
 
-      /* Üst başlık bloğu: editoryal giriş */
+      /* Üst başlık bloğu */
       .baslik-blogu {
+        flex: none;
         display: flex;
         flex-direction: column;
       }
@@ -303,7 +336,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font: 600 30px/1.25 var(--sans);
+        font: 600 31px/1.25 var(--sans);
         color: var(--pirinc);
       }
 
@@ -316,7 +349,7 @@
         align-items: baseline;
         justify-content: space-between;
         gap: 24px;
-        margin-top: 16px;
+        margin-top: 14px;
       }
 
       .kart.gonderi .eser-satiri {
@@ -325,29 +358,31 @@
 
       .eser-adi {
         margin: 0;
-        font: 500 88px/1.04 var(--serif);
+        font: 500 96px/1.02 var(--serif);
         letter-spacing: -0.01em;
         color: var(--ink);
       }
 
       .kart.gonderi .eser-adi {
-        font-size: 72px;
+        font-size: 68px;
       }
 
       .sanatci-yil {
         margin: 12px 0 0;
-        font: 400 35px/1.3 var(--sans);
+        font: 400 36px/1.25 var(--sans);
         color: var(--ink-2);
       }
 
       .kart.gonderi .sanatci-yil {
         margin-top: 8px;
-        font-size: 29px;
+        font-size: 28px;
       }
 
       /* Tam tablo + eser_ayrintilari.json odak çerçevesi (x: 0.13, y: 0.55, w: 0.28, h: 0.35) */
       .tablo-kutu {
         position: relative;
+        flex: none;
+        margin: 0;
         width: 100%;
         aspect-ratio: 1280 / 1014;
         border-radius: 36px;
@@ -357,11 +392,13 @@
       }
 
       .kart.hikaye .tablo-kutu {
-        margin-top: 46px;
+        margin-top: 42px;
+        height: 754px;
       }
 
       .kart.gonderi .tablo-kutu {
         margin-top: 24px;
+        height: 706px;
         border-radius: 30px;
       }
 
@@ -398,6 +435,7 @@
 
       /* Yakın okuma kartı: Kırpım (solda) + ayrıntı notu (sağda) */
       .yakin-kart {
+        flex: none;
         display: grid;
         align-items: center;
         background: var(--surface);
@@ -406,10 +444,10 @@
       }
 
       .kart.hikaye .yakin-kart {
-        margin-top: 40px;
-        padding: 32px;
+        margin-top: 42px;
+        padding: 36px;
         border-radius: 44px;
-        grid-template-columns: 284px 1fr;
+        grid-template-columns: 312px 1fr;
         gap: 36px;
       }
 
@@ -417,8 +455,8 @@
         margin-top: 24px;
         padding: 20px;
         border-radius: 34px;
-        grid-template-columns: 204px 1fr;
-        gap: 26px;
+        grid-template-columns: 196px 1fr;
+        gap: 24px;
       }
 
       /* TASARIM_DILI.md · Kırpım: köşeli kutu, resim kutuyu boşluksuz doldurur */
@@ -466,8 +504,8 @@
       .kart.gonderi .kirpim-buyutec {
         right: 12px;
         bottom: 12px;
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
       }
 
       .kirpim-buyutec svg {
@@ -476,8 +514,8 @@
       }
 
       .kart.gonderi .kirpim-buyutec svg {
-        width: 20px;
-        height: 20px;
+        width: 19px;
+        height: 19px;
       }
 
       .yakin-yazi {
@@ -485,7 +523,7 @@
         flex-direction: column;
         gap: 12px;
         min-width: 0;
-        padding-right: 10px;
+        padding-right: 8px;
       }
 
       .kart.gonderi .yakin-yazi {
@@ -494,7 +532,7 @@
 
       .not-baslik {
         margin: 0;
-        font: 600 28px/1.25 var(--sans);
+        font: 600 29px/1.25 var(--sans);
         color: var(--pirinc);
       }
 
@@ -504,20 +542,20 @@
 
       .not-metin {
         margin: 0;
-        font: 400 35px/1.52 var(--okuma);
+        font: 400 36px/1.52 var(--okuma);
         color: var(--ink);
         text-wrap: pretty;
       }
 
       .kart.gonderi .not-metin {
-        font-size: 29px;
-        line-height: 1.46;
+        font-size: 28px;
+        line-height: 1.44;
       }
 
       /* Alt imza */
       .imza {
         margin-top: auto;
-        padding-top: 32px;
+        padding-top: 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -598,7 +636,7 @@
 
     <main class="sahne">
       <!-- ==================== 1080 × 1920 · HİKÂYE ==================== -->
-      <section class="tuval-grup" aria-label="Hikâye boyu 1080 çarpı 1920">
+      <section class="tuval-grup" data-boy="hikaye" aria-label="Hikâye boyu 1080 çarpı 1920">
         <div class="tuval-etiket"><strong>Hikâye</strong> · 1080 × 1920</div>
         <div class="tuval-cerceve hikaye-cerceve">
           <article class="kart hikaye">
@@ -639,20 +677,14 @@
                 <p class="sanatci-yil">Vincent van Gogh · 1889</p>
               </header>
 
-              <figure class="tablo-kutu" style="margin-inline: 0">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-                  alt="Vincent van Gogh — Yıldızlı Gece, 1889"
-                />
+              <figure class="tablo-kutu">
+                <img src="tablo.jpg" alt="Vincent van Gogh — Yıldızlı Gece, 1889" />
                 <span class="odak-cerceve" aria-hidden="true"></span>
               </figure>
 
               <section class="yakin-kart" aria-label="Resimden ayrıntı">
                 <div class="kirpim-kutu">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-                    alt="Yıldızlı Gece tablosundan servi ayrıntısı"
-                  />
+                  <img src="tablo.jpg" alt="Yıldızlı Gece tablosundan servi ayrıntısı" />
                   <span class="kirpim-buyutec" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                       <circle cx="11" cy="11" r="7" />
@@ -685,7 +717,7 @@
       </section>
 
       <!-- ==================== 1080 × 1350 · GÖNDERİ ==================== -->
-      <section class="tuval-grup" aria-label="Gönderi boyu 1080 çarpı 1350">
+      <section class="tuval-grup" data-boy="gonderi" aria-label="Gönderi boyu 1080 çarpı 1350">
         <div class="tuval-etiket"><strong>Gönderi</strong> · 1080 × 1350</div>
         <div class="tuval-cerceve gonderi-cerceve">
           <article class="kart gonderi">
@@ -726,20 +758,14 @@
                 <p class="sanatci-yil">Vincent van Gogh · 1889</p>
               </header>
 
-              <figure class="tablo-kutu" style="margin-inline: 0">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-                  alt="Vincent van Gogh — Yıldızlı Gece, 1889"
-                />
+              <figure class="tablo-kutu">
+                <img src="tablo.jpg" alt="Vincent van Gogh — Yıldızlı Gece, 1889" />
                 <span class="odak-cerceve" aria-hidden="true"></span>
               </figure>
 
               <section class="yakin-kart" aria-label="Resimden ayrıntı">
                 <div class="kirpim-kutu">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-                    alt="Yıldızlı Gece tablosundan servi ayrıntısı"
-                  />
+                  <img src="tablo.jpg" alt="Yıldızlı Gece tablosundan servi ayrıntısı" />
                   <span class="kirpim-buyutec" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                       <circle cx="11" cy="11" r="7" />
@@ -770,6 +796,12 @@
     <script>
       (function () {
         var root = document.documentElement;
+        var parametre = new URLSearchParams(location.search);
+        var tek = parametre.get('tek');
+        if (tek === 'hikaye' || tek === 'gonderi') {
+          root.setAttribute('data-tek', tek);
+        }
+
         var temaDugmeleri = document.querySelectorAll('[data-tema-sec]');
         function temaAyarla(ad) {
           root.setAttribute('data-tema', ad);
@@ -782,8 +814,8 @@
             temaAyarla(b.getAttribute('data-tema-sec'));
           });
         });
-        var sorgu = new URLSearchParams(location.search).get('tema');
-        if (sorgu === 'gunduz' || sorgu === 'gece') temaAyarla(sorgu);
+        var sorguTema = parametre.get('tema');
+        if (sorguTema === 'gunduz' || sorguTema === 'gece') temaAyarla(sorguTema);
 
         var rehberBtn = document.getElementById('rehber-btn');
         rehberBtn.addEventListener('click', function () {
@@ -793,6 +825,10 @@
         });
 
         function olcekle() {
+          if (root.hasAttribute('data-tek')) {
+            root.style.setProperty('--olcek', '1');
+            return;
+          }
           var genislik = Math.min(window.innerWidth - 56, 1280);
           var tekSutun = window.innerWidth < 880;
           var hedef = tekSutun ? Math.min(genislik, 440) : Math.min((genislik - 44) / 2, 460);
