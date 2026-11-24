@@ -72,6 +72,8 @@ jobs:
           /usr/libexec/PlistBuddy -c "Print CFBundleURLTypes:0:CFBundleURLSchemes:0" "$APP/Info.plist" | grep -qx norasanat
           /usr/libexec/PlistBuddy -c "Print NSExtension:NSExtensionPointIdentifier" "$APP/PlugIns/NoraSanatWidget.appex/Info.plist"
           /usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" "$APP/PlugIns/NoraSanatWidget.appex/Info.plist"
+          # Z3o: Siri/Kısayollar eylemleri derlemede çıkarıldı mı (AppShortcutsProvider)
+          ls "$APP/Metadata.appintents"
 
       - name: Uygulamayı ekran işlerine ver
         run: ditto -c -k --keepParent build/Build/Products/Debug-iphonesimulator/NoraSanat.app uygulama.zip

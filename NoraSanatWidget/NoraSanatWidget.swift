@@ -18,7 +18,8 @@ struct GununTablosuWidget: Widget {
         }
         .configurationDisplayName("Günün tablosu")
         .description("Sanat Atlası'nda bugün gezdiğin tablo. Dokununca Nora Sanat'ta açılır.")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        // Z3o: kilit ekranı (dikdörtgen, yuvarlak, saatin üstündeki satır); küçük boy StandBy'da da görünür
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular, .accessoryCircular, .accessoryInline])
         .contentMarginsDisabled()
     }
 }
@@ -70,8 +71,64 @@ struct TabloGorunumu: View {
     let giris: TabloGirisi
 
     var body: some View {
-        TabloKarti(tablo: giris.tablo, gorsel: giris.gorsel, boyut: boyut)
-            .containerBackground(for: .widget) { TabloKarti.zemin }
-            .widgetURL(URL(string: "norasanat://bugun"))
+        Group {
+            switch boyut {
+            case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+                KilitEkrani(giris: giris, boyut: boyut)
+                    .containerBackground(for: .widget) { Color.clear }
+            default:
+                TabloKarti(tablo: giris.tablo, gorsel: giris.gorsel, boyut: boyut)
+                    .containerBackground(for: .widget) { TabloKarti.zemin }
+            }
+        }
+        .widgetURL(URL(string: "norasanat://bugun"))
+    }
+}
+
+/// Z3o: kilit ekranı. Sistem bunları tek renkte (yarı saydam, duvar kâğıdına göre) çizer:
+/// - dikdörtgen: küçük tablo, eserin adı, sanatçı ve yıl;
+/// - yuvarlak: tablonun kendisi (dairede);
+/// - satır (saatin üstü): "Sanatçı · Eser".
+/// "Bugün N tekrar" yok: widget uygulamanın kaydını okuyamaz (ücretsiz Apple ID'de App Group yok).
+struct KilitEkrani: View {
+    let giris: TabloGirisi
+    let boyut: WidgetFamily
+
+    var body: some View {
+        let t = giris.tablo
+        switch boyut {
+        case .accessoryInline:
+            Text("\(t.sanatci) · \(t.eser)")
+        case .accessoryCircular:
+            ZStack {
+                AccessoryWidgetBackground()
+                if let g = giris.gorsel {
+                    Image(decorative: g, scale: 1).resizable().scaledToFill()
+                        .clipShape(Circle())
+                        .widgetAccentable()
+                } else {
+                    Image(systemName: "photo.artframe").font(.title3)
+                }
+            }
+            .accessibilityLabel("Günün tablosu: \(t.eser), \(t.sanatci)")
+        default:
+            HStack(spacing: 8) {
+                if let g = giris.gorsel {
+                    Image(decorative: g, scale: 1).resizable().scaledToFill()
+                        .frame(width: 44, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                        .widgetAccentable()
+                }
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("GÜNÜN TABLOSU").font(.system(size: 10, weight: .semibold)).tracking(0.8).opacity(0.7)
+                    Text(t.eser).font(.system(size: 14, weight: .semibold, design: .serif)).lineLimit(2)
+                        .minimumScaleFactor(0.85)
+                    Text([t.sanatci, t.yil.map(String.init)].compactMap { $0 }.joined(separator: " · "))
+                        .font(.system(size: 11)).lineLimit(1).opacity(0.85)
+                }
+                Spacer(minLength: 0)
+            }
+            .accessibilityElement(children: .combine)
+        }
     }
 }
