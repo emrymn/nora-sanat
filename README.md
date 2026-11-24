@@ -199,3 +199,10 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - Açık bir durağa dokun: öğrenci patikadan yürüyor, altta koyu kart açılıyor (kapak, "Dönem · n sanatçı", ad, beyaz düğme, tanışma grupları, Kolay / Orta / Zor, Akım sayfası). Aşağı çekince kapanıyor.
   - Kurs rozetine dokun: "n / 57 konu işlendi", sıradaki konunun Türkçe adı, "k sanatçı açılacak", **İşlendi yap**. Resimdeki saklı bir motife dokun: çerçeveli eser, hikâye, "… sayfası".
   - Kartta "1. grupla tanış" ya da "Kolay'a başla": tanışma ve sorular Çalış'taki turun aynısı. Grup bitince "Grup tamam" ve "2. grupla tanış"; seviye bitince sergi duvarı, madalyon, yıldızlar, skor, salonlar ve "Orta salonuna geç".
+- [ ] (Z3v) Bugün → sağ üstte Ben'in solundaki **paylaş** dairesi (cam, dolu değil):
+  - Kapakta dokun: "Günün tablosunu paylaş" yaprağı açılıyor, önce "Kart hazırlanıyor", sonra kartın önizlemesi. Üstte **Hikâye / Gönderi**; Hikâye uzun (9:16), Gönderi daha kısa (4:5).
+  - Kartta: tablo kenardan kenara ve altta zemine eriyor, sol üstte "Günün tablosu" hapı, akım (pirinç), eserin Türkçe adı (Bodoni), "sanatçı · yıl", cam not kartında ayrıntının adı ve metni, solda o ayrıntının kare kırpımı (büyüteçli), altta "Sanat Atlası · sanat-atlasi.pages.dev".
+  - **Çerçeve doğru yerde mi:** tablonun üstündeki ince çerçeve, not kartındaki kırpımla aynı ayrıntıyı sarmalı (tasarımın HTML'inde kayıyordu).
+  - Aşağı kaydırıp 2. ya da 3. ayrıntıdayken paylaş: kartta o ayrıntı (adı, metni, çerçevesi, kırpımı). Kapakta, künyede ya da "Nasıl tanırım?"da ilk ayrıntı.
+  - Ayarlar'da Gündüz'e geçip yeniden aç: kart Gündüz renkleriyle (açık zemin, koyu yazı).
+  - **Paylaş** → iOS menüsü: Instagram (hikâye), Mesajlar ve "Görüntüyü Kaydet" çalışıyor; dosya adı `nora-sanat-<tarih>.png`, 1080 px genişlik. Uçak modunda da (tablo telefondaysa) kart çıkıyor.
