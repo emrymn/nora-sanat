@@ -400,7 +400,7 @@ struct CalisAnaGorunumu: View {
         let dv = CalisDersKurallari.davet(b, harita: harita)
         if let italik = dv.italikMadde, let son = dv.sonEk {
             (Text("Sıradaki özellik: ")
-                + Text(italik).italic()
+                + Text(italik).font(Yazi.okuma(17, italik: true))
                 + Text(son))
                 .font(Yazi.okuma(17))
                 .cssSatir(.okuma, 17, 24.65)

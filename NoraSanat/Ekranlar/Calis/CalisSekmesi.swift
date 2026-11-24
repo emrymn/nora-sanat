@@ -470,7 +470,7 @@ struct CalisDersSayfasi: View {
 
             Group {
                 if let italik = dv.italikMadde, let son = dv.sonEk {
-                    (Text("Sıradaki özellik: ") + Text(italik).italic() + Text(son))
+                    (Text("Sıradaki özellik: ") + Text(italik).font(Yazi.okuma(17, italik: true)) + Text(son))
                 } else {
                     Text(dv.duz)
                 }

@@ -113,7 +113,7 @@ enum TemaHesabi {
     }
 
     /// Sitenin `resimdenOku(url, n)`'u: uzun kenarı `uzun` piksel RGBA
-    private static func pikseller(_ url: URL, uzun n: Int) async -> [UInt8]? {
+    static func pikseller(_ url: URL, uzun n: Int) async -> [UInt8]? {
         guard let resim = await GorselCozucu.shared.resim(url, piksel: 400), let cg = resim.cgImage else { return nil }
         return await Task.detached(priority: .utility) { () -> [UInt8]? in
             let oran = Double(cg.width) / Double(max(1, cg.height))

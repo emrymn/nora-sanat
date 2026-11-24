@@ -471,7 +471,7 @@ struct MotifPenceresi: View {
                         Text(p).font(Yazi.okuma(15)).lineSpacing(15 * 0.55 - 15 * 0.2).foregroundStyle(Color(r.murekkep2)).padding(.top, 10)
                     }
                     if let haritada {
-                        Text(haritada).font(Yazi.sans(12.5)).italic().foregroundStyle(Color(r.murekkep3)).padding(.top, 8)
+                        Text(haritada).font(Yazi.sans(12.5, italik: true)).foregroundStyle(Color(r.murekkep3)).padding(.top, 8)
                     }
                 }
                 .padding(.horizontal, 18)

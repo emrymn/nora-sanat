@@ -100,6 +100,35 @@ final class ResimRengiTests: XCTestCase {
     }
 }
 
+/// Z3l: js/akim.js `paletBirlestir`; beklenenler sitenin kendi modülüyle (node, sanat-atlasi 05f9039) alındı
+final class PaletBirlestirTests: XCTestCase {
+    typealias P = ResimRengi.PaletRengi
+    let p1 = [P(renk: "#8a5a2b", pay: 0.4), P(renk: "#2b3a55", pay: 0.3), P(renk: "#d9c8a0", pay: 0.2), P(renk: "#101010", pay: 0.1)]
+    let p2 = [P(renk: "#8f5d2e", pay: 0.5), P(renk: "#c0392b", pay: 0.25), P(renk: "#2a3b57", pay: 0.25)]
+    let p3 = [P(renk: "#556b2f", pay: 0.6), P(renk: "#d8c9a1", pay: 0.4)]
+
+    private func esit(_ a: [P], _ b: [(String, Double)], _ s: StaticString = #filePath, _ l: UInt = #line) {
+        XCTAssertEqual(a.map(\.renk), b.map(\.0), file: s, line: l)
+        for (x, y) in zip(a, b) { XCTAssertEqual(x.pay, y.1, accuracy: 1e-12, file: s, line: l) }
+    }
+
+    func testUcEser() {
+        esit(ResimRengi.paletBirlestir([p1, p2, p3]), [("#8d5c2d", 0.3), ("#d8c9a1", 0.2), ("#556b2f", 0.2),
+                                                      ("#2b3a56", 0.18333333333333332), ("#c0392b", 0.08333333333333333),
+                                                      ("#101010", 0.03333333333333333)])
+    }
+
+    func testBosVeEksikPaletler() {
+        esit(ResimRengi.paletBirlestir([p1, nil, []]), [("#8a5a2b", 0.4), ("#2b3a55", 0.3), ("#d9c8a0", 0.2), ("#101010", 0.1)])
+        XCTAssertEqual(ResimRengi.paletBirlestir([nil, []]), [])
+    }
+
+    func testAdet() {
+        esit(ResimRengi.paletBirlestir([p1, p2, p3], adet: 3), [("#8d5c2d", 0.4285714285714286), ("#d8c9a1", 0.28571428571428575),
+                                                               ("#556b2f", 0.2857142857142857)])
+    }
+}
+
 /// Z2c-2: temanın değişkenleri sitedeki gibi birleşir (kâhin kabuk.mjs: gece, nötr gündüz, renkli gündüz "lapis")
 final class TemaHesabiTests: XCTestCase {
     func testSiteninDegiskenleri() throws {
