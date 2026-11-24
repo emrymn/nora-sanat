@@ -397,7 +397,7 @@ struct KonuKarti: View {
                 ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: 10) {
                         if l.isEmpty {
-                            Text("Bu konuda yeni sanatçı yok").font(Yazi.sans(13, stil: .footnote).italic())
+                            Text("Bu konuda yeni sanatçı yok").font(Yazi.sans(13, italik: true, stil: .footnote))
                                 .foregroundStyle(Color(r.murekkep3))
                         }
                         ForEach(l) { s in portre(s, acik: acik) }
