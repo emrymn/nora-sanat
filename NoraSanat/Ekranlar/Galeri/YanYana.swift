@@ -10,8 +10,8 @@ struct YanYanaSecimi: Identifiable {
     let oteki: Eser
     let otekiAd: String
     let k: BasyapitSayfasi.Karsilastirma
-    /// Öteki eserin başyapıt anahtarı ("Eserin sayfası")
-    let anahtar: String
+    /// Öteki eserin başyapıt anahtarı ("Eserin sayfası"); Z3q: katalogdan bulunan eserde nil (düğme çıkmaz)
+    let anahtar: String?
     let resim: GaleriResim
 }
 
@@ -37,17 +37,19 @@ struct YanYana: View {
                 Text(secim.k.gerekce).font(Yazi.okuma(17)).cssSatir(.okuma, 17, 26)
                     .foregroundStyle(Color(r.murekkep)).padding(.top, 8)
                     .fixedSize(horizontal: false, vertical: true)
-                Button {
-                    kapat()
-                    sayfayaGit()
-                } label: {
-                    HStack(spacing: 8) {
-                        Text("Eserin sayfası")
-                        GaleriIkon(simge: .ileri, boyut: 18, kalinlik: 1.8)
+                if secim.anahtar != nil {
+                    Button {
+                        kapat()
+                        sayfayaGit()
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text("Eserin sayfası")
+                            GaleriIkon(simge: .ileri, boyut: 18, kalinlik: 1.8)
+                        }
                     }
+                    .buttonStyle(DoluDugme())
+                    .padding(.top, 16)
                 }
-                .buttonStyle(DoluDugme())
-                .padding(.top, 16)
             }
             .padding(.top, 20).padding(.horizontal, 22).padding(.bottom, 18)
             .frame(maxWidth: .infinity, alignment: .leading)

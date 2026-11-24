@@ -183,6 +183,27 @@ public enum BasyapitSayfasi {
             }
     }
 
+    /// Z3q (uygulamaya özgü; sitede yok, kullanıcı isteği): başyapıt kaydı olmayan karşılaştırma önerisinin görseli için
+    /// sanatçının katalogundaki eser. Yanlış eser göstermemek için kesin eşleşme:
+    /// - sanatçı: önerideki adın son sözcüğü (en az 4 harf) tek bir sanatçının adında ya da arama adında tam sözcük olarak;
+    /// - eser: parantezler atılınca `sade` başlık (en az 5 harf) eserin özgün ya da Türkçe adıyla birebir aynı;
+    /// - açık olan eser (`haric`) sayılmaz; tam bir eser kalmalı ve görseli olmalı.
+    /// Gerçek veride (sanat-atlasi 05f9039) görselsiz 197 önerinin 31'i böyle bulunuyor.
+    public static func katalogEseri(_ k: Karsilastirma, sanatcilar: [(id: String, adlar: [String])], eserler: [String: [Eser]],
+                                    haric: Set<String>) -> Eser? {
+        let soyad = sade(k.sanatci).split(separator: " ").last.map(String.init) ?? ""
+        guard JSMetin.boy(soyad) >= 4 else { return nil }
+        let adaylar = sanatcilar.filter { s in s.adlar.contains { sade($0).split(separator: " ").map(String.init).contains(soyad) } }
+        guard adaylar.count == 1 else { return nil }
+        let hedef = sade(parantezler.degistir(k.eser, ""))
+        guard JSMetin.boy(hedef) >= 5 else { return nil }
+        let bulunan = (eserler[adaylar[0].id] ?? []).filter { e in
+            !haric.contains(e.anahtar) && !(e.qid.map(haric.contains) ?? false) && !e.gorseller.isEmpty
+                && [e.baslik, e.ad ?? ""].contains { !$0.isEmpty && sade(parantezler.degistir($0, "")) == hedef }
+        }
+        return bulunan.count == 1 ? bulunan[0] : nil
+    }
+
     // MARK: Sözlük terimlerini metinde işaretleme
 
     private static let etiket = JSDuzen("(<[^>]+>)")
