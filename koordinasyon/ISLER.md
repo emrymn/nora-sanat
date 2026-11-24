@@ -170,12 +170,13 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3d | Süzme telefonda görünmüyordu: renkler canlı, süzme güçlü | K | Z3c | 1 | PR açık |
 | Z3e | Telefonda görülen iki hata: Galeri çarkı (iOS 18 kaydırma), Yolculuk dönem köprüsü | K | G2b, Z3a | 1 | PR açık |
 | Z3f | Dönemin harfi: akım başlığı ve harita dönem adları (js/harfler.js, İş 48) | K | G2b, Z3a | 1 | birleşti (#38) |
+| Z3o | Kilit ekranı ve StandBy widget'ı, Spotlight (sanatçı ve akım), Siri ve Kısayollar (dört eylem) | K | Z3n | 1 | PR açık |
 | Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | birleşti (#41) |
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
 | Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | bitti (#44) |
 | Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
-| Z3o | Kilit ekranı ve StandBy widget'ı, Spotlight (sanatçı ve akım), Siri ve Kısayollar (dört eylem) | K | Z3n | 1 | PR açık |
+| Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
