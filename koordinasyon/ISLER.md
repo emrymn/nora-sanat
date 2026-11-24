@@ -181,7 +181,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | PR açık (#46) |
 | Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
 | Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
-| Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | sürüyor (Claude, 2026-11-24) |
+| Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1058,6 +1058,16 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
 
 ---
+
+### Z3u · Çalış ana ekranı: Bugünün oturumu (Claude)
+**Devir notu:** Claude, 2026-11-24 · [PR #58](https://github.com/emrymn/nora-sanat/pull/58) · dal `claude/Z3u-calis-oturum`.
+- **Kaynak:** Neon'un tasarımı, dal `neon/calis-tasarim` (PR #55, birleştirilmedi): `tasarim/calis/yon-4.html`, `BENIOKU.md` "Yön 4", `goruntuler/yon-4-{gece,gunduz}.png`. Kullanıcı olduğu gibi onayladı. Davranış sitenin kurallarından (sanat-atlasi `a866b86`: `js/ekranlar/ders.js`, `soruTurlari.js`, `calisma.js`); yeni bir site kuralı taşınmadı.
+- **Ekran** (`CalisAnaGorunumu`): kenardan kenara kapak (`KapakYuruyusu` aynen; "Çalış", "~N dk · Konu N'desin" hapı = `ders-konum`, eser künyesi), bugünün dersi (düğümlü iz + soluk Harita, davet, tek dolu düğme `ders-devam`, "Ardından günlük tekrar" ipliği, tekrar kartı `karisik-dugme`), hafıza ritmi (2×7 boncuk, güne dokununca satır, yarın), dönem yolu (omurga, `ders-kilitli`, yolculuk ufku + akım yayı), derinleşmek istersen (`hatalar-satir`, `tur-*`; kutular en az 92 pt). Devam kartı, boş durum, "hepsi bitti" kartı korundu. Kapak üstü yazı/hap renkleri iki temada aynı sabitler (`KapakUstu`), gerisi `tema.renkler`.
+- **Çekirdek** `NoraCekirdek/Calis/CalisOturumu.swift` (Z3u, yeni, sitede yok): ders süresi (Gör ayrıntısı 20 sn, Öğren özelliği 60 sn, Ayırt ikilisi 60 sn; süren adımda 1 − i), kapak hapı = ders kalanı + `TurOzeti.yaklasikDakika`; ritim günleri/yazıları, boncuk çapı, dönem yolu yazıları, akım yayı. `CalisOturumuTests` (10).
+- **CalisSekmesi:** `masaSekmesi` (Dersler / Başka turlar) kalktı → `kaydirHedefi` (`"turlar"`). `CalisKarsilastirma.kaydir(_:)` tek argüman; `tekrar`, `yuk`, `turlar` çapaları üst çubuk payıyla (`kaydirmaCapasi`).
+- **Tasarımdan farklar:** gün notları tasarımda elle yazılmıştı; uygulamada yalnız "en yoğun gün" / "dinlenme günü". "N konu kaldı" = açılacağı konu − işlenen en büyük konu. Devam düğmesinin süresi yalnız sıradaki adımın.
+- **CI:** e2d74db yeşil (8 iş; galeri-2 ve genel ilk koşuda başlamadan iptal edilmişti, bir kez yeniden koştu). `calis-calis` ve `t7-acilis-calis`'ta OCR "Bugünün dersi" buldu. Ekran görüntülerine (`ekranlar-calis`) bu oturumdan bakılamadı: Gece/Gündüz kullanıcı ya da denetçi bakmalı. Yan yana görüntülerde solda hâlâ sitenin eski Çalış'ı var (bilinçli fark).
+- **Kalan:** süre sabitleri telefonda denenince ayarlanabilir.
 
 ## Yeni özellikler (Y): sitede olmayan, iPhone'a özgü
 
