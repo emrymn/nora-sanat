@@ -173,8 +173,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | birleşti (#41) |
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
-| Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | PR açık |
-| Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | sürüyor (Claude, 2026-11-24) |
+| Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | bitti (#44) |
+| Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | PR açık (#46) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1032,7 +1032,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - Hızlı ayar yaprağı kapsam dışı değil: sitenin çubuğundaki dişli dil onu açıyor.
 
 ### Z3m · Ekran rengi ve odaklı kırpma (Claude)
-**Devir notu:** Claude, 2026-11-24 · dal `claude/Z3m-ekran-rengi`. **Z3l'in (#44) üstüne kurulu** (`TemaHesabi.pikseller` orada dışa açıldı); #44 birleşince main dala alınır, PR farkı yalnız Z3m'ye iner.
+**Devir notu:** Claude, 2026-11-24 · [PR #46](https://github.com/emrymn/nora-sanat/pull/46) · dal `claude/Z3m-ekran-rengi`. Z3l'in (#44) üstüne kuruldu (`TemaHesabi.pikseller` orada dışa açıldı); #44 birleşince main dala alındı.
 - **Kaynak:** sanat-atlasi `cca62eb`: `js/ekranlar/ortak.js` (`ekranRengi`, `renkSabitle`, `gununRengi`, `eserPaleti`, `renkleriYaz`, `odakliGorsel`, `odagaKaydir`, `kucukGorsel { odak }`, `odaklariYukle`), `js/renk.js` (`paletGetir`, `renkTemasi`), `js/gorsel.js` (`paletUrl`, `gorselOdakNoktasi`, `gorselOdagi`), çağıranlar: `js/ekranlar/gozat.js` (`sanatciSayfasi`, `tumEserler`, `konuSayfasi`, `karsilastirSayfasi`, Başyapıtlar kartı ve sahnesi), `js/ekranlar/basyapit.js` (`basyapitSayfasi`, sıradaki ve kıyas görselleri), `js/ekranlar/ders.js` (`kapaklariDoldur`), `js/ekranlar/pekistir.js` (`kartCiz`, ters soru), `js/ekranlar/soruTurlari.js`, `js/ekranlar/akim.js` (sahne).
   K7: `git -C /tmp/sa log cca62eb..HEAD -- js/ekranlar/ortak.js js/renk.js js/gorsel.js js/ekranlar/gozat.js js/ekranlar/basyapit.js js/ekranlar/ders.js js/ekranlar/pekistir.js js/ekranlar/soruTurlari.js`
 - **Ekran rengi** (`NoraSanat/Kabuk/EkranRengi.swift`): `.ekranRengi(url:yedek:notr:)` ortamdaki `TemaDeposu`'nun yerine aynı temayı, vurgusu o eserin paletinden bir kopya koyar (`TemaRenkleri.ekran`, çekirdek, testli). Ekranın kendi gövdesi de `tema.renkler` okuduğu için değiştirici ekranın **dışında**, kurulduğu yerde verilir. Palet gelene kadar önceki renk durur (sitede de); görsel açılmazsa yedek (`ResimRengi.eserPaleti`), yedek yoksa nötr; eser de yedek de yoksa ortamın rengi. Geçiş 0,45 sn, hareket azaltılmışsa (ayar ya da sistem) anında. Paletler bellekte (`EkranPaletleri`).
@@ -1047,7 +1047,8 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
   - Palet adresi 400'lük kopya (`gorselAdresi(e, 400)`); sitenin `paletUrl`'si yerel kopyası olmayan Commons görselinde `commonsKucuk(PALET_GENISLIGI)` kullanır. 64 piksele küçültüldüğü için palet aynı ya da çok yakın.
   - Paletler cihazda saklanmıyor (sitede IndexedDB); uygulama açıldıktan sonra her eser bir kez hesaplanır.
   - Odaklı kırpma Yolculuk'taki Zaman kartlarında (`gozat.js` zaman fonu) ve Çalış'taki ders/salon kapaklarında yok (o dosyalar bu işin dışında / başka oturumda). Yakın okumanın kapağı sitede de kırpılmaz.
-- **CI:** (doldurulacak)
+- **Ayrıca:** sanatçı künyesindeki "Dinle" yazısı sitedeki gibi `--vurgu-acik` (`.isim-ek .dinle`; önce vurgu ile mürekkebin karışımıydı, eserin rengi görünmüyordu).
+- **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
 
 ---
 
