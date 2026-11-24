@@ -49,7 +49,12 @@ final class BugunDeposu {
         SiteVerisi.site.appendingPathComponent("gorseller/imza/" + s.tablo.sanatciId + ".png")
       }
       async let imzaResmi = GorselCozucu.shared.resim(imzaURL, piksel: 640)
-      let ilk = await GorselCozucu.shared.resim(s.tablo.gorsel, piksel: 1920)
+      // Z3r (telefon: "resimler bekleyince netleşiyor"): büyük kopya telefondaysa (dün önceden indi) küçük kopya hiç
+      // gösterilmez; yoksa önce 1280'lik küçük kopya, büyük kopya inince o.
+      let hdHazir = s.buyuk.map { $0 != s.tablo.gorsel && GorselDeposu.shared.diskte($0) != nil } ?? false
+      var ilk: UIImage?
+      if hdHazir { ilk = await GorselCozucu.shared.resim(s.buyuk, piksel: 4096) }
+      if ilk == nil { ilk = await GorselCozucu.shared.resim(s.tablo.gorsel, piksel: 1920) }
       let imza = await imzaResmi
       try Task.checkCancellation()
       guard let ilk else { throw URLError(.cannotDecodeContentData) }
@@ -68,13 +73,27 @@ final class BugunDeposu {
       baglam = b
       sayfa = s
       hata = nil
-      if s.buyuk != s.tablo.gorsel, let hd = await GorselCozucu.shared.resim(s.buyuk, piksel: 4096),
+      Self.yarinkiniHazirla(degisim: degisim, veriler: veriler, katalog: katalog)
+      if !hdHazir, s.buyuk != s.tablo.gorsel, let hd = await GorselCozucu.shared.resim(s.buyuk, piksel: 4096),
         !Task.isCancelled
       {
         resim = hd
       }
     } catch {
       if !Task.isCancelled { hata = "Günün tablosu yüklenemedi." }
+    }
+  }
+}
+
+extension BugunDeposu {
+  /// Z3r: yarının tablosunun büyük ve küçük kopyası bugünden, arka planda iner. Görsel önbelleğine (Caches/Gorseller,
+  /// 400 MB) yazılır; ertesi gün açılışta doğrudan büyük kopya görünür.
+  static func yarinkiniHazirla(degisim: JSONDeger?, veriler: [String: Data], katalog: SiteKatalogu) {
+    guard let gun = Calendar.current.date(byAdding: .day, value: 1, to: Date()),
+      let y = try? BugunTablosu(tarih: GunTarihi.gun(gun), degisim: degisim, veriler: veriler, katalog: katalog)
+    else { return }
+    for u in [y.buyuk, y.tablo.gorsel].compactMap({ $0 }) where GorselDeposu.shared.diskte(u) == nil {
+      Task.detached(priority: .background) { _ = try? await GorselDeposu.shared.veri(u) }
     }
   }
 }
