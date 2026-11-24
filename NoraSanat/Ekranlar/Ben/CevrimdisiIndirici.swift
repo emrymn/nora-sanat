@@ -39,6 +39,8 @@ final class CevrimdisiIndirici {
     /// Görev listesi gelmeden sonucu gelenler (arka planda yeniden açılışta)
     @ObservationIgnored private var erkenBiten = Set<String>()
     @ObservationIgnored private var durdurIstendi = false
+    /// Z3s: parça arka planda hazırlanıyor (telefondakilerin sayımı ana iş parçacığında değil)
+    @ObservationIgnored private var hazirlaniyor = false
     @ObservationIgnored private var kuruldu = false
     @ObservationIgnored var arkaPlanBitti: (() -> Void)?
 
@@ -127,13 +129,14 @@ final class CevrimdisiIndirici {
     // MARK: Düğmeler
 
     func indir() {
-        guard liste != nil, durum?.suruyor != true else { return }
+        guard liste != nil, durum?.suruyor != true, !hazirlaniyor else { return }
         silindi = false
         surdur = true
         parcaBaslat()
     }
 
     func durdur() {
+        if hazirlaniyor { durdurIstendi = true; surdur = false; return }   // parça daha başlamadı: başlamasın
         guard durum?.suruyor == true else { return }
         durdurIstendi = true
         surdur = false
@@ -160,12 +163,30 @@ final class CevrimdisiIndirici {
     // MARK: Parçalar
 
     private func parcaBaslat() {
-        guard let l = liste else { surdur = false; return }
+        guard let l = liste, !hazirlaniyor else { if liste == nil { surdur = false }; return }
         durdurIstendi = false
-        let var_ = depo.telefondakiler(l.telefonAdresleri, sil: false).adresler
-        let p = l.parca(telefonda: var_, parcaGorsel: Self.denemeParcasi ?? CevrimdisiListe.parcaGorsel)
+        hazirlaniyor = true
+        // Z3s: telefondaki binlerce dosyanın sayımı ve parçanın hesabı arka planda (önceden ana iş parçacığındaydı:
+        // her parça başında ve durdurunca ekran donuyordu)
+        let depo = depo
+        let boy = Self.denemeParcasi ?? CevrimdisiListe.parcaGorsel
+        // Arka planda uyandırılmışken (önceki parça bitti) iOS hazırlık bitmeden uygulamayı uyutmasın
+        let sure = UIApplication.shared.beginBackgroundTask(withName: "cevrimdisi-hazirla", expirationHandler: nil)
+        Task {
+            defer { if sure != .invalid { UIApplication.shared.endBackgroundTask(sure) } }
+            let (var_, p) = await Task.detached(priority: .utility) { () -> (Set<String>, CevrimdisiListe.Parca) in
+                let v = depo.telefondakiler(l.telefonAdresleri, sil: false).adresler
+                return (v, l.parca(telefonda: v, parcaGorsel: boy))
+            }.value
+            hazirlaniyor = false
+            if durdurIstendi { durdurIstendi = false; return }
+            parcayiVer(p, telefondaki: var_.count)
+        }
+    }
+
+    private func parcayiVer(_ p: CevrimdisiListe.Parca, telefondaki: Int) {
         var i = CevrimdisiDurumu(p)
-        telefonda = var_.count
+        telefonda = telefondaki
         guard !p.urller.isEmpty else {
             i.bitir(durduruldu: false)
             durum = i
