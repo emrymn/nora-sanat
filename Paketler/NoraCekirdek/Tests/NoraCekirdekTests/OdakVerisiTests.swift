@@ -32,5 +32,6 @@ final class OdakVerisiTests: XCTestCase {
         XCTAssertEqual(GununSanatcisi.baska(havuz: ["a", "b", "c"], haric: "a", rastgele: { 0 }), "b")
         XCTAssertEqual(GununSanatcisi.baska(havuz: ["a", "b", "c"], haric: "a", rastgele: { 0.99 }), "c")
         XCTAssertEqual(GununTablosuCozucu.havuz(yuruyus: veri(#"{"eserler":{"x":{"noktalar":[1]},"y":{"noktalar":[]},"z":{}}}"#)), ["x"])
+        XCTAssertEqual(GununTablosuCozucu.havuz(yuruyus: veri(#"{"eserler":{"x":{"noktalar":[1]},"b":{"bugun":false,"noktalar":[1]}}}"#)), ["x"])
     }
 }
