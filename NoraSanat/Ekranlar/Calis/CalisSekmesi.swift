@@ -28,7 +28,8 @@ struct CalisSekmesi: View {
 
     @State private var model = PekistirmeModeli()
     @State private var altSayfa: AltSayfa = .ana
-    @State private var masaSekmesi: CalisAnaGorunumu.CalisMasaSekmesi = .dersler
+    /// Z3u: ana ekranın kaydırılacağı bölüm (eski Dersler / Başka turlar sekmelerinin yerine: "turlar" → Derinleşmek istersen)
+    @State private var kaydirHedefi: String?
     @State private var onayKipi: PekistirmeKipi?
     @State private var onaySeviyesi: Int?
 
@@ -73,7 +74,7 @@ struct CalisSekmesi: View {
                 case .ana:
                     CalisAnaGorunumu(
                         model: model,
-                        masaSekmesi: $masaSekmesi,
+                        kaydirHedefi: $kaydirHedefi,
                         turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) },
                         derseGit: { akim in gecis { altSayfa = .ders(akim) } },
                         adimaGit: { akim, adim in gecis { altSayfa = .adim(akim, adim) } },
@@ -150,7 +151,7 @@ struct CalisSekmesi: View {
                         altSayfa = .donem(salonlaraIn: NoraSanatApp.arguman("-calisKaydir") == "salon")
                     } else if sayfa == "turlar" {
                         altSayfa = .ana
-                        masaSekmesi = .turlar
+                        kaydirHedefi = "turlar"
                     } else if sayfa.hasPrefix("ders:") {
                         // `ders:<akım>` ya da `ders:<akım>:<adım>`
                         let p = sayfa.dropFirst(5).split(separator: ":", maxSplits: 1).map(String.init)
@@ -627,16 +628,9 @@ enum CalisKarsilastirma {
     static let hazir = FileManager.default.temporaryDirectory.appendingPathComponent("calis-hazir")
 
     @MainActor
-    static func kaydir(
-        _ kaydir: ScrollViewProxy,
-        masaSekmesi: Binding<CalisAnaGorunumu.CalisMasaSekmesi>
-    ) async {
+    static func kaydir(_ kaydir: ScrollViewProxy) async {
         try? await Task.sleep(nanoseconds: 3_000_000_000)
         if let b = bolum {
-            if b == "turlar" {
-                masaSekmesi.wrappedValue = .turlar
-                try? await Task.sleep(nanoseconds: 300_000_000)
-            }
             kaydir.scrollTo(b, anchor: .top)
         }
         try? await Task.sleep(nanoseconds: 1_000_000_000)
