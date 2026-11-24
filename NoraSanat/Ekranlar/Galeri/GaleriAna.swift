@@ -358,34 +358,41 @@ private struct CarkTekeri: View {
 
     private func govde(_ w: CGFloat) -> some View {
         ZStack(alignment: .top) {
+            // Z3k: ışık kırpılan kutunun dışında; kendi elipsinde söner, kutunun üst ve alt kenarı görünmez
             isik(w)
-            Canvas { c, _ in ciz(&c, w) }
-            ibre(w)
-            adlar(w)
-            sayac
+            ZStack(alignment: .top) {
+                Canvas { c, _ in ciz(&c, w) }
+                ibre(w)
+                adlar(w)
+                sayac
+            }
+            .frame(width: w, height: 150)
+            // `-webkit-mask`: iki uçta silinir
+            .mask(LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.16),
+                                         .init(color: .black, location: 0.84), .init(color: .clear, location: 1)],
+                                 startPoint: .leading, endPoint: .trailing))
+            .clipped()
         }
         .frame(width: w, height: 150)
-        // `-webkit-mask`: iki uçta silinir
-        .mask(LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.16),
-                                     .init(color: .black, location: 0.84), .init(color: .clear, location: 1)],
-                             startPoint: .leading, endPoint: .trailing))
-        .clipped()
     }
 
-    /// `::before`: yayın altından yükselen ışık (elips 46% × 62%)
+    /// `::before`: yayın altından yükselen ışık (elips 46% × 62%, merkez 50% 46%).
+    /// Z3k (telefon: "çark yapıştırma gibi duruyor"): ışık artık 150 pt'lik kutuda kesilmiyor. Elips 69 pt'de ortalı,
+    /// dikey yarıçapı 93 pt: kutunun üstünden 24 pt taşar. Kutu kırpınca üst kenarda yaklaşık %3'lük bir basamak
+    /// kalıyordu, kenarda düz bir bant gibi görünüyordu. Şimdi elips kutunun dışına da çiziliyor ve kenarında sıfıra iniyor.
+    /// Duraklar sitenin eğrisi (0.16 → 0.05 → 0), kuyruğu yumuşatılmış.
     private func isik(_ w: CGFloat) -> some View {
         let p = tema.renkler.pirinc
-        let duraklar: [Gradient.Stop] = [.init(color: Color(p, 0.16), location: 0), .init(color: Color(p, 0.05), location: 0.55),
+        let duraklar: [Gradient.Stop] = [.init(color: Color(p, 0.16), location: 0), .init(color: Color(p, 0.1), location: 0.25),
+                                         .init(color: Color(p, 0.05), location: 0.55), .init(color: Color(p, 0.018), location: 0.8),
                                          .init(color: Color(p, 0), location: 1)]
-        let yaricap: CGFloat = w * 0.46
-        let olcek: CGFloat = 150 * 0.62 / yaricap
-        let merkez = UnitPoint(x: 0.5, y: 0.46)
-        // Z3j: kutu önce 150 / ölçek boyuna uzatılır, sonra ölçeklenir. Önceden 150'lik kutu ölçeklenip 78 pt'ye
-        // iniyordu; ışık sönmeden kutunun kenarında kesiliyor, çarkın arkasında "yapıştırılmış" bir bant kalıyordu.
-        return RadialGradient(stops: duraklar, center: merkez, startRadius: 0, endRadius: yaricap)
-            .frame(width: w, height: 150 / olcek)
-            .scaleEffect(x: 1, y: olcek, anchor: merkez)
+        let rx: CGFloat = w * 0.46
+        let ry: CGFloat = 150 * 0.62
+        return EllipticalGradient(stops: duraklar, center: .center, startRadiusFraction: 0, endRadiusFraction: 0.5)
+            .frame(width: rx * 2, height: ry * 2)
+            .position(x: w / 2, y: 150 * 0.46)
             .frame(width: w, height: 150)
+            .allowsHitTesting(false)
     }
 
     /// Yay (1 px, üstünde bulanık ışık) ve dönen çentikler
