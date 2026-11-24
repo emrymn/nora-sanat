@@ -134,6 +134,9 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] (Z3j) Galeri → Akımlar: çarkın arkasında koyu/kesik bant olmamalı, desen çarkın altından kesintisiz geçmeli; en alta kaydırınca "Bütün akımlar" dişlinin üstünde, dokunulabilir. Akımlar, Başyapıtlar, Konular, Zaman arasında geç: hiçbiri yandan kaymamalı, içerik yerinde hafifçe yükselerek belirmeli. Arama hapına dokun: arama sayfası haptan büyüyerek açılmalı (iOS 18+).
 - [ ] (Z3j) Sekmeler arasında geç: yeni sekmenin içeriği hafifçe yükselerek belirmeli (Bugün yalnız belirir).
 - [ ] (Z3j) Çalış → Bugünün dersi kapağı: resim yavaşça bir ayrıntıya yakınlaşıp dönmeli, sonra öbür ayrıntıya (16 sn döngü).
+- [ ] (Z3o) Kilit ekranına widget ekle (kilit ekranına uzun bas → Özelleştir → Kilit Ekranı → widget alanı → Nora Sanat): dikdörtgende günün tablosunun küçük resmi, adı ve sanatçısı; yuvarlakta tablo; saatin üstünde "Sanatçı · Eser". Telefonu şarja takıp yatay bırak (StandBy): küçük widget orada da görünmeli. Dokununca Bugün açılmalı.
+- [ ] (Z3o) Uygulamayı bir kez açıp kapat, sonra ana ekranda aşağı kaydırıp "Caravaggio" (ya da "Barok") yaz: Nora Sanat sonucu çıkmalı, dokununca o sanatçının (akımın) Galeri sayfası açılmalı.
+- [ ] (Z3o) "Hey Siri, Nora Sanat'ta günün tablosunu aç" / "Nora Sanat'ta pekiştirmeye başla". Kısayollar uygulamasında "Nora Sanat" altında dört eylem görünmeli (Günün tablosu, Pekiştir, Çalış, Yolculuk).
 - [ ] (Z3j) Uygulamayı kapatıp aç: Bugün'de önce resim hareketini tamamlamalı (≈2 sn), yazılar ondan sonra bulanıktan netleşerek gelmeli.
 - [ ] (Z3j) Hızlı ayarlardan Gündüz'e geç: Galeri ve Çalış zemininde tablonun iki rengi açıkça görülmeli (sol üst, sağ alt).
 - [ ] (Z3r) Bugün'ü bugün bir kez aç (yarının tablosu arka planda iner). Yarın uygulamayı açınca tablo baştan net gelmeli; önce bulanık görünüp birkaç saniye sonra netleşmemeli.
