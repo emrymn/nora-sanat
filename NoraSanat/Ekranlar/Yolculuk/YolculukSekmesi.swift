@@ -303,19 +303,10 @@ private struct YolculukHaritaEkrani: View {
     /// Sabit üst öğeler: kurs rozeti (sol), gündüz/gece (sağ) ve altında dönem göstergesi
     private var ustDugmeler: some View {
         HStack(alignment: .top) {
+            // Z3n: sitede (harita.js kursRozetiHtml) hapın yanında madalyon yok; madalyon (`madalyonHtml`) durağın
+            // çevresindeki halka. Z3a'da eklenen şimdiki durak simgesi hapı daraltıyordu: "16 / 57 konu" iki satıra
+            // bölünüyor, "Sıradaki: Konu 17" kesiliyordu (telefon, 2026-11-24). Kaldırıldı.
             kursRozeti
-            // js/ekranlar/harita.js madalyonHtml, css/app.css .durak-halka:
-            // ilerleme hapının yanında şimdiki durağın kendi simgesi.
-            if let d = depo.simdiki {
-                Button { pencere = .durak(d.id) } label: {
-                    UzakGorselSaydam(url: haritaGorseli("sembol_\(d.bolge)_\(d.sembol)_\(tur)"))
-                        .padding(5).frame(width: 44, height: 44)
-                        .background(Circle().fill(HaritaRenk.rozetZemin.opacity(0.8)))
-                        .overlay(Circle().strokeBorder(HaritaRenk.pirinc, lineWidth: 2))
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Buradasın: \(d.ad)")
-            }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 8) {
                 vakitDugmesi
