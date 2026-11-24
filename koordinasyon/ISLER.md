@@ -175,7 +175,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
 | Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | bitti (#44) |
 | Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
-| Z3p | İncele yeniden (İş 180) | K | Z3o | 1 | sürüyor (Claude, 2026-11-24) |
+| Z3p | İncele yeniden (İş 180) | K | Z3o | 1 | PR açık (#52) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1035,7 +1035,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 Sitenin İş 180'i (15 Kasım, commit `f185307a` "İş 180: İncele yeniden" ve sonrası): görüntüleyicinin İncele kipi numaralı noktalar,
 alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı ve ilerleme çubuğu. Hikâye kipi (İş 169) de aynı görünüm.
 
-**Devir notu:** Claude, 2026-11-24 · dal `claude/Z3p-incele`. Kaynak: sanat-atlasi `cca62eb` (`KARARLAR.md` "İş 180",
+**Devir notu:** Claude, 2026-11-24 · [PR #52](https://github.com/emrymn/nora-sanat/pull/52) · dal `claude/Z3p-incele`. Kaynak: sanat-atlasi `cca62eb` (`KARARLAR.md` "İş 180",
 `js/goruntuleyici.js` `incelemeBaslat`/`genelBakis`/`incelemeYaz`/`kartPayi`/`noktayaGit`, `js/ayrinti.js` `noktaOdagi`,
 `css/app.css` sonundaki İş 180 bölümü). K7: `git -C /tmp/sa log cca62eb..HEAD -- js/goruntuleyici.js js/ayrinti.js css/app.css`
 - **Çekirdek (`AyrintiKurallari`, `Ayrinti.swift`):** `noktaOdagi(..., alan: IncelemeAlani?)` (sitedeki `alan: { ust, alt }`):
@@ -1056,7 +1056,9 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
   ölçülür (`sahneCercevesi`), `kartPayi` sitedeki gibi (+12 ara). Kamera bir sonraki çizimi bekleyip (50 ms) kurulur, yeni istek
   eskisini iptal eder. Genel bakışta tablo kartın üstündeki boşluğa kayar; sürükleme bırakılınca oraya döner. İncelemede tablonun
   ışığı 0.85. Hareket azaltılmışsa (sistem ya da sitenin hareket ayarı) kamera ve kart anında.
-- **CI:** `9b-incele-genel`, `9c-incele-ayrinti` (`-ekran goruntuleyici -incele n`).
+- **CI:** `9b-incele-genel`, `9c-incele-ayrinti` (`-ekran goruntuleyici -incele n`). Koşu 45364620910 yeşil (derleme, çekirdek
+  testleri, yedi ekran işi). Ekran görüntüleri bu oturumdan indirilemedi (artifact deposuna erişim kapalı): **denetçi 9b ve 9c'ye baksın**
+  (kart altta/üstte, düğmeler, kameranın ayrıntıyı kartın dışında tutması).
 - **Tuzaklar:** Swift bu oturumda derlenemedi (Linux'ta Swift yok); CI'ın ilk koşusuna bak. Kart ölçüsü bir kare gecikmeli
   geldiği için kamera 50 ms sonra başlar. İki parmakla yakınlaştırma ya da çift dokunuş sonrası `sifirla` genel bakışın kaymasını
   sıfırlar (sitede de `sinirla` alanı bilmez). Eylem satırındaki "İncele · N nokta" yazısına dokunulmadı (Y1 aynı satıra
