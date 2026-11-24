@@ -136,6 +136,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] (Z3j) Çalış → Bugünün dersi kapağı: resim yavaşça bir ayrıntıya yakınlaşıp dönmeli, sonra öbür ayrıntıya (16 sn döngü).
 - [ ] (Z3j) Uygulamayı kapatıp aç: Bugün'de önce resim hareketini tamamlamalı (≈2 sn), yazılar ondan sonra bulanıktan netleşerek gelmeli.
 - [ ] (Z3j) Hızlı ayarlardan Gündüz'e geç: Galeri ve Çalış zemininde tablonun iki rengi açıkça görülmeli (sol üst, sağ alt).
+- [ ] (Z3r) Bugün'ü bugün bir kez aç (yarının tablosu arka planda iner). Yarın uygulamayı açınca tablo baştan net gelmeli; önce bulanık görünüp birkaç saniye sonra netleşmemeli.
 - [ ] (Z3k) Galeri → Akımlar (Gündüz ve Gece): çarkın ışığı yayın çevresinde yumuşak bir elips gibi sönmeli; "Salona gir"in altında ve "Bütün akımlar"ın hizasında düz bir kenar ya da dikdörtgen bant görünmemeli.
 - [ ] (Z3m) Galeri'de bir sanatçıya gir: "Tümü" düğmesi, işaretler ve hale o sanatçının ilk eserinin renginde olmalı; geri çıkınca Galeri'nin ana ekranı günün rengine dönmeli. Başka bir sanatçıda başka renk görülmeli. Bir başyapıta, bir konuya girince de aynı. Çalış'ta ders sayfasının dolu düğmesi dersin kapağının renginde; turda her kartın rengi o kartın eserinden (ters soruda cevaptan önce gri). Ayarlar'da hareketi azaltınca renk geçişi anında olmalı.
 - [ ] (Z3m) Galeri → Başyapıtlar: dik tablolu kartlarda yüz/baş kesilmemeli (ortadan değil, yüzün çevresinden kırpılmalı); öne çıkan büyük kartta, bir akımın açılış resminde ve yakın okumanın altındaki "Sıradaki" kartında da.
