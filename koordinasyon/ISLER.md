@@ -173,6 +173,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3o | Kilit ekranı ve StandBy widget'ı, Spotlight (sanatçı ve akım), Siri ve Kısayollar (dört eylem) | K | Z3n | 1 | PR açık |
 | Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | birleşti (#41) |
 | Z3r | Bugün: yarının tablosunun büyük kopyası bugünden iner; telefonda varsa açılışta doğrudan büyük kopya | K | Z3n | 1 | PR açık |
+| Z3t | Bugün: yürüyüş kaydında `"bugun": false` olan sanatçı günün havuzuna girmez (sitenin `yuruyusHavuzu`; Berlinghieri) | K | Z3r | 1 | PR açık |
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
 | Z3s | Çevrimdışı indirme telefonu kasmasın: parça hazırlığı arka planda, `tahminiBayt` düzenli ifadesiz | K | Z3n | 1 | PR açık |

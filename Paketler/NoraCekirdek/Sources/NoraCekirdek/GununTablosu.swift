@@ -41,8 +41,14 @@ public enum GununTablosuCozucu {
     public static func havuz(yuruyus: Data) -> [String] {
         guard let y = (try? JSONSerialization.jsonObject(with: yuruyus)) as? [String: Any],
               let eserler = y["eserler"] as? [String: Any] else { return [] }
-        return eserler.compactMap { (id, v) -> String? in
-            guard let k = v as? [String: Any], let n = k["noktalar"] as? [Any], !n.isEmpty else { return nil }
+        return havuz(eserler)
+    }
+
+    /// Kayıtta `"bugun": false` olan ana sayfaya gelmez (sitenin js/gunun.js `yuruyusHavuzu`, 2026-11-24: Berlinghieri)
+    static func havuz(_ eserler: [String: Any]) -> [String] {
+        eserler.compactMap { (id, v) -> String? in
+            guard let k = v as? [String: Any], let n = k["noktalar"] as? [Any], !n.isEmpty,
+                  (k["bugun"] as? Bool) != false else { return nil }
             return id
         }
     }
@@ -52,10 +58,7 @@ public enum GununTablosuCozucu {
         guard let y = try JSONSerialization.jsonObject(with: yuruyus) as? [String: Any],
               let eserler = y["eserler"] as? [String: Any] else { throw Hata.bozukVeri }
 
-        let havuz = eserler.compactMap { (id, v) -> String? in
-            guard let k = v as? [String: Any], let n = k["noktalar"] as? [Any], !n.isEmpty else { return nil }
-            return id
-        }
+        let havuz = Self.havuz(eserler)
         guard let id = GununSanatcisi.sec(havuz: havuz, tarih: tarih),
               let kayit = eserler[id] as? [String: Any] else { throw Hata.bosHavuz }
 
