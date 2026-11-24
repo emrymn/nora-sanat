@@ -1,4 +1,5 @@
 // Kaynak: sanat-atlasi js/goruntuleyici.js, js/ayrinti.js, js/hikaye.js, js/keskin.js, js/koleksiyon.js, js/bildirim.js, js/karsilastir.js @ a866b86
+// Z3p: İncele kipi İş 180'e göre (f185307a "İş 180: İncele yeniden" ve sonrası, @ cca62eb)
 import SwiftUI
 import NoraCekirdek
 
@@ -10,8 +11,10 @@ import NoraCekirdek
 /// - Eserler arası geçiş (yatay kaydırma veya sol/sağ ok düğmeleri; ilk eserde sağa çekince kapanma).
 /// - Aşağı çekince tablonun küçülüp zeminin şeffaflaşması ve bırakınca kapanma.
 /// - Künye (başlık, tarih, özgün ad, eser notu, konu bağlantısı, ortak atıf, müze, görsel kaynağı, büyük kopya kaynağı, kaynak sayfası, sıra).
-/// - Rehberli ayrıntı noktaları ("İncele · N nokta", numaralı noktalar, noktaya otomatik yakınlaşma).
-/// - Resmin hikâyesi ("Hikâyesi" paneli ve "Karakterleri resimde gör").
+/// - Rehberli inceleme (İş 180): yazısız kamera ayrıntıdan ayrıntıya kayar; ayrıntıların yeri görünmez dokunma alanı;
+///   açıklama buzlu yazı kartında (ayrıntı alttaysa kart üstte, başlığa dokununca katlanır); altta geri düğmesi, parçalı
+///   ilerleme çubuğu ve halkalı ilerle düğmesi; kapat düğmesinin solunda küçült (bitir).
+/// - Resmin hikâyesi ("Hikâyesi" paneli ve "Karakterleri resimde gör": aynı inceleme görünümü).
 /// - Koleksiyon işareti ve "⋯" hata/kötü görsel bildirim menüsü (`IlerlemeKoprusu` üzerinden ilerlemeye yazar).
 /// - Keskin üst kopya: önce 1280/800 px kopya açılır, 4096 px en büyük kopya arkada inip yerine geçer.
 /// - Z2c-3b: geliştirici modunda ve Ayarlar → "Sırayla ortala"da (`ortalama`) "Odağı işaretle": tabloya dokunulan nokta
@@ -57,6 +60,20 @@ public struct Goruntuleyici: View {
     @State private var hikayeAcik: Bool = false
     @State private var ilkAcilisYapildi: Bool = false
     @State private var bekleyenNokta: Int? = nil
+
+    // Z3p (İş 180): yazı kartı ve kamera
+    @State private var kartKapali = false
+    /// Kartın her adımda süzülerek belirmesi (`.gor-inc-kart.gel`): her yeni adımda artar
+    @State private var kartAdimi = 0
+    @State private var kartCercevesi: CGRect = .zero
+    @State private var dugmeCercevesi: CGRect = .zero
+    @State private var ustCubukCercevesi: CGRect = .zero
+    @State private var sonTaban: CGSize = .zero
+    @State private var sonSahne: CGSize = .zero
+    /// Genel bakışta tablonun dikey kayması (kartın üstünde kalan boşluğa doğru)
+    @State private var genelBakisTy: CGFloat = 0
+    @State private var kameraGorevi: Task<Void, Never>? = nil
+    @Environment(\.accessibilityReduceMotion) private var azHareket
 
     // Z2c-3b: elle odak
     @State private var gelistirici = false
@@ -142,9 +159,10 @@ public struct Goruntuleyici: View {
 
                     // Sahne: tablo ışığı + görsel + ayrıntı noktaları
                     ZStack {
+                        // İş 180: incelemede tablonun kendi bulanık ışığı daha belirgin (0.55 yerine 0.85)
                         TabloIsigiGorunumu(
                             url: adresler.isik,
-                            opaklikCarpani: 1.0 - cekOrani
+                            opaklikCarpani: (1.0 - cekOrani) * (etkinInceleme != nil ? 0.85 / 0.55 : 1.0)
                         )
 
                         GoruntuleyiciGorseli(
@@ -168,7 +186,6 @@ public struct Goruntuleyici: View {
                         if let inceleme = etkinInceleme {
                             AyrintiNoktalariKatmani(
                                 kayit: inceleme,
-                                seciliSira: incelemeSira,
                                 tabanBoyutu: tabanBoyutu,
                                 olcek: olcek * CGFloat(1.0 - cekOrani * 0.45),
                                 kayma: kayma
@@ -201,12 +218,15 @@ public struct Goruntuleyici: View {
                     }
                     .gesture(yakinlastirmaJesti(taban: tabanBoyutu, sahne: sahneBoyutu))
                     .simultaneousGesture(kaydirmaJesti(taban: tabanBoyutu, sahne: sahneBoyutu))
+                    .onChange(of: tabanBoyutu, initial: true) { _, yeni in sonTaban = yeni }
+                    .onChange(of: sahneBoyutu, initial: true) { _, yeni in sonSahne = yeni }
 
                     // Üst ve yan yuvarlak düğmeler + alt künye kartı
                     VStack(spacing: 0) {
                         ustCubuk(eser: eser)
                             .padding(.horizontal, 12)
                             .padding(.top, 10)
+                            .sahneCercevesi(Self.sahneAlani, $ustCubukCercevesi)
 
                         Spacer()
 
@@ -216,12 +236,19 @@ public struct Goruntuleyici: View {
                             Spacer()
                         }
 
-                        if !sadeGorunum {
+                        if !sadeGorunum && etkinInceleme == nil {
                             altKart(eser: eser, gorsel: gorsel, taban: tabanBoyutu, sahne: sahneBoyutu)
                         }
                     }
                     .opacity(arayuzOpakligi)
                     .allowsHitTesting(!sadeGorunum && asagiCekme == 0)
+
+                    // İş 180: yazı kartı ve alttaki gezinme (sade görünümde onlar da gizlenir)
+                    if let inceleme = etkinInceleme {
+                        incelemeKatmani(inceleme, eser: eser, gorsel: gorsel, taban: tabanBoyutu, sahne: sahneBoyutu)
+                            .opacity(arayuzOpakligi)
+                            .allowsHitTesting(!sadeGorunum && asagiCekme == 0)
+                    }
 
                     // Hikâye paneli
                     if hikayeAcik, let hikaye = simdikiHikaye {
@@ -244,6 +271,8 @@ public struct Goruntuleyici: View {
                 }
             }
         }
+        // İş 180: kartın ve düğmelerin ölçüsü sahnenin (GeometryReader'ın) koordinatında
+        .coordinateSpace(.named(Self.sahneAlani))
         .preferredColorScheme(.dark)
         .task {
             await verileriYukle()
@@ -279,6 +308,12 @@ public struct Goruntuleyici: View {
             }
 
             Spacer()
+
+            // İş 180: "Bitir" yerine kapat düğmesinin solunda küçült
+            if etkinInceleme != nil {
+                IncelemeKucultDugmesi { incelemeBitir(geriDon: true) }
+                    .padding(.trailing, 2)
+            }
 
             Button {
                 kapat()
@@ -335,34 +370,18 @@ public struct Goruntuleyici: View {
 
     private func altKart(eser: Eser, gorsel: Gorsel?, taban: CGSize, sahne: CGSize) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            if let inceleme = etkinInceleme {
-                AyrintiIncelemePaneli(
-                    kayit: inceleme,
-                    seciliSira: incelemeSira,
-                    onceki: {
-                        noktayaGit(incelemeSira - 1, taban: taban, sahne: sahne, gorsel: gorsel)
-                    },
-                    sonraki: {
-                        noktayaGit(incelemeSira + 1, taban: taban, sahne: sahne, gorsel: gorsel)
-                    },
-                    bitir: {
-                        incelemeBitir(geriDon: true)
-                    }
-                )
-            } else {
-                if !gizli {
-                    kunyeGorunumu(eser: eser, gorsel: gorsel)
-                }
+            if !gizli {
+                kunyeGorunumu(eser: eser, gorsel: gorsel)
+            }
 
-                eylemSatiri(eser: eser, gorsel: gorsel)
+            eylemSatiri(eser: eser, gorsel: gorsel)
 
-                if odakGorunur {
-                    odakSatiri()
-                }
+            if odakGorunur {
+                odakSatiri()
+            }
 
-                if bildirMenuAcik {
-                    bildirMenusu(eser: eser, gorsel: gorsel)
-                }
+            if bildirMenuAcik {
+                bildirMenusu(eser: eser, gorsel: gorsel)
             }
 
             if !mesaj.isEmpty {
@@ -602,10 +621,10 @@ public struct Goruntuleyici: View {
                     kayma = kaymaSinirla(aday, olcek: olcek, taban: taban, sahne: sahne)
                 } else if dy > 0 && abs(dy) > abs(dx) {
                     asagiCekme = dy
-                    kayma = CGSize(width: dx * 0.7, height: dy)
+                    kayma = CGSize(width: dx * 0.7, height: dy + dinlenmeKaymasi.height)
                 } else {
                     asagiCekme = 0
-                    kayma = CGSize(width: dx, height: max(0, dy) * 0.6)
+                    kayma = CGSize(width: dx, height: max(0, dy) * 0.6 + dinlenmeKaymasi.height)
                 }
             }
             .onEnded { deger in
@@ -627,8 +646,8 @@ public struct Goruntuleyici: View {
                 } else {
                     withAnimation(.easeOut(duration: 0.2)) {
                         asagiCekme = 0
-                        kayma = .zero
-                        sonKayma = .zero
+                        kayma = dinlenmeKaymasi
+                        sonKayma = kayma
                     }
                 }
             }
@@ -689,22 +708,38 @@ public struct Goruntuleyici: View {
         mesaj = ""
         etkinInceleme = kayit
         incelemeSira = -1
-        sifirla(animasyonlu: true)
+        kartKapali = false
+        genelBakisTy = 0
+        genelBakisaGec()
     }
 
     private func incelemeBitir(geriDon: Bool) {
+        kameraGorevi?.cancel()
+        kameraGorevi = nil
         etkinInceleme = nil
         incelemeSira = -1
-        if geriDon && olcek > 1.01 {
-            sifirla(animasyonlu: true)
+        kartKapali = false
+        genelBakisTy = 0
+        // site: `if (geri && (olcek > 1 || ty))`: genel bakışın kayması da geri alınır
+        if geriDon && (olcek > 1.01 || kayma != .zero) {
+            sifirla(animasyonlu: !hareketAz)
         }
     }
 
     private func noktayaGit(_ hedefSira: Int, taban: CGSize, sahne: CGSize, gorsel: Gorsel?) {
         guard let inceleme = etkinInceleme,
               hedefSira >= 0, hedefSira < inceleme.noktalar.count else { return }
-        let nokta = inceleme.noktalar[hedefSira]
         incelemeSira = hedefSira
+        if !hareketAz { kartAdimi += 1 }
+        // Kamera kartın yeni boyuna göre kurulur: kartın yeni yazısı yerleşsin diye bir kare beklenir
+        kamerayiKur { noktaKamerasi(hedefSira, taban: taban, sahne: sahne, gorsel: gorsel) }
+    }
+
+    /// İş 180: kamera ayrıntıyı kartın ve düğmelerin dışındaki boşluğa sığdırır (`noktaOdagi(..., { alan: kartPayi() })`)
+    private func noktaKamerasi(_ hedefSira: Int, taban: CGSize, sahne: CGSize, gorsel: Gorsel?) {
+        guard let inceleme = etkinInceleme, hedefSira == incelemeSira,
+              hedefSira >= 0, hedefSira < inceleme.noktalar.count else { return }
+        let nokta = inceleme.noktalar[hedefSira]
         let devasaVar = !(gorsel.map { etkinBaglam.gorselAdresleri.devasaUrl($0) } ?? "").isEmpty
         let kaynakBoyut = devasaVar ? max(dogalUzunKenar, 4096.0) : dogalUzunKenar
         let enCok = AyrintiKurallari.yakinlasmaSiniri(
@@ -717,15 +752,141 @@ public struct Goruntuleyici: View {
             nokta,
             taban: (Double(taban.width), Double(taban.height)),
             sahne: (Double(sahne.width), Double(sahne.height)),
-            enCok: enCok
+            enCok: enCok,
+            alan: kartPayi(sahne: sahne)
         ) {
-            withAnimation(.easeInOut(duration: 0.56)) {
+            // Hareket azaltılmışsa kamera anında geçer (`hareketAz() ? 0 : 560`)
+            withAnimation(hareketAz ? nil : IncelemeTema.kameraEgri) {
                 olcek = CGFloat(odak.olcek)
                 sonOlcek = CGFloat(odak.olcek)
                 kayma = CGSize(width: odak.tx, height: odak.ty)
                 sonKayma = kayma
                 asagiCekme = 0
             }
+        }
+    }
+
+    /// İş 180 `genelBakis`: tablo ölçek 1'de, alttaki kartın üstünde kalan boşluğa doğru kayar (sahneden çıkmadan)
+    private func genelBakisaGec() {
+        kamerayiKur {
+            guard etkinInceleme != nil, incelemeSira < 0 else { return }
+            if !hareketAz { kartAdimi += 1 }
+            let ty = AyrintiKurallari.genelBakisKaymasi(
+                alan: kartPayi(sahne: sonSahne),
+                sahneYuksekligi: Double(sonSahne.height),
+                resimYuksekligi: Double(sonTaban.height)
+            )
+            genelBakisTy = CGFloat(ty)
+            withAnimation(hareketAz ? nil : .easeOut(duration: 0.25)) {
+                olcek = 1.0
+                sonOlcek = 1.0
+                kayma = CGSize(width: 0, height: genelBakisTy)
+                sonKayma = kayma
+                asagiCekme = 0
+            }
+        }
+    }
+
+    /// Kartın ve düğmelerin ölçüsü bir sonraki çizimde belli olur; kamera ondan sonra kurulur. Yeni istek eskisini iptal eder.
+    private func kamerayiKur(_ islem: @escaping @MainActor () -> Void) {
+        kameraGorevi?.cancel()
+        kameraGorevi = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 50_000_000)
+            guard !Task.isCancelled else { return }
+            islem()
+        }
+    }
+
+    /// Başlığa dokununca yazı kapanır/açılır; açık ayrıntıda kamera yeni boşluğa göre yeniden yerleşir
+    private func kartiKatla() {
+        kartKapali.toggle()
+        if incelemeSira >= 0 {
+            noktayaGit(incelemeSira, taban: sonTaban, sahne: sonSahne, gorsel: simdikiGorsel)
+        } else {
+            genelBakisaGec()
+        }
+    }
+
+    // MARK: - İş 180: yazı kartı katmanı
+
+    static let sahneAlani = "gorSahne"
+
+    /// Site `hareketAz()`: sistemin "Hareketi azalt"ı ya da sitenin hareket ayarı
+    private var hareketAz: Bool { azHareket || TemaDeposu.shared.ayar.hareketAzaltilmis }
+
+    private var seciliNokta: AyrintiNoktasi? {
+        guard let k = etkinInceleme, incelemeSira >= 0, incelemeSira < k.noktalar.count else { return nil }
+        return k.noktalar[incelemeSira]
+    }
+
+    /// Sürükleme bırakılınca tablonun döndüğü yer: genel bakışta kartın üstündeki boşluk, yoksa orta
+    private var dinlenmeKaymasi: CGSize {
+        etkinInceleme != nil && incelemeSira < 0 ? CGSize(width: 0, height: genelBakisTy) : .zero
+    }
+
+    /// `kartPayi()`: kartın ve düğmelerin sahnede kapladığı pay (+12 ara). Kart üstteyse üstte kart, altta düğmeler;
+    /// alttaysa üstte kapat düğmesi, altta kart ile düğmelerin üstte olanı.
+    private func kartPayi(sahne: CGSize) -> IncelemeAlani {
+        let ara: CGFloat = 12
+        let h = sahne.height
+        let ust = max(0, ustCubukCercevesi.maxY)
+        let dugmeUst = dugmeCercevesi.height > 0 ? dugmeCercevesi.minY : h
+        let kartVar = kartCercevesi.height > 0
+        if AyrintiKurallari.kartUstte(seciliNokta) {
+            return IncelemeAlani(
+                ust: Double(max(ust, kartVar ? kartCercevesi.maxY : 0) + ara),
+                alt: Double(max(0, h - dugmeUst) + ara)
+            )
+        }
+        return IncelemeAlani(
+            ust: Double(ust + ara),
+            alt: Double(max(0, h - min(kartVar ? kartCercevesi.minY : h, dugmeUst)) + ara)
+        )
+    }
+
+    /// Kart tek örnek: ayrıntı alttaysa üste (`.yukari`: üst çubuğun 12 altı), değilse düğmelerin 14 üstüne yaslanır.
+    /// Her adımda 0.45 s bekleyip 14 px aşağıdan süzülerek belirir.
+    @ViewBuilder
+    private func incelemeKatmani(_ kayit: AyrintiKaydi, eser: Eser, gorsel: Gorsel?, taban: CGSize, sahne: CGSize) -> some View {
+        let ustte = AyrintiKurallari.kartUstte(seciliNokta)
+        ZStack(alignment: ustte ? .top : .bottom) {
+            Color.clear
+
+            IncelemeKarti(
+                kayit: kayit,
+                sira: incelemeSira,
+                eserAdi: eser.gorunenAd.isEmpty ? kayit.baslik : eser.gorunenAd,
+                kapali: kartKapali,
+                katla: kartiKatla
+            )
+            .keyframeAnimator(initialValue: KartGelisi(), trigger: kartAdimi) { icerik, d in
+                icerik.opacity(d.opaklik).offset(y: d.y)
+            } keyframes: { _ in
+                KeyframeTrack(\.opaklik) {
+                    MoveKeyframe(0)
+                    LinearKeyframe(0, duration: 0.45)
+                    CubicKeyframe(1, duration: 0.9)
+                }
+                KeyframeTrack(\.y) {
+                    MoveKeyframe(14)
+                    LinearKeyframe(14, duration: 0.45)
+                    CubicKeyframe(0, duration: 0.9)
+                }
+            }
+            .sahneCercevesi(Self.sahneAlani, $kartCercevesi)
+            .frame(maxWidth: 560)
+            .padding(.top, ustte ? 66 : 0)
+            .padding(.bottom, ustte ? 0 : 60 + 14 + 22)
+        }
+        .padding(.horizontal, 16)
+        .overlay(alignment: .bottom) {
+            IncelemeDugmeleri(kayit: kayit, sira: incelemeSira, hareketAz: hareketAz) { k in
+                noktayaGit(k, taban: taban, sahne: sahne, gorsel: gorsel)
+            }
+            .sahneCercevesi(Self.sahneAlani, $dugmeCercevesi)
+            .frame(maxWidth: 560)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 22)
         }
     }
 
@@ -951,4 +1112,10 @@ private extension Ilerleme {
     init(hamBos: Bool) {
         try! self.init(json: .nesne(.bos))
     }
+}
+
+/// `.gor-inc-kart.gel` (İş 180): kartın her adımda süzülerek belirmesi
+private struct KartGelisi {
+    var opaklik: Double = 1
+    var y: CGFloat = 0
 }
