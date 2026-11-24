@@ -225,6 +225,11 @@ private struct YolculukHaritaEkrani: View {
                 }
                 .coordinateSpace(name: "harita")
                 .scrollIndicators(.hidden)
+                // Z3n (telefon: "haritada aşağıda boşluk var"): harita sitedeki gibi yüzen sekme çubuğunun arkasına
+                // kadar iner. Kabuğun alt payı (çubuk yüksekliği) kaydırma alanını kısaltıyor, altta zemin rengi bir
+                // şerit kalıyordu. Pay içerik kenar boşluğu olarak kalır: haritanın sonu yine çubuğun üstüne kayar.
+                .contentMargins(.bottom, g.safeAreaInsets.bottom, for: .scrollContent)
+                .ignoresSafeArea(.container, edges: .bottom)
                 .onPreferenceChange(DonemYerleri.self) { yerler in
                     // js/ekranlar/harita.js konumaKaydir, .harita-durak.simdiki (@ a866b86).
                     // Hedefi dönemler gerçek yerlerini bildirdiğinde bir kez yerleştir.
