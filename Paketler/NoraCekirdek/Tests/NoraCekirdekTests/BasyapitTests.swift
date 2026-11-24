@@ -208,3 +208,50 @@ final class BasyapitTests: XCTestCase {
         XCTAssertEqual(MetinBloklari.oku("Selve&#39;dir &amp; &quot;x&quot;"), [.paragraf([.init(metin: "Selve'dir & \"x\"")])])
     }
 }
+
+/// Z3q: başyapıt kaydı olmayan karşılaştırma önerisinin katalogdaki eseri (kesin eşleşme)
+final class KatalogEseriTests: XCTestCase {
+    private func eser(_ a: String, _ baslik: String, ad: String? = nil, qid: String? = nil, gorselli: Bool = true) -> Eser {
+        var e = Eser(anahtar: a, kaynak: "", kaynaklar: [], baslik: baslik, tarih: "", yil: nil, muze: "", kursKonu: nil,
+                     qid: qid, gorseller: gorselli ? [Gorsel(k: "commons", d: "\(a).jpg")] : [], pekistirme: true, sl: 0)
+        e.ad = ad
+        return e
+    }
+    private let sanatcilar: [(id: String, adlar: [String])] = [
+        ("caravaggio", ["Caravaggio", "Michelangelo Merisi da Caravaggio"]),
+        ("tiziano", ["Tiziano", "Titian"]),
+        ("jan-van-eyck", ["Jan van Eyck"]), ("hubert-van-eyck", ["Hubert van Eyck"]),
+    ]
+    private func k(_ sanatci: String, _ eser: String) -> BasyapitSayfasi.Karsilastirma {
+        .init(eser: eser, sanatci: sanatci, gerekce: "x", anahtar: nil)
+    }
+
+    func testBreraEmmaus() {
+        let l = ["caravaggio": [eser("Q318947", "Supper at Emmaus", qid: "Q318947"), eser("Q1", "Supper at Emmaus"),
+                                eser("Q2", "Boy Bitten by a Lizard", ad: "Kertenkele Isırmış Çocuk")]]
+        // açık olan Londra versiyonu sayılmaz; Brera kalır
+        XCTAssertEqual(BasyapitSayfasi.katalogEseri(k("Caravaggio", "Supper at Emmaus (Brera versiyonu)"), sanatcilar: sanatcilar,
+                                                    eserler: l, haric: ["Q318947"])?.anahtar, "Q1")
+        // Türkçe ad da tutar; büyük/küçük harf ve işaretler önemsiz
+        XCTAssertEqual(BasyapitSayfasi.katalogEseri(k("Caravaggio", "Kertenkele ısırmış çocuk"), sanatcilar: sanatcilar,
+                                                    eserler: l, haric: [])?.anahtar, "Q2")
+    }
+
+    func testBelirsizseYok() {
+        let l = ["caravaggio": [eser("Q1", "Supper at Emmaus"), eser("Q2", "Supper at Emmaus")],
+                 "jan-van-eyck": [eser("Q3", "Ghent Altarpiece")]]
+        // iki aynı adlı eser: hangisi olduğu bilinmez
+        XCTAssertNil(BasyapitSayfasi.katalogEseri(k("Caravaggio", "Supper at Emmaus"), sanatcilar: sanatcilar, eserler: l, haric: []))
+        // iki "Eyck": sanatçı belirsiz
+        XCTAssertNil(BasyapitSayfasi.katalogEseri(k("van Eyck", "Ghent Altarpiece"), sanatcilar: sanatcilar, eserler: l, haric: []))
+        // yalnız birebir ad: içermek yetmez
+        XCTAssertNil(BasyapitSayfasi.katalogEseri(k("Caravaggio", "Supper"), sanatcilar: sanatcilar, eserler: l, haric: []))
+    }
+
+    func testSanatciAdiVeGorsel() {
+        let l = ["tiziano": [eser("Q5", "La Bella"), eser("Q6", "Danae", gorselli: false)]]
+        XCTAssertEqual(BasyapitSayfasi.katalogEseri(k("Titian", "La Bella"), sanatcilar: sanatcilar, eserler: l, haric: [])?.anahtar, "Q5")
+        XCTAssertNil(BasyapitSayfasi.katalogEseri(k("Titian", "Danae"), sanatcilar: sanatcilar, eserler: l, haric: []))
+        XCTAssertNil(BasyapitSayfasi.katalogEseri(k("Bilinmeyen Ressam", "La Bella"), sanatcilar: sanatcilar, eserler: l, haric: []))
+    }
+}
