@@ -72,7 +72,7 @@ enum TemaHesabi {
             let zemin = TemaRenkleri.zeminHex(ad, gunduz: g)
             let vurgu = palet.flatMap { ResimRengi.renkTemasi($0, zemin: zemin) }
             TemaDeposu.shared.uygula(TemaRenkleri.hesapla(ad, gunduz: g, vurgu: vurgu), ayar: ayar,
-                                     zemin: RGBA(css: zemin) ?? TemaRenkleri.sabit(ad).zemin)
+                                     zemin: RGBA(css: zemin) ?? TemaRenkleri.sabit(ad).zemin, gunduz: g)
         }
         uygula(gunduzPaleti(sakliGunduz?.palet), sakliVurgu?.palet)
 

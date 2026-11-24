@@ -29,30 +29,11 @@ struct CalisAnaGorunumu: View {
         let r = tema.renkler
         if let katalog = model.katalog, let il = model.ilerleme {
             let acikSanatcilar = il.acikSanatcilar(katalog.sanatcilar)
-            let durumlar = Kilit.akimDurumlari(katalog.akimlar, katalog.sanatcilar, islenen: il.islenenKume)
-            let sirali = durumlar.filter { CalisDersKurallari.dersBul(kaynak: model.dersKaynagi, akim: $0.ad) != nil }
-            let acikDersler = sirali.filter(\.acik).compactMap {
-                CalisDersKurallari.dersBilgisi(
-                    kaynak: model.dersKaynagi,
-                    yuruyus: model.yuruyus,
-                    katalog: katalog,
-                    ilerleme: il,
-                    akim: $0.ad
-                )
-            }
-            let kilitliDersler = sirali.filter { !$0.acik }
-            let bugunkuAkim = CalisDersKurallari.bugununDersi(
-                acikAkimlar: acikDersler.map(\.akim),
-                ilerleme: il,
-                yolculukAkimi: CalisDersKurallari.yolculukAkimi(
-                    katalog: katalog,
-                    ilerleme: il,
-                    kaynak: model.dersKaynagi,
-                    yuruyus: model.yuruyus
-                ),
-                adimlar: { ad in acikDersler.first(where: { $0.akim == ad })?.adimlar ?? [.gor, .ogren, .ayirt] }
-            )
-            let bugunDers = acikDersler.first(where: { $0.akim == bugunkuAkim })
+            let dersler = Self.dersler(model, katalog: katalog, il: il)
+            let acikDersler = dersler.acik
+            let kilitliDersler = dersler.kilitli
+            let bugunDers = dersler.bugun
+            let bugunkuAkim = dersler.bugunkuAkim
 
             ZStack(alignment: .top) {
                 ScrollViewReader { kaydir in
@@ -160,6 +141,37 @@ struct CalisAnaGorunumu: View {
             .padding(BenOlcu.yan)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    /// Açık ve kilitli dersler, bugünün dersi (`dersMenusu`). Z3m: Çalış'ın rengi bugünün dersinin kapağından
+    /// (`kapaklariDoldur` → `ekranRengi(büyük kapak)`); CalisSekmesi bunu ekranın dışından okur.
+    static func dersler(_ model: PekistirmeModeli, katalog: SiteKatalogu, il: Ilerleme)
+        -> (acik: [DersBilgisi], kilitli: [AkimDurumu], bugun: DersBilgisi?, bugunkuAkim: String?) {
+        let durumlar = Kilit.akimDurumlari(katalog.akimlar, katalog.sanatcilar, islenen: il.islenenKume)
+        let sirali = durumlar.filter { CalisDersKurallari.dersBul(kaynak: model.dersKaynagi, akim: $0.ad) != nil }
+        let acikDersler = sirali.filter(\.acik).compactMap {
+            CalisDersKurallari.dersBilgisi(
+                kaynak: model.dersKaynagi,
+                yuruyus: model.yuruyus,
+                katalog: katalog,
+                ilerleme: il,
+                akim: $0.ad
+            )
+        }
+        let kilitliDersler = sirali.filter { !$0.acik }
+        let bugunkuAkim = CalisDersKurallari.bugununDersi(
+            acikAkimlar: acikDersler.map(\.akim),
+            ilerleme: il,
+            yolculukAkimi: CalisDersKurallari.yolculukAkimi(
+                katalog: katalog,
+                ilerleme: il,
+                kaynak: model.dersKaynagi,
+                yuruyus: model.yuruyus
+            ),
+            adimlar: { ad in acikDersler.first(where: { $0.akim == ad })?.adimlar ?? [.gor, .ogren, .ayirt] }
+        )
+        let bugunDers = acikDersler.first(where: { $0.akim == bugunkuAkim })
+        return (acikDersler, kilitliDersler, bugunDers, bugunkuAkim)
     }
 
     // MARK: Başlık (`.ders-bas` ve `.calis-cubuk`)

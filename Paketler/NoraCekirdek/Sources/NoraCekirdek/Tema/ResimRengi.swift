@@ -125,6 +125,14 @@ public enum ResimRengi {
         return secilen.map { PaletRengi(renk: hexe($0.c.map(jsYuvarla)), pay: $0.w / t) }
     }
 
+    /// Z3m: sitenin `eserPaleti(e, yedekRenk)`'i (js/ekranlar/ortak.js @ cca62eb): görselden hesaplanan palet; görsel
+    /// açılmadıysa (ya da palet boşsa) yedek renk tek renkli palet olur, yedek yoksa nil (temanın nötr vurgusu).
+    public static func eserPaleti(_ hesaplanan: [PaletRengi]?, yedek: String?) -> [PaletRengi]? {
+        if let p = hesaplanan, !p.isEmpty { return p }
+        guard let yedek, !yedek.isEmpty else { return nil }
+        return [PaletRengi(renk: yedek, pay: 1)]
+    }
+
     /// RGBA piksellerinden (0…255, satır satır) median-cut ile en fazla `adet` renk; büyükten küçüğe
     public static func paletHesapla(_ veri: [UInt8], adet: Int = 6) -> [PaletRengi] {
         var px: [[Int]] = []

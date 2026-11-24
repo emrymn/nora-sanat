@@ -444,7 +444,7 @@ struct YakinOkuma: View {
                         if let e2, eser != nil {
                             Button { yanYanaAc(x) } label: {
                                 VStack(alignment: .leading, spacing: 12) {
-                                    resim.gorsel(e2, 900).frame(width: 280, height: 150)
+                                    resim.odakli(e2, 900).frame(width: 280, height: 150)
                                         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                                     yazi
                                 }
@@ -506,7 +506,7 @@ struct YakinOkuma: View {
                 Button { eylem.git(.okuma(sonraki.anahtar)) } label: {
                     ZStack(alignment: .bottomLeading) {
                         Color(r.yuzey)
-                        if let e2 { resim.gorsel(e2, 900) }
+                        if let e2 { resim.odakli(e2, 900) }
                         LinearGradient(colors: [.black.opacity(0), .black.opacity(0.78)], startPoint: .top, endPoint: .bottom)
                             .frame(height: 232 * 0.6).frame(maxHeight: .infinity, alignment: .bottom)
                         VStack(alignment: .leading, spacing: 2) {

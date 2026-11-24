@@ -40,7 +40,8 @@ struct SanatciKunyesi: View {
                             GaleriIkon(simge: .ses, boyut: 18, kalinlik: 1.7)
                             Text("Dinle").font(Yazi.sans(13, agirlik: 600, stil: .footnote))
                         }
-                        .foregroundStyle(Color(GaleriRenk.karis(r.vurgu, r.murekkep, 0.5)))
+                        // Z3m: `.isim-ek .dinle { color: var(--vurgu-acik) }` (ekranın eserinin rengi)
+                        .foregroundStyle(Color(r.vurguAcik))
                         .padding(.leading, 11).padding(.trailing, 14)
                         .frame(height: 44)
                         .overlay(Capsule().strokeBorder(Color(RGBA(css: "#c9a24a")!, 0.55), lineWidth: 1))
