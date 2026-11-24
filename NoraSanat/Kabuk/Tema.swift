@@ -19,6 +19,15 @@ final class TemaDeposu {
     private(set) var ayar = TemaAyari()
     /// Sitenin `theme-color`'ı (`temaZemini()`): pencerenin zemini ve durum çubuğu
     private(set) var siteRengi = UIColor(TemaRenkleri.gece.zemin)
+    /// Z3m: renkli Gündüz paleti (ekranın kendi vurgusu `EkranRengi` bununla aynı temayı yeniden hesaplar)
+    private(set) var gunduz: GunduzPaleti?
+
+    init() {}
+
+    /// Z3m: bir ekranın kendi rengi (`EkranRengi`): temanın aynısı, vurgu o ekranın eserinden
+    init(renkler: TemaRenkleri, ayar: TemaAyari, siteRengi: UIColor, gunduz: GunduzPaleti?) {
+        self.renkler = renkler; self.ayar = ayar; self.siteRengi = siteRengi; self.gunduz = gunduz
+    }
 
     /// Durum çubuğu ve sistem öğeleri koyu zemine göre mi
     var koyu: Bool {
@@ -28,8 +37,9 @@ final class TemaDeposu {
     }
 
     /// `TemaHesabi`'nın sonucu
-    func uygula(_ r: TemaRenkleri, ayar a: TemaAyari, zemin: RGBA) {
+    func uygula(_ r: TemaRenkleri, ayar a: TemaAyari, zemin: RGBA, gunduz g: GunduzPaleti? = nil) {
         if a != ayar { ayar = a }
+        if g != gunduz { gunduz = g }
         if r != renkler { renkler = r }
         let yeni = UIColor(zemin)
         if !yeni.isEqual(siteRengi) { siteRengi = yeni }

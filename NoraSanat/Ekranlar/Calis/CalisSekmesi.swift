@@ -32,6 +32,22 @@ struct CalisSekmesi: View {
     @State private var onayKipi: PekistirmeKipi?
     @State private var onaySeviyesi: Int?
 
+    /// Z3m: bugünün dersinin akımı (Çalış girişindeki büyük kapak)
+    private var bugununDersi: String? {
+        guard let k = model.katalog, let il = model.ilerleme, !il.acikSanatcilar(k.sanatcilar).isEmpty else { return nil }
+        return CalisAnaGorunumu.dersler(model, katalog: k, il: il).bugun?.akim
+    }
+
+    /// Z3m: `kapaklariDoldur`: `if (e && el === buyukKapak) ekranRengi(e, akimRenk(ders.akim))`; kapak yoksa renk değişmez
+    private func dersRengi(_ akim: String?) -> (url: URL?, yedek: String?) {
+        guard let akim, let k = model.katalog, let il = model.ilerleme,
+              let b = CalisDersKurallari.dersBilgisi(kaynak: model.dersKaynagi, yuruyus: model.yuruyus, katalog: k,
+                                                     ilerleme: il, akim: akim),
+              let e = CalisDersKurallari.dersKapakEseri(b, katalog: k, kotuler: il.kotuGorseller)
+        else { return (nil, nil) }
+        return (model.gorsel(e, 400), k.akimRenk[akim].flatMap { $0.isEmpty ? nil : $0 } ?? "#8A827A")
+    }
+
     enum AltSayfa: Equatable {
         case ana
         case donem(salonlaraIn: Bool)
@@ -64,6 +80,8 @@ struct CalisSekmesi: View {
                         donemlereGit: { salonlaraIn in gecis { altSayfa = .donem(salonlaraIn: salonlaraIn) } },
                         adreseGit: { adreseGit($0) }
                     )
+                    // Z3m: Çalış'ın girişi bugünün dersinin kapağının rengini alır (ders.js kapaklariDoldur)
+                    .ekranRengi(dersRengi(bugununDersi))
                     .transition(.move(edge: .leading))
                 case .donem(let salonlaraIn):
                     DonemTurlariGorunumu(
@@ -83,6 +101,8 @@ struct CalisSekmesi: View {
                         adreseGit: { adreseGit($0) },
                         adimaGit: { adim in gecis { altSayfa = .adim(akim, adim) } }
                     )
+                    // Z3m: ders sayfası kapağının rengi (ders.js kapaklariDoldur)
+                    .ekranRengi(dersRengi(akim))
                     .transition(.move(edge: .trailing))
                     .zIndex(1)
                 case .adim(let akim, let adim):
@@ -97,6 +117,8 @@ struct CalisSekmesi: View {
                         turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) }
                     )
                     .id("\(akim)|\(adim.rawValue)")
+                    // Z3m: sitede adımlar renk yazmaz; ders sayfasından gelinen kapak rengi sürer
+                    .ekranRengi(dersRengi(akim))
                     .transition(.move(edge: .trailing))
                     .zIndex(2)
                 }

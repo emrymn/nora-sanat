@@ -174,6 +174,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
 | Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | PR açık |
+| Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | sürüyor (Claude, 2026-11-24) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1029,6 +1030,25 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI: `8-yerli-sekme` ile `8b-site-cubuk` alttan kesilip üst üste kondu; simgeler, yerleşim, hap, Çalış rozeti ve dişli dil birebir. `8c-hizli-ayar` sitenin üslubunda.
 - 1–10 ve Ben görüntüleri eskisi gibi. Telefonda hiçbir sekme yerli değil, uygulama aynı.
 - Hızlı ayar yaprağı kapsam dışı değil: sitenin çubuğundaki dişli dil onu açıyor.
+
+### Z3m · Ekran rengi ve odaklı kırpma (Claude)
+**Devir notu:** Claude, 2026-11-24 · dal `claude/Z3m-ekran-rengi`. **Z3l'in (#44) üstüne kurulu** (`TemaHesabi.pikseller` orada dışa açıldı); #44 birleşince main dala alınır, PR farkı yalnız Z3m'ye iner.
+- **Kaynak:** sanat-atlasi `cca62eb`: `js/ekranlar/ortak.js` (`ekranRengi`, `renkSabitle`, `gununRengi`, `eserPaleti`, `renkleriYaz`, `odakliGorsel`, `odagaKaydir`, `kucukGorsel { odak }`, `odaklariYukle`), `js/renk.js` (`paletGetir`, `renkTemasi`), `js/gorsel.js` (`paletUrl`, `gorselOdakNoktasi`, `gorselOdagi`), çağıranlar: `js/ekranlar/gozat.js` (`sanatciSayfasi`, `tumEserler`, `konuSayfasi`, `karsilastirSayfasi`, Başyapıtlar kartı ve sahnesi), `js/ekranlar/basyapit.js` (`basyapitSayfasi`, sıradaki ve kıyas görselleri), `js/ekranlar/ders.js` (`kapaklariDoldur`), `js/ekranlar/pekistir.js` (`kartCiz`, ters soru), `js/ekranlar/soruTurlari.js`, `js/ekranlar/akim.js` (sahne).
+  K7: `git -C /tmp/sa log cca62eb..HEAD -- js/ekranlar/ortak.js js/renk.js js/gorsel.js js/ekranlar/gozat.js js/ekranlar/basyapit.js js/ekranlar/ders.js js/ekranlar/pekistir.js js/ekranlar/soruTurlari.js`
+- **Ekran rengi** (`NoraSanat/Kabuk/EkranRengi.swift`): `.ekranRengi(url:yedek:notr:)` ortamdaki `TemaDeposu`'nun yerine aynı temayı, vurgusu o eserin paletinden bir kopya koyar (`TemaRenkleri.ekran`, çekirdek, testli). Ekranın kendi gövdesi de `tema.renkler` okuduğu için değiştirici ekranın **dışında**, kurulduğu yerde verilir. Palet gelene kadar önceki renk durur (sitede de); görsel açılmazsa yedek (`ResimRengi.eserPaleti`), yedek yoksa nötr; eser de yedek de yoksa ortamın rengi. Geçiş 0,45 sn, hareket azaltılmışsa (ayar ya da sistem) anında. Paletler bellekte (`EkranPaletleri`).
+  - Galeri (`GaleriSekmesi.hedefSayfa`): sanatçı, tüm eserler, karşılaştırma (ilk eser, yedek akım rengi), konu (kapak, yedek `#8A827A`), yakın okuma (eser, yedek akım rengi).
+  - Çalış (`CalisSekmesi`): giriş bugünün dersinin kapağından (`CalisAnaGorunumu.dersler`, gövdedeki hesap buraya çıkarıldı), ders sayfası ve adımları o dersin kapağından (sitede adımlar renk yazmaz, ders sayfasının rengi sürer). Kapak yoksa renk değişmez.
+  - Pekiştirme ve soru turu kartları (`PekistirmeEkrani`): sorulan eser, yedek yok; ters soruda cevaptan önce nötr. Değiştirici kartın `.id`'sinin dışında: kart değişince önceki kartın rengi yenisi gelene kadar durur.
+  - Sekme ana ekranları, Pekiştir menüsü (dönem turları), tanışma ve öbürleri günün rengini (`TemaHesabi`) taşır.
+- **Odaklı kırpma:** `OdakliKirpim.yerlesim` (çekirdek, testli): `object-fit: cover; object-position: x% y%` (taşan pay × yüzde; odak yoksa ortadan). `OdakVerisi.odak(eser, adresler:, kotuler:)`: gösterilen görselin yerel adıyla odak. `UzakGorsel(odak:)` (isteğe bağlı), `GorselOdaklari` (odak dosyaları bir kez; cihazdaki elle odaklar her okumada), `OdakliGorsel`; Galeri'de `GaleriResim.odakli(e, boy)`: Başyapıtlar kartları ve öne çıkan sahne, yakın okumada sıradaki ve kıyas görselleri, akım sahnesi.
+- **Ortak dosyalarda küçük değişiklik:** `Tema.swift` (`TemaDeposu.gunduz`, iki `init`, `uygula(gunduz:)`), `TemaHesabi.swift` (`gunduz: g` geçiyor), `Gorsel.swift` (`UzakGorsel.odak`).
+- **Bilinen farklar / kalan:**
+  - Sitede `--vurgu` belgenin kökünde değişir, sekme çubuğu da dahil; uygulamada yalnız ekranın altı (sekme çubuğu vurgu kullanmıyor, fark görünmez). Sitenin Gündüz'deki `--golge-rgb`'si (`golgeyiYaz`) taşınmadı (uygulamada karşılığı yok).
+  - Palet adresi 400'lük kopya (`gorselAdresi(e, 400)`); sitenin `paletUrl`'si yerel kopyası olmayan Commons görselinde `commonsKucuk(PALET_GENISLIGI)` kullanır. 64 piksele küçültüldüğü için palet aynı ya da çok yakın.
+  - Paletler cihazda saklanmıyor (sitede IndexedDB); uygulama açıldıktan sonra her eser bir kez hesaplanır.
+  - Odaklı kırpma Yolculuk'taki Zaman kartlarında (`gozat.js` zaman fonu) ve Çalış'taki ders/salon kapaklarında yok (o dosyalar bu işin dışında / başka oturumda). Yakın okumanın kapağı sitede de kırpılmaz.
+- **CI:** (doldurulacak)
+
 ---
 
 ## Yeni özellikler (Y): sitede olmayan, iPhone'a özgü

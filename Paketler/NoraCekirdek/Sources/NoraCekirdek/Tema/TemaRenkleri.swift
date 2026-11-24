@@ -193,6 +193,14 @@ public struct TemaRenkleri: Hashable, Sendable {
         return TemaRenkleri(degiskenler: d, yedek: sabit(tema)) ?? sabit(tema)
     }
 
+    /// Z3m: sitenin `renkleriYaz(palet)`'ı (js/ekranlar/ortak.js @ cca62eb): bir ekranın renkleri, vurgu o ekranın
+    /// eserinin paletinden (`renkTemasi(palet, temaZemini())`); palet nil ise temanın nötr vurgusu (değişkenler silinir).
+    public static func ekran(_ tema: TemaAdi, gunduz: GunduzPaleti?, palet: [ResimRengi.PaletRengi]?) -> TemaRenkleri {
+        let g = tema == .gunduz ? gunduz : nil
+        let vurgu = palet.flatMap { ResimRengi.renkTemasi($0, zemin: zeminHex(tema, gunduz: g)) }
+        return hesapla(tema, gunduz: g, vurgu: vurgu)
+    }
+
     /// Sitenin `temaZemini()`'i: vurgunun kontrast hesabı ve pencerenin rengi (`theme-color`)
     public static func zeminHex(_ tema: TemaAdi, gunduz: GunduzPaleti?) -> String {
         if tema == .gunduz, let gunduz { return gunduz.bg }

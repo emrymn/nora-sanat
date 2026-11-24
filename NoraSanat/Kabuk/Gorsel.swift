@@ -16,6 +16,9 @@ struct UzakGorsel: View {
     var icerik: ContentMode = .fill
     /// Yüklenemezse (ör. 404) denenecek ikinci adres (`katalog.gorsel.yedek`)
     var yedek: URL? = nil
+    /// Z3m: kırpılan (`.fill`) görselde odak noktası ([x, y] yüzde; sitenin `object-position`'ı, `odakliGorsel`). nil
+    /// ise ortadan.
+    var odak: [Double]? = nil
 
     @Environment(\.displayScale) private var olcek
     @Environment(TemaDeposu.self) private var tema
@@ -27,11 +30,22 @@ struct UzakGorsel: View {
             ZStack {
                 Color(tema.renkler.yuzey)
                 if let resim {
-                    Image(uiImage: resim)
-                        .resizable()
-                        .aspectRatio(contentMode: icerik)
-                        .frame(width: g.size.width, height: g.size.height)
-                        .transition(.opacity)
+                    if icerik == .fill, odak != nil,
+                       let y = OdakliKirpim.yerlesim(dogal: (Double(resim.size.width), Double(resim.size.height)),
+                                                     kutu: (Double(g.size.width), Double(g.size.height)), odak: odak) {
+                        Image(uiImage: resim)
+                            .resizable()
+                            .frame(width: y.w, height: y.h)
+                            .offset(x: y.x, y: y.y)
+                            .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
+                            .transition(.opacity)
+                    } else {
+                        Image(uiImage: resim)
+                            .resizable()
+                            .aspectRatio(contentMode: icerik)
+                            .frame(width: g.size.width, height: g.size.height)
+                            .transition(.opacity)
+                    }
                 }
             }
             .task(id: "\(url?.absoluteString ?? "")|\(piksel)") {
