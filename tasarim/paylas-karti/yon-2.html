@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="tr" data-tema="gece">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Paylaşılabilir Eser Kartı · Yön 2 — Bugün perdesi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Archivo:wght@400;500;600;700&display=swap"
+    />
+    <style>
+      /* =====================================================================
+         Sanat Atlası — Tema değişkenleri (TemaRenkleri.swift & css/app.css)
+         ===================================================================== */
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --border: #2e2b28;
+        --ink: #ebe5da;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --ink-soluk: #645e57;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --tab-bg: rgba(24, 22, 20, 0.8);
+        --overlay-btn: rgba(18, 17, 16, 0.6);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.036;
+        --hale-karisim: normal;
+        --hale-2: rgba(184, 142, 62, 0.24);
+        --hale-2-orta: rgba(184, 142, 62, 0.07);
+        --cam-zemin: rgba(24, 22, 20, 0.68);
+        --cam-kenar: rgba(235, 229, 218, 0.14);
+        --cam-golge: 0 28px 64px rgba(0, 0, 0, 0.42);
+        --ust-perde: rgba(18, 17, 16, 0.44);
+        --sayfa-zemin: #0c0b0a;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --border: #d6d0c6;
+        --golge-rgb: 20, 17, 14;
+        --ink: #1f1b17;
+        --ink-2: #4c463f;
+        --ink-3: #5f5850;
+        --ink-soluk: #8e867c;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --tab-bg: rgba(247, 245, 241, 0.84);
+        --overlay-btn: rgba(247, 245, 241, 0.85);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.042;
+        --hale-karisim: multiply;
+        --hale-2: rgba(184, 142, 62, 0.18);
+        --hale-2-orta: rgba(184, 142, 62, 0.05);
+        --cam-zemin: rgba(247, 245, 241, 0.86);
+        --cam-kenar: rgba(31, 27, 23, 0.12);
+        --cam-golge: 0 24px 52px rgba(20, 17, 14, 0.12);
+        --ust-perde: rgba(20, 17, 14, 0.24);
+        --sayfa-zemin: #e3ded5;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+        --sans: Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --okuma: Newsreader, 'Iowan Old Style', Georgia, serif;
+        --olcek: 0.36;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* =====================================================================
+         Önizleme kabuğu
+         ===================================================================== */
+      .onizleme-ust {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 28px;
+        background: var(--tab-bg);
+        border-bottom: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+
+      .onizleme-baslik {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .onizleme-baslik .ust-not {
+        font: 600 13px/1.3 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .onizleme-baslik h1 {
+        margin: 0;
+        font: 500 24px/1.15 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+
+      .onizleme-denetimler {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .duz-eylem {
+        min-height: 44px;
+        padding: 0 12px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 14px/1 var(--sans);
+        cursor: pointer;
+        border-radius: 999px;
+      }
+
+      .duz-eylem[aria-pressed='true'] {
+        color: var(--pirinc);
+      }
+
+      .tema-kabi {
+        display: inline-flex;
+        padding: 4px;
+        gap: 2px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+
+      .tema-kabi button {
+        min-height: 38px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 14px/1 var(--sans);
+        cursor: pointer;
+        transition: background 180ms ease, color 180ms ease;
+      }
+
+      .tema-kabi button[aria-pressed='true'] {
+        background: var(--ink);
+        color: var(--bg);
+      }
+
+      .sahne {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 44px;
+        padding: 40px 28px 64px;
+      }
+
+      .tuval-grup {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .tuval-etiket {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font: 500 14px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .tuval-etiket strong {
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .tuval-cerceve {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      }
+
+      .tuval-cerceve.hikaye-cerceve {
+        width: calc(1080px * var(--olcek));
+        height: calc(1920px * var(--olcek));
+      }
+
+      .tuval-cerceve.gonderi-cerceve {
+        width: calc(1080px * var(--olcek));
+        height: calc(1350px * var(--olcek));
+      }
+
+      /* =====================================================================
+         PAYLAŞIM KARTI — YÖN 2: BUGÜN PERDESİ
+         Kenardan kenara kapak tablo, zemine eriyen gölge ve buzlu cam not kartı
+         ===================================================================== */
+      .kart {
+        position: relative;
+        width: 1080px;
+        overflow: hidden;
+        transform: scale(var(--olcek));
+        transform-origin: top left;
+        background-color: var(--bg);
+        color: var(--ink);
+        isolation: isolate;
+      }
+
+      .kart.hikaye {
+        height: 1920px;
+      }
+
+      .kart.gonderi {
+        height: 1350px;
+      }
+
+      /* Alt yarıdaki üç katmanlı Sanat Atlası zemini */
+      .zemin-doku {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: var(--doku);
+        background-size: 6px 6px;
+        pointer-events: none;
+      }
+
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        mix-blend-mode: var(--hale-karisim);
+        background: radial-gradient(
+          95% 42% at 96% 100%,
+          var(--hale-2) 0%,
+          var(--hale-2-orta) 48%,
+          transparent 82%
+        );
+        pointer-events: none;
+      }
+
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        color: var(--ink);
+        opacity: var(--desen-opaklik);
+        pointer-events: none;
+      }
+
+      /* Kenardan kenara kapak görseli — alta doğru zemine erir */
+      .kapak-resim {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        overflow: hidden;
+      }
+
+      .kart.hikaye .kapak-resim {
+        height: 1120px;
+      }
+
+      .kart.gonderi .kapak-resim {
+        height: 740px;
+      }
+
+      .kapak-resim img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 56% 40%;
+      }
+
+      .kart.gonderi .kapak-resim img {
+        object-position: 50% 42%;
+      }
+
+      /* Üstte yalnızca okunurluk için yumuşak gölge, altta tablo zemine erir */
+      .kapak-resim::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          var(--ust-perde) 0%,
+          transparent 18%,
+          transparent 48%,
+          rgba(var(--bg-rgb), 0.44) 68%,
+          rgba(var(--bg-rgb), 0.92) 86%,
+          rgb(var(--bg-rgb)) 100%
+        );
+      }
+
+      /* İçerik katmanı */
+      .kart-ic {
+        position: relative;
+        z-index: 4;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .kart.hikaye .kart-ic {
+        padding: 236px 76px 212px;
+      }
+
+      .kart.gonderi .kart-ic {
+        padding: 58px 72px 58px;
+      }
+
+      /* Tablo üzerinde tek sade cam hap: Günün tablosu */
+      .ust-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .cam-hap {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        padding: 12px 24px;
+        border-radius: 999px;
+        background: rgba(18, 17, 16, 0.46);
+        border: 1px solid rgba(235, 229, 218, 0.22);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+        font: 600 26px/1.1 var(--sans);
+        color: #f2ece2;
+      }
+
+      .kart.gonderi .cam-hap {
+        padding: 10px 20px;
+        font-size: 23px;
+      }
+
+      .cam-hap .nokta {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #c9a45c;
+      }
+
+      /* Alt içerik: tablonun eriyen eteklerinden kesintisiz başlar */
+      .alt-akis {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .akim-ust {
+        margin: 0 0 14px;
+        font: 600 32px/1.25 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .kart.gonderi .akim-ust {
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+
+      .eser-adi {
+        margin: 0;
+        font: 500 106px/1.02 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        text-wrap: balance;
+      }
+
+      .kart.gonderi .eser-adi {
+        font-size: 82px;
+      }
+
+      .sanatci-yil {
+        margin: 16px 0 0;
+        font: 400 37px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .kart.gonderi .sanatci-yil {
+        margin-top: 10px;
+        font-size: 31px;
+      }
+
+      /* Bugün yürüyüşü (.yur-kart) ve cam bileşenle akraba ayrıntı kartı */
+      .not-karti {
+        margin-top: 46px;
+        padding: 44px 48px 46px;
+        border-radius: 44px;
+        background: var(--cam-zemin);
+        border: 1.5px solid var(--cam-kenar);
+        box-shadow: var(--cam-golge);
+        -webkit-backdrop-filter: blur(24px) saturate(1.4);
+        backdrop-filter: blur(24px) saturate(1.4);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .kart.gonderi .not-karti {
+        margin-top: 32px;
+        padding: 32px 38px 34px;
+        border-radius: 36px;
+        gap: 10px;
+      }
+
+      .not-baslik {
+        margin: 0;
+        font: 600 28px/1.25 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .kart.gonderi .not-baslik {
+        font-size: 25px;
+      }
+
+      .not-metin {
+        margin: 0;
+        font: 400 40px/1.55 var(--okuma);
+        color: var(--ink);
+        text-wrap: pretty;
+      }
+
+      .kart.gonderi .not-metin {
+        font-size: 34px;
+        line-height: 1.48;
+      }
+
+      .imza {
+        margin-top: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 500 26px/1.2 var(--sans);
+        color: var(--ink-3);
+      }
+
+      .kart.gonderi .imza {
+        margin-top: 30px;
+        font-size: 23px;
+      }
+
+      .imza-ad {
+        font-family: var(--serif);
+        font-weight: 500;
+        font-size: 30px;
+        letter-spacing: -0.01em;
+        color: var(--ink-2);
+      }
+
+      .kart.gonderi .imza-ad {
+        font-size: 26px;
+      }
+
+      /* İsteğe bağlı Instagram Hikâye güvenli alan rehberi */
+      .guvenli-alan {
+        display: none;
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      [data-rehber='acik'] .guvenli-alan {
+        display: block;
+      }
+
+      .guvenli-ust,
+      .guvenli-alt {
+        position: absolute;
+        left: 0;
+        right: 0;
+        background: rgba(201, 164, 92, 0.12);
+        border-color: rgba(201, 164, 92, 0.55);
+        border-style: dashed;
+        border-width: 0;
+      }
+
+      .guvenli-ust {
+        top: 0;
+        height: 216px;
+        border-bottom-width: 2px;
+      }
+
+      .guvenli-alt {
+        bottom: 0;
+        height: 200px;
+        border-top-width: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="onizleme-ust">
+      <div class="onizleme-baslik">
+        <span class="ust-not">Paylaşılabilir eser kartı · Yön 2</span>
+        <h1>Bugün perdesi</h1>
+      </div>
+      <div class="onizleme-denetimler">
+        <button type="button" class="duz-eylem" id="rehber-btn" aria-pressed="false">
+          Hikâye güvenli alanı
+        </button>
+        <div class="tema-kabi" role="group" aria-label="Tema seçimi">
+          <button type="button" data-tema-sec="gece" aria-pressed="true">Gece</button>
+          <button type="button" data-tema-sec="gunduz" aria-pressed="false">Gündüz</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="sahne">
+      <!-- ==================== 1080 × 1920 · HİKÂYE ==================== -->
+      <section class="tuval-grup" aria-label="Hikâye boyu 1080 çarpı 1920">
+        <div class="tuval-etiket"><strong>Hikâye</strong> · 1080 × 1920</div>
+        <div class="tuval-cerceve hikaye-cerceve">
+          <article class="kart hikaye">
+            <div class="zemin-doku" aria-hidden="true"></div>
+            <div class="zemin-hale" aria-hidden="true"></div>
+            <svg class="zemin-desen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="desen-pe-2h" width="144" height="144" patternUnits="userSpaceOnUse">
+                  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                    <path d="M72 72c0-7 7-11 13-7 8 5 8 18-1 24-12 8-28 2-32-12-5-17 7-35 25-38 21-4 40 12 42 33 2 24-16 44-41 44-7 0-13-1-19-4" />
+                    <path d="M0 0c15 2 26 14 27 29 1 16-11 29-27 30" />
+                    <path d="M144 0c-15 2-26 14-27 29-1 16 11 29 27 30" />
+                    <path d="M0 144c15-2 26-14 27-29 1-16-11-29-27-30" />
+                    <path d="M144 144c-15-2-26-14-27-29-1-16 11-29 27-30" />
+                    <path d="M52 0c6 10 13 15 20 15s14-5 20-15" />
+                    <circle cx="72" cy="4" r="5.5" fill="currentColor" stroke="none" />
+                    <path d="M52 144c6-10 13-15 20-15s14 5 20 15" />
+                    <circle cx="72" cy="140" r="5.5" fill="currentColor" stroke="none" />
+                    <path d="M0 52c10 6 15 13 15 20s-5 14-15 20" />
+                    <circle cx="4" cy="72" r="5.5" fill="currentColor" stroke="none" />
+                    <path d="M144 52c-10 6-15 13-15 20s5 14 15 20" />
+                    <circle cx="140" cy="72" r="5.5" fill="currentColor" stroke="none" />
+                  </g>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#desen-pe-2h)" />
+            </svg>
+
+            <div class="kapak-resim">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+                alt="Vincent van Gogh — Yıldızlı Gece, 1889"
+              />
+            </div>
+
+            <div class="kart-ic">
+              <div class="ust-satir">
+                <span class="cam-hap">
+                  <i class="nokta" aria-hidden="true"></i>
+                  Günün tablosu
+                </span>
+              </div>
+
+              <div class="alt-akis">
+                <p class="akim-ust">Post-Empresyonizm</p>
+                <h2 class="eser-adi">Yıldızlı Gece</h2>
+                <p class="sanatci-yil">Vincent van Gogh · 1889</p>
+
+                <div class="not-karti">
+                  <p class="not-baslik">Servinin alevleri</p>
+                  <p class="not-metin">
+                    Sol öndeki servinin koyu yeşil gövdesinde kahverengi ve siyah kıvrımlar alev
+                    dilleri gibi yukarı akıyor. Mezarlıklarla ilişkilendirilen servi, toprağı göğe
+                    bağlar.
+                  </p>
+                </div>
+
+                <footer class="imza">
+                  <span class="imza-ad">Sanat Atlası</span>
+                  <span>sanat-atlasi.pages.dev</span>
+                </footer>
+              </div>
+            </div>
+
+            <div class="guvenli-alan" aria-hidden="true">
+              <div class="guvenli-ust"></div>
+              <div class="guvenli-alt"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ==================== 1080 × 1350 · GÖNDERİ ==================== -->
+      <section class="tuval-grup" aria-label="Gönderi boyu 1080 çarpı 1350">
+        <div class="tuval-etiket"><strong>Gönderi</strong> · 1080 × 1350</div>
+        <div class="tuval-cerceve gonderi-cerceve">
+          <article class="kart gonderi">
+            <div class="zemin-doku" aria-hidden="true"></div>
+            <div class="zemin-hale" aria-hidden="true"></div>
+            <svg class="zemin-desen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="desen-pe-2g" width="144" height="144" patternUnits="userSpaceOnUse">
+                  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                    <path d="M72 72c0-7 7-11 13-7 8 5 8 18-1 24-12 8-28 2-32-12-5-17 7-35 25-38 21-4 40 12 42 33 2 24-16 44-41 44-7 0-13-1-19-4" />
+                    <path d="M0 0c15 2 26 14 27 29 1 16-11 29-27 30" />
+                    <path d="M144 0c-15 2-26 14-27 29-1 16 11 29 27 30" />
+                    <path d="M0 144c15-2 26-14 27-29 1-16-11-29-27-30" />
+                    <path d="M144 144c-15-2-26-14-27-29-1-16 11-29 27-30" />
+                    <path d="M52 0c6 10 13 15 20 15s14-5 20-15" />
+                    <circle cx="72" cy="4" r="5.5" fill="currentColor" stroke="none" />
+                    <path d="M52 144c6-10 13-15 20-15s14 5 20 15" />
+                    <circle cx="72" cy="140" r="5.5" fill="currentColor" stroke="none" />
+                    <path d="M0 52c10 6 15 13 15 20s-5 14-15 20" />
+                    <circle cx="4" cy="72" r="5.5" fill="currentColor" stroke="none" />
+                    <path d="M144 52c-10 6-15 13-15 20s5 14 15 20" />
+                    <circle cx="140" cy="72" r="5.5" fill="currentColor" stroke="none" />
+                  </g>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#desen-pe-2g)" />
+            </svg>
+
+            <div class="kapak-resim">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+                alt="Vincent van Gogh — Yıldızlı Gece, 1889"
+              />
+            </div>
+
+            <div class="kart-ic">
+              <div class="ust-satir">
+                <span class="cam-hap">
+                  <i class="nokta" aria-hidden="true"></i>
+                  Günün tablosu
+                </span>
+              </div>
+
+              <div class="alt-akis">
+                <p class="akim-ust">Post-Empresyonizm</p>
+                <h2 class="eser-adi">Yıldızlı Gece</h2>
+                <p class="sanatci-yil">Vincent van Gogh · 1889</p>
+
+                <div class="not-karti">
+                  <p class="not-baslik">Servinin alevleri</p>
+                  <p class="not-metin">
+                    Sol öndeki servinin koyu yeşil gövdesinde kahverengi ve siyah kıvrımlar alev
+                    dilleri gibi yukarı akıyor. Mezarlıklarla ilişkilendirilen servi, toprağı göğe
+                    bağlar.
+                  </p>
+                </div>
+
+                <footer class="imza">
+                  <span class="imza-ad">Sanat Atlası</span>
+                  <span>sanat-atlasi.pages.dev</span>
+                </footer>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var temaDugmeleri = document.querySelectorAll('[data-tema-sec]');
+        function temaAyarla(ad) {
+          root.setAttribute('data-tema', ad);
+          temaDugmeleri.forEach(function (b) {
+            b.setAttribute('aria-pressed', String(b.getAttribute('data-tema-sec') === ad));
+          });
+        }
+        temaDugmeleri.forEach(function (b) {
+          b.addEventListener('click', function () {
+            temaAyarla(b.getAttribute('data-tema-sec'));
+          });
+        });
+        var sorgu = new URLSearchParams(location.search).get('tema');
+        if (sorgu === 'gunduz' || sorgu === 'gece') temaAyarla(sorgu);
+
+        var rehberBtn = document.getElementById('rehber-btn');
+        rehberBtn.addEventListener('click', function () {
+          var acik = root.getAttribute('data-rehber') === 'acik';
+          root.setAttribute('data-rehber', acik ? 'kapali' : 'acik');
+          rehberBtn.setAttribute('aria-pressed', String(!acik));
+        });
+
+        function olcekle() {
+          var genislik = Math.min(window.innerWidth - 56, 1280);
+          var tekSutun = window.innerWidth < 880;
+          var hedef = tekSutun ? Math.min(genislik, 440) : Math.min((genislik - 44) / 2, 460);
+          var olcek = Math.max(0.24, Math.min(0.45, hedef / 1080));
+          root.style.setProperty('--olcek', olcek.toFixed(4));
+        }
+        olcekle();
+        window.addEventListener('resize', olcekle);
+      })();
+    </script>
+  </body>
+</html>
