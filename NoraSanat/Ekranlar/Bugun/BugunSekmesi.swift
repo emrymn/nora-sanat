@@ -44,7 +44,7 @@ struct BugunSekmesi: View {
   @State private var konumHedefi: Double?
 
   private enum Acilis: String, Identifiable {
-    case resim, hikaye, incele
+    case resim, hikaye, incele, dinle
     var id: String { rawValue }
   }
   private var durgun: Bool { hareketAz || tema.ayar.hareket == "kapali" }
@@ -98,7 +98,9 @@ struct BugunSekmesi: View {
     .alert("Hareket ayarı kaydedilemedi", isPresented: $hareketHatasi) { Button("Tamam") {} }
     .sekmeCubuguGizli(cubukGizli && etkin, sekme: .bugun)
     .fullScreenCover(item: $acilan) { kip in
-      if let e = depo.sayfa?.eser {
+      if let e = depo.sayfa?.eser, kip == .dinle, let b = depo.baglam {
+        DinleEkrani(eser: e, baglam: b)  // Y1
+      } else if let e = depo.sayfa?.eser {
         Goruntuleyici(
           eserler: [e], baslangic: 0, incelemeyeBasla: kip == .incele,
           hikayeyeBasla: kip == .hikaye, baglam: depo.baglam)
@@ -442,6 +444,13 @@ struct BugunSekmesi: View {
             hap("İncele", "magnifyingglass") { acilan = .incele }
           }
           hap("Hayatı", "arrow.down", hayat)
+          // Y1: "Dinleyerek bak" (hapların yanında yalnız simge; üç hap dar ekranı doldurur)
+          if s.eser != nil, depo.baglam != nil {
+            Button { acilan = .dinle } label: {
+              Image(systemName: "headphones").font(.system(size: 16)).frame(width: 48, height: 48)
+            }.background(.black.opacity(0.48), in: Circle()).overlay(Circle().stroke(.white.opacity(0.28)))
+              .accessibilityLabel("Dinleyerek bak")
+          }
         }.padding(.top, 12)
       }.padding(.horizontal, 24).padding(.bottom, ekranAlti + 124)
         .opacity(yaziAcik || durgun ? 1 : 0)

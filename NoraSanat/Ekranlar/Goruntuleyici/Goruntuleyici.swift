@@ -57,6 +57,8 @@ public struct Goruntuleyici: View {
     @State private var hikayeAcik: Bool = false
     @State private var ilkAcilisYapildi: Bool = false
     @State private var bekleyenNokta: Int? = nil
+    /// Y1: "Dinleyerek bak"
+    @State private var dinleAcik = false
 
     // Z2c-3b: elle odak
     @State private var gelistirici = false
@@ -250,6 +252,11 @@ public struct Goruntuleyici: View {
         }
         .onChange(of: sira) { _, _ in
             eserDegisti()
+        }
+        .fullScreenCover(isPresented: $dinleAcik) {
+            if let e = simdikiEser {
+                DinleEkrani(eser: e, baglam: etkinBaglam, gorsel: simdikiGorsel)
+            }
         }
     }
 
@@ -508,6 +515,25 @@ public struct Goruntuleyici: View {
             }
 
             Spacer()
+
+            if !gizli {
+                // Y1: yer varsa yazıyla, yoksa yalnız simge
+                Button {
+                    dinleAcik = true
+                } label: {
+                    ViewThatFits(in: .horizontal) {
+                        Label("Dinleyerek bak", systemImage: "headphones").padding(.horizontal, 14)
+                        Image(systemName: "headphones").frame(width: 44)
+                    }
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(GoruntuleyiciTema.murekkep)
+                    .frame(minHeight: 44)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(GoruntuleyiciTema.zemin))
+                    .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(GoruntuleyiciTema.kenar, lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Dinleyerek bak")
+            }
 
             Button {
                 withAnimation(.easeOut(duration: 0.18)) {

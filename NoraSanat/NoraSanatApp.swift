@@ -43,6 +43,8 @@ struct NoraSanatApp: App {
                 }
             } else if Self.arguman("-ekran") == "goruntuleyici" {
                 GoruntuleyiciOnizleme()   // G1: ayrıntı noktası olan ilk eser
+            } else if Self.arguman("-ekran") == "dinle" {
+                DinleOnizleme()   // Y1: "Dinleyerek bak"
             } else if Self.arguman("-ekran") == "pekistir" {
                 ZStack {
                     KokGorunum().accessibilityHidden(true)
