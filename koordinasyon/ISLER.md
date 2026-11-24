@@ -174,7 +174,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
 | Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | PR açık |
-| Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | sürüyor (Claude, 2026-11-24) |
+| Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | PR açık (#47) |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
@@ -1074,7 +1074,7 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Ortak dosyalarda küçük ekler:** `Goruntuleyici.swift` (`dinleAcik`, eylem satırında "Dinleyerek bak": `ViewThatFits` ile yer yoksa yalnız simge; `fullScreenCover`), `BugunSekmesi.swift` (`Acilis.dinle`, haplardan sonra kulaklık düğmesi), `NoraSanatApp.swift` (DEBUG `-ekran dinle`), `Config/Info.plist` (`UIBackgroundModes: audio`), `Testler/ci/ekran.sh` (genel grup: `9d-dinle-kurulum`, `9e-dinle-ayrinti` = `-ekran dinle -dinleAdim 1`, sessiz).
 - **Yapılmayanlar (sonraki iş):** widget ve Siri girişi ("günün tablosuna bak": App Intent + `norasanat://dinle`), StandBy ve AirPlay için özel düzen (tam ekran örtü olduğu için yansıtmada da tam ekran; ayrıca denenmedi), bitişte sanatçının tekrar kartı. Planın konuşma süresi tahmin; gerçek sesle süre ±%15 kayabilir (söz bitmeden adım geçmez, yalnız toplam uzar/kısalır).
 - **Tuzaklar:** `Ornekler/yuruyus.json` eski biçim (noktalarda koordinat yok); testler `Ornekler/site_verisi/yuruyus.json`'ı kullanır. Söz durdurulunca gelen geç "bitti" haberi yeni sözü bitirmesin diye `DinleSesi` sözün kimliğini tutar.
-- **CI:** (doldurulacak)
+- **CI:** yeşil (iOS derleme #249, `13581b6`: derleme, çekirdek testleri, 7 ekran grubu). `9d-dinle-kurulum` OCR'da: "DİNLEYEREK BAK · Assisi'li Aziz Franciscus ve Yaşamından Sahneler · Bonaventura Berlinghieri · 1235 · 3 dk 5 dk 10 dk · Sesli / Yalnız altyazı · 8 ayrıntı · yaklaşık 5 dk · Başla" (ayrıntılar + yürüyüş birleşti). `9e-dinle-ayrinti` (sessiz, 1. adımdan) arşivde; oturumdan indirilemedi, denetçi baksın. Gerçek ses, kilit ekranı ve kulaklık denetimleri simülatörde sınanmadı: telefonda denenmeli.
 
 ### Fikir havuzu (henüz iş değil)
 - Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
