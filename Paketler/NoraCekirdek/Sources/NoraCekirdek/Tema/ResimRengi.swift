@@ -95,6 +95,36 @@ public enum ResimRengi {
         public init(renk: String, pay: Double) { self.renk = renk; self.pay = pay }
     }
 
+    /// js/akim.js `paletBirlestir(paletler, { adet, esik })` (Z3l; Galeri akım sayfasının renk şeridi, `.akim-palet`):
+    /// eserlerin paletleri tek palette toplanır. Her eserin payı eşit (pay / eser sayısı); birbirine `esik`'ten yakın
+    /// renkler ağırlıklarıyla karışır; en ağır `adet` renk, payları yeniden toplamı 1 olacak biçimde.
+    public static func paletBirlestir(_ paletler: [[PaletRengi]?], adet: Int = 6, esik: Double = 38) -> [PaletRengi] {
+        let l = paletler.compactMap { $0 }.filter { !$0.isEmpty }
+        guard !l.isEmpty else { return [] }
+        var kume: [(c: [Double], w: Double)] = []
+        for p in l {
+            for r in p {
+                let c = hexten(r.renk)
+                let w = r.pay / Double(l.count)
+                if let i = kume.firstIndex(where: { k in
+                    let dx = k.c[0] - c[0], dy = k.c[1] - c[1], dz = k.c[2] - c[2]
+                    return (dx * dx + dy * dy + dz * dz).squareRoot() < esik
+                }) {
+                    let y = kume[i]
+                    let t = y.w + w
+                    let bolen = t == 0 ? 1 : t
+                    kume[i] = (c: (0..<3).map { (y.c[$0] * y.w + c[$0] * w) / bolen }, w: t)
+                } else {
+                    kume.append((c: c, w: w))
+                }
+            }
+        }
+        let secilen = Array(kararli(kume) { $0.w > $1.w }.prefix(adet))
+        let toplam = secilen.reduce(0.0) { $0 + $1.w }
+        let t = toplam == 0 ? 1 : toplam
+        return secilen.map { PaletRengi(renk: hexe($0.c.map(jsYuvarla)), pay: $0.w / t) }
+    }
+
     /// RGBA piksellerinden (0…255, satır satır) median-cut ile en fazla `adet` renk; büyükten küçüğe
     public static func paletHesapla(_ veri: [UInt8], adet: Int = 6) -> [PaletRengi] {
         var px: [[Int]] = []

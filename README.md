@@ -137,6 +137,7 @@ Safari'den ana ekrana eklediğin **Atlas** ile Nora Sanat verilerini paylaşamaz
 - [ ] (Z3j) Uygulamayı kapatıp aç: Bugün'de önce resim hareketini tamamlamalı (≈2 sn), yazılar ondan sonra bulanıktan netleşerek gelmeli.
 - [ ] (Z3j) Hızlı ayarlardan Gündüz'e geç: Galeri ve Çalış zemininde tablonun iki rengi açıkça görülmeli (sol üst, sağ alt).
 - [ ] (Z3k) Galeri → Akımlar (Gündüz ve Gece): çarkın ışığı yayın çevresinde yumuşak bir elips gibi sönmeli; "Salona gir"in altında ve "Bütün akımlar"ın hizasında düz bir kenar ya da dikdörtgen bant görünmemeli.
+- [ ] (Z3l) Galeri → bir akıma gir: büyük resmin hemen altında ince bir renk şeridi (o akımın eserlerinin renkleri) olmalı; altındaki "Arkadaki eser: …" satırında eser adı eğik yazılmalı. Çalış'taki "Sıradaki özellik", Galeri "Yan yana koy"daki "ile" ve Yolculuk penceresindeki küçük not da eğik olmalı.
 - [ ] (Z3i) Bugün'de telefonu sağa sola, öne arkaya çevir: tablo eskisi (site) gibi yumuşak ve ağır kaymalı, ani sıçramamalı; tablonun üstünde eğimle gezen hafif bir ışık hüzmesi görünmeli.
 - [ ] (Z3i) Bugün'de biraz aşağı in (ayrıntılara ya da Hayatı'na), sonra alttaki Bugün sekmesine yeniden dokun: en alttaki "Başa dön" ile aynı biçimde yazılar sönmeli, resim süzülerek başa dönmeli. Zaten en üstteyken dokununca bir şey olmamalı.
 - [ ] (Z3h) Galeri → Akımlar: parmağını çarkın üstüne koyup yukarı kaydır, sayfa kaymalı; en altta "Bütün akımlar" dişlinin ve sekme çubuğunun üstünde kalmalı ve dokununca dizin açılmalı. Çarkı yana çevirmek ve çarka dokunup komşu akıma geçmek eskisi gibi çalışmalı.

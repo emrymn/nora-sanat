@@ -167,6 +167,55 @@ struct AkimBolumBasligi: View {
     }
 }
 
+// MARK: Renk şeridi
+
+/// `.akim-palet` (js/ekranlar/akim.js paletSeridi; css/app.css `.akim-palet`, `.akim-sahne.dolu + .akim-kimlik .akim-palet`):
+/// en bilinen dört eserin paletleri (`eserPaleti`: 400'lük görselin 64 piksellik kopyasından `paletHesapla`) tek palette
+/// (`paletBirlestir`), her renk payı kadar geniş (`flex-grow`, en az 6 px, taşan kesilir). Sahne doluyken 8 px ve 4 px
+/// boşluk; eser yoksa (`.bos`) akımın renginde 30 px ve 16 px boşluk. Palet gelene kadar akımın rengi görünür.
+private struct AkimPaletSeridi: View {
+    let adresler: [URL]
+    let yedek: RGBA
+    let dolu: Bool
+    @State private var palet: [ResimRengi.PaletRengi] = []
+    @MainActor private static var bellek: [String: [ResimRengi.PaletRengi]] = [:]
+
+    var body: some View {
+        let anahtar = adresler.map(\.absoluteString).joined(separator: "|")
+        GeometryReader { g in
+            HStack(spacing: 0) {
+                if palet.isEmpty {
+                    Color(yedek)
+                } else {
+                    let toplam = max(0.000_001, palet.reduce(0) { $0 + $1.pay })
+                    ForEach(Array(palet.enumerated()), id: \.offset) { _, p in
+                        Color(RGBA(css: p.renk) ?? yedek)
+                            .frame(width: max(6, g.size.width * CGFloat(p.pay / toplam)))
+                    }
+                }
+            }
+            .frame(width: g.size.width, alignment: .leading)
+        }
+        .frame(height: dolu ? 8 : 30)
+        .clipped()
+        .padding(.bottom, dolu ? 4 : 16)
+        .accessibilityElement()
+        .accessibilityLabel("Akımın ortalama renkleri")
+        .task(id: anahtar) {
+            if let p = Self.bellek[anahtar] { palet = p; return }
+            guard !adresler.isEmpty else { palet = []; return }
+            var l: [[ResimRengi.PaletRengi]?] = []
+            for u in adresler {
+                l.append(await TemaHesabi.pikseller(u, uzun: 64).map { ResimRengi.paletHesapla($0) })
+            }
+            guard !Task.isCancelled else { return }
+            let p = ResimRengi.paletBirlestir(l)
+            if !p.isEmpty { Self.bellek[anahtar] = p }
+            withAnimation(.easeOut(duration: 0.4)) { palet = p }
+        }
+    }
+}
+
 // MARK: Akım salonu
 
 /// `akimSayfasi(ad)` + `kimlikDoldur(ad)`. Sıra en önemliden: sahne → palet ve künye → hikâye → tanıma → eserler →
@@ -199,11 +248,15 @@ struct AkimSalonu: View {
                 VStack(alignment: .leading, spacing: 0) {
                     sahne(uyeler, eserler.first, ust: ekran.safeAreaInsets.top, h: ekran.size.height + ekran.safeAreaInsets.top)
                     VStack(alignment: .leading, spacing: 0) {
+                        // Z3l: `.akim-palet` (paletSeridi): `.akim-kimlik` 6 + 4 px aşağıda
+                        AkimPaletSeridi(adresler: eserler.compactMap { resim.url($0.eser, 400) }, yedek: renk,
+                                        dolu: eserler.first != nil)
+                            .padding(.top, 10)
                         if let ilk = eserler.first {
-                            // `.akim-sahne-kunye`: 12.5 px, `--ink-2`; eser adı italik; dokununca büyür
+                            // `.akim-sahne-kunye`: 12.5 px, `--ink-2`; eser adı italik (Archivo'da eğilerek); dokununca büyür
                             Button { eylem.ac(eserler.map(\.eser), 0) } label: {
                                 (Text("Arkadaki eser: \(resim.bilinenAd(ilk.sanatci.id)), ")
-                                    + Text(ilk.eser.gorunenAd).italic()
+                                    + Text(ilk.eser.gorunenAd).font(Yazi.sans(12.5, italik: true, stil: .footnote))
                                     + Text(ilk.eser.tarih.isEmpty ? "" : ", \(ilk.eser.tarih)"))
                                     .font(Yazi.sans(12.5, stil: .footnote)).cssSatir(.sans, 12.5, 17.5)
                                     .foregroundStyle(Color(r.murekkep2))
@@ -212,7 +265,6 @@ struct AkimSalonu: View {
                                     .padding(.vertical, 6)
                             }
                             .buttonStyle(.plain)
-                            .padding(.top, 12)
                             .padding(.bottom, 8)
                         }
                         if let b = galeri.bilgi[ad], let metin = b["metin"], !metin.isEmpty {
@@ -456,7 +508,7 @@ struct AkimSalonu: View {
                             Rectangle().fill(Color(GaleriRenk.akim(galeri.katalog, x)))
                         }
                         .frame(width: 22, height: 12).clipShape(Capsule())
-                        (Text(ad + " ") + Text("ile").italic() + Text(" " + x))
+                        (Text(ad + " ") + Text("ile").font(Yazi.okuma(19, italik: true)) + Text(" " + x))
                             .font(Yazi.okuma(19)).foregroundStyle(Color(r.murekkep))
                             .lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
                         Text("→").font(Yazi.okuma(19)).foregroundStyle(Color(r.murekkep2))

@@ -115,6 +115,12 @@ enum Yazi {
             .name: ad,
             UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String): eksen,
         ])
+        // Z3l: Archivo'nun eğik hali yok; tarayıcı `<i>`'yi eğerek üretir (WebKit: 14°). Uygulamada `.italic()` özel yazı
+        // tipinde hiçbir şey yapmıyordu (Galeri "Arkadaki eser"de eser adı düz kalıyordu).
+        if italik, aile == .sans {
+            let egik = tanim.withMatrix(CGAffineTransform(a: 1, b: 0, c: tan(14 * .pi / 180), d: 1, tx: 0, ty: 0))
+            return UIFont(descriptor: egik, size: boyut)
+        }
         return UIFont(descriptor: tanim, size: boyut)
     }
 
@@ -140,8 +146,8 @@ enum Yazi {
     }
 
     /// Archivo (arayüz; sitede 400–700)
-    static func sans(_ boyut: CGFloat, agirlik: CGFloat = 400, stil: UIFont.TextStyle = .body) -> Font {
-        font(.sans, boyut, agirlik: agirlik, stil: stil)
+    static func sans(_ boyut: CGFloat, agirlik: CGFloat = 400, italik: Bool = false, stil: UIFont.TextStyle = .body) -> Font {
+        font(.sans, boyut, agirlik: agirlik, italik: italik, stil: stil)
     }
 
     /// Newsreader (okuma metni; sitede 400–500)
