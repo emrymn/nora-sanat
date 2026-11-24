@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="tr" data-tema="gece">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Galeri · Konular · Yön 2 — İkonografi izi</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --surface-2: #24211e;
+        --border: #2e2b28;
+        --border-ince: rgba(235, 229, 218, 0.10);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --pirinc-yazi: #121110;
+        --tab-bg: rgba(24, 22, 20, 0.84);
+        --overlay-btn: rgba(20, 18, 16, 0.64);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.038;
+        --hale-karisim: normal;
+        --hale-1: rgba(144, 58, 52, 0.28);
+        --hale-1-orta: rgba(144, 58, 52, 0.08);
+        --hale-2: rgba(176, 134, 68, 0.22);
+        --hale-2-orta: rgba(176, 134, 68, 0.06);
+        --sayfa-zemin: #0c0b0a;
+        --kart-golge: 0 20px 42px rgba(0, 0, 0, 0.40);
+        --sekme-golge: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --inci-dolu: rgba(235, 229, 218, 0.18);
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --surface-2: #efebe3;
+        --border: #d6d0c6;
+        --border-ince: rgba(31, 27, 23, 0.09);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #5f5850;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --pirinc-yazi: #f7f5f1;
+        --tab-bg: rgba(247, 245, 241, 0.88);
+        --overlay-btn: rgba(247, 245, 241, 0.84);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.044;
+        --hale-karisim: multiply;
+        --hale-1: rgba(144, 58, 52, 0.16);
+        --hale-1-orta: rgba(144, 58, 52, 0.04);
+        --hale-2: rgba(176, 134, 68, 0.14);
+        --hale-2-orta: rgba(176, 134, 68, 0.04);
+        --sayfa-zemin: #e2ddd4;
+        --kart-golge: 0 16px 34px rgba(20, 17, 14, 0.12);
+        --sekme-golge: 0 10px 28px rgba(20, 17, 14, 0.14);
+        --inci-dolu: rgba(31, 27, 23, 0.12);
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', Georgia, serif;
+        --sans: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
+        --okuma: 'Newsreader', Georgia, serif;
+        --yan: 20px;
+      }
+
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .onizleme-ust {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 24px;
+        background: var(--tab-bg);
+        border-bottom: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .onizleme-baslik .ust-not { display: block; font: 600 12.5px/1.3 var(--sans); color: var(--pirinc); }
+      .onizleme-baslik h1 { margin: 2px 0 0; font: 500 22px/1.15 var(--serif); letter-spacing: -0.01em; }
+      .tema-kabi {
+        display: inline-flex;
+        padding: 4px;
+        gap: 2px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+      }
+      .tema-kabi button {
+        min-height: 36px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 13px/1 var(--sans);
+        cursor: pointer;
+      }
+      .tema-kabi button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+
+      .sahne { display: flex; justify-content: center; padding: 32px 16px 56px; }
+
+      .telefon {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        border-radius: 44px;
+        overflow: hidden;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        box-shadow: 0 32px 84px rgba(0, 0, 0, 0.44);
+        isolation: isolate;
+      }
+
+      :root[data-tek='1'] body { background: var(--bg); }
+      :root[data-tek='1'] .onizleme-ust { display: none; }
+      :root[data-tek='1'] .sahne { padding: 0; justify-content: flex-start; }
+      :root[data-tek='1'] .telefon {
+        height: auto;
+        min-height: 844px;
+        border-radius: 0;
+        border: 0;
+        box-shadow: none;
+        overflow: visible;
+      }
+      :root[data-tek='1'] .telefon-kaydir { height: auto; overflow: visible; }
+      :root[data-tek='1'] .alt-cubuk { position: sticky; bottom: 12px; }
+
+      .zemin-doku {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        pointer-events: none;
+      }
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        mix-blend-mode: var(--hale-karisim);
+        background:
+          radial-gradient(120% 42% at 0% 0%, var(--hale-1) 0%, var(--hale-1-orta) 48%, transparent 82%),
+          radial-gradient(90% 38% at 100% 100%, var(--hale-2) 0%, var(--hale-2-orta) 44%, transparent 80%);
+        pointer-events: none;
+      }
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background-color: var(--ink);
+        opacity: var(--desen-opaklik);
+        -webkit-mask-image: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-barok@3x.png');
+        mask-image: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-barok@3x.png');
+        -webkit-mask-size: 96px 96px;
+        mask-size: 96px 96px;
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
+        pointer-events: none;
+      }
+
+      .telefon-kaydir {
+        position: relative;
+        z-index: 3;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: clip;
+        scrollbar-width: none;
+      }
+      .telefon-kaydir::-webkit-scrollbar { display: none; }
+
+      .durum-cubugu {
+        height: 44px;
+        padding: 12px 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 14px/1 var(--sans);
+        color: var(--ink);
+      }
+      .durum-simgeler { display: flex; align-items: center; gap: 6px; }
+
+      .galeri-ust {
+        padding: 8px var(--yan) 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .ust-satir { display: flex; align-items: center; gap: 10px; height: 48px; }
+      .galeri-baslik {
+        margin: 0;
+        font: 500 32px/1 var(--serif);
+        letter-spacing: -0.015em;
+        color: var(--ink);
+        flex: none;
+      }
+      .arama-hapi {
+        flex: 1;
+        min-width: 0;
+        height: 46px;
+        padding: 0 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        backdrop-filter: blur(20px) saturate(1.5);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ink-2);
+        font: 400 14.5px/1 var(--sans);
+        cursor: pointer;
+        text-align: left;
+      }
+      .arama-hapi span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .kalp-dugme {
+        width: 46px;
+        height: 46px;
+        flex: none;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        display: grid;
+        place-items: center;
+        color: var(--pirinc);
+        cursor: pointer;
+      }
+      .bolum-kabi {
+        display: grid;
+        grid-template-columns: 1fr 1.24fr 1fr 0.9fr;
+        gap: 2px;
+        padding: 4px;
+        height: 52px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .bolum-sekme {
+        height: 44px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 13.5px/1 var(--sans);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+      }
+      .bolum-sekme[aria-current='page'] {
+        background: var(--ink);
+        color: var(--bg);
+        font-weight: 600;
+      }
+
+      .icerik { padding: 10px var(--yan) 114px; }
+
+      /* 1. GÜNÜN İKONOGRAFİ ODAĞI — TANIMA İPUCU KARTLI */
+      .odak-karti {
+        border-radius: 26px;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--kart-golge);
+      }
+      .odak-resim {
+        position: relative;
+        height: 212px;
+        overflow: hidden;
+        background: #171513;
+      }
+      .odak-resim img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 24%;
+        display: block;
+      }
+      .odak-resim::after {
+        content: '';
+        position: absolute;
+        inset: auto 0 0;
+        height: 74px;
+        background: linear-gradient(180deg, transparent, var(--surface));
+        pointer-events: none;
+      }
+      .odak-haplar {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .cam-hap {
+        height: 28px;
+        padding: 0 11px;
+        border-radius: 999px;
+        background: rgba(18, 17, 16, 0.72);
+        border: 1px solid rgba(243, 238, 228, 0.16);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        color: #f3eee4;
+        font: 500 12px/28px var(--sans);
+      }
+      .odak-govde {
+        padding: 2px 18px 18px;
+      }
+      .ust-yazi { font: 600 13px/1.3 var(--sans); color: var(--pirinc); }
+      .odak-ust {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .odak-baslik {
+        margin: 5px 0 4px;
+        font: 500 30px/1.06 var(--serif);
+        letter-spacing: -0.012em;
+      }
+      .odak-sayi {
+        font: 400 14px/1.3 var(--sans);
+        color: var(--ink-2);
+      }
+      .tanima-kutu {
+        margin: 14px 0 16px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: var(--surface-2);
+        border: 1px solid var(--border-ince);
+      }
+      .tanima-kutu strong {
+        display: block;
+        font: 600 12.5px/1.25 var(--sans);
+        color: var(--pirinc);
+        margin-bottom: 4px;
+      }
+      .tanima-kutu p {
+        margin: 0;
+        font: 400 15px/1.42 var(--okuma);
+        color: var(--ink);
+      }
+      .birincil-dugme {
+        width: 100%;
+        min-height: 48px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        font: 600 15px/1 var(--sans);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+      .birincil-dugme small { font: 400 13px/1 var(--sans); opacity: 0.72; margin-left: 8px; }
+
+      /* 2. YÜZYIL BONCUKLARI + GRUP SÜZGECİ (Çalış Yön 4 boncuklu takvim akrabalığı!) */
+      .bolum-aralik { margin-top: 32px; }
+      .bolum-ust {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .bolum-ust h2 {
+        margin: 3px 0 0;
+        font: 500 26px/1.08 var(--serif);
+        letter-spacing: -0.01em;
+      }
+      .bolum-sag {
+        font: 400 12.5px/1.3 var(--sans);
+        color: var(--ink-2);
+        text-align: right;
+      }
+
+      .boncuk-karti {
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      /* Grup süzgeci (kartın üst bandı, 2px pirinç alt çizgi) */
+      .grup-sekmeler {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        padding: 4px 14px 0;
+        border-bottom: 1px solid var(--border-ince);
+        scrollbar-width: none;
+      }
+      .grup-sekmeler::-webkit-scrollbar { display: none; }
+      .grup-sekme {
+        position: relative;
+        flex: none;
+        height: 44px;
+        padding: 0 2px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 14px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+      }
+      .grup-sekme small { font: 400 12px/1 var(--sans); color: var(--ink-3); }
+      .grup-sekme[aria-pressed='true'] { color: var(--ink); font-weight: 600; }
+      .grup-sekme[aria-pressed='true']::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background: var(--pirinc);
+        border-radius: 2px;
+      }
+
+      /* 2×4 Yüzyıl boncuk ızgarası (XIII–XX. yy) */
+      .yy-izgara-sar {
+        padding: 14px 12px 12px;
+      }
+      .yy-izgara-bas {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 0 4px;
+        font: 500 12.5px/1 var(--sans);
+        color: var(--ink-2);
+      }
+      .yy-izgara {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .yy-boncuk-btn {
+        min-height: 66px;
+        padding: 6px 4px;
+        border-radius: 15px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+        transition: background 180ms ease, border-color 180ms ease;
+      }
+      .yy-boncuk-btn[aria-pressed='true'] {
+        background: var(--surface-2);
+        border-color: rgba(var(--pirinc-rgb), 0.55);
+      }
+      .yy-kure {
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font: 600 12px/1 var(--sans);
+        background: var(--inci-dolu);
+        color: var(--ink);
+      }
+      .yy-kure.bos {
+        background: transparent;
+        border: 1.5px dashed rgba(var(--ink-rgb), 0.20);
+        color: var(--ink-3);
+      }
+      .yy-kure.doruk {
+        background: rgba(var(--pirinc-rgb), 0.24);
+        border: 1.5px solid rgba(var(--pirinc-rgb), 0.65);
+        color: var(--ink);
+      }
+      .yy-boncuk-btn[aria-pressed='true'] .yy-kure {
+        background: var(--pirinc);
+        border-color: var(--pirinc);
+        color: var(--pirinc-yazi);
+        box-shadow: 0 0 0 4px rgba(var(--pirinc-rgb), 0.22);
+      }
+      .yy-ad { font: 500 11.5px/1 var(--sans); color: var(--ink-2); }
+      .yy-boncuk-btn[aria-pressed='true'] .yy-ad { color: var(--ink); font-weight: 600; }
+
+      .boncuk-not {
+        margin-top: 10px;
+        padding: 11px 14px;
+        border-top: 1px solid var(--border-ince);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .boncuk-not p { margin: 0; font: 400 13px/1.38 var(--sans); color: var(--ink-2); }
+      .boncuk-not strong { color: var(--ink); font-weight: 600; }
+      .sifirla-btn {
+        min-height: 44px;
+        padding: 0 8px;
+        border: 0;
+        background: transparent;
+        color: var(--pirinc);
+        font: 600 13px/1 var(--sans);
+        cursor: pointer;
+        flex: none;
+      }
+
+      /* 3. İKONOGRAFİ DİZİNİ — TANIMA İPUÇLU & YÜZYIL İZLİ GRUPLU KARTLAR */
+      .grup-bas {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin: 24px 0 10px;
+      }
+      .grup-bas:first-child { margin-top: 4px; }
+      .grup-bas h3 { margin: 0; font: 500 21px/1.15 var(--serif); }
+      .grup-bas span { font: 400 12.5px/1.2 var(--sans); color: var(--ink-3); }
+
+      .dizin-karti {
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .konu-satir {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        padding: 13px 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        text-align: left;
+        color: inherit;
+        cursor: pointer;
+        border-bottom: 1px solid var(--border-ince);
+        min-height: 106px;
+      }
+      .konu-satir:last-child { border-bottom: 0; }
+      .satir-resim {
+        width: 66px;
+        height: 86px;
+        flex: none;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--surface-2);
+        border: 1px solid var(--border-ince);
+      }
+      .satir-resim img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .satir-ic { flex: 1; min-width: 0; }
+      .satir-tepe {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .satir-ad {
+        font: 500 19.5px/1.14 var(--serif);
+        letter-spacing: -0.008em;
+        color: var(--ink);
+      }
+      .satir-sayi {
+        margin-top: 4px;
+        font: 500 12.5px/1.2 var(--sans);
+        color: var(--ink-2);
+      }
+      .satir-sayi span { color: var(--ink-3); font-weight: 400; }
+      .satir-ipucu {
+        margin-top: 6px;
+        font: 400 14px/1.36 var(--okuma);
+        color: var(--ink-2);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      /* Konuya özel 8 yüzyıl boncuk izi */
+      .satir-yy {
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .satir-yy-boncuklar { display: flex; align-items: center; gap: 4px; }
+      .s-nokta {
+        width: 5.5px;
+        height: 5.5px;
+        border-radius: 50%;
+        background: rgba(var(--ink-rgb), 0.12);
+      }
+      .s-nokta.var { background: rgba(var(--ink-rgb), 0.42); }
+      .s-nokta.doruk {
+        width: 7.5px;
+        height: 7.5px;
+        background: var(--pirinc);
+      }
+      .satir-yy-yazi {
+        font: 500 11.5px/1 var(--sans);
+        color: var(--ink-3);
+      }
+      .satir-yy-yazi b { color: var(--pirinc); font-weight: 600; }
+
+      /* Alt sekme çubuğu */
+      .alt-cubuk {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 14px;
+        z-index: 20;
+        height: 62px;
+        padding: 6px;
+        border-radius: 999px;
+        background: var(--tab-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--sekme-golge);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .alt-sekme {
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font: 500 10.5px/1 var(--sans);
+        cursor: pointer;
+        min-height: 44px;
+      }
+      .alt-sekme.etkin {
+        background: rgba(var(--ink-rgb), 0.11);
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* Önizleme çekmecesi */
+      .cekmece-perde {
+        position: absolute;
+        inset: 0;
+        z-index: 30;
+        background: rgba(12, 11, 10, 0.56);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: flex-end;
+      }
+      .cekmece-perde.acik { display: flex; }
+      .cekmece {
+        width: 100%;
+        padding: 18px 20px 26px;
+        border-radius: 26px 26px 0 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+      }
+      .cekmece-ust { display: flex; align-items: flex-start; gap: 14px; }
+      .cekmece-ust img { width: 72px; height: 88px; border-radius: 12px; object-fit: cover; flex: none; }
+      .cekmece-kapat {
+        width: 44px;
+        height: 44px;
+        margin: -8px -8px 0 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--ink-2);
+        font-size: 20px;
+        cursor: pointer;
+        flex: none;
+      }
+      .cekmece-ozet { margin: 12px 0; font: 400 15px/1.48 var(--okuma); color: var(--ink-2); }
+      .cekmece-tanima {
+        margin: 0 0 16px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: var(--surface-2);
+        font: 400 13.5px/1.4 var(--sans);
+        color: var(--ink);
+      }
+      .cekmece-tanima b { display: block; font: 600 12px/1.3 var(--sans); color: var(--pirinc); margin-bottom: 3px; }
+    </style>
+  </head>
+  <body>
+    <header class="onizleme-ust">
+      <div class="onizleme-baslik">
+        <span class="ust-not">Galeri · Konular · Cesur öneri (yüzyıl boncukları ve resimde tanıma ipuçları)</span>
+        <h1>Yön 2 — İkonografi izi</h1>
+      </div>
+      <div class="tema-kabi" role="group" aria-label="Tema seçimi">
+        <button type="button" data-tema-sec="gece" aria-pressed="true">Gece</button>
+        <button type="button" data-tema-sec="gunduz" aria-pressed="false">Gündüz</button>
+      </div>
+    </header>
+
+    <main class="sahne">
+      <div class="telefon" aria-label="iPhone önizlemesi">
+        <div class="zemin-doku" aria-hidden="true"></div>
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <div class="zemin-desen" aria-hidden="true"></div>
+
+        <div class="telefon-kaydir">
+          <div class="durum-cubugu" aria-hidden="true">
+            <span>9:41</span>
+            <span class="durum-simgeler">
+              <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="2.5" height="4" rx="0.8"/><rect x="4" y="5" width="2.5" height="6" rx="0.8"/><rect x="8" y="2.5" width="2.5" height="8.5" rx="0.8"/><rect x="12" y="0" width="2.5" height="11" rx="0.8"/></svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.7" y="1" width="19.5" height="10" rx="2.6" stroke="currentColor" stroke-width="1.2" opacity="0.7"/><rect x="2.6" y="2.8" width="15" height="6.4" rx="1.4" fill="currentColor"/><path d="M21.8 4.2v3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/></svg>
+            </span>
+          </div>
+
+          <div class="galeri-ust">
+            <div class="ust-satir">
+              <h2 class="galeri-baslik">Galeri</h2>
+              <button type="button" class="arama-hapi" aria-label="Sanatçı, eser ara">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <span>Sanatçı, eser ara</span>
+              </button>
+              <button type="button" class="kalp-dugme" aria-label="Beğendiklerin">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><path d="M12 20s-7-4.3-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5c0 5.2-7 9.5-7 9.5z"/></svg>
+              </button>
+            </div>
+            <nav class="bolum-kabi" aria-label="Galeri bölümleri">
+              <button type="button" class="bolum-sekme">Akımlar</button>
+              <button type="button" class="bolum-sekme">Başyapıtlar</button>
+              <button type="button" class="bolum-sekme" aria-current="page">Konular</button>
+              <button type="button" class="bolum-sekme">Zaman</button>
+            </nav>
+          </div>
+
+          <div class="icerik">
+            <!-- 1. Günün öne çıkan konusu: tanıma ipucu ile -->
+            <section class="odak-karti" aria-label="Öne çıkan konu">
+              <div class="odak-resim">
+                <img src="gorseller/kn-judith.jpg" alt="Judith ve Holofernes" />
+                <div class="odak-haplar">
+                  <span class="cam-hap">XV–XX. yy</span>
+                  <span class="cam-hap">Doruk XVII. yy</span>
+                </div>
+              </div>
+              <div class="odak-govde">
+                <div class="odak-ust">
+                  <span class="ust-yazi">Öne çıkan konu · Eski Ahit</span>
+                  <span style="font:400 12.5px/1 var(--sans);color:var(--ink-3)">Judith Kitabı</span>
+                </div>
+                <h2 class="odak-baslik">Judith ve Holofernes</h2>
+                <div class="odak-sayi">30 eserde bu konu · 6 yüzyıla yayılır</div>
+
+                <div class="tanima-kutu">
+                  <strong>Resimde nasıl tanınır?</strong>
+                  <p>Kılıç tutan zengin giyimli genç kadın ve kesik başı bir torbaya koyan yaşlı hizmetçi.</p>
+                </div>
+
+                <button type="button" class="birincil-dugme" data-konu="judith-and-holofernes">
+                  <span>Hikâyeyi ve 30 eseri gör<small>6 tanıma işareti</small></span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+            </section>
+
+            <!-- 2. Grup ve yüzyıl boncukları -->
+            <section class="bolum-aralik" aria-label="Grup ve yüzyıl yoğunluğu">
+              <div class="bolum-ust">
+                <div>
+                  <div class="ust-yazi">Grup ve çağ süzgeci</div>
+                  <h2>Hangi yüzyıllarda?</h2>
+                </div>
+                <div class="bolum-sag">371 konu<br />8 yüzyıl izi</div>
+              </div>
+
+              <div class="boncuk-karti">
+                <nav class="grup-sekmeler" id="grup-sekmeler" aria-label="Konu grupları"></nav>
+                <div class="yy-izgara-sar">
+                  <div class="yy-izgara-bas">
+                    <span>Yüzyıla dokunup konuları süz</span>
+                    <span id="yy-izgara-alt">XIII – XX. yüzyıl</span>
+                  </div>
+                  <div class="yy-izgara" id="yy-izgara" role="group" aria-label="Yüzyıl boncukları"></div>
+                </div>
+                <div class="boncuk-not">
+                  <p id="boncuk-not-metin"></p>
+                  <button type="button" class="sifirla-btn" id="yy-sifirla" hidden>Hepsi</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- 3. İkonografi dizini -->
+            <section class="bolum-aralik" aria-label="Konular dizini">
+              <div class="bolum-ust">
+                <div>
+                  <div class="ust-yazi">Resimde hikâyeleri tanı</div>
+                  <h2 id="dizin-baslik">Öne çıkan konular</h2>
+                </div>
+                <div class="bolum-sag" id="dizin-sayac">16 seçili konu</div>
+              </div>
+              <div id="dizin-alani"></div>
+            </section>
+          </div>
+        </div>
+
+        <nav class="alt-cubuk" aria-label="Ana sekmeler">
+          <button type="button" class="alt-sekme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 16l4.5-4.5 3.5 3.5 3-3 5 5"/></svg>
+            <span>Bugün</span>
+          </button>
+          <button type="button" class="alt-sekme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2V6z"/><path d="M9 4v14M15 6v14"/></svg>
+            <span>Yolculuk</span>
+          </button>
+          <button type="button" class="alt-sekme etkin" aria-current="page">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4"/></svg>
+            <span>Galeri</span>
+          </button>
+          <button type="button" class="alt-sekme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5" width="7" height="14" rx="1.5"/><rect x="13" y="5" width="7" height="14" rx="1.5"/></svg>
+            <span>Çalış</span>
+          </button>
+          <button type="button" class="alt-sekme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/></svg>
+            <span>Ben</span>
+          </button>
+        </nav>
+
+        <div class="cekmece-perde" id="cekmece-perde" role="dialog" aria-modal="true" aria-label="Konu özeti">
+          <div class="cekmece" id="cekmece-ic"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const YYLER = [13, 14, 15, 16, 17, 18, 19, 20];
+      const ROMA = { 13: 'XIII', 14: 'XIV', 15: 'XV', 16: 'XVI', 17: 'XVII', 18: 'XVIII', 19: 'XIX', 20: 'XX' };
+      const YY_NOT = {
+        13: 'XIII. yüzyıl · Gotik sunaklar: Meryem ve Aziz Franciscus sahneleri öne çıkar.',
+        14: 'XIV. yüzyıl · İncil döngüleri ve erken fresklerde anlatı genişler.',
+        15: 'XV. yüzyıl · Rönesans patlaması: Müjde, Meryem ve Ayların İşleri dorukta.',
+        16: 'XVI. yüzyıl · Kutsal Aile, Âdem ile Havva ve antik mitoloji birlikte yükselir.',
+        17: 'XVII. yüzyıl · Barok draması: Judith, Davut ve aziz sahneleri zirvede.',
+        18: 'XVIII. yüzyıl · Rokoko salonları: Fête galante yalnızca bu yüzyıla özgüdür.',
+        19: 'XIX. yüzyıl · Edebiyat ve yeniden doğuş: Dante ve Venüs yeniden canlanır.',
+        20: 'XX. yüzyıl · Klasik konular modern yorumlarla yeniden kurgulanır.',
+      };
+
+      const GRUPLAR = [
+        { id: 'yeni_ahit', ad: 'Yeni Ahit', toplam: 86 },
+        { id: 'eski_ahit', ad: 'Eski Ahit', toplam: 37 },
+        { id: 'mitoloji', ad: 'Mitoloji', toplam: 73 },
+        { id: 'aziz', ad: 'Azizler', toplam: 65 },
+        { id: 'tarih_edebiyat', ad: 'Tarih ve edebiyat', toplam: 76 },
+        { id: 'diger', ad: 'Diğer', toplam: 34 },
+      ];
+
+      // Gerçek data/ikonografi.json tam veri kümesi (371 konu) yüzyıl dağılımı
+      const TAM_YY_SAYI = {
+        '': { 13: 18, 14: 57, 15: 108, 16: 181, 17: 220, 18: 142, 19: 131, 20: 33 },
+        yeni_ahit: { 13: 15, 14: 38, 15: 45, 16: 61, 17: 62, 18: 20, 19: 29, 20: 7 },
+        eski_ahit: { 13: 0, 14: 0, 15: 12, 16: 24, 17: 32, 18: 14, 19: 11, 20: 5 },
+        mitoloji: { 13: 0, 14: 0, 15: 9, 16: 40, 17: 50, 18: 38, 19: 31, 20: 10 },
+        aziz: { 13: 3, 14: 17, 15: 32, 16: 33, 17: 44, 18: 16, 19: 10, 20: 2 },
+        tarih_edebiyat: { 13: 0, 14: 1, 15: 4, 16: 7, 17: 25, 18: 39, 19: 41, 20: 7 },
+        diger: { 13: 0, 14: 1, 15: 6, 16: 16, 17: 7, 18: 15, 19: 9, 20: 2 },
+      };
+
+      const KONULAR = [
+        {
+          id: 'madonna-and-child',
+          tur: 'yeni_ahit',
+          ad: 'Meryem ve Çocuk İsa',
+          eserSayi: 346,
+          yyAralik: 'XIII–XX. yy',
+          doruk: 'XV–XVI. yy',
+          yy: { 13: 19, 14: 39, 15: 137, 16: 110, 17: 16, 18: 6, 19: 5, 20: 1 },
+          gorsel: 'gorseller/kn-meryem.jpg',
+          pos: '50% 34%',
+          zoom: true,
+          ozet: 'Belirli bir olaydan çok dua ve tefekkür için yapılan, Hristiyan sanatının en çok yinelenen anne-çocuk imgesi.',
+          tanima: 'Kırmızı elbise üzerine mavi pelerinli genç kadın; kucağında kutsayan bebek İsa, elinde kuş ya da nar.',
+        },
+        {
+          id: 'crucifixion',
+          tur: 'yeni_ahit',
+          ad: 'Çarmıha Geriliş',
+          eserSayi: 81,
+          yyAralik: 'XIII–XX. yy',
+          doruk: 'XV. yy',
+          yy: { 13: 6, 14: 11, 15: 22, 16: 10, 17: 8, 18: 2, 19: 6, 20: 8 },
+          gorsel: 'gorseller/kn-carmih.jpg',
+          pos: '50% 26%',
+          ozet: 'Golgota tepesindeki sahne, Orta Çağ’dan 20. yüzyıla dek her çağın kendi ışığıyla yeniden boyandı.',
+          tanima: 'Haç üzerinde çivilenmiş İsa, başında dikenli taç; dipte yas tutan Meryem ve Yuhanna.',
+        },
+        {
+          id: 'annunciation',
+          tur: 'yeni_ahit',
+          ad: 'Müjde',
+          eserSayi: 45,
+          yyAralik: 'XIII–XIX. yy',
+          doruk: 'XV. yy',
+          yy: { 13: 1, 14: 6, 15: 21, 16: 7, 17: 8, 19: 1 },
+          gorsel: 'gorseller/kn-mujde.jpg',
+          pos: '50% 42%',
+          ozet: 'Melek Cebrail’in Nasıralı Meryem’e İsa’yı doğuracağını bildirdiği an; Rönesans mimarisinin sevdiği sahne.',
+          tanima: 'Solda diz çökmüş kanatlı melek, elinde beyaz zambak; sağda kitabının başında Meryem.',
+        },
+        {
+          id: 'holy-family',
+          tur: 'yeni_ahit',
+          ad: 'Kutsal Aile',
+          eserSayi: 45,
+          yyAralik: 'XV–XIX. yy',
+          doruk: 'XVI. yy',
+          yy: { 15: 6, 16: 22, 17: 13, 18: 1, 19: 1 },
+          gorsel: 'gorseller/kn-kutsal-aile.jpg',
+          pos: '50% 35%',
+          ozet: 'Meryem, Yusuf ve çocuk İsa’yı sıcak, gündelik bir yakınlık içinde buluşturan Rönesans ve Barok teması.',
+          tanima: 'Meryem ile çocuk İsa’nın yanında yaşlıca, sakallı Yusuf; çoğu zaman küçük Vaftizci Yahya eşlik eder.',
+        },
+        {
+          id: 'adam-and-eve',
+          tur: 'eski_ahit',
+          ad: 'Âdem ile Havva',
+          eserSayi: 37,
+          yyAralik: 'XV–XX. yy',
+          doruk: 'XVI. yy',
+          yy: { 15: 4, 16: 21, 17: 4, 18: 1, 19: 5, 20: 1 },
+          gorsel: 'gorseller/kn-adem-havva.jpg',
+          pos: '50% 24%',
+          ozet: 'Yasak meyve anı: hem ilk günahın öyküsü hem de sanatçıların ideal insan bedenini incelediği sahne.',
+          tanima: 'Bilgi Ağacı’nın iki yanında çıplak erkek ve kadın; dallara dolanmış yılan ve uzatılan meyve.',
+        },
+        {
+          id: 'judith-and-holofernes',
+          tur: 'eski_ahit',
+          ad: 'Judith ve Holofernes',
+          eserSayi: 30,
+          yyAralik: 'XV–XX. yy',
+          doruk: 'XVII. yy',
+          yy: { 15: 2, 16: 8, 17: 13, 18: 2, 19: 1, 20: 2 },
+          gorsel: 'gorseller/kn-judith.jpg',
+          pos: '50% 28%',
+          ozet: 'Kuşatma altındaki şehrini kurtarmak için düşman komutanı alt eden dul kadın; Barok’un en sert sahnesi.',
+          tanima: 'Kılıç tutan zengin giyimli genç kadın; yanında kesik başı torbaya koyan yaşlı hizmetçi.',
+        },
+        {
+          id: 'david-and-goliath',
+          tur: 'eski_ahit',
+          ad: 'Davut ve Golyat',
+          eserSayi: 20,
+          yyAralik: 'XV–XVIII. yy',
+          doruk: 'XVII. yy',
+          yy: { 15: 3, 16: 4, 17: 11, 18: 1 },
+          gorsel: 'gorseller/kn-davut.jpg',
+          pos: '50% 25%',
+          ozet: 'Sapanı ve tek taşla dev savaşçıyı yenen genç çoban; Caravaggio’da hüzünlü bir zafer ânı.',
+          tanima: 'Zırhsız genç çoban, elinde sapan ya da devin kesik başı ve Golyat’ın kendi kılıcı.',
+        },
+        {
+          id: 'hercules',
+          tur: 'mitoloji',
+          ad: 'Herkül (Herakles)',
+          eserSayi: 24,
+          yyAralik: 'XV–XX. yy',
+          doruk: 'XVII. yy',
+          yy: { 15: 1, 16: 6, 17: 7, 18: 3, 19: 5, 20: 1 },
+          gorsel: 'gorseller/kn-herkul.jpg',
+          pos: '50% 34%',
+          ozet: 'On iki göreviyle güç ve dayanıklılığın simgesi; Barok saraylarında hükümdar erdemini temsil etti.',
+          tanima: 'Kaslı, sakallı figür; omzunda Nemea aslanı postu ya da elinde kalın ahşap lobut.',
+        },
+        {
+          id: 'birth-of-venus',
+          tur: 'mitoloji',
+          ad: "Venüs'ün Doğuşu",
+          eserSayi: 15,
+          yyAralik: 'XV–XX. yy',
+          doruk: 'XIX. yy',
+          yy: { 15: 1, 16: 2, 18: 3, 19: 8, 20: 1 },
+          gorsel: 'gorseller/kn-venus.jpg',
+          pos: '50% 32%',
+          ozet: 'Aşk tanrıçasının deniz köpüğünden doğuşu; Botticelli’den sonra 19. yüzyıl salonlarında yeniden parladı.',
+          tanima: 'Dalgaların ya da dev bir deniz kabuğunun üstünde çıplak kadın; çevrede rüzgâr tanrıları ve çiçekler.',
+        },
+        {
+          id: 'saint-jerome',
+          tur: 'aziz',
+          ad: 'Aziz Hieronymus',
+          eserSayi: 37,
+          yyAralik: 'XV–XVIII. yy',
+          doruk: 'XVI. yy',
+          yy: { 15: 12, 16: 13, 17: 11, 18: 1 },
+          gorsel: 'gorseller/kn-hieronymus.jpg',
+          pos: '50% 28%',
+          ozet: 'Kitab-ı Mukaddes’i Latinceye çeviren bilgin; hem münzevi tövbesi hem de çalışma odasıyla betimlenir.',
+          tanima: 'Ayaklarının dibinde uysalca yatan aslan, kitaplar, kurukafa ya da kırmızı kardinal şapkası.',
+        },
+        {
+          id: 'saint-francis',
+          tur: 'aziz',
+          ad: 'Assisili Aziz Franciscus',
+          eserSayi: 34,
+          yyAralik: 'XIII–XVIII. yy',
+          doruk: 'XVII. yy',
+          yy: { 13: 8, 14: 1, 15: 4, 16: 5, 17: 9, 18: 1 },
+          gorsel: 'gorseller/kn-franciscus.jpg',
+          pos: '50% 38%',
+          ozet: 'Yoksulluğu ve doğayla kardeşliği seçen aziz; Orta Çağ sunaklarından Barok esrime sahnelerine uzanır.',
+          tanima: 'Üç düğümlü iple bağlı kahverengi keşiş cübbesi; ellerinde ve böğründe stigmata izleri.',
+        },
+        {
+          id: 'dante-and-the-divine-comedy',
+          tur: 'tarih_edebiyat',
+          ad: 'Dante ve İlahi Komedya',
+          eserSayi: 13,
+          yyAralik: 'XV–XIX. yy',
+          doruk: 'XIX. yy',
+          yy: { 15: 1, 18: 1, 19: 10 },
+          gorsel: 'gorseller/kn-dante.jpg',
+          pos: '50% 24%',
+          ozet: 'Şairin öbür dünya yolculuğu ve Beatrice imgesi 19. yüzyıl Romantik ve Prerafaelit resminde doruğa ulaştı.',
+          tanima: 'Kırmızı cüppe ve defne taçlı profil ya da esrime içindeki Beatrice ve güvercin.',
+        },
+        {
+          id: 'cleopatra',
+          tur: 'tarih_edebiyat',
+          ad: 'Kleopatra',
+          eserSayi: 12,
+          yyAralik: 'XVI–XIX. yy',
+          doruk: 'XVII. yy',
+          yy: { 16: 1, 17: 5, 18: 2, 19: 3 },
+          gorsel: 'gorseller/kn-kleopatra.jpg',
+          pos: '50% 34%',
+          ozet: 'Mısır’ın son kraliçesinin Sezar’la buluşması, ziyafeti ve esir düşmemek için seçtiği son.',
+          tanima: 'Zengin Mısır mücevherli kraliçe; göğsüne yaklaştırılan küçük yılan (aspis) ya da incili kadeh.',
+        },
+        {
+          id: 'fete-galante',
+          tur: 'diger',
+          ad: 'Fête galante (Zarif Şenlik)',
+          eserSayi: 20,
+          yyAralik: 'XVIII. yy',
+          doruk: 'XVIII. yy',
+          yy: { 18: 20 },
+          gorsel: 'gorseller/kn-fetegalante.jpg',
+          pos: '50% 34%',
+          ozet: 'Yalnızca 18. yüzyıla özgü Rokoko türü: puslu parklarda ipek giysili çiftler, müzik ve geçicilik.',
+          tanima: 'Ağaç gölgelerinde lavta çalan ya da dans eden ipek giysili çiftler; arkada bahçe heykelleri.',
+        },
+        {
+          id: 'labours-of-the-months',
+          tur: 'diger',
+          ad: 'Ayların İşleri',
+          eserSayi: 15,
+          yyAralik: 'XV–XVI. yy',
+          doruk: 'XV. yy',
+          yy: { 15: 10, 16: 5 },
+          gorsel: 'gorseller/kn-aylar.jpg',
+          pos: '50% 48%',
+          ozet: 'Yılın her ayını doğanın ritmi ve gündelik tarım emeğiyle anlatan geç Orta Çağ ve Kuzey Rönesansı döngüsü.',
+          tanima: 'Mevsime özgü işler: karda dönen avcılar, ekin biçen köylüler, ateş başında ısınanlar.',
+        },
+        {
+          id: 'witches',
+          tur: 'diger',
+          ad: 'Cadılar',
+          eserSayi: 14,
+          yyAralik: 'XV–XIX. yy',
+          doruk: 'XVII. yy',
+          yy: { 15: 2, 16: 2, 17: 6, 18: 3, 19: 1 },
+          gorsel: 'gorseller/kn-cadilar.jpg',
+          pos: '50% 40%',
+          ozet: 'Cadı avları çağından Goya’nın taşlamalarına kadar gece ayinleri ve batıl korkuların resimleri.',
+          tanima: 'Gece karanlığında kara teke çevresinde toplanan figürler, kaynayan kazan ya da uçan silüetler.',
+        },
+      ];
+
+      const ikonIleri = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>';
+
+      let seciliGrup = '';
+      let seciliYy = 0; // 0 = hepsi
+
+      function grupAdi(tur) {
+        return (GRUPLAR.find((g) => g.id === tur) || {}).ad || '';
+      }
+
+      function satirYyHtml(k) {
+        const maks = Math.max(1, ...Object.values(k.yy));
+        const boncuklar = YYLER.map((y) => {
+          const v = k.yy[y] || 0;
+          const doruk = v > 0 && v >= maks * 0.75;
+          return `<span class="s-nokta ${doruk ? 'doruk' : v > 0 ? 'var' : ''}"></span>`;
+        }).join('');
+        return `
+          <div class="satir-yy">
+            <div class="satir-yy-boncuklar" aria-hidden="true">${boncuklar}</div>
+            <span class="satir-yy-yazi">${k.yyAralik} · doruk <b>${k.doruk}</b></span>
+          </div>`;
+      }
+
+      function ciz() {
+        // Grup sekmeleri
+        const sekmeler = [{ id: '', ad: 'Hepsi', toplam: 371 }, ...GRUPLAR];
+        document.getElementById('grup-sekmeler').innerHTML = sekmeler
+          .map(
+            (g) =>
+              `<button type="button" class="grup-sekme" data-grup="${g.id}" aria-pressed="${g.id === seciliGrup}">${g.ad}<small>${g.toplam}</small></button>`,
+          )
+          .join('');
+
+        // Seçili gruptaki bütün 371 konunun gerçek yüzyıl yoğunlukları
+        const grupKonulari = seciliGrup ? KONULAR.filter((k) => k.tur === seciliGrup) : KONULAR;
+        const yySayi = TAM_YY_SAYI[seciliGrup] || TAM_YY_SAYI[''];
+        const maksYy = Math.max(1, ...Object.values(yySayi));
+
+        document.getElementById('yy-izgara').innerHTML = YYLER.map((y) => {
+          const n = yySayi[y];
+          const doruk = n > 0 && n >= maksYy * 0.82;
+          const cap = n === 0 ? 24 : Math.round(24 + (n / maksYy) * 14);
+          return `
+            <button type="button" class="yy-boncuk-btn" data-yy="${y}" aria-pressed="${seciliYy === y}">
+              <span class="yy-kure ${n === 0 ? 'bos' : doruk ? 'doruk' : ''}" style="width:${cap}px;height:${cap}px">${n || '·'}</span>
+              <span class="yy-ad">${ROMA[y]}. yy</span>
+            </button>`;
+        }).join('');
+
+        const notEl = document.getElementById('boncuk-not-metin');
+        const sifirla = document.getElementById('yy-sifirla');
+        if (seciliYy) {
+          notEl.innerHTML = `<strong>${ROMA[seciliYy]}. yüzyıl</strong> · ${YY_NOT[seciliYy].replace(/^[^·]+·\s*/, '')}`;
+          sifirla.hidden = false;
+        } else {
+          notEl.innerHTML = `<strong>XV–XVII. yüzyıl</strong> en yoğun dönem · bir yüzyıl boncuğuna dokunup süz.`;
+          sifirla.hidden = true;
+        }
+
+        // Süzülen konular
+        const suzulen = grupKonulari.filter((k) => !seciliYy || (k.yy[seciliYy] || 0) > 0);
+        document.getElementById('dizin-baslik').textContent = seciliGrup
+          ? grupAdi(seciliGrup)
+          : seciliYy
+            ? `${ROMA[seciliYy]}. yüzyılda işlenen konular`
+            : 'Öne çıkan konular';
+        document.getElementById('dizin-sayac').textContent = `${suzulen.length} konu görünüyor`;
+
+        const aktifGruplar = seciliGrup ? GRUPLAR.filter((g) => g.id === seciliGrup) : GRUPLAR;
+        const html = aktifGruplar
+          .map((g) => {
+            const l = suzulen.filter((k) => k.tur === g.id);
+            if (!l.length) return '';
+            return `
+              <div class="grup-bas">
+                <h3>${g.ad}</h3>
+                <span>${g.toplam} konu</span>
+              </div>
+              <div class="dizin-karti">
+                ${l
+                  .map(
+                    (k) => `
+                  <button type="button" class="konu-satir" data-konu="${k.id}">
+                    <div class="satir-resim"><img src="${k.gorsel}" alt="${k.ad}" style="object-position:${k.pos}${k.zoom ? ';transform:scale(1.16)' : ''}" /></div>
+                    <div class="satir-ic">
+                      <div class="satir-tepe">
+                        <span class="satir-ad">${k.ad}</span>
+                        <span style="color:var(--ink-3);flex:none">${ikonIleri}</span>
+                      </div>
+                      <div class="satir-sayi">${k.eserSayi} eserde bu konu${seciliYy ? ` <span>· ${ROMA[seciliYy]}. yy’da ${k.yy[seciliYy]} eser</span>` : ''}</div>
+                      <div class="satir-ipucu">${k.tanima}</div>
+                      ${satirYyHtml(k)}
+                    </div>
+                  </button>`,
+                  )
+                  .join('')}
+              </div>`;
+          })
+          .join('');
+
+        document.getElementById('dizin-alani').innerHTML = html || '<p style="color:var(--ink-2);font-size:14px">Bu yüzyıl ve grupta seçili konu yok.</p>';
+      }
+
+      function cekmeceAc(id) {
+        const k = KONULAR.find((x) => x.id === id);
+        if (!k) return;
+        document.getElementById('cekmece-ic').innerHTML = `
+          <div class="cekmece-ust">
+            <img src="${k.gorsel}" alt="${k.ad}" style="object-position:${k.pos}" />
+            <div style="flex:1;min-width:0">
+              <div style="font:600 12.5px/1.3 var(--sans);color:var(--pirinc)">${grupAdi(k.tur)} · ${k.yyAralik}</div>
+              <div style="margin-top:3px;font:500 22px/1.12 var(--serif)">${k.ad}</div>
+              <div style="margin-top:4px;font:400 13.5px/1.3 var(--sans);color:var(--ink-2)">${k.eserSayi} eserde bu konu · doruk ${k.doruk}</div>
+            </div>
+            <button type="button" class="cekmece-kapat" id="cekmece-kapat" aria-label="Kapat">×</button>
+          </div>
+          <p class="cekmece-ozet">${k.ozet}</p>
+          <div class="cekmece-tanima"><b>Resimde nasıl tanınır?</b>${k.tanima}</div>
+          <button type="button" class="birincil-dugme" style="justify-content:center" id="cekmece-tamam">Konu sayfasına gir (${k.eserSayi} eser)</button>`;
+        document.getElementById('cekmece-perde').classList.add('acik');
+      }
+
+      document.addEventListener('click', (ev) => {
+        const temaBtn = ev.target.closest('[data-tema-sec]');
+        if (temaBtn) {
+          const t = temaBtn.dataset.temaSec;
+          document.documentElement.dataset.tema = t;
+          document.querySelectorAll('[data-tema-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.temaSec === t)));
+          return;
+        }
+        const grupBtn = ev.target.closest('[data-grup]');
+        if (grupBtn) {
+          seciliGrup = grupBtn.dataset.grup;
+          ciz();
+          return;
+        }
+        const yyBtn = ev.target.closest('[data-yy]');
+        if (yyBtn) {
+          const y = Number(yyBtn.dataset.yy);
+          seciliYy = seciliYy === y ? 0 : y;
+          ciz();
+          return;
+        }
+        if (ev.target.id === 'yy-sifirla') {
+          seciliYy = 0;
+          ciz();
+          return;
+        }
+        if (ev.target.id === 'cekmece-kapat' || ev.target.id === 'cekmece-tamam' || ev.target.id === 'cekmece-perde') {
+          document.getElementById('cekmece-perde').classList.remove('acik');
+          return;
+        }
+        const konuBtn = ev.target.closest('[data-konu]');
+        if (konuBtn) cekmeceAc(konuBtn.dataset.konu);
+      });
+
+      const q = new URLSearchParams(location.search);
+      if (q.get('tek') === '1') document.documentElement.dataset.tek = '1';
+      if (q.get('tema') === 'gunduz' || q.get('tema') === 'gece') {
+        document.documentElement.dataset.tema = q.get('tema');
+        document.querySelectorAll('[data-tema-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.temaSec === q.get('tema'))));
+      }
+      ciz();
+    </script>
+  </body>
+</html>
