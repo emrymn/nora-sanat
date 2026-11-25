@@ -180,3 +180,89 @@ Yön 3 (*Geniş Tuval*) seçildi. Üst bölüm (cam `×`, birleşik nokta + `3 /
 | Tablo yüksekliği (`390×844`) | `446 px` (`0 px` değişim) | `416 px` (`0 px` değişim) | `432 px` (`0 px` değişim) |
 | Alt zemin ağırlığı | Orta (kesintisiz cam tepsi) | En hafif (tepsisiz, saf zemin) | Hafif (yalnız yumuşak sis geçişi) |
 | `375×667` sığma | Tek ekranda, tüm hedefler `≥ 44 px` | Tek ekranda, tüm hedefler `≥ 44 px` | Tek ekranda, tüm hedefler `≥ 44 px` |
+
+---
+
+## Üçüncü Tur · Müze ve Atölye Dünyasından Şık Tasarımları (`sik-4`, `sik-5`, `sik-6`)
+
+İkinci turdaki ızgara (`sik-1`), liste (`sik-2`) ve hap (`sik-3`) biçimleri fazla sıradan bulunduğu için tamamen bırakıldı. Yön 3'ün üst bölümü (cam `×`, birleşik nokta + `3 / 8` hapı, sağda pirinç `Kolay`, ortada büyük kırpılmayan eser) birebir korunarak, alttaki şıklar **müze ve atölye dünyasından** üç farklı etkileşim diliyle yeniden tasarlandı (`sik-4.html`, `sik-5.html`, `sik-6.html`).
+
+### Ortak garanti edilen kurallar
+
+- **Izgara, liste ve hap biçimi yok:** Her öneri kendi fiziksel müze/atölye metaforunu taşır (çivili duvar künye plakaları, elde tutulan yelpaze kart destesi, balmumu mühürlü atölye imzaları).
+- **Cevap sonrası `0 px` tablo küçülmesi:** Sabit alt yükseklik rezervi ve (`sik-4`'te) sabit `36 px` künye yuvası sayesinde cevap öncesi ve sonrası eser yüksekliği birebir aynı kalır:
+  - `sik-4`: `416 px → 416 px` (`0 px` fark)
+  - `sik-5`: `416 px → 416 px` (`0 px` fark)
+  - `sik-6`: `432 px → 432 px` (`0 px` fark)
+- **`"Tekrar"` düğmesi yok:** Cevap sonrasında yalnızca durum etiketi ve tek dolu geçiş düğmesi (`Hangi akım?` / `Sonraki`) görünür; yalnızca doğru ve seçilen şık ekranda kalır.
+- **İpucu vermeyen nötr dil:** Çiviler, kart süsleri, mühür diskleri ve baş harf inisiyalleri bütün şıklarda aynı nötr pirinç/mürekkep tonundadır; dönem/akım rengi veya tarih sızdırılmaz.
+- **Hareket azaltma (`prefers-reduced-motion` / *Hareketi azalt*):** Plaka sallanması (`civiSallan`), 3B kart dönüşü (`kartDon`) ve balmumu mühür basma sıçraması (`muhurBas`) sade anlık durum geçişine iner; yanlış plaka eğilmeden düz durur.
+- **Ölçülen ekran ve dokunma hedefleri:** 18 görüntünün tamamında `scrollWidth = 390` (`375×667`'de `375`), taşan veya kırpılan öğe `0`, kırık görsel `0`, dış URL `0`, tüm etkileşimli düğmeler `≥ 44 px` ve başparmak erimindedir.
+
+### Dokunsal geri bildirim (titreşim) anları
+
+| An | Şık 4 · Künye Plakaları | Şık 5 · El Yelpazesi | Şık 6 · Balmumu Mühür | `Titresim.swift` karşılığı |
+|---|---|---|---|---|
+| Parmağı koyma / kaldırma | Plaka duvardan kalkar, yuva pirinçle yanar | Kart yelpazeden yukarı sıyrılır | İmza altı mürekkep çizilir, köşede mühür önizlenir | `Titresim.secim` |
+| Doğru seçim | Plaka çerçevenin altındaki yuvaya oturur | Kart 3B ters döner, yeşil onay görünür | Tablonun sağ alt köşesine yeşil balmumu basılır | `Titresim.dogru` (`.success`) |
+| Yanlış seçim | Doğru plaka yuvaya yerleşir; yanlış plaka tek çividen sallanır | Kalan iki kart 3B dönüp `Doğrusu` / `Seçtiğin` gösterir | Köşeye mercan mühür basılır, yanlış imzanın üstü çizilir | `Titresim.yanlis` (`.error`) |
+| `"Bilmiyorum"` | Doğru künye yuvaya sessizce takılır | Doğru kart tek başına dönerek açılır | Doğru imza yeşil mühürle vurgulanır | `Titresim.dokunus` (`.light`) |
+
+---
+
+### Şık 4 — Müze Künye Plakaları (`sik-4.html`)
+
+**Rolü:** *Müzede tablonun altında duran pirinç çivili duvar plakaları — hem tek dokunuşla hem tabloya sürükleyip bırakarak takılır.*
+
+- **Biçim ve yerleşim:** Tablonun hemen altında kesik pirinç çizgili bir **künye yuvası** (`Plakaya dokun ya da buraya sürükle`) bekler. Altta ise iki yandan pirinç çivili, hafif farklı açılarla duran 4 müze plakası (Gece'de koyu bronz/ceviz, Gündüz'de sıcak mermer) iki asimetrik satırda yer alır. Uzun ad (*Rogier van der Weyden*) tek satırda kırpılmadan sığar.
+- **Dokunma ve sürükle-bırak:** Plakaya basınca (veya yukarı sürükleyince) plaka duvardan kalkıp düzleşir (`scale(1.04)`), diğer plakalar `%42`'ye çekilir ve tablonun altındaki yuva pirinçle parlayarak (`Künye yuvasına takılıyor`) plakayı çağırır.
+- **Cevap sonrası:** Doğru plaka doğrudan tablonun altındaki künye yuvasına düz ve yeşil çivili olarak **takılır**. Yanlış seçildiyse seçilen yanlış plaka sağ çivisinden kurtulup sol çividen `-5.5°` eğilerek sallanır (`civiSallan`); elenen 2 plaka çekilir.
+- **Hangi akım? (Soru 2 / 2):** Aynı plaka dili ince iç çerçeve süsüyle (`akim-sus`) çalışır.
+- **Güçlü yanı:** Müze deneyimiyle en doğrudan fiziksel bağ; hem hızlı tek dokunuş hem de keyifli sürükle-bırak desteği; doğru yanıt tablonun gerçek künyesi hâline gelir.
+- **Ödün:** Künye yuvası tablonun hemen altında sabit `36 px` yer tuttuğu için eser yüksekliği `416 px`'tir (`sik-6`'dan `16 px` kısa, hâlâ ekranın en büyük öğesi).
+- **Görüntüler:**
+  - [Gece](goruntuler/sik-4-gece.png) · [Basılı / sürükleme](goruntuler/sik-4-basili-gece.png) · [Cevap sonrası](goruntuler/sik-4-cevap-gece.png) · [Gündüz](goruntuler/sik-4-gunduz.png) · [Hangi akım?](goruntuler/sik-4-akim-gece.png) · [Küçük ekran 375×667](goruntuler/sik-4-kucuk-gece.png)
+
+---
+
+### Şık 5 — El Yelpazesi Müze Kartları (`sik-5.html`)
+
+**Rolü:** *Elde tutulan 4 zarif müze kataloğu kartı altta doğal başparmak yayıyla yelpaze gibi açılır.*
+
+- **Biçim ve yerleşim:** Dört dikey müze kartı (`-8.5°`, `-2.8°`, `+2.8°`, `+8.5°`) hafifçe üst üste binerek el yelpazesi oluşturur. Her kartta yalnız nötr bir elmas süsü, ince pirinç iç çerçeve ve ad bulunur; ipucu yoktur. Gündüz temasında sıcak keten karton hissi verir.
+- **Basılı an:** Dokunulan kart yelpazeden `24 px` yukarı sıyrılır, açısı sıfırlanıp `scale(1.08)` ile öne gelir ve pirinç çerçevesi parlar; diğer 3 kart `%48` opaklığa iner.
+- **Cevap sonrası:** Elenen 2 kart desteden çekilir; kalan doğru ve seçilen kartlar yan yana düzleşerek **3B ters döner** (`rotateY`), çift iç çerçeveli arka yüzlerinde yeşil/mercan mühür ile `Doğrusu` / `Seçtiğin` etiketi görünür.
+- **Hangi akım? (Soru 2 / 2):** Kartların iç çerçevesi çift pirinç çizgili dönem kartı süslemesine geçer.
+- **Güçlü yanı:** En oyunsu, dokunması en davetkâr ve başparmak kavisini en doğal izleyen etkileşim; 3B dönüş anı çok tatmin edici.
+- **Ödün:** Dört dikey kart yan yana dizildiği için *Rogier van der Weyden* gibi uzun adlar kart içinde 3 satıra sarılır (tam okunur ve kırpılmaz).
+- **Görüntüler:**
+  - [Gece](goruntuler/sik-5-gece.png) · [Kart kalkarken](goruntuler/sik-5-basili-gece.png) · [Cevap sonrası](goruntuler/sik-5-cevap-gece.png) · [Gündüz](goruntuler/sik-5-gunduz.png) · [Hangi akım?](goruntuler/sik-5-akim-gece.png) · [Küçük ekran 375×667](goruntuler/sik-5-kucuk-gece.png)
+
+---
+
+### Şık 6 — Atölye İmzaları ve Balmumu Mühür (`sik-6.html`)
+
+**Rolü:** *Kutusuz ve en sade atölye dili: her şık italik bir ressam imzası ve kabartma balmumu mühürdür; seçilince mühür doğrudan tablonun köşesine basılır.*
+
+- **Biçim ve yerleşim:** Altta hiçbir kutu, kart veya çizgi ızgarası yoktur. Dört sanatçı adı *Newsreader Italic* ile hafif organik eğimlerle (`-0.9°` .. `+0.7°`) iki dengeli atölye satırında durur; her birinin yanında aynı nötr tonda kabartma inisiyal mühür diski (`JE`, `RC`, `RW`, `PC`) ve sol ucunda soluk dolmakalem izi bulunur.
+- **Basılı an:** Parmağı basınca imzanın altındaki pirinç mürekkep çizgisi soldan sağa tamamlanır, mühür diski hafifçe dönüp büyür ve **tablonun sağ alt köşesinde** yarı saydam kesik çizgili mühür önizlemesi (`RW`) belirir.
+- **Cevap sonrası:** Tablonun sağ alt köşesine kabartmalı fiziksel balmumu mühür (`✓` yeşil veya `×` mercan) **basılır** (`muhurBas` animasyonu). Altta yalnızca doğru imza (yeşil mühür + yeşil alt çizgi) ve yanlış seçilen imza (mercan mühür + üstü çizili ad) kalır.
+- **Hangi akım? (Soru 2 / 2):** İmzalar dik *Newsreader* tipografisine ve akım inisiyallerine (`KR`, `ER`, `YR`, `B`) geçer; aynı köşe mühürleme mekaniği sürer.
+- **Güçlü yanı:** Üç öneri arasında en ferah, en sade ve tabloya en büyük yüksekliği (`432 px`) bırakan tasarım; hiçbir kutu gürültüsü olmadan sanat atölyesi ruhunu doğrudan taşır.
+- **Ödün:** Köşeye basılan `52 px` balmumu mühür cevap anında tablonun sağ alt köşesinin küçük bir parçasını bilinçli olarak örter (yakın inceleme açıldığında tablo yine tertemiz görünür).
+- **Görüntüler:**
+  - [Gece](goruntuler/sik-6-gece.png) · [Mühür basılırken](goruntuler/sik-6-basili-gece.png) · [Cevap sonrası](goruntuler/sik-6-cevap-gece.png) · [Gündüz](goruntuler/sik-6-gunduz.png) · [Hangi akım?](goruntuler/sik-6-akim-gece.png) · [Küçük ekran 375×667](goruntuler/sik-6-kucuk-gece.png)
+
+---
+
+### Üçüncü tur karşılaştırması
+
+| Ölçüt | Şık 4 · Müze Künye Plakaları | Şık 5 · El Yelpazesi Kartları | Şık 6 · Atölye İmzaları ve Mühür |
+|---|---|---|---|
+| Müze / atölye metaforu | Çivili duvar künyesi + askı yuvası | Elde tutulan müze kart destesi | Ressam imzası + balmumu mühür |
+| Etkileşim | Dokun **veya** tabloya sürükle-bırak | Yelpazeden çekip 3B ters çevir | İmza çiz + tablo köşesine mühür bas |
+| Uzun ad (`Rogier van der Weyden`) | Tek satır (kırpılmaz) | 3 satır (kart içinde ortalı) | Tek satır (kırpılmaz) |
+| Yanlış cevap görsel dili | Doğru yuvada; yanlış tek çividen sarkar | İki kart 3B dönüp `Doğrusu` / `Seçtiğin` | Köşede mercan mühür + üstü çizili imza |
+| Tablo yüksekliği (`390×844`) | `416 px` (`0 px` değişim) | `416 px` (`0 px` değişim) | `432 px` (`0 px` değişim) |
+| Görsel ağırlık | Orta (fiziksel plaka dokusu) | Orta-canlı (oyunsu yelpaze) | En hafif ve en sakin (kutusuz) |
+| `375×667` sığma | Tek ekranda, hedefler `≥ 44 px` | Tek ekranda, hedefler `≥ 44 px` | Tek ekranda, hedefler `≥ 44 px` |

@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="tr" data-tema="gece" data-hareket="tam">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Soru Ekranı · Şık 5 — El Yelpazesi Müze Kartları</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* =====================================================================
+         Yön 3 Üstü + Şık 5 · El Yelpazesi Müze Kartları
+         Elde tutulan 4 zarif müze kataloğu kartı altta yay gibi açılır.
+         Dokunulunca kart yelpazeden yukarı sıyrılır, düzleşir ve 3B ters döner.
+         ===================================================================== */
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --border: #2e2b28;
+        --border-ince: rgba(235, 229, 218, 0.12);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --right: #6fb487;
+        --right-bg: rgba(111, 180, 135, 0.18);
+        --wrong: #d66854;
+        --wrong-bg: rgba(214, 104, 84, 0.18);
+        --overlay-btn: rgba(18, 17, 16, 0.62);
+        --kart-bg: linear-gradient(170deg, #27231e 0%, #191714 100%);
+        --kart-kenar: rgba(235, 229, 218, 0.17);
+        --kart-golge: -4px 10px 24px rgba(0, 0, 0, 0.56);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.04;
+        --desen-filtre: invert(1);
+        --hale-1: rgba(46, 98, 72, 0.32);
+        --hale-2: rgba(162, 74, 58, 0.15);
+        --golge-resim: 0 28px 58px rgba(0, 0, 0, 0.62);
+        --sayfa-zemin: #0a0908;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --border: #d6d0c6;
+        --border-ince: rgba(31, 27, 23, 0.11);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #665f56;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --right: #2a6644;
+        --right-bg: rgba(42, 102, 68, 0.14);
+        --wrong: #9a3726;
+        --wrong-bg: rgba(154, 55, 38, 0.13);
+        --overlay-btn: rgba(247, 245, 241, 0.85);
+        --kart-bg: linear-gradient(170deg, #fdfbf7 0%, #efeae1 100%);
+        --kart-kenar: rgba(31, 27, 23, 0.16);
+        --kart-golge: -3px 10px 20px rgba(24, 19, 14, 0.16);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.045;
+        --desen-filtre: none;
+        --hale-1: rgba(46, 98, 72, 0.15);
+        --hale-2: rgba(162, 74, 58, 0.08);
+        --golge-resim: 0 18px 36px rgba(20, 17, 14, 0.16);
+        --sayfa-zemin: #dfd9cf;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', Georgia, serif;
+        --okuma: 'Newsreader', Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, sans-serif;
+        --tel-w: 390px;
+        --tel-h: 844px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      .onizleme-cubuk {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px 10px;
+        padding: 10px 14px;
+        background: rgba(var(--bg-rgb), 0.94);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(18px);
+      }
+
+      .onizleme-ad {
+        font: 600 13px/1.2 var(--sans);
+        color: var(--pirinc);
+        margin-right: 4px;
+      }
+
+      .grup-hap {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px;
+        border-radius: 999px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        gap: 2px;
+      }
+
+      .grup-hap button {
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 12px/1 var(--sans);
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      .grup-hap button[aria-pressed='true'] {
+        background: var(--ink);
+        color: var(--bg);
+      }
+
+      .sahne-sar {
+        display: flex;
+        justify-content: center;
+        padding: 22px 12px 44px;
+      }
+
+      .telefon {
+        position: relative;
+        width: var(--tel-w);
+        height: var(--tel-h);
+        border-radius: 44px;
+        overflow: hidden;
+        background-color: var(--bg);
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        border: 1px solid var(--border);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        isolation: isolate;
+      }
+
+      .telefon.kucuk {
+        --tel-w: 375px;
+        --tel-h: 667px;
+        border-radius: 30px;
+      }
+
+      body.goruntu-modu {
+        background: var(--bg);
+      }
+      body.goruntu-modu .onizleme-cubuk {
+        display: none;
+      }
+      body.goruntu-modu .sahne-sar {
+        padding: 0;
+        display: block;
+      }
+      body.goruntu-modu .telefon {
+        border-radius: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(320px 300px at 50% 24%, var(--hale-1), transparent 74%),
+          radial-gradient(220px 200px at 84% 78%, var(--hale-2), transparent 72%);
+      }
+
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-ronesans@3x.png');
+        background-size: 96px 96px;
+        opacity: var(--desen-opaklik);
+        filter: var(--desen-filtre);
+      }
+
+      .durum-cubugu {
+        position: relative;
+        z-index: 6;
+        height: 44px;
+        padding: 14px 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 13px/1 var(--sans);
+        flex: none;
+      }
+
+      .telefon.kucuk .durum-cubugu {
+        height: 26px;
+        padding: 6px 18px 0;
+        font-size: 12px;
+      }
+
+      .durum-sag {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .ekran {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Yön 3 üst barı — birebir korunur */
+      .ust-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 2px 16px 4px;
+        flex: none;
+      }
+
+      .cam-yuvarlak {
+        width: 44px;
+        height: 44px;
+        flex: none;
+        border-radius: 50%;
+        border: 1px solid var(--border-ince);
+        background: var(--overlay-btn);
+        backdrop-filter: blur(22px) saturate(1.5);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .birlesik-hap {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 36px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border-ince);
+        backdrop-filter: blur(20px) saturate(1.5);
+      }
+
+      .birlesik-noktalar {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .birlesik-noktalar i {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(var(--ink-rgb), 0.24);
+      }
+
+      .birlesik-noktalar i.dogru {
+        background: var(--right);
+      }
+
+      .birlesik-noktalar i.yanlis {
+        background: transparent;
+        box-shadow: inset 0 0 0 1.6px var(--wrong);
+      }
+
+      .birlesik-noktalar i.simdi {
+        background: var(--ink);
+        transform: scale(1.4);
+      }
+
+      .birlesik-sayac {
+        font: 500 12px/1 var(--sans);
+        font-variant-numeric: tabular-nums;
+        color: var(--ink-2);
+        padding-left: 8px;
+        border-left: 1px solid var(--border-ince);
+      }
+
+      .seviye-fisilti {
+        min-width: 44px;
+        text-align: right;
+        font: 600 13px/1 var(--sans);
+        color: var(--pirinc);
+      }
+
+      /* Büyük eser sahnesi — cevaptan sonra 0 px değişir */
+      .tuval-alan {
+        flex: 1;
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 14px 6px;
+      }
+
+      .eser-btn {
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .eser-btn img {
+        display: block;
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 16px;
+        box-shadow: var(--golge-resim);
+      }
+
+      .tuval-alan.dikey .eser-btn img {
+        max-height: 416px;
+      }
+      .tuval-alan.kare .eser-btn img {
+        max-height: 364px;
+      }
+
+      .telefon.kucuk .tuval-alan.dikey .eser-btn img {
+        max-height: 294px;
+      }
+      .telefon.kucuk .tuval-alan.kare .eser-btn img {
+        max-height: 268px;
+      }
+
+      /* =====================================================================
+         ŞIK 5 · EL YELPAZESİ MÜZE KARTLARI (Sabit alt yükseklik -> 0 px küçülme)
+         ===================================================================== */
+      .deste-bolge {
+        flex: none;
+        height: 260px;
+        padding: 6px 14px 18px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .telefon.kucuk .deste-bolge {
+        height: 228px;
+        padding: 4px 12px 12px;
+      }
+
+      .deste-ust {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 0 6px 6px;
+        flex: none;
+      }
+
+      .baslik-grup {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+
+      .deste-baslik {
+        font: 500 21px/1.1 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 0;
+      }
+
+      .telefon.kucuk .deste-baslik {
+        font-size: 19px;
+      }
+
+      .soru-iki {
+        font: 600 12px/1 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .bilmiyorum {
+        min-height: 44px;
+        padding: 0 2px 0 10px;
+        margin: -12px -2px -12px 0;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: italic 400 15.5px/1 var(--okuma);
+        cursor: pointer;
+      }
+
+      /* Kavisli yelpaze alanı */
+      .yelpaze {
+        flex: 1;
+        min-height: 0;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 14px;
+        perspective: 900px;
+      }
+
+      .telefon.kucuk .yelpaze {
+        padding-bottom: 10px;
+      }
+
+      .yelpaze.cevapli {
+        align-items: center;
+        gap: 14px;
+        padding-bottom: 4px;
+      }
+
+      .muze-kart {
+        position: relative;
+        width: 90px;
+        height: 146px;
+        margin: 0 -7px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        transform-origin: center bottom;
+        transform: translateY(var(--y, 0px)) rotate(var(--aci, 0deg));
+        transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+        z-index: var(--z, 1);
+      }
+
+      .telefon.kucuk .muze-kart {
+        width: 84px;
+        height: 126px;
+        margin: 0 -6px;
+      }
+
+      /* Yelpaze kavisleri — kenarlara taşmadan elde tutuş yayı */
+      .muze-kart[data-i='0'] {
+        --aci: -8.5deg;
+        --y: 8px;
+        --z: 1;
+      }
+      .muze-kart[data-i='1'] {
+        --aci: -2.8deg;
+        --y: 1px;
+        --z: 2;
+      }
+      .muze-kart[data-i='2'] {
+        --aci: 2.8deg;
+        --y: 1px;
+        --z: 3;
+      }
+      .muze-kart[data-i='3'] {
+        --aci: 8.5deg;
+        --y: 8px;
+        --z: 4;
+      }
+
+      /* Dokunulan / basılı kart yelpazeden yukarı sıyrılıp düzleşir */
+      .yelpaze.biri-basili .muze-kart:not(.basili) {
+        opacity: 0.48;
+      }
+
+      .muze-kart:active,
+      .muze-kart.basili {
+        transform: translateY(-24px) rotate(0deg) scale(1.08);
+        z-index: 10;
+      }
+
+      .kart-govde {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 13px;
+        background: var(--kart-bg);
+        border: 1px solid var(--kart-kenar);
+        box-shadow: var(--kart-golge);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--ink);
+        transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      }
+
+      /* İnce iç müze süs çerçevesi (ipucu vermez) */
+      .kart-govde::before {
+        content: '';
+        position: absolute;
+        inset: 5px;
+        border-radius: 8px;
+        border: 1px solid rgba(var(--pirinc-rgb), 0.22);
+        pointer-events: none;
+      }
+
+      .muze-kart.akim-sus .kart-govde::before {
+        border-style: double;
+        border-width: 3px;
+        border-color: rgba(var(--pirinc-rgb), 0.3);
+      }
+
+      .muze-kart.basili .kart-govde,
+      .muze-kart:active .kart-govde {
+        border-color: var(--pirinc);
+        box-shadow: 0 22px 38px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(var(--pirinc-rgb), 0.45);
+      }
+
+      .kart-sus {
+        width: 10px;
+        height: 10px;
+        color: var(--pirinc);
+        opacity: 0.75;
+        flex: none;
+      }
+
+      .kart-ad {
+        font: 500 13.5px/1.22 var(--sans);
+        text-align: center;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        padding: 0 2px;
+      }
+
+      .telefon.kucuk .kart-ad {
+        font-size: 12.5px;
+      }
+
+      .kart-alt-cizgi {
+        width: 18px;
+        height: 1.5px;
+        border-radius: 99px;
+        background: rgba(var(--pirinc-rgb), 0.42);
+      }
+
+      /* Cevaptan sonra kalan 1 veya 2 kart: düzleşip ters yüz (sonuç) görünür */
+      .yelpaze.cevapli .muze-kart {
+        width: 158px;
+        height: 112px;
+        margin: 0;
+        transform: none;
+        cursor: default;
+        animation: kartDon 380ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .telefon.kucuk .yelpaze.cevapli .muze-kart {
+        width: 152px;
+        height: 98px;
+      }
+
+      @keyframes kartDon {
+        0% {
+          transform: rotateY(90deg) scale(0.94);
+          opacity: 0.5;
+        }
+        100% {
+          transform: rotateY(0deg) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .muze-kart.dogru .kart-govde {
+        background: var(--right-bg);
+        border-color: var(--right);
+      }
+      .muze-kart.dogru .kart-govde::before {
+        border-style: double;
+        border-width: 3px;
+        border-color: rgba(111, 180, 135, 0.48);
+      }
+
+      .muze-kart.yanlis .kart-govde {
+        background: var(--wrong-bg);
+        border-color: var(--wrong);
+      }
+      .muze-kart.yanlis .kart-govde::before {
+        border-style: double;
+        border-width: 3px;
+        border-color: rgba(214, 104, 84, 0.45);
+      }
+
+      .kart-muhur {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bg);
+      }
+
+      .muze-kart.dogru .kart-muhur {
+        background: var(--right);
+      }
+      .muze-kart.yanlis .kart-muhur {
+        background: var(--wrong);
+      }
+
+      .kart-arka-etiket {
+        font: 600 11.5px/1 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* Yalnız durum etiketi + tek dolu geçiş düğmesi ("Tekrar" yok) */
+      .gecis-satir {
+        margin-top: auto;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-ince);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        animation: gecisGel 240ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      @keyframes gecisGel {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .durum-etiket {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font: 600 14px/1 var(--sans);
+      }
+
+      .durum-etiket.dogru {
+        color: var(--right);
+      }
+      .durum-etiket.yanlis {
+        color: var(--wrong);
+      }
+
+      .dolu-dugme {
+        min-height: 46px;
+        padding: 0 22px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        font: 600 14.5px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+
+      .katman {
+        position: absolute;
+        inset: 0;
+        z-index: 25;
+        background: rgba(10, 9, 8, 0.94);
+        backdrop-filter: blur(22px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .katman[hidden] {
+        display: none;
+      }
+
+      .katman-resim {
+        max-width: 100%;
+        max-height: 74%;
+        object-fit: contain;
+        border-radius: 12px;
+      }
+
+      .katman-gizli-not {
+        margin-top: 16px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: rgba(235, 229, 218, 0.08);
+        border: 1px solid rgba(235, 229, 218, 0.14);
+        font: 400 12.5px/1.2 var(--sans);
+        color: #aca498;
+      }
+
+      [data-hareket='az'] *,
+      [data-hareket='az'] *::before,
+      [data-hareket='az'] *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="onizleme-cubuk" aria-label="Şık 5 önizleme denetimleri">
+      <span class="onizleme-ad">Şık 5 · El Yelpazesi Müze Kartları</span>
+      <div class="grup-hap" role="group" aria-label="Durum">
+        <button type="button" data-hal="soru">Soru</button>
+        <button type="button" data-hal="basili">Kart kalkarken</button>
+        <button type="button" data-hal="cevap">Cevap sonrası</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Soru türü">
+        <button type="button" data-soru-tur="sanatci">Bu eser kimin?</button>
+        <button type="button" data-soru-tur="akim">Hangi akım?</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Boyut">
+        <button type="button" data-boyut="390">390×844</button>
+        <button type="button" data-boyut="375">375×667</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Tema">
+        <button type="button" data-tema-sec="gece">Gece</button>
+        <button type="button" data-tema-sec="gunduz">Gündüz</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Hareket">
+        <button type="button" data-hareket-sec="tam">Tam hareket</button>
+        <button type="button" data-hareket-sec="az">Hareketi azalt</button>
+      </div>
+    </nav>
+
+    <main class="sahne-sar">
+      <section class="telefon" id="telefon" aria-label="Soru ekranı önizlemesi">
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <div class="zemin-desen" aria-hidden="true"></div>
+
+        <div class="durum-cubugu" aria-hidden="true">
+          <span>09:41</span>
+          <div class="durum-sag">
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><rect x="0" y="6" width="2.4" height="5" rx="0.8"/><rect x="4" y="4" width="2.4" height="7" rx="0.8"/><rect x="8" y="2" width="2.4" height="9" rx="0.8"/><rect x="12" y="0" width="2.4" height="11" rx="0.8"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x="0.7" y="0.7" width="18.6" height="9.6" rx="2.6" stroke="currentColor" stroke-width="1.2"/><rect x="2.5" y="2.5" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="20.4" y="3.6" width="1.4" height="3.8" rx="0.7" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <div class="ekran" id="ekran"></div>
+
+        <div class="katman" id="buyutKatman" hidden>
+          <button type="button" class="cam-yuvarlak" id="buyutKapat" aria-label="Kapat" style="position:absolute;top:48px;right:18px;color:#ebe5da;background:rgba(24,22,20,0.72);border-color:rgba(235,229,218,0.18);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <img class="katman-resim" id="buyutImg" src="gorseller/01-van-eyck-arnolfini.jpg" alt="Yakın inceleme" />
+          <span class="katman-gizli-not">Eser adı cevaptan sonra görünür</span>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const SANATCI_SIKLAR = ['Jan van Eyck', 'Robert Campin', 'Rogier van der Weyden', 'Petrus Christus'];
+      const AKIM_SIKLAR = ['Kuzey Rönesansı', 'Erken Rönesans', 'Yüksek Rönesans', 'Barok'];
+
+      const durum = {
+        soruTur: 'sanatci',
+        basiliAd: null,
+        cevap: null,
+        soruNo: 3,
+        toplam: 8,
+      };
+
+      const ikonX = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+      const ikonKucukX = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+      const ikonOnay = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+      const ikonIleri = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`;
+      const ikonElmas = `<svg class="kart-sus" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l2.2 4.8L15 8l-4.8 2.2L8 15l-2.2-4.8L1 8l4.8-2.2L8 1z"/></svg>`;
+
+      function cubukGuncelle() {
+        const tel = document.getElementById('telefon');
+        const hal = durum.cevap ? 'cevap' : durum.basiliAd ? 'basili' : 'soru';
+        document.querySelectorAll('[data-hal]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.hal === hal)));
+        document.querySelectorAll('[data-soru-tur]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.soruTur === durum.soruTur)));
+        document.querySelectorAll('[data-boyut]').forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.boyut === '375') === tel.classList.contains('kucuk'))));
+        document.querySelectorAll('[data-tema-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.temaSec === document.documentElement.dataset.tema)));
+        document.querySelectorAll('[data-hareket-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.hareketSec === document.documentElement.dataset.hareket)));
+      }
+
+      function ciz() {
+        const ikinci = durum.soruTur === 'akim';
+        const src = ikinci ? 'gorseller/02-van-eyck-rolin.jpg' : 'gorseller/01-van-eyck-arnolfini.jpg';
+        const oran = ikinci ? 'kare' : 'dikey';
+        const dogru = ikinci ? 'Kuzey Rönesansı' : 'Jan van Eyck';
+        const liste = ikinci ? AKIM_SIKLAR : SANATCI_SIKLAR;
+        const cevapli = durum.cevap !== null;
+        const dogruMu = durum.cevap === dogru;
+        const bilmiyorMu = durum.cevap === '?';
+
+        const gunduz = document.documentElement.dataset.tema === 'gunduz';
+        document.documentElement.style.setProperty('--hale-1', ikinci ? `rgba(138, 52, 62, ${gunduz ? 0.14 : 0.32})` : `rgba(46, 98, 72, ${gunduz ? 0.15 : 0.32})`);
+        document.documentElement.style.setProperty('--hale-2', ikinci ? `rgba(78, 110, 146, ${gunduz ? 0.08 : 0.16})` : `rgba(162, 74, 58, ${gunduz ? 0.08 : 0.15})`);
+
+        const noktalar = Array.from({ length: durum.toplam }, (_, i) => {
+          const n = i + 1;
+          if (n < durum.soruNo) return `<i class="dogru"></i>`;
+          if (n === durum.soruNo) return `<i class="${cevapli ? (dogruMu ? 'dogru' : 'yanlis') : 'simdi'}"></i>`;
+          return `<i></i>`;
+        }).join('');
+
+        const kalan = liste
+          .map((ad, i) => ({ ad, i }))
+          .filter((x) => !cevapli || x.ad === dogru || x.ad === durum.cevap);
+
+        document.getElementById('ekran').innerHTML = `
+          <header class="ust-bar">
+            <button type="button" class="cam-yuvarlak" id="cikisBtn" aria-label="Turdan çık">${ikonX}</button>
+            <div class="birlesik-hap" aria-label="Soru ${durum.soruNo} / ${durum.toplam}">
+              <span class="birlesik-noktalar" aria-hidden="true">${noktalar}</span>
+              <span class="birlesik-sayac">${durum.soruNo} / ${durum.toplam}</span>
+            </div>
+            <span class="seviye-fisilti">Kolay</span>
+          </header>
+
+          <div class="tuval-alan ${oran}">
+            <button type="button" class="eser-btn" id="eserBuyut" aria-label="Sorulan eser — yakın incele">
+              <img src="${src}" alt="Sorulan tablo" />
+            </button>
+          </div>
+
+          <section class="deste-bolge" aria-label="Müze kart destesi">
+            <div class="deste-ust">
+              <div class="baslik-grup">
+                <h1 class="deste-baslik">${ikinci ? 'Hangi akım?' : 'Bu eser kimin?'}</h1>
+                ${ikinci ? `<span class="soru-iki">Soru 2 / 2</span>` : ''}
+              </div>
+              ${!cevapli ? `<button type="button" class="bilmiyorum" id="bilmiyorumBtn">Bilmiyorum</button>` : ''}
+            </div>
+
+            <div class="yelpaze ${cevapli ? 'cevapli' : ''} ${!cevapli && durum.basiliAd ? 'biri-basili' : ''}" role="group" aria-label="Kartlar">
+              ${kalan
+                .map(({ ad, i }) => {
+                  const cls = cevapli
+                    ? ad === dogru
+                      ? ' dogru'
+                      : ad === durum.cevap
+                        ? ' yanlis'
+                        : ''
+                    : durum.basiliAd === ad
+                      ? ' basili'
+                      : '';
+                  if (cevapli) {
+                    const ok = ad === dogru;
+                    return `
+                      <button type="button" class="muze-kart${ikinci ? ' akim-sus' : ''}${cls}" data-i="${i}" data-sec="${ad}" disabled>
+                        <span class="kart-govde">
+                          <span class="kart-muhur" aria-hidden="true">${ok ? ikonOnay : ikonKucukX}</span>
+                          <span class="kart-ad">${ad}</span>
+                          <span class="kart-arka-etiket">${ok ? 'Doğrusu' : 'Seçtiğin'}</span>
+                        </span>
+                      </button>`;
+                  }
+                  return `
+                    <button type="button" class="muze-kart${ikinci ? ' akim-sus' : ''}${cls}" data-i="${i}" data-sec="${ad}">
+                      <span class="kart-govde">
+                        ${ikonElmas}
+                        <span class="kart-ad">${ad}</span>
+                        <span class="kart-alt-cizgi" aria-hidden="true"></span>
+                      </span>
+                    </button>`;
+                })
+                .join('')}
+            </div>
+
+            ${
+              cevapli
+                ? `<div class="gecis-satir" aria-live="polite">
+                     <span class="durum-etiket ${dogruMu ? 'dogru' : 'yanlis'}">
+                       ${dogruMu ? ikonOnay : ikonKucukX}
+                       <span>${dogruMu ? 'Doğru' : bilmiyorMu ? 'Bilmiyorum' : 'Yanlış'}</span>
+                     </span>
+                     ${
+                       !ikinci
+                         ? `<button type="button" class="dolu-dugme" id="ikinciSoruBtn"><span>Hangi akım?</span>${ikonIleri}</button>`
+                         : `<button type="button" class="dolu-dugme" id="basaBtn"><span>Sonraki</span>${ikonIleri}</button>`
+                     }
+                   </div>`
+                : ''
+            }
+          </section>
+        `;
+
+        cubukGuncelle();
+        olaylariBagla(src);
+      }
+
+      function olaylariBagla(src) {
+        document.getElementById('eserBuyut')?.addEventListener('click', () => {
+          document.getElementById('buyutImg').src = src;
+          document.getElementById('buyutKatman').hidden = false;
+        });
+        document.querySelectorAll('[data-sec]').forEach((b) =>
+          b.addEventListener('click', () => {
+            durum.basiliAd = null;
+            durum.cevap = b.dataset.sec;
+            ciz();
+          }),
+        );
+        document.getElementById('bilmiyorumBtn')?.addEventListener('click', () => {
+          durum.basiliAd = null;
+          durum.cevap = '?';
+          ciz();
+        });
+        document.getElementById('ikinciSoruBtn')?.addEventListener('click', () => {
+          durum.soruTur = 'akim';
+          durum.cevap = null;
+          durum.basiliAd = null;
+          ciz();
+        });
+        document.getElementById('basaBtn')?.addEventListener('click', () => {
+          durum.soruTur = 'sanatci';
+          durum.cevap = null;
+          durum.basiliAd = null;
+          ciz();
+        });
+      }
+
+      document.getElementById('buyutKapat').addEventListener('click', () => {
+        document.getElementById('buyutKatman').hidden = true;
+      });
+      document.getElementById('buyutKatman').addEventListener('click', (ev) => {
+        if (ev.target.id === 'buyutKatman') document.getElementById('buyutKatman').hidden = true;
+      });
+
+      document.querySelectorAll('[data-hal]').forEach((b) =>
+        b.addEventListener('click', () => {
+          if (b.dataset.hal === 'soru') {
+            durum.cevap = null;
+            durum.basiliAd = null;
+          } else if (b.dataset.hal === 'basili') {
+            durum.cevap = null;
+            durum.basiliAd = durum.soruTur === 'akim' ? 'Erken Rönesans' : 'Rogier van der Weyden';
+          } else {
+            durum.basiliAd = null;
+            durum.cevap = durum.soruTur === 'akim' ? 'Erken Rönesans' : 'Petrus Christus';
+          }
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-soru-tur]').forEach((b) =>
+        b.addEventListener('click', () => {
+          durum.soruTur = b.dataset.soruTur;
+          durum.cevap = null;
+          durum.basiliAd = null;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-boyut]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.getElementById('telefon').classList.toggle('kucuk', b.dataset.boyut === '375');
+          cubukGuncelle();
+        }),
+      );
+      document.querySelectorAll('[data-tema-sec]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.documentElement.dataset.tema = b.dataset.temaSec;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-hareket-sec]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.documentElement.dataset.hareket = b.dataset.hareketSec;
+          cubukGuncelle();
+        }),
+      );
+
+      const q = new URLSearchParams(location.search);
+      if (q.get('goruntu') === '1') document.body.classList.add('goruntu-modu');
+      if (q.get('tema') === 'gunduz' || q.get('tema') === 'gece') document.documentElement.dataset.tema = q.get('tema');
+      if (q.get('hareket') === 'az') document.documentElement.dataset.hareket = 'az';
+      if (q.get('boyut') === '375') document.getElementById('telefon').classList.add('kucuk');
+      if (q.get('tur') === 'akim') durum.soruTur = 'akim';
+      if (q.get('hal') === 'basili') durum.basiliAd = durum.soruTur === 'akim' ? 'Erken Rönesans' : 'Rogier van der Weyden';
+      if (q.get('hal') === 'cevap') durum.cevap = durum.soruTur === 'akim' ? 'Erken Rönesans' : 'Petrus Christus';
+      ciz();
+    </script>
+  </body>
+</html>
