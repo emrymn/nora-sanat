@@ -128,6 +128,14 @@ genel() {
   xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -hizliAcik
   sleep 15
   xcrun simctl io "$UDID" screenshot ekranlar/8c-hizli-ayar.png
+  # Z3p (İş 180): İncele kipi: genel bakış (kartta eserin adı) ve 2. ayrıntı (kamera kartın dışındaki boşlukta)
+  for INC in -1 1; do
+    xcrun simctl terminate "$UDID" "$PAKET" || true
+    xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici -incele "$INC"
+    sleep 35
+    if [ "$INC" = "-1" ]; then AD=9b-incele-genel; else AD=9c-incele-ayrinti; fi
+    xcrun simctl io "$UDID" screenshot "ekranlar/$AD.png"
+  done
   # G1: tam ekran görüntüleyici (ayrıntı noktası olan ilk eser; katalog ve görsel ağdan gelir)
   xcrun simctl terminate "$UDID" "$PAKET"
   xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici

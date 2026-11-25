@@ -89,6 +89,103 @@ final class GoruntuleyiciTests: XCTestCase {
         }
     }
 
+    /// Z3p (İş 180): `noktaOdagi`'nın `alan`'lı hali, kâhinin `alanliSahneler` vakalarıyla.
+    func testAlanliNoktaOdagiKahin() throws {
+        let (c, _, baglam) = try hazirla()
+        guard let sahneler = c["alanliSahneler"]?.dizi else {
+            throw XCTSkip("cevaplar.json'da alanliSahneler yok: kâhini yeniden çalıştır (node Testler/kahin/goruntuleyici.mjs)")
+        }
+        let vakalar = try XCTUnwrap(c["ayrintiVakalar"]?.dizi)
+        var sayac = 0
+        for (kayit, beklenen) in zip(baglam.ayrintilar, vakalar) {
+            let bNoktalar = try XCTUnwrap(beklenen["noktalar"]?.dizi)
+            for (n, bn) in zip(kayit.noktalar, bNoktalar) {
+                let bOdaklar = try XCTUnwrap(bn["alanliOdaklar"]?.dizi, "\(kayit.anahtar) \(n.ad)")
+                XCTAssertEqual(bOdaklar.count, sahneler.count)
+                for (s, bo) in zip(sahneler, bOdaklar) {
+                    let alan = IncelemeAlani(ust: s["alan"]!["ust"]!.sayi!, alt: s["alan"]!["alt"]!.sayi!)
+                    let odak = try XCTUnwrap(AyrintiKurallari.noktaOdagi(
+                        n,
+                        taban: (s["taban"]!["w"]!.sayi!, s["taban"]!["h"]!.sayi!),
+                        sahne: (s["sahne"]!["w"]!.sayi!, s["sahne"]!["h"]!.sayi!),
+                        enCok: s["enCok"]!.sayi!,
+                        alan: alan
+                    ))
+                    XCTAssertEqual(odak.olcek, bo["olcek"]?.sayi ?? -1, accuracy: 1e-6, "\(kayit.anahtar) \(n.ad)")
+                    XCTAssertEqual(odak.tx, bo["tx"]?.sayi ?? -9999, accuracy: 1e-6, "\(kayit.anahtar) \(n.ad)")
+                    XCTAssertEqual(odak.ty, bo["ty"]?.sayi ?? -9999, accuracy: 1e-6, "\(kayit.anahtar) \(n.ad)")
+                    sayac += 1
+                }
+            }
+        }
+        XCTAssertGreaterThan(sayac, 100)
+    }
+
+    /// Z3p (İş 180): sitenin birim testi (tests/unit/ayrinti.test.mjs, "kartın kapladığı alan") ve kenar vakaları.
+    /// Beklenen değerler sitenin js/ayrinti.js'iyle (@ cca62eb) alındı.
+    func testAlanliNoktaOdagiVakalar() throws {
+        let orta = AyrintiNoktasi(ad: "Orta", x: 0.4, y: 0.4, w: 0.2, h: 0.2, metin: "Ortadaki ayrıntı.")
+        let taban = (w: 390.0, h: 540.0)
+        let sahne = (w: 390.0, h: 844.0)
+        let duz = try XCTUnwrap(AyrintiKurallari.noktaOdagi(orta, taban: taban, sahne: sahne))
+        let altta = try XCTUnwrap(AyrintiKurallari.noktaOdagi(orta, taban: taban, sahne: sahne, alan: IncelemeAlani(ust: 60, alt: 300)))
+        XCTAssertEqual(altta, NoktaOdagi(olcek: 3.496, tx: 0, ty: -120))
+        XCTAssertLessThan(altta.ty, duz.ty)
+        XCTAssertLessThanOrEqual(altta.olcek, duz.olcek)
+        let ustte = try XCTUnwrap(AyrintiKurallari.noktaOdagi(orta, taban: taban, sahne: sahne, alan: IncelemeAlani(ust: 300, alt: 100)))
+        XCTAssertEqual(ustte, NoktaOdagi(olcek: 3.207, tx: 0, ty: 100))
+
+        // Alttaki imza: kartla tablo kartın payı kadar fazladan kayar (-631 yerine -871)
+        let imza = AyrintiNoktasi(ad: "İmza", x: 0.4, y: 0.85, w: 0.2, h: 0.1, metin: "Alttaki imza.")
+        XCTAssertEqual(AyrintiKurallari.noktaOdagi(imza, taban: taban, sahne: sahne), NoktaOdagi(olcek: 3.9, tx: 0, ty: -631))
+        XCTAssertEqual(
+            AyrintiKurallari.noktaOdagi(imza, taban: taban, sahne: sahne, alan: IncelemeAlani(ust: 66, alt: 240)),
+            NoktaOdagi(olcek: 3.9, tx: 0, ty: -871)
+        )
+
+        // Sahneden kısa yatay tablo: kart varken de boşluğa kayar (kartsız kayma 0)
+        let butun = AyrintiNoktasi(ad: "Bütün", x: 0, y: 0, w: 1, h: 1, metin: "Bütün tablo.")
+        let yatay = (w: 390.0, h: 260.0)
+        XCTAssertEqual(AyrintiKurallari.noktaOdagi(butun, taban: yatay, sahne: sahne), NoktaOdagi(olcek: 1.15, tx: 0, ty: 0))
+        XCTAssertEqual(
+            AyrintiKurallari.noktaOdagi(butun, taban: yatay, sahne: sahne, alan: IncelemeAlani(ust: 66, alt: 300)),
+            NoktaOdagi(olcek: 1.15, tx: 0, ty: -117)
+        )
+
+        // Eksi ve NaN pay sıfır sayılır (`Math.max(0, alan.ust || 0)`)
+        let kose = AyrintiNoktasi(ad: "Köşe", x: 0.05, y: 0.1, w: 0.1, h: 0.1, metin: "Sol üstteki ayrıntı.")
+        XCTAssertEqual(
+            AyrintiKurallari.noktaOdagi(kose, taban: (390, 520), sahne: (390, 640), enCok: 2.4, alan: IncelemeAlani(ust: -5, alt: .nan)),
+            NoktaOdagi(olcek: 2.4, tx: 273, ty: 304)
+        )
+    }
+
+    /// Z3p (İş 180): yazı kartının küçük kuralları (js/goruntuleyici.js `incelemeYaz`, `genelBakis`)
+    func testIncelemeKartiKurallari() {
+        let noktalar = (0..<6).map { i in
+            AyrintiNoktasi(ad: "N\(i)", x: 0.1, y: Double(i) * 0.15, w: 0.2, h: 0.1, metin: "Açıklama \(i).")
+        }
+        let kayit = AyrintiKaydi(anahtar: "Q1", noktalar: noktalar)
+        XCTAssertEqual(AyrintiKurallari.kartUstSatiri(kayit, sira: -1), "6 ayrıntı")
+        XCTAssertEqual(AyrintiKurallari.kartUstSatiri(kayit, sira: 1), "2 / 6")
+        XCTAssertEqual(AyrintiKurallari.kartUstSatiri(AyrintiKaydi(birim: "karakter", noktalar: noktalar), sira: -1), "6 karakter")
+
+        // Ortası tablonun alt %38'indeyse (0.62'den aşağıda) kart üste geçer
+        XCTAssertFalse(AyrintiKurallari.kartUstte(nil))
+        XCTAssertFalse(AyrintiKurallari.kartUstte(AyrintiNoktasi(ad: "a", x: 0, y: 0.5, w: 0.1, h: 0.2, metin: "m")))  // 0.60
+        XCTAssertTrue(AyrintiKurallari.kartUstte(AyrintiNoktasi(ad: "a", x: 0, y: 0.5, w: 0.1, h: 0.3, metin: "m")))   // 0.65
+
+        XCTAssertEqual(AyrintiKurallari.halkaOrani(sira: -1, sayi: 6), 0)
+        XCTAssertEqual(AyrintiKurallari.halkaOrani(sira: 2, sayi: 6), 0.5)
+        XCTAssertEqual(AyrintiKurallari.halkaOrani(sira: 5, sayi: 6), 1)
+
+        let alan = IncelemeAlani(ust: 66, alt: 300)
+        XCTAssertEqual(AyrintiKurallari.genelBakisKaymasi(alan: alan, sahneYuksekligi: 844, resimYuksekligi: 520), -117)
+        XCTAssertEqual(AyrintiKurallari.genelBakisKaymasi(alan: alan, sahneYuksekligi: 844, resimYuksekligi: 800), -22)
+        XCTAssertEqual(AyrintiKurallari.genelBakisKaymasi(alan: IncelemeAlani(ust: 300, alt: 120), sahneYuksekligi: 844, resimYuksekligi: 520), 0)
+        XCTAssertEqual(AyrintiKurallari.genelBakisKaymasi(alan: alan, sahneYuksekligi: 844, resimYuksekligi: 0), 0)
+    }
+
     func testYakinlasmaSiniriVeGecerlilik() throws {
         let (c, _, _) = try hazirla()
         let sinirlar = try XCTUnwrap(c["yakinlasmaSinirlari"]?.dizi)

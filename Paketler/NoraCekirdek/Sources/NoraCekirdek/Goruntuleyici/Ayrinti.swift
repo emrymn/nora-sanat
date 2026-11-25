@@ -1,4 +1,4 @@
-// Kaynak: sanat-atlasi js/ayrinti.js @ a866b86
+// Kaynak: sanat-atlasi js/ayrinti.js @ a866b86; İş 180 (`alan`, yazı kartının kuralları): js/ayrinti.js, js/goruntuleyici.js @ cca62eb
 import Foundation
 
 /// Rehberli eser incelemesi noktası (`data/eser_ayrintilari.json` veya `data/eser_hikayeleri.json` karakterleri).
@@ -87,6 +87,18 @@ public struct NoktaOdagi: Equatable, Hashable, Sendable {
     }
 }
 
+/// İş 180: incelemede sahnenin üstünde ve altında yazı kartının ya da düğmelerin kapladığı pay (px).
+/// `noktaOdagi` ayrıntıyı sahnenin geri kalanına sığdırır (sitede `alan: { ust, alt }`).
+public struct IncelemeAlani: Equatable, Hashable, Sendable {
+    public var ust: Double
+    public var alt: Double
+
+    public init(ust: Double, alt: Double) {
+        self.ust = ust
+        self.alt = alt
+    }
+}
+
 /// Rehberli eser incelemesi kuralları (`js/ayrinti.js`).
 public enum AyrintiKurallari {
     public static let enAzNokta = 4
@@ -146,38 +158,72 @@ public enum AyrintiKurallari {
         return r == 0 ? 0 : r
     }
 
-    /// `noktaOdagi(nokta, taban, sahne, { pay = 0.78, enAz = 1.15, enCok = 6 })`
+    /// `noktaOdagi(nokta, taban, sahne, { pay = 0.78, enAz = 1.15, enCok = 6, alan = null })`
+    ///
+    /// İş 180: `alan` verilirse ayrıntı kartın ve düğmelerin dışındaki boşluğa sığdırılıp onun ortasına konur. Kart varken
+    /// sahneden kısa görsel de bu boşluğa kayabilir; kenardaki ayrıntı (ör. alttaki imza) için tablo kartın payı kadar
+    /// fazladan kayar.
     public static func noktaOdagi(
         _ nokta: AyrintiNoktasi?,
         taban: (w: Double, h: Double),
         sahne: (w: Double, h: Double),
         pay: Double = 0.78,
         enAz: Double = 1.15,
-        enCok: Double = 6.0
+        enCok: Double = 6.0,
+        alan: IncelemeAlani? = nil
     ) -> NoktaOdagi? {
         guard let nokta,
               taban.w > 0, taban.h > 0,
               sahne.w > 0, sahne.h > 0 else { return nil }
+        // `Math.max(0, alan.ust || 0)`: NaN ve eksi sıfıra iner
+        let ust = alan.map { $0.ust.isFinite ? max(0, $0.ust) : 0 } ?? 0
+        let alt = alan.map { $0.alt.isFinite ? max(0, $0.alt) : 0 } ?? 0
+        let bosH = max(sahne.h * 0.25, sahne.h - ust - alt)
         let kw = max(0.02, nokta.w) * taban.w
         let kh = max(0.02, nokta.h) * taban.h
-        var olcek = min((sahne.w * pay) / kw, (sahne.h * pay) / kh)
+        var olcek = min((sahne.w * pay) / kw, (bosH * pay) / kh)
         olcek = min(enCok, max(enAz, olcek))
         let mx = (nokta.x + nokta.w / 2.0 - 0.5) * taban.w
         let my = (nokta.y + nokta.h / 2.0 - 0.5) * taban.h
         var tx = -mx * olcek
-        var ty = -my * olcek
+        var ty = -my * olcek + (ust - alt) / 2.0
         let sx = max(0.0, (taban.w * olcek - sahne.w) / 2.0)
-        let sy = max(0.0, (taban.h * olcek - sahne.h) / 2.0)
+        let sy = alan != nil ? abs(taban.h * olcek - sahne.h) / 2.0 : max(0.0, (taban.h * olcek - sahne.h) / 2.0)
         tx = min(sx, max(-sx, tx))
-        ty = min(sy, max(-sy, ty))
-        let yuvarlaOlcek = jsRound(olcek * 1000.0) / 1000.0
-        let yuvarlaTx = jsRound(tx)
-        let yuvarlaTy = jsRound(ty)
+        ty = min(sy + ust, max(-(sy + alt), ty))
         return NoktaOdagi(
-            olcek: yuvarlaOlcek,
-            tx: yuvarlaTx,
-            ty: yuvarlaTy
+            olcek: jsRound(olcek * 1000.0) / 1000.0,
+            tx: jsRound(tx),
+            ty: jsRound(ty)
         )
+    }
+
+    // MARK: İş 180: yazı kartı (js/goruntuleyici.js `incelemeYaz`, `genelBakis`)
+
+    /// Ayrıntının ortası tablonun alt %38'indeyse kart üste geçer (`n.y + n.h / 2 > 0.62`)
+    public static func kartUstte(_ nokta: AyrintiNoktasi?) -> Bool {
+        guard let n = nokta else { return false }
+        return n.y + n.h / 2.0 > 0.62
+    }
+
+    /// Kartın üst satırı: ayrıntıda "2 / 6", genel bakışta "6 ayrıntı" (hikâyede kaydın birimi: "6 karakter")
+    public static func kartUstSatiri(_ kayit: AyrintiKaydi, sira: Int) -> String {
+        let n = kayit.noktalar.count
+        if sira >= 0, sira < n { return "\(sira + 1) / \(n)" }
+        return "\(n) \(kayit.birim.isEmpty ? "ayrıntı" : kayit.birim)"
+    }
+
+    /// İlerle düğmesinin halkasının dolu payı (`1 - strokeDashoffset / HALKA`): genel bakışta 0, son ayrıntıda 1
+    public static func halkaOrani(sira: Int, sayi: Int) -> Double {
+        guard sayi > 0 else { return 0 }
+        return min(1, max(0, Double(sira + 1) / Double(sayi)))
+    }
+
+    /// Genel bakışta tablonun dikey kayması: kartın üstünde kalan boşluğa doğru, sahneden çıkmadan
+    /// (`Math.round(Math.min(0, Math.max((p.ust - p.alt) / 2, -(r.height - h) / 2)))`)
+    public static func genelBakisKaymasi(alan: IncelemeAlani, sahneYuksekligi: Double, resimYuksekligi: Double) -> Double {
+        guard resimYuksekligi > 0, sahneYuksekligi > 0 else { return 0 }
+        return jsRound(min(0, max((alan.ust - alan.alt) / 2.0, -(sahneYuksekligi - resimYuksekligi) / 2.0)))
     }
 
     /// `noktaYeri(n)`: noktanın işaretinin yeri (görselin kutusuna göre yüzde: kutunun ortası)
