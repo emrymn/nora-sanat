@@ -183,7 +183,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
 | Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
 | Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
-| Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
+| Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | PR açık (#47) |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
@@ -1109,7 +1109,21 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Bitiş.** "En çok neye baktın?" gibi kısa bir soru ya da o sanatçının tekrar kartı.
 - **Giriş yerleri.** Görüntüleyicide "Dinleyerek bak" düğmesi; günün tablosu; widget ve Siri ("günün tablosuna bak").
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-24 · PR #47 (dal `claude/Y1-dinle`). main @ `8570f83` (#44) üstüne; #45 ve #46 o gün henüz birleşmemişti, onların dosyalarına dokunulmadı.
+- **Çekirdek** (`NoraCekirdek/Dinle/DinlemePlani.swift`, `DinlemeTests`: 12 test, gerçek veriyle de):
+  - `DinlemePlani.kur(kaynak, sure:)` → adımlar: `acilis` (tablonun tamamı; künye "Ad. Sanatçı, tarih." + eser notu) → `anlati` (hikâyenin "Ne oluyor?" paragrafları, sığarsa) → `nokta` (sırayla) → `anlati` (ressamla bağı, gözden kaçanlar; sığarsa) → `sessiz` (söz yok, en çok 60 sn) → `kapanis` (tablonun tamamı, "Şimdi tablonun tamamına bir kez daha bak.").
+  - Öncelik noktalarda: önce sığan noktalar (en az bir tane), sonra hikâye. Kalan süre noktaların yaklaşmasını 40 sn'ye kadar uzatır, sonra sessiz bakış. Plan seçilen süreyi aşmaz (tek uzun nokta dışında).
+  - Her adım: `yaklasma` (kameranın varış süresi), `gecikme` (söz ne zaman başlar), `konusma` (tahmini; harf/12 + cümle başına 0,35 sn), `sessizlik`. Nokta: gecikme 3, sessizlik 5, toplam 20–40 sn.
+  - `DinlemeKurallari.kaynak(...)`: noktalar `eser_ayrintilari.json` → `yuruyus.json` (`yuruyusNoktalari`: aynı sanatçının kaydı, QID ya da görselin yerel adı tutarsa) → hikâyenin kutulu karakterleri. Önceki kaynakta aynı adlı ya da ≥ 0,5 örtüşen nokta atlanır; bir kaynağın kendi noktaları olduğu gibi kalır.
+  - Nokta yoksa anlatılar `gezintiKutulari` arasında dolaşır (tablonun %60'ı, yumuşak yakınlaşma).
+- **Ekran** (`NoraSanat/Ekranlar/Dinle/`):
+  - `DinleEkrani`: kurulum (3/5/10 dk, "Sesli / Yalnız altyazı"; `@AppStorage` `dinleSuresi`, `dinleSessiz`), oynatma (altyazı kartı, önceki/duraklat/sonraki, adım çizgisi), bitiş ("En çok neye baktın?" + ayrıntı hapları, "Yeniden dinle", "Bitir"). Kamera `AyrintiKurallari.noktaOdagi(pay 0,72, enCok 4)`; ayrıntı altyazı kartının üstündeki alana ortalanır. Tabloya dokununca arayüz gizlenir (kamera tam ekrana göre yeniden ortalanır). Hareket azaltılmışsa: sön (0,8 sn) → yer değiştir → belir (1,2 sn). `isIdleTimerDisabled` açılışta açık, kapanışta kapalı; ev çubuğu gizli. Görsel önce 1280, sonra devasa 4096 kopya.
+  - `DinleOynatici`: 0,1 sn'lik saat yalnız oynarken işler; duraklatınca söz `pauseSpeaking(.word)`, kamera animasyonu (SwiftUI) durmaz, hedefine varır. "Önceki": adımın ilk 3 sn'sinde bir önceki adım, sonra adımın başı. Kilit ekranı/kulaklık: `MPRemoteCommandCenter` oynat, duraklat, aç/kapa, sonraki, önceki; Now Playing: eser adı, sanatçı, "Dinleyerek bak", süre, geçen süre, bölüm sırası, tablonun resmi. Ses kesintisinde duraklar (sürdürmeyi kullanıcı yapar). Sessiz seçenekte ses oturumu ve kilit ekranı denetimleri açılmaz.
+  - `DinleSesi`: `AVSpeechSynthesizer`, en iyi Türkçe ses (`quality` en yüksek: premium > gelişmiş > varsayılan), hız 0,9 × olağan. Ses oturumu `.playback` + `.spokenAudio` (sessiz moddayken de duyulur, öbür sesleri durdurur). Söz aralarında `AVAudioEngine` sessiz bir tamponu döngüde çalar: yoksa iOS uygulamayı arka planda askıya alır ve akış kilit ekranında durur.
+- **Ortak dosyalarda küçük ekler:** `Goruntuleyici.swift` (`dinleAcik`, eylem satırında "Dinleyerek bak": `ViewThatFits` ile yer yoksa yalnız simge; `fullScreenCover`), `BugunSekmesi.swift` (`Acilis.dinle`, haplardan sonra kulaklık düğmesi), `NoraSanatApp.swift` (DEBUG `-ekran dinle`), `Config/Info.plist` (`UIBackgroundModes: audio`), `Testler/ci/ekran.sh` (genel grup: `9d-dinle-kurulum`, `9e-dinle-ayrinti` = `-ekran dinle -dinleAdim 1`, sessiz).
+- **Yapılmayanlar (sonraki iş):** widget ve Siri girişi ("günün tablosuna bak": App Intent + `norasanat://dinle`), StandBy ve AirPlay için özel düzen (tam ekran örtü olduğu için yansıtmada da tam ekran; ayrıca denenmedi), bitişte sanatçının tekrar kartı. Planın konuşma süresi tahmin; gerçek sesle süre ±%15 kayabilir (söz bitmeden adım geçmez, yalnız toplam uzar/kısalır).
+- **Tuzaklar:** `Ornekler/yuruyus.json` eski biçim (noktalarda koordinat yok); testler `Ornekler/site_verisi/yuruyus.json`'ı kullanır. Söz durdurulunca gelen geç "bitti" haberi yeni sözü bitirmesin diye `DinleSesi` sözün kimliğini tutar.
+- **CI:** yeşil (iOS derleme #249, `13581b6`: derleme, çekirdek testleri, 7 ekran grubu). `9d-dinle-kurulum` OCR'da: "DİNLEYEREK BAK · Assisi'li Aziz Franciscus ve Yaşamından Sahneler · Bonaventura Berlinghieri · 1235 · 3 dk 5 dk 10 dk · Sesli / Yalnız altyazı · 8 ayrıntı · yaklaşık 5 dk · Başla" (ayrıntılar + yürüyüş birleşti). `9e-dinle-ayrinti` (sessiz, 1. adımdan) arşivde; oturumdan indirilemedi, denetçi baksın. Gerçek ses, kilit ekranı ve kulaklık denetimleri simülatörde sınanmadı: telefonda denenmeli.
 
 ### Fikir havuzu (henüz iş değil)
 - Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
