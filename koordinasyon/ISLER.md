@@ -185,7 +185,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
 | Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
 | Z3w | Galeri › Akımlar Neon'un "Yön 2 · Kemerlerin yayı" tasarımıyla (Emre seçti; dal `neon/galeri-akimlar-2`, PR #60) | K | Z3u | 1 | PR açık (#61) |
-| Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | sürüyor (Claude, 2026-11-25) |
+| Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | PR açık (#68) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1097,6 +1097,47 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
 - **Ayrıca:** sanatçı künyesindeki "Dinle" yazısı sitedeki gibi `--vurgu-acik` (`.isim-ek .dinle`; önce vurgu ile mürekkebin karışımıydı, eserin rengi görünmüyordu).
 - **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
 
+
+### Z3y · Yolculuk soru ekranı: Geniş Tuval + El Yelpazesi (Claude)
+**Devir notu:** Claude, 2026-11-25 · [PR #68](https://github.com/emrymn/nora-sanat/pull/68) · dal `claude/Z3y-soru-ekrani`.
+- **Kaynak:** yeni tasarım; sitede yok, kâhin yerine davranış testi ve CI görüntüsü var. Tasarım dalı `neon/soru-tasarim` (PR #67, birleştirilmedi, yalnız referans). Emre iki parça seçti:
+  - üst kısım: **Yön 3 · Geniş Tuval** (`tasarim/soru/yon-3.html`);
+  - şıklar: **Şık 5 · El Yelpazesi** (`tasarim/soru/sik-5.html`, `BENIOKU.md` "Üçüncü Tur" ve titreşim tablosu, `goruntuler/sik-5-*.png`, `yon-3-*.png`).
+- **Çekirdek** `NoraCekirdek/Yolculuk/SoruYelpazesi.swift`, testi `SoruYelpazesiTests`:
+  - `aci`, `dusus`: dört kartta −8.5/−2.8/+2.8/+8.5° ve 8/1/1/8 pt; başka kart sayısında aynı yay.
+  - `kart(i, adet:, basili:, hareketAz:)`: basılı kart −24 pt, 0°, ×1,08, en üstte; ötekiler %48. Hareket azaltılmışsa yalnız sönme var.
+  - `olcu(genislik:, yukseklik:, adlar:)`:
+    - Yükseklik 700'den kısaysa küçük düzen. Sabit alt yükseklik 260 / 228, kart boyu 146 / 126.
+    - Kart genişliği yatay taşma olmayacak en büyük değer (dönük uç kartın taşması dahil; 390'da 93 pt, tasarımda 90).
+    - Yazı boyu 13,5'ten 11'e kadar denenir: en uzun ad en çok 2 satır olmalı, hiçbir sözcük ortasından kırılmamalı.
+    - Cevaptan sonraki iki kart 158 × 112 (küçükte 152 × 98).
+  - `satirSayisi` / `yaziGenisligi`: Archivo için yaklaşık harf enleri, %3 payla. "Rogier van der Weyden" 390'da 12,5 pt'de 2 satır; tasarımın 90 pt kartında 3 satırdı.
+  - `noktalar`: en çok 12 nokta, daha uzun turda ince çubuk. `kalanlar`: D3, yalnız doğru ve seçilen şık.
+- **Ekran** (`BolumSoruKarti`; `SoruUstu`, `TurCubugu`, `SecenekDugmesi` Yolculuk'ta artık kullanılmıyor, Çalış'ta aynen):
+  - Üst çubuk 52 pt: cam × (`Turdan çık`), birleşik hap (`sayac`; noktalar + "n / N"), pirinç seviye.
+  - Eser alanı = ekran − 52 − sabit alt yükseklik. `SoruGorseli` kırpmaz, köşe 16. Esere dokununca `Titresim.secim` ve adı gizli büyütme. Görsel açılmazsa `baskaEser` (bugünkü gibi).
+  - Başlık satırı: "Bu eser kimin?" / "Hangi akım?", karışık turda pirinç "Soru 1 / 2" / "Soru 2 / 2", sağda "Bilmiyorum" (`bilmiyorum`).
+  - Yelpaze: `MuzeKarti` (elmas, ad, alt çizgi, pirinç iç çerçeve; akım sorusunda çift çizgi). Gündüz'de keten doku (`Canvas`).
+    - Basılı an bir `ButtonStyle` ile (`KartBasisi`); parmak karttan çekilirse seçilmez. Titreşim `Titresim.secim`.
+    - Erişilebilirlik: "Şık N, ad"; kimlikler `sik-0…3`, grup kimliği `sanatci-secenekleri` / `akim-secenekleri`.
+  - Cevaptan sonra: yelpaze aşağı kayıp söner; `KartArkasi` y ekseninde 90°'den döner (`rotation3DEffect`). Yeşil/mercan mühür ve "Doğrusu" / "Seçtiğin" görünür.
+  - Geçiş satırı: durum (`sonuc`; `CevapYazilari.sonuc/akimSonucu`, tekrar notu küçük) ve tek dolu düğme (`sonraki`: "Hangi akım?" / "Sonraki" / "Turu bitir"). "Hangi akım?"da `Titresim.dokunus`. Cevap VoiceOver'a duyurulur.
+  - Doğru ve yanlış titreşimi zaten `BolumOyunu.yap(.cevapla)` içindeydi.
+  - Hareket azaltılmışsa (ayar ya da sistem) bütün geçişler animasyonsuz.
+- **Cevap yaprağı:** içerik aynı (doğru sanatçı, eser, ipucu, Yan yana bak / Karşılaştır, Ayrıntılar, Sanatçı).
+  - Sonuç satırı ve "Sonraki kart" düğmesi yapraktan geçiş satırına taşındı; iki kez görünmesin diye.
+  - Yaprak sabit alanın altında, `ScrollView` içinde; cevaptan önce kaydırma kapalı. Kartlar döndükten 0,52 sn sonra ekran yaprağın başı görüntünün %80'ine gelene kadar kayar.
+  - Eser küçülmez, yalnız yukarı kayar. Emre "hiç kaymasın" derse `onChange(of: cevaplandi)` içindeki `scrollTo` silinir.
+- **Hale:** `SoruHalesi`, iki radyal geçiş: vurgu ve vurguKoyu. Vurgu `BolumTuruEkrani`'nde `.ekranRengi(url:)` ile sorulan eserin paletinden gelir (Pekiştirme'deki gibi; `.id`'nin dışında). Ters kartta renk değişmez. Eski `SoruIsigi` + `HaleNefes` bu ekranda yok.
+- **Ortak dosyada küçük değişiklik:** `PekistirmeOgeleri.swift` → `SoruGorseli.kose` (varsayılan 4), yüklenirken yer tutucunun eni `enGenis`'i aşmaz.
+- **Tasarımdan farklar:**
+  - Geçilen noktalar pirinç (tasarımda yeşil): turda kart kart sonuç saklanmıyor.
+  - Zeminde dönem deseni yok.
+  - Kartlar ekrana göre genişliyor.
+  - Yaprak ayrı bir parça olarak sabit alanın altında; Yön 3'teki gibi tepsinin kendisi genişlemiyor.
+- **CI** (`Testler/ci/ekran.sh`, yolculuk): `soru` / `cevap` yan yana görüntüleri eskisi gibi.
+  - Yeni: yalnız yerli `-yolculukProva cevap-yanlis`; ilk sorusunda yanlış şık seçilir. Görüntü: `yerli-yolculuk-cevap-yanlis.png`; OCR "Seçtiğin" sözünü arar.
+  - Linux'ta Swift yok; derleme ve `swift test` yalnız CI'da.
 
 ### Z3w · Galeri › Akımlar: Kemerlerin yayı (Claude)
 **Devir notu:** Claude, 2026-11-25 · [PR #61](https://github.com/emrymn/nora-sanat/pull/61) · dal `claude/Z3w-galeri-akimlar`. Yeni tasarım, sitede yok (sitede hâlâ çark var; kâhin yerine davranış testi ve CI görüntüsü). Kaynak: dal `neon/galeri-akimlar-2` (PR #60, birleştirilmedi, yalnız referans), Emre **Yön 2**'yi seçti: `tasarim/galeri-akimlar-2/yon-2.html` (`cizKonum`, `centikCiz`), `BENIOKU.md` "Yön 2", `goruntuler/yon-2-{gece,gunduz,gecis}.png`.
