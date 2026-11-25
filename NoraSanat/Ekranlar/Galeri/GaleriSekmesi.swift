@@ -236,17 +236,27 @@ struct GaleriSekmesi: View {
             ? g.carkKapagi(salonlar[sayfa].ad, il).flatMap { resim.url($0, 400) } : nil))
     }
 
+    /// Z3m: sanatçının ilk eseri (`sanatciEserleri(s)[0]`; sanatçı, tüm eserler ve karşılaştırma sayfasının rengi)
+    private func ilkEser(_ id: String, _ g: GaleriKatalogu) -> Eser? { g.eserler[id]?.first }
+
     @ViewBuilder private func hedefSayfa(_ hedef: GaleriYolu, _ g: GaleriKatalogu, _ il: Ilerleme) -> some View {
         let e = eylem
+        let r = GaleriResim(galeri: g, il: il)
         switch hedef {
         case .akim(let ad):
             AkimSalonu(ad: ad, galeri: g, il: il, eylem: e)
         case .sanatci(let id):
             if let s = g.katalog.harita[id] {
+                // Z3m: `ekranRengi(ilk eser, akimRenk(s.akim))` (gozat.js sanatciSayfasi)
                 SanatciSayfasi(s: s, galeri: g, il: il, eylem: e) { k, l in AnyView(kirpim(k, l, g, il)) }
+                    .ekranRengi(url: ilkEser(s.id, g).flatMap { r.url($0, 400) }, yedek: r.akimRengi(s.akim))
             }
         case .eserler(let id):
-            if let s = g.katalog.harita[id] { TumEserler(s: s, galeri: g, il: il, eylem: e) }
+            if let s = g.katalog.harita[id] {
+                // Z3m: gozat.js tumEserler: sanatçının ilk eseri
+                TumEserler(s: s, galeri: g, il: il, eylem: e)
+                    .ekranRengi(url: ilkEser(s.id, g).flatMap { r.url($0, 400) }, yedek: r.akimRengi(s.akim))
+            }
         case .koleksiyon:
             KoleksiyonSayfasi(galeri: g, il: il, eylem: e)
         case .konular(let tur):
@@ -256,12 +266,17 @@ struct GaleriSekmesi: View {
                            eylem: e, ust: ust(.konular, g, il))
         case .konu(let id):
             if let k = g.konular.first(where: { $0.id == id }) {
+                // Z3m: gozat.js konuSayfasi: `ekranRengi(kapakSec(eserler), '#8A827A')`
                 KonuSayfasi(konu: k, galeri: g, il: il, eylem: e) { x, l, metin in AnyView(kirpim(x, l, g, il, aciklama: metin)) }
+                    .ekranRengi(url: g.konuKapagi(g.konuEserleri(k)).flatMap { r.url($0, 400) }, yedek: "#8A827A")
             }
         case .akimKarsilastir(let a, let b):
             AkimKarsilastir(a: a, b: b, galeri: g, il: il, eylem: e)
         case .sanatciKarsilastir(let a, let b):
+            // Z3m: gozat.js karsilastirSayfasi: birinci sanatçının ilk eseri
             SanatciKarsilastir(a: a, b: b, galeri: g, il: il, eylem: e)
+                .ekranRengi(url: ilkEser(a, g).flatMap { r.url($0, 400) },
+                            yedek: g.katalog.harita[a].map { r.akimRengi($0.akim) })
         case .ara:
             AramaSayfasi(galeri: g, il: il, dizin: dizin, sorgu: $sorgu, eylem: e)
         case .zaman:
@@ -271,10 +286,15 @@ struct GaleriSekmesi: View {
                             ust: ust(.basyapitlar, g, il))
         case .okuma(let id), .okumaDers(let id):
             if let b = BasyapitKurallari.bul(g.basyapitlar, id) {
+                // Z3m: basyapit.js basyapitSayfasi: `ekranRengi(eser, akimRenk(s.akim))`
+                let renkUrl = BasyapitKurallari.eser(g.eserler[b.sanatci] ?? [], b).flatMap { r.url($0, 400) }
+                let renkYedek = g.katalog.harita[b.sanatci].map { r.akimRengi($0.akim) }
                 if case .okumaDers = hedef {
                     YakinOkuma(b: b, galeri: g, il: il, baglam: basyapitBaglami, dersler: dersler, derinAcik: true, eylem: e).id(id)
+                        .ekranRengi(url: renkUrl, yedek: renkYedek)
                 } else {
                     YakinOkuma(b: b, galeri: g, il: il, baglam: basyapitBaglami, dersler: dersler, eylem: e).id(id)
+                        .ekranRengi(url: renkUrl, yedek: renkYedek)
                 }
             } else {
                 // `hataGoster`: "Bu eser için yakın okuma bulunamadı."

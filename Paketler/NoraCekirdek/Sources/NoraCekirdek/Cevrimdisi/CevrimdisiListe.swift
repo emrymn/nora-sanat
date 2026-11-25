@@ -59,11 +59,25 @@ public struct CevrimdisiListe: Codable, Sendable, Equatable {
 
     /// Adresin tahmini boyu (bayt) — `tahminiBayt(u)`
     public func tahminiBayt(_ u: String) -> Double {
-        if u.range(of: "/d/[0-9a-f]", options: .regularExpression) != nil {
+        if Self.klasorde(u, "d") {
             return devasaSayisi > 0 && devasaBayt > 0 ? devasaBayt / Double(devasaSayisi) : 3.3e6
         }
-        if u.range(of: "/k/[0-9a-f]", options: .regularExpression) != nil { return Self.kOrtalamaBayt }
+        if Self.klasorde(u, "k") { return Self.kOrtalamaBayt }
         return Self.bOrtalamaBayt
+    }
+
+    /// `/d/[0-9a-f]` gibi: adreste "/<harf>/" ve hemen ardından küçük onaltılık rakam var mı.
+    /// Z3s: önceden `range(of:options: .regularExpression)` her çağrıda düzenli ifadeyi yeniden derliyordu; bir parça
+    /// hazırlanırken on binlerce kez çağrılıp telefonu kasıyordu (kullanıcı: "telefon aşırı kasmaya başladı").
+    static func klasorde(_ u: String, _ harf: Character) -> Bool {
+        let b = Array(u.utf8)
+        guard let h = harf.asciiValue, b.count >= 4 else { return false }
+        let bolu = UInt8(ascii: "/")
+        for i in 0..<(b.count - 3) where b[i] == bolu && b[i + 1] == h && b[i + 2] == bolu {
+            let c = b[i + 3]
+            if (c >= UInt8(ascii: "0") && c <= UInt8(ascii: "9")) || (c >= UInt8(ascii: "a") && c <= UInt8(ascii: "f")) { return true }
+        }
+        return false
     }
 
     private func hesaplaToplam() -> Double {

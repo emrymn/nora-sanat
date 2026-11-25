@@ -140,7 +140,7 @@ struct YakinOkuma: View {
         .tint(Color(r.murekkep))
         .task(id: b.anahtar) { await yukle() }
         .task(id: "\(baglam != nil)|\(ders != nil)|\(derin)") { metinleriKur() }
-        .fullScreenCover(item: $yanYana) { x in YanYana(secim: x) { eylem.git(.okuma(x.anahtar)) } }
+        .fullScreenCover(item: $yanYana) { x in YanYana(secim: x) { if let a = x.anahtar { eylem.git(.okuma(a)) } } }
         .onAppear { if derinAcik { derin = true } }
     }
 
@@ -430,8 +430,7 @@ struct YakinOkuma: View {
             ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(Array(l.enumerated()), id: \.offset) { _, x in
-                        let oteki = x.anahtar.flatMap { BasyapitKurallari.bul(galeri.basyapitlar, $0) }
-                        let e2 = oteki.flatMap { BasyapitKurallari.eser(galeri.eserler[$0.sanatci] ?? [], $0) }
+                        let e2 = kiyasEseri(x)
                         let yazi = VStack(alignment: .leading, spacing: 0) {
                             Text(x.sanatci).font(Yazi.sans(13, agirlik: 600, stil: .footnote)).cssSatir(.sans, 13, 18)
                                 .foregroundStyle(Color(r.murekkep2))
@@ -442,10 +441,10 @@ struct YakinOkuma: View {
                         }
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
-                        if oteki != nil, let e2, eser != nil {
+                        if let e2, eser != nil {
                             Button { yanYanaAc(x) } label: {
                                 VStack(alignment: .leading, spacing: 12) {
-                                    resim.gorsel(e2, 900).frame(width: 280, height: 150)
+                                    resim.odakli(e2, 900).frame(width: 280, height: 150)
                                         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                                     yazi
                                 }
@@ -469,12 +468,22 @@ struct YakinOkuma: View {
         }
     }
 
-    /// `yanYanaAc({ bu, oteki, k })`: bu eser ve önerinin başyapıt kaydındaki eseri
+    /// Önerinin eseri: başyapıt kaydındaki eser (sitedeki gibi), yoksa (Z3q) sanatçının katalogunda birebir tutan tek eser
+    private func kiyasEseri(_ x: BasyapitSayfasi.Karsilastirma) -> Eser? {
+        if let oteki = x.anahtar.flatMap({ BasyapitKurallari.bul(galeri.basyapitlar, $0) }) {
+            return BasyapitKurallari.eser(galeri.eserler[oteki.sanatci] ?? [], oteki)
+        }
+        let sanatcilar = galeri.katalog.sanatcilar.map { s in (id: s.id, adlar: [s.ad, s.adArama].compactMap { $0 }) }
+        return BasyapitSayfasi.katalogEseri(x, sanatcilar: sanatcilar, eserler: galeri.eserler,
+                                            haric: Set([b.anahtar] + (eser.map { [$0.anahtar] } ?? [])))
+    }
+
+    /// `yanYanaAc({ bu, oteki, k })`: bu eser ve önerinin eseri; "Eserin sayfası" yalnız başyapıt kaydı olanda
     private func yanYanaAc(_ x: BasyapitSayfasi.Karsilastirma) {
-        guard let e = eser, let oteki = x.anahtar.flatMap({ BasyapitKurallari.bul(galeri.basyapitlar, $0) }),
-              let e2 = BasyapitKurallari.eser(galeri.eserler[oteki.sanatci] ?? [], oteki) else { return }
+        guard let e = eser, let e2 = kiyasEseri(x) else { return }
+        let anahtar = x.anahtar.flatMap { BasyapitKurallari.bul(galeri.basyapitlar, $0) }?.anahtar
         yanYana = YanYanaSecimi(bu: e, buAd: [b.baslik, b.tarih].filter { !$0.isEmpty }.joined(separator: " · "),
-                                oteki: e2, otekiAd: x.eser, k: x, anahtar: oteki.anahtar, resim: resim)
+                                oteki: e2, otekiAd: x.eser, k: x, anahtar: anahtar, resim: resim)
     }
 
     // MARK: Künye, sözlük, sıradaki
@@ -497,7 +506,7 @@ struct YakinOkuma: View {
                 Button { eylem.git(.okuma(sonraki.anahtar)) } label: {
                     ZStack(alignment: .bottomLeading) {
                         Color(r.yuzey)
-                        if let e2 { resim.gorsel(e2, 900) }
+                        if let e2 { resim.odakli(e2, 900) }
                         LinearGradient(colors: [.black.opacity(0), .black.opacity(0.78)], startPoint: .top, endPoint: .bottom)
                             .frame(height: 232 * 0.6).frame(maxHeight: .infinity, alignment: .bottom)
                         VStack(alignment: .leading, spacing: 2) {

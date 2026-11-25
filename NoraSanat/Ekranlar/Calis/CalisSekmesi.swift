@@ -28,9 +28,26 @@ struct CalisSekmesi: View {
 
     @State private var model = PekistirmeModeli()
     @State private var altSayfa: AltSayfa = .ana
-    @State private var masaSekmesi: CalisAnaGorunumu.CalisMasaSekmesi = .dersler
+    /// Z3u: ana ekranın kaydırılacağı bölüm (eski Dersler / Başka turlar sekmelerinin yerine: "turlar" → Derinleşmek istersen)
+    @State private var kaydirHedefi: String?
     @State private var onayKipi: PekistirmeKipi?
     @State private var onaySeviyesi: Int?
+
+    /// Z3m: bugünün dersinin akımı (Çalış girişindeki büyük kapak)
+    private var bugununDersi: String? {
+        guard let k = model.katalog, let il = model.ilerleme, !il.acikSanatcilar(k.sanatcilar).isEmpty else { return nil }
+        return CalisAnaGorunumu.dersler(model, katalog: k, il: il).bugun?.akim
+    }
+
+    /// Z3m: `kapaklariDoldur`: `if (e && el === buyukKapak) ekranRengi(e, akimRenk(ders.akim))`; kapak yoksa renk değişmez
+    private func dersRengi(_ akim: String?) -> (url: URL?, yedek: String?) {
+        guard let akim, let k = model.katalog, let il = model.ilerleme,
+              let b = CalisDersKurallari.dersBilgisi(kaynak: model.dersKaynagi, yuruyus: model.yuruyus, katalog: k,
+                                                     ilerleme: il, akim: akim),
+              let e = CalisDersKurallari.dersKapakEseri(b, katalog: k, kotuler: il.kotuGorseller)
+        else { return (nil, nil) }
+        return (model.gorsel(e, 400), k.akimRenk[akim].flatMap { $0.isEmpty ? nil : $0 } ?? "#8A827A")
+    }
 
     enum AltSayfa: Equatable {
         case ana
@@ -57,13 +74,15 @@ struct CalisSekmesi: View {
                 case .ana:
                     CalisAnaGorunumu(
                         model: model,
-                        masaSekmesi: $masaSekmesi,
+                        kaydirHedefi: $kaydirHedefi,
                         turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) },
                         derseGit: { akim in gecis { altSayfa = .ders(akim) } },
                         adimaGit: { akim, adim in gecis { altSayfa = .adim(akim, adim) } },
                         donemlereGit: { salonlaraIn in gecis { altSayfa = .donem(salonlaraIn: salonlaraIn) } },
                         adreseGit: { adreseGit($0) }
                     )
+                    // Z3m: Çalış'ın girişi bugünün dersinin kapağının rengini alır (ders.js kapaklariDoldur)
+                    .ekranRengi(dersRengi(bugununDersi))
                     .transition(.move(edge: .leading))
                 case .donem(let salonlaraIn):
                     DonemTurlariGorunumu(
@@ -83,6 +102,8 @@ struct CalisSekmesi: View {
                         adreseGit: { adreseGit($0) },
                         adimaGit: { adim in gecis { altSayfa = .adim(akim, adim) } }
                     )
+                    // Z3m: ders sayfası kapağının rengi (ders.js kapaklariDoldur)
+                    .ekranRengi(dersRengi(akim))
                     .transition(.move(edge: .trailing))
                     .zIndex(1)
                 case .adim(let akim, let adim):
@@ -97,6 +118,8 @@ struct CalisSekmesi: View {
                         turBaslat: { kip, seviye in turBaslatIstegi(kip, seviye: seviye) }
                     )
                     .id("\(akim)|\(adim.rawValue)")
+                    // Z3m: sitede adımlar renk yazmaz; ders sayfasından gelinen kapak rengi sürer
+                    .ekranRengi(dersRengi(akim))
                     .transition(.move(edge: .trailing))
                     .zIndex(2)
                 }
@@ -128,7 +151,7 @@ struct CalisSekmesi: View {
                         altSayfa = .donem(salonlaraIn: NoraSanatApp.arguman("-calisKaydir") == "salon")
                     } else if sayfa == "turlar" {
                         altSayfa = .ana
-                        masaSekmesi = .turlar
+                        kaydirHedefi = "turlar"
                     } else if sayfa.hasPrefix("ders:") {
                         // `ders:<akım>` ya da `ders:<akım>:<adım>`
                         let p = sayfa.dropFirst(5).split(separator: ":", maxSplits: 1).map(String.init)
@@ -605,16 +628,9 @@ enum CalisKarsilastirma {
     static let hazir = FileManager.default.temporaryDirectory.appendingPathComponent("calis-hazir")
 
     @MainActor
-    static func kaydir(
-        _ kaydir: ScrollViewProxy,
-        masaSekmesi: Binding<CalisAnaGorunumu.CalisMasaSekmesi>
-    ) async {
+    static func kaydir(_ kaydir: ScrollViewProxy) async {
         try? await Task.sleep(nanoseconds: 3_000_000_000)
         if let b = bolum {
-            if b == "turlar" {
-                masaSekmesi.wrappedValue = .turlar
-                try? await Task.sleep(nanoseconds: 300_000_000)
-            }
             kaydir.scrollTo(b, anchor: .top)
         }
         try? await Task.sleep(nanoseconds: 1_000_000_000)
