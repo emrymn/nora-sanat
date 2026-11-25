@@ -1,11 +1,13 @@
 // Kaynak: sanat-atlasi js/ekranlar/ayarlar.js (ayarlarSayfasi'ndaki data-test="devasa-indir" bölümü, devasaBilgisi,
-// devasaGoster, devasaSil), css/app.css (.ayar, .ayar .dugme, progress, .mesaj) @ a866b86
+// devasaGoster, devasaSil) @ a866b86
+// Z3x: görünüş Neon'un Yön 2'si (yon-2.html "Görseller ve çevrimdışı"): "En büyük kopyalar" satırı, yüzde, 3 pt ilerleme
+// çizgisi (süren pirinç, biten yeşil), İndir / İndirmeyi sürdür · Durdur · Telefondan sil; sitenin uzun açıklaması
+// kartın altında dipnot. Davranış C5'teki gibi.
 import NoraCekirdek
 import SwiftUI
 
 /// "En büyük kopyaları telefona indir" (C5). İndirme Swift'te (`CevrimdisiIndirici`); yazılar ve düğmeler sitenin
-/// kurallarıyla (`CevrimdisiGorunum`). Sitedeki gibi yalnız indirilecek görsel varsa görünür. (C4b'de bu bölüm gizli
-/// sitenin #/ayarlar sayfasını okuyordu; artık siteye dokunmaz.)
+/// kurallarıyla (`CevrimdisiGorunum`), satırın özeti `CevrimdisiOzeti`.
 struct BenCevrimdisi: View {
     let depo: BenDeposu
     @State private var silOnay = false
@@ -13,12 +15,15 @@ struct BenCevrimdisi: View {
     private var ind: CevrimdisiIndirici { CevrimdisiIndirici.shared }
 
     var body: some View {
-        let g = ind.gorunum
         Group {
-            if let l = ind.liste, !l.telefonAdresleri.isEmpty, let g {
-                bolum(g)
-            } else if depo.katalog != nil, ind.liste == nil {
-                AyarBolumu(baslik: "En büyük kopyaları telefona indir", aciklama: "Hesaplanıyor…") { EmptyView() }
+            if let l = ind.liste, let g = ind.gorunum {
+                if l.telefonAdresleri.isEmpty {
+                    AyarKarti { AyarSatiri(simge: .indir, ad: "En büyük kopyalar", alt: "İndirilecek görsel yok") }
+                } else {
+                    kart(l, g)
+                }
+            } else {
+                AyarKarti { AyarSatiri(simge: .indir, ad: "En büyük kopyalar", alt: "Hesaplanıyor…") }
             }
         }
         .task(id: depo.katalog != nil) {
@@ -36,38 +41,49 @@ struct BenCevrimdisi: View {
         }
     }
 
-    private func bolum(_ g: CevrimdisiGorunum) -> some View {
+    private func kart(_ l: CevrimdisiListe, _ g: CevrimdisiGorunum) -> some View {
         let r = tema.renkler
-        return AyarBolumu(baslik: "En büyük kopyaları telefona indir", aciklama: g.bilgi) {
-            // .ayar .dugme: satır içi, üstte 8 px
-            HStack(spacing: 8) {
-                if g.indir {
-                    Button("İndir") { ind.indir() }.buttonStyle(HapDugme()).disabled(g.indirKapali)
+        let o = CevrimdisiOzeti(liste: l, telefonda: ind.telefonda, durum: ind.durum)
+        let mesaj = ind.silindi && ind.durum == nil ? "Silindi." : g.mesaj
+        let tur: CevrimdisiGorunum.Tur = ind.silindi && ind.durum == nil ? .tamam : g.mesajTuru
+        return VStack(alignment: .leading, spacing: 0) {
+            AyarKarti {
+                AyarSatiri(simge: .indir, ad: "En büyük kopyalar", alt: o.altYazi) {
+                    SagDeger(metin: o.yuzdeYazisi, renk: o.tamam ? \TemaRenkleri.dogruIkon : \TemaRenkleri.pirinc)
+                        .accessibilityLabel("Yüzde \(o.yuzde)")
                 }
-                if g.durdur { Button("Durdur") { ind.durdur() }.buttonStyle(HapDugme(ince: true)) }
-                if g.sil { Button("Telefondan sil") { silOnay = true }.buttonStyle(HapDugme(ince: true)) }
+                VStack(alignment: .leading, spacing: 12) {
+                    InceIlerleme(oran: o.oran, tamam: o.tamam)
+                        .accessibilityElement()
+                        .accessibilityLabel("İndirme")
+                        .accessibilityValue("\(o.telefonda) / \(o.hepsi)")
+                    // Satır yetmezse düğmeler alt alta
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 8) { dugmeler(g, o) }
+                        VStack(alignment: .leading, spacing: 8) { dugmeler(g, o) }
+                    }
+                    if !mesaj.isEmpty {
+                        // .mesaj: .hata --wrong-ikon, .tamam --right-ikon
+                        Text(mesaj)
+                            .font(Yazi.sans(12.5, agirlik: 500, stil: .footnote))
+                            .foregroundStyle(Color(tur == .hata ? r.yanlisIkon : tur == .tamam ? r.dogruIkon : r.murekkep2))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .padding(.horizontal, 16).padding(.bottom, 16)
             }
-            .padding(.top, 8)
-            if let c = g.cubuk {
-                // progress: tam genişlik, 6 px, --vurgu-acik
-                ProgressView(value: min(c.deger, c.enCok), total: c.enCok)
-                    .progressViewStyle(.linear)
-                    .tint(Color(r.vurguAcik))
-                    .frame(height: 6)
-                    .padding(.top, 8)
-                    .accessibilityLabel("İndirme")
-            }
-            let mesaj = ind.silindi && ind.durum == nil ? "Silindi." : g.mesaj
-            let tur: CevrimdisiGorunum.Tur = ind.silindi && ind.durum == nil ? .tamam : g.mesajTuru
-            if !mesaj.isEmpty {
-                // .mesaj: 13.5 px; .hata --wrong-ikon, .tamam --right-ikon
-                Text(mesaj)
-                    .font(Yazi.sans(13.5, stil: .footnote))
-                    .foregroundStyle(Color(tur == .hata ? r.yanlisIkon : tur == .tamam ? r.dogruIkon : r.murekkep))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 6)
-            }
+            AyarDipnotu(g.bilgi)
         }
-        .id("cevrimdisi")
+    }
+
+    @ViewBuilder
+    private func dugmeler(_ g: CevrimdisiGorunum, _ o: CevrimdisiOzeti) -> some View {
+        if g.indir {
+            Button(o.telefonda > 0 && !o.tamam ? "İndirmeyi sürdür" : "İndir") { ind.indir() }
+                .buttonStyle(CamHap())
+                .disabled(g.indirKapali)
+        }
+        if g.durdur { Button("Durdur") { ind.durdur() }.buttonStyle(CamHap()) }
+        if g.sil { Button("Telefondan sil") { silOnay = true }.buttonStyle(CamHap(tehlike: true)) }
     }
 }

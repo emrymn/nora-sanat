@@ -102,6 +102,7 @@ final class BenDeposu {
         let eski = await siteSurumu()
         guard let yeni = await siteSurumu(zorla: true) else { return "Siteye ulaşılamadı; çevrimdışı veriyle devam." }
         await veri.hepsiniEskit()
+        _ = await veri.kokDosyasi("js/yenilikler.js", zorla: true)   // Z3x: sürüm notları da yenilensin
         if let k = try? await veri.katalog(zorla: true) { katalog = k }
         return yeni == eski ? "Güncel: \(yeni)" : "\(yeni) indirildi."
     }
@@ -148,6 +149,16 @@ final class BenDeposu {
     }
     func hata(_ error: Error) {
         let e = error as NSError
-        mesaj = (e.userInfo["WKJavaScriptExceptionMessage"] as? String) ?? e.localizedDescription
+        let m = (e.userInfo["WKJavaScriptExceptionMessage"] as? String) ?? e.localizedDescription
+        mesaj = m
+        HataGunluguDeposu.shared.ekle("ben", m)   // Z3x: Ayarlar → Gelişmiş → Hata günlüğü
+    }
+
+    // MARK: Z3x: Hakkında
+
+    /// Sitenin sürüm notları (`js/yenilikler.js`; tek kaynak site, çevrimdışıyken son inen). `zorla`: yeniden indir.
+    func yenilikler(zorla: Bool = false) async -> [Yenilik] {
+        guard let d = await veri.kokDosyasi("js/yenilikler.js", zorla: zorla) else { return [] }
+        return Yenilikler.coz(String(decoding: d, as: UTF8.self))
     }
 }
