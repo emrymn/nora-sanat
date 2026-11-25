@@ -3,6 +3,7 @@ import NoraCekirdek
 import SwiftUI
 
 /// DEBUG `-ekran goruntuleyici`: katalog yüklenince ayrıntı noktası olan ilk eseri görüntüleyicide açar (CI görüntüsü).
+/// Z3p: `-incele n` incelemeyi n. ayrıntıda açar (`-incele -1`: genel bakış).
 struct GoruntuleyiciOnizleme: View {
     private struct Hazir {
         let baglam: GoruntuleyiciBaglami
@@ -15,7 +16,14 @@ struct GoruntuleyiciOnizleme: View {
     var body: some View {
         Group {
             if let h = hazir {
-                Goruntuleyici(eserler: h.eserler, baslangic: h.sira, baglam: h.baglam)
+                let incele = NoraSanatApp.arguman("-incele").flatMap { Int($0) }
+                Goruntuleyici(
+                    eserler: h.eserler,
+                    baslangic: h.sira,
+                    incelemeyeBasla: incele != nil,
+                    incelemeNokta: incele.flatMap { $0 >= 0 ? $0 : nil },
+                    baglam: h.baglam
+                )
             } else {
                 ProgressView().tint(.white)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

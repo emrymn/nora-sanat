@@ -58,6 +58,14 @@ const sonuc = await sayfa.evaluate(async ({ DOSYALAR }) => {
     { taban: { w: 360, h: 270 }, sahne: { w: 390, h: 720 }, enCok: 5.25 },
     { taban: { w: 320, h: 480 }, sahne: { w: 375, h: 600 }, enCok: 2.4 },
   ];
+  // Z3p (İş 180): yazı kartının ve düğmelerin kapladığı pay (alan). Telefondaki tipik paylar: kart altta (üst çubuk
+  // 66, kart + düğmeler 300), kart üstte (üstte 300, altta düğmeler 120), kısa yatay tablo ve küçük sahne.
+  const alanliSahneler = [
+    { taban: { w: 390, h: 520 }, sahne: { w: 390, h: 640 }, enCok: 6, alan: { ust: 66, alt: 300 } },
+    { taban: { w: 390, h: 520 }, sahne: { w: 390, h: 640 }, enCok: 6, alan: { ust: 300, alt: 120 } },
+    { taban: { w: 360, h: 270 }, sahne: { w: 390, h: 720 }, enCok: 5.25, alan: { ust: 66, alt: 240 } },
+    { taban: { w: 320, h: 480 }, sahne: { w: 375, h: 600 }, enCok: 2.4, alan: { ust: 66, alt: 520 } },
+  ];
   const ayrintiVakalar = ayrintilar.map((k) => ({
     anahtar: k.anahtar,
     sanatci: k.sanatci,
@@ -67,6 +75,7 @@ const sonuc = await sayfa.evaluate(async ({ DOSYALAR }) => {
       nokta: n,
       yeri: A.noktaYeri(n),
       odaklar: sahneler.map((s) => A.noktaOdagi(n, s.taban, s.sahne, { enCok: s.enCok })),
+      alanliOdaklar: alanliSahneler.map((s) => A.noktaOdagi(n, s.taban, s.sahne, { enCok: s.enCok, alan: s.alan })),
     })),
   }));
 
@@ -208,6 +217,7 @@ const sonuc = await sayfa.evaluate(async ({ DOSYALAR }) => {
     nedenler: B.NEDENLER,
     koleksiyonSiniri: K.KOLEKSIYON_SINIRI,
     sahneler,
+    alanliSahneler,
     ayrintiVakalar,
     yakinlasmaSinirlari,
     hikayeVakalar,

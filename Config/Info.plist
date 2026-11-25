@@ -28,6 +28,11 @@
 			</array>
 		</dict>
 	</array>
+	<!-- Y1 "Dinleyerek bak": rehberin sesi kilit ekranında ve arka planda sürsün -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>NSMotionUsageDescription</key>
 	<string>Telefonu eğince tablonun hafifçe hareket etmesi için.</string>
 </dict>

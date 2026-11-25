@@ -181,10 +181,11 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | bitti (#44) |
 | Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | PR açık (#46) |
 | Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
+| Z3p | İncele yeniden (İş 180) | K | Z3o | 1 | PR açık (#52) |
 | Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
 | Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
 | Z3w | Galeri › Akımlar Neon'un "Yön 2 · Kemerlerin yayı" tasarımıyla (Emre seçti; dal `neon/galeri-akimlar-2`, PR #60) | K | Z3u | 1 | PR açık (#61) |
-| Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
+| Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
@@ -1039,6 +1040,42 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI: `8-yerli-sekme` ile `8b-site-cubuk` alttan kesilip üst üste kondu; simgeler, yerleşim, hap, Çalış rozeti ve dişli dil birebir. `8c-hizli-ayar` sitenin üslubunda.
 - 1–10 ve Ben görüntüleri eskisi gibi. Telefonda hiçbir sekme yerli değil, uygulama aynı.
 - Hızlı ayar yaprağı kapsam dışı değil: sitenin çubuğundaki dişli dil onu açıyor.
+### Z3p · İncele yeniden (Claude)
+Sitenin İş 180'i (15 Kasım, commit `f185307a` "İş 180: İncele yeniden" ve sonrası): görüntüleyicinin İncele kipi numaralı noktalar,
+alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı ve ilerleme çubuğu. Hikâye kipi (İş 169) de aynı görünüm.
+
+**Devir notu:** Claude, 2026-11-24 · [PR #52](https://github.com/emrymn/nora-sanat/pull/52) · dal `claude/Z3p-incele`. Kaynak: sanat-atlasi `cca62eb` (`KARARLAR.md` "İş 180",
+`js/goruntuleyici.js` `incelemeBaslat`/`genelBakis`/`incelemeYaz`/`kartPayi`/`noktayaGit`, `js/ayrinti.js` `noktaOdagi`,
+`css/app.css` sonundaki İş 180 bölümü). K7: `git -C /tmp/sa log cca62eb..HEAD -- js/goruntuleyici.js js/ayrinti.js css/app.css`
+- **Çekirdek (`AyrintiKurallari`, `Ayrinti.swift`):** `noktaOdagi(..., alan: IncelemeAlani?)` (sitedeki `alan: { ust, alt }`):
+  ayrıntı kartın ve düğmelerin dışındaki boşluğa sığar ve onun ortasına konur; kart varken kısa görsel de kayabilir, kenardaki
+  ayrıntı kartın payı kadar fazladan kayar. Ayrıca `kartUstte` (ortası alt %38'de → kart üstte), `kartUstSatiri` ("2 / 6",
+  "6 ayrıntı"), `halkaOrani`, `genelBakisKaymasi`. Testler: `GoruntuleyiciTests.testAlanliNoktaOdagiVakalar` (sitenin birim
+  testi ve kenar vakaları; değerler sitenin `js/ayrinti.js`'iyle alındı), `testIncelemeKartiKurallari`,
+  `testAlanliNoktaOdagiKahin` (kâhinin `alanliSahneler`'i; yoksa atlanır).
+- **Kâhin:** `Testler/kahin/goruntuleyici.mjs`'e `alanliSahneler` (4 sahne × alan) ve her noktada `alanliOdaklar` eklendi.
+  **Kâhin denetçide:** bu oturumda canlı siteye erişilemedi, `cevaplar.json` yeniden üretilmedi; `testAlanliNoktaOdagiKahin`
+  şimdilik atlanır. Denetçi `node Testler/kahin/goruntuleyici.mjs` çalıştırıp cevapları eklesin.
+  **Denetçi (2026-11-25):** kâhin sanat-atlasi `78a8d7c` (yerel sunucu) karşısında çalıştırıldı; `cevaplar.json`'a yalnız
+  `alanliSahneler` ve `alanliOdaklar` eklendi (geri kalanı ve beş veri dosyası bire bir aynı), test artık atlanmıyor.
+- **Görünüm (`AyrintiGorunumu.swift`):** `AyrintiNoktalariKatmani` görünmez 44 pt dokunma alanı (numara, halka, karartma yok).
+  `IncelemeKarti`: buzlu kart (malzeme + `rgba(24,22,20,.52)`, saydamlığı azalt açıkken .92), Archivo üst satır, Bodoni 24/1.12
+  başlık (`CssBaslik`), Newsreader 17 metin; başlığa dokununca katlanır. `IncelemeDugmeleri`: geri, parçalı çubuk (etkin parça
+  2.4 kat), halkalı ilerle (60 pt). `IncelemeKucultDugmesi`: kapat düğmesinin solunda.
+- **`Goruntuleyici.swift`:** kart tek örnek, ayrıntıya göre üste (üst çubuğun 12 altı) ya da düğmelerin 14 üstüne yaslanır; her
+  adımda 0.45 s bekleyip süzülerek belirir (`keyframeAnimator`). Kartın, düğmelerin ve üst çubuğun çerçevesi sahnenin koordinatında
+  ölçülür (`sahneCercevesi`), `kartPayi` sitedeki gibi (+12 ara). Kamera bir sonraki çizimi bekleyip (50 ms) kurulur, yeni istek
+  eskisini iptal eder. Genel bakışta tablo kartın üstündeki boşluğa kayar; sürükleme bırakılınca oraya döner. İncelemede tablonun
+  ışığı 0.85. Hareket azaltılmışsa (sistem ya da sitenin hareket ayarı) kamera ve kart anında.
+- **CI:** `9b-incele-genel`, `9c-incele-ayrinti` (`-ekran goruntuleyici -incele n`). Koşu 45364620910 yeşil (derleme, çekirdek
+  testleri, yedi ekran işi). Ekran görüntüleri bu oturumdan indirilemedi (artifact deposuna erişim kapalı): **denetçi 9b ve 9c'ye baksın**
+  (kart altta/üstte, düğmeler, kameranın ayrıntıyı kartın dışında tutması).
+- **Tuzaklar:** Swift bu oturumda derlenemedi (Linux'ta Swift yok); CI'ın ilk koşusuna bak. Kart ölçüsü bir kare gecikmeli
+  geldiği için kamera 50 ms sonra başlar. İki parmakla yakınlaştırma ya da çift dokunuş sonrası `sifirla` genel bakışın kaymasını
+  sıfırlar (sitede de `sinirla` alanı bilmez). Eylem satırındaki "İncele · N nokta" yazısına dokunulmadı (Y1 aynı satıra
+  "Dinleyerek bak" ekliyor; birleşince çakışmasın diye).
+- **Y1 ile:** "Dinleyerek bak" düğmesi main'de değil (`claude/Y1-dinle`, PR açık). Bu dal main'den açıldı; Y1'in değiştirdiği
+  satırlara (eylem satırı, `fullScreenCover`) dokunulmadı, `ekran.sh` ve README'de ekler Y1'inkilerden ayrı yerlerde.
 
 ### Z3m · Ekran rengi ve odaklı kırpma (Claude)
 **Devir notu:** Claude, 2026-11-24 · [PR #46](https://github.com/emrymn/nora-sanat/pull/46) · dal `claude/Z3m-ekran-rengi`. Z3l'in (#44) üstüne kuruldu (`TemaHesabi.pikseller` orada dışa açıldı); #44 birleşince main dala alındı.
@@ -1066,7 +1103,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Ekran** (`GaleriAna.swift` → `KemerSalonlari`; `AkimCarki`/`CarkTekeri` ve kullanılmayan `GaleriCarki.swift` kalktı): yatay `ScrollView` şerit (234 × 278 kemer, aralık 18, `viewAligned`; dikey sürükleme sayfanın), çift ince çerçeve, kilitli kapak hep bulanık + cam kilit mührü, kemere bağlı yazı (dönem sembolü + yıllar, 31 pt ad, durum). Sabit eylem yuvası: "Salona gir" ya da "N sanatçı · yakında" hapı. Işık kılavuzu 52 pt (Canvas: yay, çentikler, ışık; iki yanda önceki/sonraki akımın adı, ortada dönem); yalnız düğmeler, sürükleme jesti yok. Erişilebilirlik: kılavuz "Akımlar çarkı", değer "n / 28, ad", ayarlanabilir eylem. "Bütün akımlar · 28 salon" → `.sheet` (%78 / büyük, buzlu cam = `.ultraThinMaterial` + `yuzey`), dönem grupları (`DonemSembolu`, tasarımın SVG'leri), satıra dokununca çekmece kapanır, şerit o akıma gider.
 - **Zemin:** `SayfaZemini(ortaHale: true)`: tablonun birinci renginden ortada üçüncü hale (yon-2 `.zemin-hale`). Hale ve desen geçişi var olan `ZeminTablosu`/`TabloRengi` animasyonuyla.
 - **Tasarımdan farklar:** kılavuzun iki yanı dönem değil **önceki/sonraki akım** (görev: "dokununca önceki ya da sonraki akıma geçer"; yazı da gideceği yeri söylesin diye). Kılavuzda yatay süpürme yok (dikey kaydırmayı hiç engellemesin). Komşu kartlara bulanıklık eklendi (tasarımda yalnız soluyordu). Durum her zaman "N / M sanatçı açık".
-- **CI:** `-galeriKaydir dizin` → `dizinAcik` çekmeceyi açar, sayfa tetiğe kayar, sonra `galeri-hazir`. Ana ekranda "Salona gir" ilk ekranda (şerit 416 + yuva). Linux'ta Swift yok: derleme ve `swift test` yalnız CI'da.
+- **CI:** `-galeriKaydir dizin` → `dizinAcik` çekmeceyi açar, sayfa tetiğe kayar, sonra `galeri-hazir`. Ana ekranda "Salona gir" ilk ekranda (şerit 416 + yuva). Linux'ta Swift yok: derleme ve `swift test` yalnız CI'da. 46920d4 yeşil (8 iş; `swift test` dahil). `galeri-1` ana ekran OCR: "1210-1427 Gotik 9 / 9 sanatçı açık Salona gir > Orta Çağ Bütün akımlar • 28 salon Erken Rönesans". Ekran görüntülerine (`ekranlar-galeri-1` → `galeri-ana.png`, `galeri-ana-dizin.png`) bu oturumdan bakılamadı: Gece/Gündüz ve çekmeceyi Emre ya da denetçi görmeli. main (Y1 #47, Z3p #52) dala merge edildi.
 
 ---
 
@@ -1120,7 +1157,21 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Bitiş.** "En çok neye baktın?" gibi kısa bir soru ya da o sanatçının tekrar kartı.
 - **Giriş yerleri.** Görüntüleyicide "Dinleyerek bak" düğmesi; günün tablosu; widget ve Siri ("günün tablosuna bak").
 
-**Devir notu:** –
+**Devir notu:** Claude, 2026-11-24 · PR #47 (dal `claude/Y1-dinle`). main @ `8570f83` (#44) üstüne; #45 ve #46 o gün henüz birleşmemişti, onların dosyalarına dokunulmadı.
+- **Çekirdek** (`NoraCekirdek/Dinle/DinlemePlani.swift`, `DinlemeTests`: 12 test, gerçek veriyle de):
+  - `DinlemePlani.kur(kaynak, sure:)` → adımlar: `acilis` (tablonun tamamı; künye "Ad. Sanatçı, tarih." + eser notu) → `anlati` (hikâyenin "Ne oluyor?" paragrafları, sığarsa) → `nokta` (sırayla) → `anlati` (ressamla bağı, gözden kaçanlar; sığarsa) → `sessiz` (söz yok, en çok 60 sn) → `kapanis` (tablonun tamamı, "Şimdi tablonun tamamına bir kez daha bak.").
+  - Öncelik noktalarda: önce sığan noktalar (en az bir tane), sonra hikâye. Kalan süre noktaların yaklaşmasını 40 sn'ye kadar uzatır, sonra sessiz bakış. Plan seçilen süreyi aşmaz (tek uzun nokta dışında).
+  - Her adım: `yaklasma` (kameranın varış süresi), `gecikme` (söz ne zaman başlar), `konusma` (tahmini; harf/12 + cümle başına 0,35 sn), `sessizlik`. Nokta: gecikme 3, sessizlik 5, toplam 20–40 sn.
+  - `DinlemeKurallari.kaynak(...)`: noktalar `eser_ayrintilari.json` → `yuruyus.json` (`yuruyusNoktalari`: aynı sanatçının kaydı, QID ya da görselin yerel adı tutarsa) → hikâyenin kutulu karakterleri. Önceki kaynakta aynı adlı ya da ≥ 0,5 örtüşen nokta atlanır; bir kaynağın kendi noktaları olduğu gibi kalır.
+  - Nokta yoksa anlatılar `gezintiKutulari` arasında dolaşır (tablonun %60'ı, yumuşak yakınlaşma).
+- **Ekran** (`NoraSanat/Ekranlar/Dinle/`):
+  - `DinleEkrani`: kurulum (3/5/10 dk, "Sesli / Yalnız altyazı"; `@AppStorage` `dinleSuresi`, `dinleSessiz`), oynatma (altyazı kartı, önceki/duraklat/sonraki, adım çizgisi), bitiş ("En çok neye baktın?" + ayrıntı hapları, "Yeniden dinle", "Bitir"). Kamera `AyrintiKurallari.noktaOdagi(pay 0,72, enCok 4)`; ayrıntı altyazı kartının üstündeki alana ortalanır. Tabloya dokununca arayüz gizlenir (kamera tam ekrana göre yeniden ortalanır). Hareket azaltılmışsa: sön (0,8 sn) → yer değiştir → belir (1,2 sn). `isIdleTimerDisabled` açılışta açık, kapanışta kapalı; ev çubuğu gizli. Görsel önce 1280, sonra devasa 4096 kopya.
+  - `DinleOynatici`: 0,1 sn'lik saat yalnız oynarken işler; duraklatınca söz `pauseSpeaking(.word)`, kamera animasyonu (SwiftUI) durmaz, hedefine varır. "Önceki": adımın ilk 3 sn'sinde bir önceki adım, sonra adımın başı. Kilit ekranı/kulaklık: `MPRemoteCommandCenter` oynat, duraklat, aç/kapa, sonraki, önceki; Now Playing: eser adı, sanatçı, "Dinleyerek bak", süre, geçen süre, bölüm sırası, tablonun resmi. Ses kesintisinde duraklar (sürdürmeyi kullanıcı yapar). Sessiz seçenekte ses oturumu ve kilit ekranı denetimleri açılmaz.
+  - `DinleSesi`: `AVSpeechSynthesizer`, en iyi Türkçe ses (`quality` en yüksek: premium > gelişmiş > varsayılan), hız 0,9 × olağan. Ses oturumu `.playback` + `.spokenAudio` (sessiz moddayken de duyulur, öbür sesleri durdurur). Söz aralarında `AVAudioEngine` sessiz bir tamponu döngüde çalar: yoksa iOS uygulamayı arka planda askıya alır ve akış kilit ekranında durur.
+- **Ortak dosyalarda küçük ekler:** `Goruntuleyici.swift` (`dinleAcik`, eylem satırında "Dinleyerek bak": `ViewThatFits` ile yer yoksa yalnız simge; `fullScreenCover`), `BugunSekmesi.swift` (`Acilis.dinle`, haplardan sonra kulaklık düğmesi), `NoraSanatApp.swift` (DEBUG `-ekran dinle`), `Config/Info.plist` (`UIBackgroundModes: audio`), `Testler/ci/ekran.sh` (genel grup: `9d-dinle-kurulum`, `9e-dinle-ayrinti` = `-ekran dinle -dinleAdim 1`, sessiz).
+- **Yapılmayanlar (sonraki iş):** widget ve Siri girişi ("günün tablosuna bak": App Intent + `norasanat://dinle`), StandBy ve AirPlay için özel düzen (tam ekran örtü olduğu için yansıtmada da tam ekran; ayrıca denenmedi), bitişte sanatçının tekrar kartı. Planın konuşma süresi tahmin; gerçek sesle süre ±%15 kayabilir (söz bitmeden adım geçmez, yalnız toplam uzar/kısalır).
+- **Tuzaklar:** `Ornekler/yuruyus.json` eski biçim (noktalarda koordinat yok); testler `Ornekler/site_verisi/yuruyus.json`'ı kullanır. Söz durdurulunca gelen geç "bitti" haberi yeni sözü bitirmesin diye `DinleSesi` sözün kimliğini tutar.
+- **CI:** yeşil (iOS derleme #249, `13581b6`: derleme, çekirdek testleri, 7 ekran grubu). `9d-dinle-kurulum` OCR'da: "DİNLEYEREK BAK · Assisi'li Aziz Franciscus ve Yaşamından Sahneler · Bonaventura Berlinghieri · 1235 · 3 dk 5 dk 10 dk · Sesli / Yalnız altyazı · 8 ayrıntı · yaklaşık 5 dk · Başla" (ayrıntılar + yürüyüş birleşti). `9e-dinle-ayrinti` (sessiz, 1. adımdan) arşivde; oturumdan indirilemedi, denetçi baksın. Gerçek ses, kilit ekranı ve kulaklık denetimleri simülatörde sınanmadı: telefonda denenmeli.
 
 ### Fikir havuzu (henüz iş değil)
 - Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)

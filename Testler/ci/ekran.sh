@@ -128,11 +128,29 @@ genel() {
   xcrun simctl launch "$UDID" "$PAKET" -yerliSekme galeri -adres "#/gozat" -hizliAcik
   sleep 15
   xcrun simctl io "$UDID" screenshot ekranlar/8c-hizli-ayar.png
+  # Z3p (İş 180): İncele kipi: genel bakış (kartta eserin adı) ve 2. ayrıntı (kamera kartın dışındaki boşlukta)
+  for INC in -1 1; do
+    xcrun simctl terminate "$UDID" "$PAKET" || true
+    xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici -incele "$INC"
+    sleep 35
+    if [ "$INC" = "-1" ]; then AD=9b-incele-genel; else AD=9c-incele-ayrinti; fi
+    xcrun simctl io "$UDID" screenshot "ekranlar/$AD.png"
+  done
   # G1: tam ekran görüntüleyici (ayrıntı noktası olan ilk eser; katalog ve görsel ağdan gelir)
   xcrun simctl terminate "$UDID" "$PAKET"
   xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici
   sleep 30
   xcrun simctl io "$UDID" screenshot ekranlar/9-goruntuleyici.png
+  # Y1: "Dinleyerek bak": kurulum (süre ve ses seçimi), sonra sessiz seçenekte ilk ayrıntıya yaklaşmış hâli (altyazı)
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle
+  sleep 25
+  xcrun simctl io "$UDID" screenshot ekranlar/9d-dinle-kurulum.png
+  "$RUNNER_TEMP/ben-ekran" ekranlar/9d-dinle-kurulum.png "Başla"
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 1
+  sleep 45
+  xcrun simctl io "$UDID" screenshot ekranlar/9e-dinle-ayrinti.png
   # C1b/C1c: pekiştirme. Açılışlar arası aynı tur sürer: 10a ilk ekran (yeni sanatçıysa tanışma), 10 soru kartı,
   # 10c yanlış bir şıktan sonra cevap yaprağı. Her adım hazır olunca işaret dosyası yazılır; yükleme ve hata başarı sayılmaz.
   VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
