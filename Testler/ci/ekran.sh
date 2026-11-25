@@ -319,8 +319,9 @@ ben() {
     if [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "$SOZ"; fi
     # C5: çevrimdışı bölüm Swift'in listesiyle (sitenin sayfası okunmadan)
     if [ "$BOLUM" = cevrimdisi ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Telefonda: 0 / "; fi
-    # Z3x: hatırlatma uygulamanın içinde; Yenilikler siteden okunan sürüm notlarıyla
-    if [ "$BOLUM" = hatirlatma ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Tekrar hatırlatması"; continue; fi
+    # Z3x: hatırlatma uygulamanın içinde; Yenilikler siteden okunan sürüm notlarıyla. (OCR "ı"yı "i" okur ve arama
+    # aksansız olsa da ı ≠ i: aranan sözlerde ı olmasın.)
+    if [ "$BOLUM" = hatirlatma ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Simge rozeti"; continue; fi
     if [ "$BOLUM" = hakkinda ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Yenilikler"; continue; fi
     # Site: aynı adres, aynı bölüm
     xcrun simctl terminate "$UDID" "$PAKET"
@@ -347,7 +348,7 @@ ben() {
     xcrun simctl io "$UDID" screenshot "ekranlar/ben-ayarlar-gunduz${BOLUM:+-$BOLUM}.png"
   done
   "$RUNNER_TEMP/ben-ekran" ekranlar/ben-ayarlar-gunduz.png "Gündüz rengi"
-  "$RUNNER_TEMP/ben-ekran" ekranlar/ben-ayarlar-gunduz-yedek.png "İlerlemeni yedekle"
+  "$RUNNER_TEMP/ben-ekran" ekranlar/ben-ayarlar-gunduz-yedek.png "lerlemeni yedekle"
   xcrun simctl terminate "$UDID" "$PAKET" || true
   python3 -c 'import json,sys; p=sys.argv[1]; v=json.load(open(p)); v.setdefault("ayarlar",{})["tema"]="gece"; json.dump(v,open(p,"w"),ensure_ascii=False)' "$IL"
   # C5: Swift'te gerçek indirme (arka plan URLSession). Küçük bir parça (2 en büyük kopya kadar) iner,

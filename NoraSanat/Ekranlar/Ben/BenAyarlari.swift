@@ -144,7 +144,7 @@ struct BenAyarlari: View {
                 .onChange(of: pencere.size.height) { _, h in yukseklik = h }
                 #if DEBUG
                 .task(id: depo.il != nil) {
-                    if depo.il != nil { await BenKarsilastirma.kaydir(kaydir) }
+                    if depo.il != nil { await BenKarsilastirma.kaydir(kaydir, capa: basCapasi) }
                 }
                 #endif
             }
@@ -256,7 +256,7 @@ struct BenAyarlari: View {
     private func atla(_ g: AyarGrubu, _ sayfa: ScrollViewProxy) {
         secili = g
         kilitle(g)
-        withAnimation(tema.ayar.hareketAzaltilmis ? nil : .spring(duration: 0.45, bounce: 0)) { sayfa.scrollTo(g.rawValue, anchor: .top) }
+        withAnimation(tema.ayar.hareketAzaltilmis ? nil : .spring(duration: 0.45, bounce: 0)) { sayfa.scrollTo(g.rawValue, anchor: basCapasi) }
     }
 
     /// Kayma bitene kadar kaydırma gözcüsü seçimi değiştirmesin
@@ -295,6 +295,7 @@ struct BenAyarlari: View {
         let ust: CGFloat = g == .gorunus ? 0 : 28
         VStack(alignment: .leading, spacing: 0) {
             AyarGrupBasligi(metin: g.baslik)
+                .id(g.rawValue)
                 .background(GeometryReader { x in
                     Color.clear.preference(key: GrupYerleri.self, value: [g: x.frame(in: .named(Self.alan)).minY])
                 })
@@ -302,11 +303,12 @@ struct BenAyarlari: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, ust)
-        // Kaydırma çapası: başlığın 16 pt üstü şeridin altına gelsin (`scroll-margin-top: 56px`)
-        .overlay(alignment: .top) {
-            Color.clear.frame(height: 1).id(g.rawValue).padding(.top, ust - Self.seritYuksekligi - 16)
-                .accessibilityHidden(true)
-        }
+    }
+
+    /// Kaydırma çapası: grubun başlığı (`.id(rawValue)`) şeridin 16 pt altına gelsin (`scroll-margin-top: 56px`).
+    /// `scrollTo` başlığın bu oranındaki noktasını kaydırma alanının aynı oranına hizalar.
+    private var basCapasi: UnitPoint {
+        UnitPoint(x: 0.5, y: yukseklik > 0 ? min(0.5, (Self.seritYuksekligi + 16) / yukseklik) : 0.08)
     }
 
     @ViewBuilder

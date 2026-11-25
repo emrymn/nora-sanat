@@ -458,9 +458,9 @@ enum BenKarsilastirma {
 
     /// Yerli ekran: veriler ve görseller yüklenince bölümün başına
     @MainActor
-    static func kaydir(_ kaydir: ScrollViewProxy) async {
+    static func kaydir(_ kaydir: ScrollViewProxy, capa: UnitPoint = .top) async {
         try? await Task.sleep(nanoseconds: 3_000_000_000)
-        if let b = bolum { kaydir.scrollTo(b, anchor: .top) }
+        if let b = bolum { kaydir.scrollTo(b, anchor: capa) }
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         try? Data().write(to: hazir)
     }
