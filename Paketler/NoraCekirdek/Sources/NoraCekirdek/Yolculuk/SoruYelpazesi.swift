@@ -166,9 +166,9 @@ public enum SoruYelpazesi {
             let en = yaziGenisligi(s, punto: punto)
             if en > genislik {
                 // sözcük kendi satırlarına harf harf bölünür
-                if dolu > 0 { satir += 1; dolu = 0 }
+                // her parça kendi satırında; son parçanın satırı açık kalır, sonraki sözcük ona eklenebilir
                 let parca = Int(ceil(en / genislik))
-                satir += parca - 1
+                satir += parca
                 dolu = en - Double(parca - 1) * genislik
                 continue
             }
