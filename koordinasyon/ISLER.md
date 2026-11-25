@@ -188,6 +188,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | PR açık (#64) |
 | Z3z | Akımlar şeridi akıcılık: kaydırırken her karede değişen bulanıklık/parlaklık/gölge yarıçapı ve katalog taraması kalktı (Emre: "kasıyor") | K | Z3w | 1 | PR açık |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
+| Z4a | Dinleyerek bak (Y1) yeniden: Neon'un "Yön 3 · Canlı Ses · Kelime Akışı" tasarımı (dal `neon/dinle-tasarim`, PR #70), nefesli yay kamera, doğal ses (Gemini "Fola", R2) + kelime kelime altyazı | K | Y1 | 1 | sürüyor (Claude, 2026-11-25) |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**

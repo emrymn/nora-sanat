@@ -108,11 +108,15 @@ public struct DinlemeAdimi: Equatable, Sendable {
     public var konusma: Double
     /// Sözden sonraki sessizlik (sn)
     public var sessizlik: Double
+    /// Z4a: metnin doğal ses kaydı (`ses_dizini.json` anahtarı); nil: telefonun sesi okur. Kayıtlıysa `metin` kaydın
+    /// metniyle aynıdır (düzgünleştirilmiş) ve `konusma` kaydın gerçek süresidir.
+    public var kayit: String?
 
     public init(tur: Tur, baslik: String = "", metin: String, kutu: DinlemeKutusu?, yaklasma: Double,
-                gecikme: Double, konusma: Double, sessizlik: Double) {
+                gecikme: Double, konusma: Double, sessizlik: Double, kayit: String? = nil) {
         self.tur = tur; self.baslik = baslik; self.metin = metin; self.kutu = kutu
         self.yaklasma = yaklasma; self.gecikme = gecikme; self.konusma = konusma; self.sessizlik = sessizlik
+        self.kayit = kayit
     }
 
     /// Adımın tahmini toplam süresi: kamera ve söz birlikte yürür, ardından sessizlik.
@@ -138,36 +142,48 @@ public struct DinlemePlani: Equatable, Sendable {
     /// 4. Süre kalırsa hikâyenin öbür parçaları, sonra noktaların payı 40 sn'ye kadar büyür, sonra sessiz bir bakış.
     /// 5. Kapanış: tablonun tamamı.
     /// Nokta yoksa hikâye ve not okunurken kamera tablonun üzerinde yavaş gezinir.
-    public static func kur(_ k: DinlemeKaynagi, sure: DinlemeSuresi) -> DinlemePlani {
+    ///
+    /// Z4a · `dizin`: doğal sesle kaydedilmiş parçalar. Kaydı olan parçada tahmini süre yerine kaydın gerçek süresi
+    /// kullanılır (sıra ve bütçe kuralları aynı). Künye kaydedilmedi: notun kaydı varsa açılışta ses yalnız notu okur,
+    /// künye ekranda yazılı durur; yoksa eskisi gibi telefonun sesi künye + notu okur.
+    public static func kur(_ k: DinlemeKaynagi, sure: DinlemeSuresi, dizin: SesDizini? = nil) -> DinlemePlani {
         typealias K = DinlemeKurallari
         let butce = sure.saniye
 
-        let acilisMetni = [k.kunye, K.noktala(k.notMetni)].filter { !$0.isEmpty }.joined(separator: " ")
-        let acilisSozu = K.okumaSuresi(acilisMetni)
-        let acilis = DinlemeAdimi(tur: .acilis, metin: acilisMetni, kutu: nil,
+        let acilis: DinlemeAdimi
+        if let d = dizin, let a = d.anahtar(k.notMetni), let soz = d.parcalar[a] {
+            acilis = DinlemeAdimi(tur: .acilis, metin: SesAnahtari.metin(k.notMetni), kutu: nil,
+                                  yaklasma: K.acilisGecikmesi + soz, gecikme: K.acilisGecikmesi,
+                                  konusma: soz, sessizlik: K.acilisSessizligi, kayit: a)
+        } else {
+            let acilisMetni = [k.kunye, K.noktala(k.notMetni)].filter { !$0.isEmpty }.joined(separator: " ")
+            let acilisSozu = K.okumaSuresi(acilisMetni)
+            acilis = DinlemeAdimi(tur: .acilis, metin: acilisMetni, kutu: nil,
                                   yaklasma: K.acilisGecikmesi + acilisSozu, gecikme: K.acilisGecikmesi,
                                   konusma: acilisSozu, sessizlik: K.acilisSessizligi)
-        let kapanisSozu = K.okumaSuresi(K.kapanisMetni)
-        let kapanis = DinlemeAdimi(tur: .kapanis, metin: K.kapanisMetni, kutu: nil,
+        }
+        let kapanisSesi = K.soz(K.kapanisMetni, dizin)
+        let kapanis = DinlemeAdimi(tur: .kapanis, metin: kapanisSesi.metin, kutu: nil,
                                    yaklasma: K.kapanisYaklasmasi, gecikme: K.kapanisYaklasmasi,
-                                   konusma: kapanisSozu, sessizlik: K.kapanisSessizligi)
+                                   konusma: kapanisSesi.sure, sessizlik: K.kapanisSessizligi, kayit: kapanisSesi.kayit)
         var kalan = butce - acilis.sure - kapanis.sure
 
         // Gezinti: noktası olmayan anlatıda kamera tablonun bölgeleri arasında yavaşça dolaşır.
         var gezinti = 0
         func anlati(_ metin: String) -> DinlemeAdimi {
-            let soz = K.okumaSuresi(metin)
+            let ses = K.soz(metin, dizin)
             let kutu = K.gezintiKutusu(gezinti)
             gezinti += 1
-            return DinlemeAdimi(tur: .anlati, metin: K.noktala(metin), kutu: kutu,
-                                yaklasma: K.anlatiGecikmesi + soz + K.anlatiSessizligi,
-                                gecikme: K.anlatiGecikmesi, konusma: soz, sessizlik: K.anlatiSessizligi)
+            return DinlemeAdimi(tur: .anlati, metin: ses.metin, kutu: kutu,
+                                yaklasma: K.anlatiGecikmesi + ses.sure + K.anlatiSessizligi,
+                                gecikme: K.anlatiGecikmesi, konusma: ses.sure, sessizlik: K.anlatiSessizligi,
+                                kayit: ses.kayit)
         }
 
         // Noktalar: önce sığanlar (sırayla, en az bir tane)
         var noktalar: [DinlemeAdimi] = []
         for n in k.noktalar {
-            let adim = K.noktaAdimi(n)
+            let adim = K.noktaAdimi(n, dizin: dizin)
             if adim.sure <= kalan || noktalar.isEmpty {
                 noktalar.append(adim)
                 kalan -= adim.sure
@@ -267,11 +283,21 @@ public enum DinlemeKurallari {
     }
 
     /// Bir noktanın adımı: en az 20 sn (söz uzunsa daha uzun).
-    static func noktaAdimi(_ n: DinlemeNoktasi) -> DinlemeAdimi {
-        let soz = okumaSuresi(n.metin)
-        let yaklasma = max(noktaEnAz - noktaSessizligi, noktaGecikmesi + soz)
-        return DinlemeAdimi(tur: .nokta, baslik: n.ad, metin: noktala(n.metin), kutu: n.kutu,
-                            yaklasma: yaklasma, gecikme: noktaGecikmesi, konusma: soz, sessizlik: noktaSessizligi)
+    static func noktaAdimi(_ n: DinlemeNoktasi, dizin: SesDizini? = nil) -> DinlemeAdimi {
+        let ses = soz(n.metin, dizin)
+        let yaklasma = max(noktaEnAz - noktaSessizligi, noktaGecikmesi + ses.sure)
+        return DinlemeAdimi(tur: .nokta, baslik: n.ad, metin: ses.metin, kutu: n.kutu,
+                            yaklasma: yaklasma, gecikme: noktaGecikmesi, konusma: ses.sure, sessizlik: noktaSessizligi,
+                            kayit: ses.kayit)
+    }
+
+    /// Z4a: okunacak bir parçanın metni, süresi ve kaydı. Kaydı varsa metin kaydınki (düzgünleştirilmiş) ve süre kaydın
+    /// gerçek süresi; yoksa noktalanmış metin ve tahmini süre.
+    public static func soz(_ ham: String, _ dizin: SesDizini?) -> (metin: String, sure: Double, kayit: String?) {
+        if let d = dizin, let a = d.anahtar(ham), let s = d.parcalar[a] {
+            return (SesAnahtari.metin(ham), s, a)
+        }
+        return (noktala(ham), okumaSuresi(ham), nil)
     }
 
     /// Noktasız anlatıda kameranın sırayla dolaştığı bölgeler (tablonun %60'ı: yumuşak bir yakınlaşma).
