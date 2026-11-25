@@ -1138,6 +1138,10 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
 - **CI** (`Testler/ci/ekran.sh`, yolculuk): `soru` / `cevap` yan yana görüntüleri eskisi gibi.
   - Yeni: yalnız yerli `-yolculukProva cevap-yanlis`; ilk sorusunda yanlış şık seçilir. Görüntü: `yerli-yolculuk-cevap-yanlis.png`; OCR "Seçtiğin" sözünü arar.
   - Linux'ta Swift yok; derleme ve `swift test` yalnız CI'da.
+- **CI:** `cc0a04f` yeşil (8 iş).
+  - İlk koşu `SoruYelpazesiTests.testSatirSayisiSozcukKirar`'da kırmızıydı: harf harf bölünen sözcüğün son satırı sayılmıyordu. Kod düzeltildi, test değişmedi.
+  - `yerli-yolculuk-cevap-yanlis` OCR çıktısı: "1/9 Kolay · Bu eser kimin? · Andrea Mantegna Seçtiğin · Sandro Botticelli Doğrusu · × Yanlış · Sonraki > · bu kart 3-5 kart sonra yine gelecek". Altında yaprağın ipucu da görünüyor (kaydırma çalışıyor).
+  - Görüntülere (`ekranlar-yolculuk` → `yerli-yolculuk-soru.png`, `-cevap.png`, `-cevap-yanlis.png`) bu oturumdan bakılamadı. Yelpaze, Gündüz ve küçük ekran Emre ya da denetçi tarafından görülmeli.
 
 ### Z3w · Galeri › Akımlar: Kemerlerin yayı (Claude)
 **Devir notu:** Claude, 2026-11-25 · [PR #61](https://github.com/emrymn/nora-sanat/pull/61) · dal `claude/Z3w-galeri-akimlar`. Yeni tasarım, sitede yok (sitede hâlâ çark var; kâhin yerine davranış testi ve CI görüntüsü). Kaynak: dal `neon/galeri-akimlar-2` (PR #60, birleştirilmedi, yalnız referans), Emre **Yön 2**'yi seçti: `tasarim/galeri-akimlar-2/yon-2.html` (`cizKonum`, `centikCiz`), `BENIOKU.md` "Yön 2", `goruntuler/yon-2-{gece,gunduz,gecis}.png`.
