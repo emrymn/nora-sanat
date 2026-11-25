@@ -23,6 +23,8 @@ struct KemerSalonlari: View {
     /// Şeridin anlık konumu (akım cinsinden, kesirli): kartlar, kılavuzun çentikleri ve eylem yuvası bunu izler
     @State private var konum: Double = 0
     @State private var secim: Int?
+    /// Z3z: akımın yılları (`KemerYayi.yillar`); kaydırırken her karede katalog taranmasın diye bir kez hesaplanır
+    @State private var yillar: [String: String] = [:]
 
     private var kartG: CGFloat { CGFloat(KemerYayi.kartGenisligi) }
     private var kartY: CGFloat { CGFloat(KemerYayi.kartYuksekligi) }
@@ -45,7 +47,8 @@ struct KemerSalonlari: View {
             .frame(width: w)
         }
         .frame(height: Self.seritYuksekligi + 2 + 46 + 10 + 52 + 2 + 44)
-        .onAppear { secim = sira; konum = Double(sira) }
+        .onAppear { secim = sira; konum = Double(sira); yillariKur() }
+        .onChange(of: salonlar.map(\.ad)) { _, _ in yillariKur() }
         .sheet(isPresented: $dizinAcik) {
             AkimDizini(salonlar: salonlar, galeri: galeri, sira: sira, pul: pul) { i in
                 dizinAcik = false
@@ -108,6 +111,12 @@ struct KemerSalonlari: View {
         // dikey sürükleme sayfanındır (yatay ScrollView dikeyi bırakır).
     }
 
+    private func yillariKur() {
+        var y: [String: String] = [:]
+        for s in salonlar { y[s.ad] = KemerYayi.yillar(galeri.katalog.sanatcilar.filter { $0.akim == s.ad }) }
+        yillar = y
+    }
+
     /// Şeridin kaydığı yol (içerik başından) → anlık konum ve seçili akım
     private func konumYaz(_ yol: CGFloat) {
         let p = KemerYayi.konum(yol: Double(yol), sayi: salonlar.count)
@@ -150,26 +159,36 @@ struct KemerSalonlari: View {
         let golge: RGBA = r.koyu ? r.zemin : r.murekkep
         let altGolge: [Gradient.Stop] = [.init(color: Color(golge, 0), location: 0.76),
                                          .init(color: Color(golge, r.koyu ? 0.32 : 0.14), location: 1)]
-        let bulanik: Double = salon.acik ? k.bulaniklik : max(k.bulaniklik, KemerYayi.kilitBulanikligi)
+        // Z3z (akıcılık): kaydırırken her karede değişen bulanıklık yarıçapı, parlaklık filtresi ve gölge yarıçapı
+        // görseli her karede yeniden işletiyordu (Emre: "kasıyor"). Kapak katmanı artık kaydırmayla değişmiyor ve bir kez
+        // dokuya çiziliyor (`drawingGroup`): kilitli kapağın bulanıklığı sabit, komşu kartın bulanıklığı kalktı (tasarımda da
+        // yoktu, yalnız soluyorlardı), parlaklık üstte bir peçe, gölge sabit yarıçaplı; yakınlık yalnız saydamlıkla.
+        let karartma = salon.acik ? 1 - k.parlaklik : 0
         return ZStack {
             Color(r.yuzey)
             UzakGorsel(url: adres.url, icerik: .fill, yedek: adres.yedek)
                 .saturation(salon.acik ? 1 : 0.45)
-                .brightness(salon.acik ? k.parlaklik - 1 : (r.koyu ? -0.22 : -0.1))
+                .brightness(salon.acik ? 0 : (r.koyu ? -0.22 : -0.1))
                 .scaleEffect(salon.acik ? 1 : 1.06)
-                .blur(radius: CGFloat(bulanik), opaque: true)
+                .blur(radius: salon.acik ? 0 : CGFloat(KemerYayi.kilitBulanikligi), opaque: true)
             LinearGradient(stops: altGolge, startPoint: .top, endPoint: .bottom)
             if !salon.acik { kilitPecesi }
         }
         .frame(width: ic.width, height: ic.height)
         .clipShape(Kemer(alt: 16))
+        .drawingGroup()
+        .overlay(Kemer(alt: 16).fill(Color.black.opacity(karartma)))
         .overlay(Kemer(alt: 16).stroke(Color(r.pirinc, 0.12 + 0.2 * t), lineWidth: 0.5))
         .padding(5)
         .overlay(Kemer(alt: 21).stroke(Color(r.pirinc, k.cerceve), lineWidth: 1))
         .frame(width: kartG, height: kartY)
-        // `--kart-golge` (ortada) ↔ `--kart-golge-yan`
-        .shadow(color: Color(golge, r.koyu ? 0.28 + 0.24 * t : 0.09 + 0.08 * t),
-                radius: CGFloat(14 + 14 * t), y: CGFloat(14 + 12 * t))
+        // `--kart-golge` (ortada) ↔ `--kart-golge-yan`: yarıçap sabit, yakınlık yalnız saydamlıkta
+        .background(
+            Kemer(alt: 21).fill(Color(golge))
+                .shadow(color: Color(golge, r.koyu ? 0.52 : 0.17), radius: 24, y: 22)
+                .opacity(0.45 + 0.55 * t)
+                .padding(4)
+        )
     }
 
     /// `.kilit-pece` + `.kilit-muhur`: kenarlara doğru koyulaşan peçe, ortada camdan 44 pt'lik kilit mührü
@@ -182,8 +201,8 @@ struct KemerSalonlari: View {
             GaleriIkon(simge: .kilit, boyut: 18, kalinlik: 1.6)
                 .foregroundStyle(Color(r.murekkep, 0.9))
                 .frame(width: 44, height: 44)
-                .background(Circle().fill(.ultraThinMaterial))
-                .background(Circle().fill(Color(r.zemin, r.koyu ? 0.42 : 0.56)))
+                // `drawingGroup` içinde malzeme (ultraThinMaterial) çizilmez: arkası zaten bulanık, düz cam rengi yeter
+                .background(Circle().fill(Color(r.zemin, r.koyu ? 0.62 : 0.72)))
                 .overlay(Circle().stroke(Color(r.murekkep, r.koyu ? 0.24 : 0.16), lineWidth: 1))
                 .clipShape(Circle())
         }
@@ -192,12 +211,11 @@ struct KemerSalonlari: View {
     /// `.kemer-yazi`: 300 genişlik (kartın iki yanından taşar): dönem sembolüyle yıllar, akım adı, durum
     private func yazi(_ salon: AkimDurumu) -> some View {
         let r = tema.renkler
-        let uyeler = galeri.katalog.sanatcilar.filter { $0.akim == salon.ad }
         let donem = DonemSembolu.bul(salon.sira)
         return VStack(spacing: 0) {
             HStack(spacing: 6) {
                 DonemIkonu(donem: donem, boyut: 14)
-                Text(KemerYayi.yillar(uyeler)).monospacedDigit()
+                Text(yillar[salon.ad] ?? "").monospacedDigit()
             }
             .font(Yazi.sans(13, agirlik: 600, stil: .footnote)).cssSatir(.sans, 13, 16.9)
             .foregroundStyle(Color(r.pirinc))
