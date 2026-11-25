@@ -201,13 +201,14 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - Açık bir durağa dokun: öğrenci patikadan yürüyor, altta koyu kart açılıyor (kapak, "Dönem · n sanatçı", ad, beyaz düğme, tanışma grupları, Kolay / Orta / Zor, Akım sayfası). Aşağı çekince kapanıyor.
   - Kurs rozetine dokun: "n / 57 konu işlendi", sıradaki konunun Türkçe adı, "k sanatçı açılacak", **İşlendi yap**. Resimdeki saklı bir motife dokun: çerçeveli eser, hikâye, "… sayfası".
   - Kartta "1. grupla tanış" ya da "Kolay'a başla": tanışma ve sorular Çalış'taki turun aynısı. Grup bitince "Grup tamam" ve "2. grupla tanış"; seviye bitince sergi duvarı, madalyon, yıldızlar, skor, salonlar ve "Orta salonuna geç".
+- [ ] (Z3z) Galeri → Akımlar akıcılık: şeridi hızlı hızlı sağa sola kaydır, kartlar takılmadan akıyor mu? Kilitli kapaklar hâlâ bulanık ve ortasında kilit mührü var mı? Gece ve Gündüz'de bak.
 - [ ] (Z3w) Galeri → Akımlar (Neon'un "Yön 2 · Kemerlerin yayı"):
-  - Üstte eskisi gibi "Galeri", arama, kalp ve bölüm sekmeleri; altında ortada büyük kemerli kart, iki yanda komşular küçük, soluk ve hafif bulanık. Kartın altında dönem sembolüyle yıllar (ör. "1582–1682"), akım adı ve "N / M sanatçı açık" ya da kilit + "Konu N'de açılır".
+  - Üstte eskisi gibi "Galeri", arama, kalp ve bölüm sekmeleri; altında ortada büyük kemerli kart, iki yanda komşular küçük ve soluk. Kartın altında dönem sembolüyle yıllar (ör. "1582–1682"), akım adı ve "N / M sanatçı açık" ya da kilit + "Konu N'de açılır".
   - Şeridi parmakla yatay kaydır: kartlar geniş bir yay boyunca hafifçe eğilip alçalıyor, yazı kendi kemeriyle akıyor; bırakınca bir karta oturuyor. Zeminin halesi ve deseni yeni akımın tablosuna yumuşakça geçiyor.
   - "Salona gir" hep aynı yerde (başparmak kovalamıyor); kilitli akımda yerinde "N sanatçı · yakında" hapı. Yan karta dokununca o kart ortaya geliyor; ortadaki açık karta dokununca salon açılıyor.
   - Işık kılavuzu (ince pirinç yay, çentikler, ortada dönem): "‹ önceki" / "sonraki ›" bir akım geçiyor. Kılavuzun ve şeridin üstünden **yukarı-aşağı kaydırınca sayfa takılmadan kayıyor mu?**
   - En alttaki "Bütün akımlar · 28 salon": alttan buzlu cam çekmece açılıyor, dönem dönem gruplar ("a / n açık"), kilitliler soluk ve bulanık kapakla. Bir akıma dokun: çekmece kapanıp şerit o akıma gidiyor.
-  - Ayarlar'da hareketi azalt (ya da iOS'ta Hareketi Azalt): kartlar düz, kaymıyor ve bulanıklaşmıyor; yalnız küçülme ve solma kalıyor. Gece ve Gündüz'de bak.
+  - Ayarlar'da hareketi azalt (ya da iOS'ta Hareketi Azalt): kartlar düz ve kaymıyor; yalnız küçülme ve solma kalıyor. Gece ve Gündüz'de bak.
 - [ ] (Z3v) Bugün → sağ üstte Ben'in solundaki **paylaş** dairesi (cam, dolu değil):
   - Kapakta dokun: "Günün tablosunu paylaş" yaprağı açılıyor, önce "Kart hazırlanıyor", sonra kartın önizlemesi. Üstte **Hikâye / Gönderi**; Hikâye uzun (9:16), Gönderi daha kısa (4:5).
   - Kartta: tablo kenardan kenara ve altta zemine eriyor, sol üstte "Günün tablosu" hapı, akım (pirinç), eserin Türkçe adı (Bodoni), "sanatçı · yıl", cam not kartında ayrıntının adı ve metni, solda o ayrıntının kare kırpımı (büyüteçli), altta "Sanat Atlası · sanat-atlasi.pages.dev".

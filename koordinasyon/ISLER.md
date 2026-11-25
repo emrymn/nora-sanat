@@ -186,6 +186,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
 | Z3w | Galeri › Akımlar Neon'un "Yön 2 · Kemerlerin yayı" tasarımıyla (Emre seçti; dal `neon/galeri-akimlar-2`, PR #60) | K | Z3u | 1 | bitti (#61) |
 | Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | PR açık (#64) |
+| Z3z | Akımlar şeridi akıcılık: kaydırırken her karede değişen bulanıklık/parlaklık/gölge yarıçapı ve katalog taraması kalktı (Emre: "kasıyor") | K | Z3w | 1 | PR açık |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1097,6 +1098,12 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
 - **Ayrıca:** sanatçı künyesindeki "Dinle" yazısı sitedeki gibi `--vurgu-acik` (`.isim-ek .dinle`; önce vurgu ile mürekkebin karışımıydı, eserin rengi görünmüyordu).
 - **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
 
+
+### Z3z · Akımlar şeridi akıcılık (Claude)
+**Devir notu:** Claude, 2026-11-25 · dal `claude/Z3z-akimlar-akici`. Emre telefonda Akımlar şeridinin kastığını söyledi.
+- **Neden:** `KemerSalonlari` kaydırırken her karede `konum` değişiyor; her kartta `.blur(radius:)` (komşu bulanıklığı), `.brightness`, `.shadow(radius:)` yarıçapı da her karede değişiyordu → kapak görseli her karede yeniden bulanıklaştırılıp gölgesi yeniden hesaplanıyordu. Ayrıca her kartın yazısı her karede katalogu süzüyordu (`KemerYayi.yillar`).
+- **Düzeltme** (`GaleriAna.swift`): kapak katmanı kaydırmadan bağımsız ve `drawingGroup` ile tek dokuya çiziliyor; kilitli kapağın bulanıklığı sabit (`kilitBulanikligi`), komşu bulanıklığı kalktı (tasarımda yoktu, yalnız soluyorlardı; `KemerYayi.Kart.bulaniklik` çekirdekte duruyor, ekranda kullanılmıyor); parlaklık kapağın üstünde siyah bir peçe; gölge sabit yarıçaplı ayrı bir katmanda, yakınlık yalnız saydamlıkta. Kilit mührünün malzemesi (`ultraThinMaterial`) `drawingGroup` içinde çizilmediği için düz cam rengi. Yıllar `@State yillar` ile bir kez hesaplanıyor.
+- **Görünüş farkı:** komşu kartlar artık bulanık değil, yalnız küçük ve soluk.
 
 ### Z3w · Galeri › Akımlar: Kemerlerin yayı (Claude)
 **Devir notu:** Claude, 2026-11-25 · [PR #61](https://github.com/emrymn/nora-sanat/pull/61) · dal `claude/Z3w-galeri-akimlar`. Yeni tasarım, sitede yok (sitede hâlâ çark var; kâhin yerine davranış testi ve CI görüntüsü). Kaynak: dal `neon/galeri-akimlar-2` (PR #60, birleştirilmedi, yalnız referans), Emre **Yön 2**'yi seçti: `tasarim/galeri-akimlar-2/yon-2.html` (`cizKonum`, `centikCiz`), `BENIOKU.md` "Yön 2", `goruntuler/yon-2-{gece,gunduz,gecis}.png`.
