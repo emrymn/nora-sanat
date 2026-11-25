@@ -1,22 +1,30 @@
-// Y1 · Sesli rehberli bakış: Türkçe ses ve arka planda kesintisiz ses oturumu (sitede karşılığı yok).
+// Y1 · Sesli rehberli bakış: rehberin sesi ve arka planda kesintisiz ses oturumu (sitede karşılığı yok).
+// Z4a: önce doğal ses (Gemini "Fola" kaydı, `DinleSesKaynagi`) çalınır; kaydı olmayan metni telefonun en iyi Türkçe sesi okur.
 import AVFoundation
 
-/// Rehberin sesi. `AVSpeechSynthesizer` ile Türkçe okur; telefonda "gelişmiş" (ya da daha iyi) Türkçe ses varsa onu seçer.
+/// Rehberin sesi. Bir adımda tek ses konuşur: ya kayıt (`cal`) ya `AVSpeechSynthesizer` (`oku`).
 /// Söz aralarındaki sessizlikte de ses oturumu açık kalsın diye arkada sessiz bir ses çalar: yoksa iOS uygulamayı arka
 /// planda askıya alır ve akış kilit ekranında durur.
 @MainActor
-final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate {
+final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate {
     private let sentez = AVSpeechSynthesizer()
     private var bekleyen: CheckedContinuation<Void, Never>?
     /// Beklenen sözün kimliği: durdurulan eski sözün geç gelen "bitti" haberi yenisini bitirmesin
     private var bekleyenSoz: ObjectIdentifier?
     private var motor: AVAudioEngine?
     private var sessizCalar: AVAudioPlayerNode?
+    private var calar: AVAudioPlayer?
+
+    /// Sentezin şu an söylediği yerin UTF-16 konumu (kelime kelime altyazı için); söz yoksa nil
+    private(set) var sozKonumu: Int?
 
     override init() {
         super.init()
         sentez.delegate = self
     }
+
+    /// Kayıt çalıyorsa (ya da duraklatılmışsa) içindeki an (sn)
+    var kayitAni: Double? { calar?.currentTime }
 
     /// Telefondaki en iyi Türkçe ses (premium > gelişmiş > varsayılan).
     static var turkceSes: AVSpeechSynthesisVoice? {
@@ -41,7 +49,26 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
-    /// Metni okur; bitince (ya da durdurulunca) döner. Görev iptal edilirse ses hemen kesilir.
+    /// Kaydı çalar; bitince (ya da durdurulunca) true döner. Dosya açılamazsa hemen false (o adımı telefon okur).
+    func cal(_ url: URL) async -> Bool {
+        durdur()
+        guard let c = try? AVAudioPlayer(contentsOf: url) else { return false }
+        c.delegate = self
+        c.prepareToPlay()
+        calar = c
+        await withTaskCancellationHandler {
+            await withCheckedContinuation { (k: CheckedContinuation<Void, Never>) in
+                guard !Task.isCancelled, c.play() else { k.resume(); return }
+                bekleyen = k
+                bekleyenSoz = ObjectIdentifier(c)
+            }
+        } onCancel: {
+            Task { @MainActor in self.durdur() }
+        }
+        return true
+    }
+
+    /// Metni telefonun sesiyle okur; bitince (ya da durdurulunca) döner. Görev iptal edilirse ses hemen kesilir.
     func oku(_ metin: String) async {
         guard !metin.isEmpty else { return }
         durdur()
@@ -50,6 +77,7 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate {
         // Yavaş bakışa uygun, olağandan biraz yavaş (AVSpeech'te olağan hız 0,5)
         soz.rate = AVSpeechUtteranceDefaultSpeechRate * 0.9
         soz.prefersAssistiveTechnologySettings = false
+        sozKonumu = 0
         await withTaskCancellationHandler {
             await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
                 guard !Task.isCancelled else { c.resume(); return }
@@ -64,14 +92,19 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate {
 
     func duraklat() {
         if sentez.isSpeaking { sentez.pauseSpeaking(at: .word) }
+        if let c = calar, c.isPlaying { c.pause() }
     }
 
     func surdur() {
         if sentez.isPaused { sentez.continueSpeaking() }
+        if let c = calar, !c.isPlaying, bekleyenSoz == ObjectIdentifier(c) { c.play() }
     }
 
     func durdur() {
         if sentez.isSpeaking || sentez.isPaused { sentez.stopSpeaking(at: .immediate) }
+        calar?.stop()
+        calar = nil
+        sozKonumu = nil
         bitti(nil)
     }
 
@@ -84,6 +117,12 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate {
         c?.resume()
     }
 
+    nonisolated func speechSynthesizer(_ s: AVSpeechSynthesizer, willSpeakRangeOfSpeechString r: NSRange,
+                                       utterance u: AVSpeechUtterance) {
+        let kimlik = ObjectIdentifier(u)
+        Task { @MainActor in if kimlik == self.bekleyenSoz { self.sozKonumu = r.location } }
+    }
+
     nonisolated func speechSynthesizer(_ s: AVSpeechSynthesizer, didFinish u: AVSpeechUtterance) {
         let kimlik = ObjectIdentifier(u)
         Task { @MainActor in self.bitti(kimlik) }
@@ -91,6 +130,19 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate {
 
     nonisolated func speechSynthesizer(_ s: AVSpeechSynthesizer, didCancel u: AVSpeechUtterance) {
         let kimlik = ObjectIdentifier(u)
+        Task { @MainActor in self.bitti(kimlik) }
+    }
+
+    nonisolated func audioPlayerDidFinishPlaying(_ p: AVAudioPlayer, successfully _: Bool) {
+        let kimlik = ObjectIdentifier(p)
+        Task { @MainActor in
+            if let c = self.calar, ObjectIdentifier(c) == kimlik { self.calar = nil }
+            self.bitti(kimlik)
+        }
+    }
+
+    nonisolated func audioPlayerDecodeErrorDidOccur(_ p: AVAudioPlayer, error _: Error?) {
+        let kimlik = ObjectIdentifier(p)
         Task { @MainActor in self.bitti(kimlik) }
     }
 
