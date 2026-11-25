@@ -1,0 +1,2009 @@
+<!doctype html>
+<html lang="tr" data-tema="gece">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hikâyeler · Yön 1 — Monografi (Dergi ve Kitap Okuma)</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* =====================================================================
+         Nora Sanat · Tema Değişkenleri (Gece & Gündüz)
+         ===================================================================== */
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --surface-2: #24211e;
+        --border: rgba(235, 229, 218, 0.13);
+        --border-ince: rgba(235, 229, 218, 0.08);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #847d73;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --right: #6fb487;
+        --tab-bg: rgba(24, 22, 20, 0.84);
+        --overlay-btn: rgba(20, 18, 16, 0.66);
+        --dolu-bg: #ebe5da;
+        --dolu-ink: #121110;
+        --doku: radial-gradient(rgba(255, 255, 255, 0.032) 1px, transparent 1px);
+        --desen-op: 0.04;
+        --hale-blend: normal;
+        --hale-1-op: 0.34;
+        --hale-2-op: 0.22;
+        --golge: 0 18px 42px rgba(0, 0, 0, 0.45);
+        --sekme-golge: 0 10px 30px rgba(0, 0, 0, 0.46);
+        --paspartu: #0c0b0a;
+        --vitrin-bg: #080706;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --surface-2: #efebe3;
+        --border: rgba(31, 27, 23, 0.13);
+        --border-ince: rgba(31, 27, 23, 0.08);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #6c645a;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --right: #2a6644;
+        --tab-bg: rgba(247, 245, 241, 0.86);
+        --overlay-btn: rgba(247, 245, 241, 0.80);
+        --dolu-bg: #1f1b17;
+        --dolu-ink: #f7f5f1;
+        --doku: radial-gradient(rgba(31, 27, 23, 0.032) 1px, transparent 1px);
+        --desen-op: 0.045;
+        --hale-blend: multiply;
+        --hale-1-op: 0.24;
+        --hale-2-op: 0.16;
+        --golge: 0 14px 32px rgba(31, 27, 23, 0.11);
+        --sekme-golge: 0 10px 26px rgba(31, 27, 23, 0.13);
+        --paspartu: #e2ddd4;
+        --vitrin-bg: #ded8ce;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', Didot, Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, sans-serif;
+        --okuma: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+        --hale-1: 168, 114, 58;
+        --hale-2: 82, 46, 36;
+      }
+
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      [hidden] { display: none !important; }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--vitrin-bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: clip;
+      }
+
+      /* =====================================================================
+         Etkileşimli Vitrin Çubuğu (?cek=1 ile tamamen gizlenir)
+         ===================================================================== */
+      .vitrin-bar {
+        position: sticky;
+        top: 0;
+        z-index: 90;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background: var(--tab-bg);
+        backdrop-filter: blur(20px) saturate(1.5);
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+      }
+      .vitrin-grup {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+      }
+      .vitrin-btn {
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 12px/1 var(--sans);
+        padding: 7px 11px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .vitrin-btn.aktif {
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+      }
+      .vitrin-etiket {
+        color: var(--pirinc);
+        font: 600 12px/1 var(--sans);
+        margin-right: 4px;
+      }
+
+      .sahne-sarici {
+        display: flex;
+        justify-content: center;
+        padding: 20px 12px 44px;
+      }
+
+      /* 390x844 iPhone Çerçevesi */
+      .telefon {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        border-radius: 44px;
+        overflow: hidden;
+        background: var(--bg);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--border);
+        isolation: isolate;
+      }
+
+      body.cek-modu {
+        background: var(--bg);
+      }
+      body.cek-modu .vitrin-bar { display: none; }
+      body.cek-modu .sahne-sarici { padding: 0; }
+      body.cek-modu .telefon {
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      /* Üç Katmanlı Nora Sanat Zemini */
+      .zemin-katman {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .zemin-doku {
+        background-image: var(--doku);
+        background-size: 3px 3px;
+      }
+      .zemin-hale {
+        background:
+          radial-gradient(68% 42% at 12% 8%, rgba(var(--hale-1), var(--hale-1-op)) 0%, transparent 72%),
+          radial-gradient(64% 46% at 88% 82%, rgba(var(--hale-2), var(--hale-2-op)) 0%, transparent 74%);
+        mix-blend-mode: var(--hale-blend);
+      }
+      .zemin-desen {
+        background-image: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-barok@3x.png');
+        background-size: 96px 96px;
+        opacity: var(--desen-op);
+      }
+
+      /* iOS Durum Çubuğu */
+      .durum-cubugu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 48px;
+        padding: 14px 26px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 14px/1 var(--sans);
+        color: var(--ink);
+        z-index: 45;
+        pointer-events: none;
+      }
+      .durum-sag {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Kaydırılabilir Ekran Gövdesi */
+      .ekran {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: none;
+      }
+      .ekran::-webkit-scrollbar { display: none; }
+
+      /* Ortak Bileşenler */
+      .ust-yazi {
+        font: 600 13px/1.3 var(--sans);
+        color: var(--pirinc);
+        margin: 0;
+      }
+      .cam-yuvarlak {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        backdrop-filter: blur(24px) saturate(1.6);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .cam-hap {
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        backdrop-filter: blur(24px) saturate(1.6);
+        color: var(--ink);
+        font: 600 14px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+      /* Ekranda tek dolu düğme kuralı */
+      .dolu-hap {
+        min-height: 46px;
+        padding: 0 22px;
+        border-radius: 999px;
+        border: 0;
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+        font: 600 15px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+      .ilerleme-ray {
+        width: 100%;
+        height: 3px;
+        border-radius: 999px;
+        background: var(--border);
+        overflow: hidden;
+      }
+      .ilerleme-dolgu {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--pirinc);
+      }
+      .ilerleme-dolgu.bitti {
+        background: var(--right);
+      }
+
+      /* =====================================================================
+         EKRAN 1: ANA EKRAN (MONOGRAFİ KATALOĞU)
+         ===================================================================== */
+      .ana-ic {
+        padding: 58px 20px 120px;
+      }
+      .ana-ust {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .ana-baslik {
+        font: 500 36px/1.06 var(--serif);
+        letter-spacing: -0.015em;
+        margin: 4px 0 0;
+      }
+      .ben-ust-dugme {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        height: 44px;
+        padding: 0 13px 0 11px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        backdrop-filter: blur(24px) saturate(1.6);
+        color: var(--ink);
+        font: 600 13px/1 var(--sans);
+        cursor: pointer;
+      }
+
+      /* Öne Çıkan: Kaldığın Yerden Devam (Dergi Kapak Kartı) */
+      .devam-kart {
+        border-radius: 26px;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--golge);
+        margin-bottom: 30px;
+      }
+      .devam-gorsel-kutu {
+        position: relative;
+        height: 214px;
+        overflow: hidden;
+        background: var(--paspartu);
+      }
+      .devam-gorsel-kutu img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 24%;
+        display: block;
+      }
+      .devam-gorsel-perde {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(18, 17, 16, 0.08) 0%, rgba(18, 17, 16, 0.25) 55%, var(--surface) 100%);
+      }
+      .devam-sure-pul {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        padding: 6px 11px;
+        border-radius: 999px;
+        border: 1px solid rgba(235, 229, 218, 0.22);
+        background: rgba(18, 17, 16, 0.62);
+        backdrop-filter: blur(18px);
+        color: #ebe5da;
+        font: 600 12px/1 var(--sans);
+      }
+      .devam-govde {
+        padding: 2px 20px 20px;
+      }
+      .devam-baslik {
+        font: 500 25px/1.15 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 6px 0 6px;
+      }
+      .devam-alt {
+        font: 400 15.5px/1.45 var(--okuma);
+        color: var(--ink-2);
+        margin: 0 0 14px;
+      }
+      .devam-iz-ust {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font: 500 12.5px/1.3 var(--sans);
+        color: var(--ink-2);
+        margin-bottom: 7px;
+      }
+      .devam-iz-ust strong {
+        color: var(--pirinc);
+        font-weight: 600;
+      }
+      .devam-eylem {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 16px;
+      }
+      .devam-eylem .dolu-hap {
+        flex: 1;
+      }
+
+      /* Alt Çizgili Dönem Şeridi (TASARIM_DILI: alt seçimler) */
+      .donem-serit {
+        display: flex;
+        gap: 20px;
+        border-bottom: 1px solid var(--border-ince);
+        margin: 0 0 18px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .donem-serit::-webkit-scrollbar { display: none; }
+      .donem-sekme {
+        position: relative;
+        border: 0;
+        background: transparent;
+        color: var(--ink-3);
+        font: 600 14px/1 var(--sans);
+        padding: 10px 0 13px;
+        min-height: 44px;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .donem-sekme.aktif {
+        color: var(--ink);
+      }
+      .donem-sekme.aktif::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--pirinc);
+      }
+
+      /* Gruplu Editoryal Liste Kartı */
+      .bolum-satir-baslik {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 12px;
+      }
+      .bolum-satir-baslik span {
+        font: 500 12.5px/1 var(--sans);
+        color: var(--ink-3);
+      }
+      .liste-kart {
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .liste-satir {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        padding: 15px 16px;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+        cursor: pointer;
+        border-bottom: 1px solid var(--border-ince);
+      }
+      .liste-satir:last-child { border-bottom: 0; }
+      .liste-kapak {
+        width: 68px;
+        height: 86px;
+        border-radius: 14px;
+        object-fit: cover;
+        object-position: 50% 20%;
+        flex-shrink: 0;
+        background: var(--paspartu);
+        border: 1px solid var(--border-ince);
+      }
+      .liste-orta {
+        flex: 1;
+        min-width: 0;
+      }
+      .liste-sanatci {
+        font: 600 12.5px/1.25 var(--sans);
+        color: var(--pirinc);
+        margin-bottom: 3px;
+      }
+      .liste-ad {
+        font: 500 19px/1.18 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 0 0 4px;
+      }
+      .liste-ozet {
+        font: 400 13.5px/1.35 var(--okuma);
+        color: var(--ink-2);
+        margin: 0 0 9px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .liste-alt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font: 500 12px/1 var(--sans);
+        color: var(--ink-3);
+      }
+      .liste-alt .durum-bitti { color: var(--right); font-weight: 600; }
+      .liste-alt .durum-suruyor { color: var(--pirinc); font-weight: 600; }
+      .liste-ray-kutu {
+        flex: 1;
+        max-width: 78px;
+      }
+
+      /* =====================================================================
+         EKRAN 2: HİKÂYE OKUMA (MONOGRAFİ SAYFASI)
+         ===================================================================== */
+      .okuma-cam-ust {
+        position: sticky;
+        top: 0;
+        z-index: 35;
+        padding: 50px 14px 10px;
+        background: var(--tab-bg);
+        backdrop-filter: blur(24px) saturate(1.6);
+        border-bottom: 1px solid var(--border);
+      }
+      .okuma-ust-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .okuma-ust-orta {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+      }
+      .okuma-ust-sanatci {
+        font: 600 12.5px/1.2 var(--sans);
+        color: var(--pirinc);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .okuma-ust-bolum {
+        font: 500 14px/1.25 var(--serif);
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .okuma-ust-cizgi {
+        margin-top: 9px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .okuma-ust-cizgi .ilerleme-ray { flex: 1; }
+      .okuma-kalan {
+        font: 600 11.5px/1 var(--sans);
+        color: var(--ink-2);
+        white-space: nowrap;
+      }
+
+      .okuma-govde {
+        padding: 20px 22px 110px;
+      }
+      .okuma-kapak-baslik {
+        margin-bottom: 24px;
+      }
+      .okuma-h1 {
+        font: 500 34px/1.08 var(--serif);
+        letter-spacing: -0.015em;
+        margin: 6px 0 10px;
+      }
+      .okuma-alt-baslik {
+        font: 400 18px/1.45 var(--okuma);
+        font-style: italic;
+        color: var(--ink-2);
+        margin: 0 0 18px;
+      }
+      .okuma-meta-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-ince);
+      }
+      .okuma-meta-yazi {
+        font: 500 13px/1.35 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* Dönem Fihristi (Numarasız Zaman Çizelgesi) */
+      .fihrist-kart {
+        margin: 22px 0 32px;
+        padding: 16px 18px;
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+      .fihrist-liste {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+      }
+      .fihrist-oge {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 9px 0;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+        cursor: pointer;
+        border-bottom: 1px solid var(--border-ince);
+      }
+      .fihrist-oge:last-child { border-bottom: 0; padding-bottom: 2px; }
+      .fihrist-nokta {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        margin-top: 5px;
+        flex-shrink: 0;
+        background: var(--border);
+      }
+      .fihrist-oge.bitti .fihrist-nokta { background: var(--right); }
+      .fihrist-oge.aktif .fihrist-nokta {
+        background: var(--pirinc);
+        box-shadow: 0 0 0 4px rgba(var(--pirinc-rgb), 0.22);
+      }
+      .fihrist-yil {
+        font: 600 12px/1.3 var(--sans);
+        color: var(--pirinc);
+        min-width: 68px;
+      }
+      .fihrist-ad {
+        font: 500 14.5px/1.3 var(--serif);
+        color: var(--ink);
+      }
+      .fihrist-oge:not(.aktif):not(.bitti) .fihrist-ad { color: var(--ink-2); }
+
+      /* Okuma Metni & Kırpılmamış Büyük Eserler */
+      .okuma-paragraf {
+        font: 400 18px/1.62 var(--okuma);
+        color: var(--ink);
+        margin: 0 0 18px;
+      }
+      .okuma-paragraf.ilk-harf::first-letter {
+        font: 500 50px/0.84 var(--serif);
+        color: var(--pirinc);
+        float: left;
+        padding: 4px 10px 0 0;
+      }
+      .bolum-ayrim {
+        margin: 40px 0 18px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-ince);
+      }
+      .bolum-h2 {
+        font: 500 27px/1.15 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 6px 0 0;
+      }
+
+      /* Büyük, Kırpılmamış Müze Levhası */
+      .eser-levha {
+        margin: 26px -6px 30px;
+        border-radius: 22px;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--golge);
+      }
+      .eser-cerceve {
+        position: relative;
+        background: var(--paspartu);
+        padding: 10px;
+      }
+      .eser-cerceve img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 14px;
+      }
+      .eser-buyutec {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: 1px solid rgba(235, 229, 218, 0.25);
+        background: rgba(18, 17, 16, 0.62);
+        backdrop-filter: blur(18px);
+        color: #ebe5da;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .eser-kunye {
+        padding: 16px 18px 18px;
+      }
+      .eser-ad {
+        font: 500 19px/1.22 var(--serif);
+        font-style: italic;
+        margin: 0 0 3px;
+      }
+      .eser-muze {
+        font: 500 12.5px/1.3 var(--sans);
+        color: var(--ink-3);
+        margin: 0 0 11px;
+      }
+      .eser-bag {
+        font: 400 15.5px/1.5 var(--okuma);
+        color: var(--ink-2);
+        margin: 0;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-ince);
+      }
+      .eser-bag-etiket {
+        display: block;
+        font: 600 12px/1.2 var(--sans);
+        color: var(--pirinc);
+        margin-bottom: 4px;
+      }
+
+      /* =====================================================================
+         EKRAN 3: DİNLEME (FOLA — TAM EKRAN ESER & KELİME KELİME ALTYAZI)
+         ===================================================================== */
+      .dinle-sahne {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+      }
+      .dinle-ust {
+        position: relative;
+        z-index: 20;
+        padding: 54px 16px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .dinle-baslik-kutu {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+      }
+      .dinle-sanatci {
+        font: 600 12.5px/1.2 var(--sans);
+        color: var(--pirinc);
+      }
+      .dinle-bolum-ad {
+        font: 500 15px/1.25 var(--serif);
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Eser Sahnesi (Ekranı Dolduran, Kırpmasız Çerçeve) */
+      .dinle-eser-alan {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        padding: 8px 18px 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .dinle-eser-kutu {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-height: 360px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: var(--paspartu);
+        border: 1px solid var(--border);
+        box-shadow: var(--golge);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .dinle-eser-kutu img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 24%;
+        transition: transform 8s ease-out;
+      }
+      .dinle-eser-kutu.oynuyor img {
+        transform: scale(1.06);
+      }
+      .dinle-eser-etiket {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        padding: 9px 13px;
+        border-radius: 16px;
+        background: rgba(18, 17, 16, 0.64);
+        backdrop-filter: blur(20px) saturate(1.5);
+        border: 1px solid rgba(235, 229, 218, 0.16);
+        color: #ebe5da;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .dinle-eser-etiket strong {
+        font: 500 14px/1.2 var(--serif);
+        font-style: italic;
+      }
+      .dinle-eser-etiket span {
+        font: 500 11.5px/1 var(--sans);
+        color: rgba(235, 229, 218, 0.78);
+        white-space: nowrap;
+      }
+
+      /* Kelime Kelime Akan Fola Altyazısı */
+      .fola-altyazi-kutu {
+        padding: 14px 22px 10px;
+        min-height: 112px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .fola-rozet-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .fola-ses-iz {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font: 600 12px/1 var(--sans);
+        color: var(--pirinc);
+      }
+      .fola-dalga {
+        display: inline-flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 12px;
+      }
+      .fola-dalga i {
+        display: block;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--pirinc);
+      }
+      .fola-dalga i:nth-child(1) { height: 6px; }
+      .fola-dalga i:nth-child(2) { height: 12px; }
+      .fola-dalga i:nth-child(3) { height: 8px; }
+      .fola-altyazi {
+        font: 400 19.5px/1.44 var(--okuma);
+        margin: 0;
+        color: var(--ink);
+      }
+      .k-gecti { color: var(--ink); }
+      .k-aktif {
+        color: var(--pirinc);
+        font-weight: 500;
+        text-decoration: underline;
+        text-decoration-color: rgba(var(--pirinc-rgb), 0.45);
+        text-underline-offset: 4px;
+      }
+      .k-gelecek { color: var(--ink-3); }
+
+      /* Alt Çalar Denetimleri */
+      .dinle-denetim-kart {
+        margin: 4px 16px 26px;
+        padding: 16px 18px 18px;
+        border-radius: 28px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--golge);
+      }
+      .zaman-iz-sarici {
+        position: relative;
+        padding: 8px 0;
+        cursor: pointer;
+      }
+      .zaman-ray {
+        position: relative;
+        height: 3px;
+        border-radius: 999px;
+        background: var(--border);
+      }
+      .zaman-dolgu {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 999px;
+        background: var(--pirinc);
+      }
+      .zaman-centik {
+        position: absolute;
+        top: -2px;
+        width: 2px;
+        height: 7px;
+        border-radius: 2px;
+        background: var(--bg);
+      }
+      .zaman-sayilar {
+        display: flex;
+        justify-content: space-between;
+        font: 500 11.5px/1 var(--sans);
+        color: var(--ink-3);
+        font-variant-numeric: tabular-nums;
+        margin-bottom: 12px;
+      }
+      .denetim-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .denetim-kucuk {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        font: 600 12.5px/1 var(--sans);
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        cursor: pointer;
+      }
+      .denetim-ana {
+        width: 58px;
+        height: 58px;
+        border-radius: 999px;
+        border: 0;
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .dinle-alt-sec {
+        margin-top: 12px;
+        padding-top: 11px;
+        border-top: 1px solid var(--border-ince);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .hiz-btn {
+        min-height: 36px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--ink);
+        font: 600 12.5px/1 var(--sans);
+        font-variant-numeric: tabular-nums;
+        cursor: pointer;
+      }
+      .metin-gec-btn {
+        min-height: 36px;
+        padding: 0 12px;
+        border: 0;
+        background: transparent;
+        color: var(--pirinc);
+        font: 600 13px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+
+      /* =====================================================================
+         EKRAN 4: BAĞLANTILAR (İLİŞKİ SOYKÜTÜĞÜ) & KAYNAKLAR
+         ===================================================================== */
+      .baglanti-ic {
+        padding: 58px 20px 116px;
+      }
+      .baglanti-ust {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .baglanti-baslik {
+        font: 500 28px/1.12 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 4px 0 0;
+      }
+      .baglanti-giris {
+        font: 400 16px/1.5 var(--okuma);
+        color: var(--ink-2);
+        margin: 0 0 22px;
+      }
+      .bag-grup-etiket {
+        font: 600 13px/1.2 var(--sans);
+        color: var(--pirinc);
+        margin: 24px 0 10px;
+      }
+      .bag-grup-etiket:first-of-type { margin-top: 0; }
+      .bag-kart {
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .bag-satir {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 15px 16px;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+        border-bottom: 1px solid var(--border-ince);
+        cursor: pointer;
+      }
+      .bag-satir:last-child { border-bottom: 0; }
+      .bag-pul {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        object-fit: cover;
+        object-position: 50% 20%;
+        flex-shrink: 0;
+        border: 1px solid var(--border-ince);
+      }
+      .bag-orta { flex: 1; min-width: 0; }
+      .bag-ad-satir {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .bag-ad {
+        font: 500 18px/1.2 var(--serif);
+        margin: 0;
+      }
+      .bag-yil {
+        font: 500 12px/1 var(--sans);
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      .bag-iliski {
+        font: 600 12px/1.3 var(--sans);
+        color: var(--pirinc);
+        margin: 2px 0 5px;
+      }
+      .bag-not {
+        font: 400 14.5px/1.44 var(--okuma);
+        color: var(--ink-2);
+        margin: 0;
+      }
+      .bag-gecis {
+        margin-top: 8px;
+        font: 600 12.5px/1 var(--sans);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* Kaynaklar — Sade Liste */
+      .kaynaklar-bolum {
+        margin-top: 34px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-ince);
+      }
+      .kaynak-liste {
+        margin-top: 12px;
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .kaynak-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 13px 16px;
+        text-decoration: none;
+        color: var(--ink);
+        border-bottom: 1px solid var(--border-ince);
+        min-height: 52px;
+      }
+      .kaynak-satir:last-child { border-bottom: 0; }
+      .kaynak-ad {
+        font: 500 13.5px/1.38 var(--sans);
+        color: var(--ink);
+        margin: 0 0 3px;
+      }
+      .kaynak-alan {
+        font: 400 12px/1.2 var(--sans);
+        color: var(--ink-3);
+      }
+
+      /* =====================================================================
+         EKRAN 5: BAŞKA SEKMEDE KÜÇÜK ÇALAR (Galeri Önizlemesi Üstünde)
+         ===================================================================== */
+      .galeri-arka {
+        padding: 58px 20px 180px;
+      }
+      .galeri-ust {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .galeri-h1 {
+        font: 500 34px/1.08 var(--serif);
+        margin: 0;
+      }
+      .galeri-sekmeler {
+        display: inline-flex;
+        padding: 4px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        margin-bottom: 24px;
+      }
+      .galeri-sekmeler span {
+        padding: 8px 15px;
+        border-radius: 999px;
+        font: 600 13px/1 var(--sans);
+        color: var(--ink-2);
+      }
+      .galeri-sekmeler span.aktif {
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+      }
+      .kemer-onizleme {
+        margin: 0 auto;
+        width: 246px;
+        text-align: center;
+      }
+      .kemer-kart {
+        width: 246px;
+        height: 332px;
+        border-radius: 124px 124px 26px 26px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: var(--golge);
+        margin-bottom: 14px;
+      }
+      .kemer-kart img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .kemer-ad {
+        font: 500 24px/1.15 var(--serif);
+        margin: 4px 0 4px;
+      }
+      .kemer-alt {
+        font: 400 14px/1.4 var(--okuma);
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      /* Yüzen Küçük Çalar (Sekme Çubuğunun 10px Üstünde) */
+      .mini-calar {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 88px;
+        z-index: 38;
+        border-radius: 22px;
+        background: var(--tab-bg);
+        backdrop-filter: blur(26px) saturate(1.7);
+        border: 1px solid var(--border);
+        box-shadow: var(--sekme-golge);
+        overflow: hidden;
+      }
+      .mini-ic {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 9px 10px 9px 10px;
+      }
+      .mini-kapak {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .mini-orta {
+        flex: 1;
+        min-width: 0;
+        cursor: pointer;
+      }
+      .mini-ust {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font: 600 12.5px/1.2 var(--sans);
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mini-ust em {
+        font-style: normal;
+        color: var(--pirinc);
+      }
+      .mini-satir {
+        font: 400 13px/1.25 var(--okuma);
+        color: var(--ink-2);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+      .mini-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .mini-ray {
+        height: 2px;
+        background: var(--border-ince);
+      }
+      .mini-dolgu {
+        height: 100%;
+        background: var(--pirinc);
+      }
+
+      /* =====================================================================
+         SEKME ÇUBUĞU (YÖN 1 ÖNERİSİ: 5 SEKME ALTTA + BEN SAĞ ÜSTTE)
+         Bugün · Hikâyeler · Yolculuk · Galeri · Çalış
+         ===================================================================== */
+      .sekme-cubugu {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 16px;
+        height: 62px;
+        padding: 6px;
+        border-radius: 999px;
+        background: var(--tab-bg);
+        backdrop-filter: blur(24px) saturate(1.6);
+        border: 1px solid rgba(var(--ink-rgb), 0.14);
+        box-shadow: var(--sekme-golge);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        z-index: 40;
+      }
+      .sekme-oge {
+        position: relative;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        border-radius: 999px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        cursor: pointer;
+        padding: 0;
+      }
+      .sekme-oge.aktif {
+        background: rgba(var(--ink-rgb), 0.12);
+        color: var(--ink);
+      }
+      .sekme-oge span {
+        font: 600 10.5px/1.15 var(--sans);
+        letter-spacing: -0.01em;
+      }
+      .sekme-rozet {
+        position: absolute;
+        top: 3px;
+        left: calc(50% + 6px);
+        min-width: 17px;
+        height: 17px;
+        padding: 0 4px;
+        border-radius: 999px;
+        background: var(--pirinc);
+        color: var(--bg);
+        font: 700 10px/17px var(--sans);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="vitrin-bar" role="toolbar" aria-label="Önizleme denetimleri">
+      <span class="vitrin-etiket">Yön 1 · Monografi</span>
+      <div class="vitrin-grup" id="vitrin-ekranlar">
+        <button class="vitrin-btn aktif" data-ekran="ana">Ana ekran</button>
+        <button class="vitrin-btn" data-ekran="okuma">Okuma</button>
+        <button class="vitrin-btn" data-ekran="dinleme">Dinleme</button>
+        <button class="vitrin-btn" data-ekran="baglantilar">Bağlantılar</button>
+        <button class="vitrin-btn" data-ekran="mini">Küçük çalar</button>
+      </div>
+      <div class="vitrin-grup" id="vitrin-sanatcilar">
+        <button class="vitrin-btn aktif" data-sanatci="caravaggio">Caravaggio</button>
+        <button class="vitrin-btn" data-sanatci="artemisia">Artemisia</button>
+      </div>
+      <div class="vitrin-grup" id="vitrin-temalar">
+        <button class="vitrin-btn aktif" data-tema="gece">Gece</button>
+        <button class="vitrin-btn" data-tema="gunduz">Gündüz</button>
+      </div>
+    </div>
+
+    <div class="sahne-sarici">
+      <div class="telefon" id="telefon">
+        <div class="zemin-katman zemin-doku"></div>
+        <div class="zemin-katman zemin-hale"></div>
+        <div class="zemin-katman zemin-desen"></div>
+
+        <!-- iOS Durum Çubuğu -->
+        <div class="durum-cubugu" aria-hidden="true">
+          <span>09:41</span>
+          <div class="durum-sag">
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor">
+              <rect x="0" y="7" width="3" height="4" rx="1"/>
+              <rect x="4.5" y="4.5" width="3" height="6.5" rx="1"/>
+              <rect x="9" y="2" width="3" height="9" rx="1"/>
+              <rect x="13" y="0" width="3" height="11" rx="1" opacity="0.35"/>
+            </svg>
+            <svg width="24" height="12" viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.2">
+              <rect x="1" y="1" width="19" height="10" rx="2.6"/>
+              <rect x="3" y="3" width="14" height="6" rx="1.2" fill="currentColor" stroke="none"/>
+              <path d="M22 4.2v3.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- EKRAN 1: ANA EKRAN -->
+        <main class="ekran" id="ekran-ana"></main>
+
+        <!-- EKRAN 2: OKUMA -->
+        <main class="ekran" id="ekran-okuma" hidden></main>
+
+        <!-- EKRAN 3: DİNLEME (FOLA) -->
+        <main class="ekran" id="ekran-dinleme" hidden></main>
+
+        <!-- EKRAN 4: BAĞLANTILAR VE KAYNAKLAR -->
+        <main class="ekran" id="ekran-baglantilar" hidden></main>
+
+        <!-- EKRAN 5: BAŞKA SEKMEDE KÜÇÜK ÇALAR -->
+        <main class="ekran" id="ekran-mini" hidden></main>
+
+        <!-- KÜÇÜK ÇALAR (Yalnız başka sekmeye geçildiğinde görünür) -->
+        <div class="mini-calar" id="mini-calar" hidden></div>
+
+        <!-- 5 SEKMELİ YÜZEN CAM ÇUBUK (Ben sağ üstte) -->
+        <nav class="sekme-cubugu" id="sekme-cubugu" aria-label="Ana gezinme"></nav>
+      </div>
+    </div>
+
+    <script src="hikaye-verisi.js"></script>
+    <script>
+      (function () {
+        'use strict';
+        const V = window.HikayeVerisi;
+        const params = V.urlParametreleri();
+
+        const durum = {
+          ekran: params.ekran,
+          sanatciId: V.HIKAYELER[params.sanatci] ? params.sanatci : 'caravaggio',
+          donem: 'Tümü',
+          tema: params.tema === 'gunduz' ? 'gunduz' : 'gece',
+          aktifSekme: params.ekran === 'mini' ? 'galeri' : 'hikayeler'
+        };
+
+        if (params.cek) document.body.classList.add('cek-modu');
+        document.documentElement.setAttribute('data-tema', durum.tema);
+
+        const motor = new V.FolaMotoru(V.HIKAYELER[durum.sanatciId], {
+          guncelle: function (d) {
+            if (durum.ekran === 'dinleme') dinlemeGuncelle(d);
+            if (durum.ekran === 'mini') miniCiz(d);
+          }
+        });
+        if (params.bolum !== null && !isNaN(params.bolum)) {
+          motor.bolumeGit(params.bolum, params.cek);
+        }
+
+        function hikaye() {
+          return V.HIKAYELER[durum.sanatciId];
+        }
+
+        function haleGuncelle() {
+          const h = hikaye();
+          document.documentElement.style.setProperty('--hale-1', h.hale[0]);
+          document.documentElement.style.setProperty('--hale-2', h.hale[1]);
+        }
+
+        function okGeriSvg() {
+          return '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
+        }
+        function kulaklikSvg(b) {
+          const s = b || 17;
+          return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="7" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></svg>';
+        }
+        function oynatSvg(oynuyor, b) {
+          const s = b || 22;
+          return oynuyor
+            ? '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>'
+            : '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
+        }
+        function disOkSvg() {
+          return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg>';
+        }
+
+        /* ===== EKRAN 1: ANA EKRAN ===== */
+        function anaCiz() {
+          const devam = V.KATALOG[0]; // Caravaggio
+          const suzulen = V.KATALOG.filter(function (k) {
+            return durum.donem === 'Tümü' || k.donem === durum.donem;
+          });
+
+          const donemlerHtml = V.DONEMLER.map(function (d) {
+            return '<button class="donem-sekme' + (d === durum.donem ? ' aktif' : '') + '" data-donem="' + d + '">' + d + '</button>';
+          }).join('');
+
+          const listeHtml = suzulen.map(function (k) {
+            const durumYazi =
+              k.ilerleme.durum === 'bitti'
+                ? '<span class="durum-bitti">Dinlendi</span>'
+                : k.ilerleme.durum === 'suruyor'
+                  ? '<span class="durum-suruyor">' + k.ilerleme.kalanDk + ' dk kaldı</span>'
+                  : '<span>' + k.sureDk + ' dk</span>';
+            const rayHtml =
+              k.ilerleme.oran > 0
+                ? '<div class="liste-ray-kutu"><div class="ilerleme-ray"><div class="ilerleme-dolgu' +
+                  (k.ilerleme.durum === 'bitti' ? ' bitti' : '') +
+                  '" style="width:' + Math.round(k.ilerleme.oran * 100) + '%"></div></div></div>'
+                : '';
+
+            return (
+              '<button class="liste-satir" data-ac="' + k.id + '">' +
+                '<img class="liste-kapak" src="' + k.kapak + '" alt="' + k.sanatci + '">' +
+                '<div class="liste-orta">' +
+                  '<div class="liste-sanatci">' + k.sanatci + ' · ' + k.akim + '</div>' +
+                  '<h3 class="liste-ad">' + k.baslik + '</h3>' +
+                  '<p class="liste-ozet">' + k.alt_baslik + '</p>' +
+                  '<div class="liste-alt">' + durumYazi + rayHtml + '</div>' +
+                '</div>' +
+              '</button>'
+            );
+          }).join('');
+
+          document.getElementById('ekran-ana').innerHTML =
+            '<div class="ana-ic">' +
+              '<header class="ana-ust">' +
+                '<div>' +
+                  '<p class="ust-yazi">Sanatçı monografileri · Fola ile dinle</p>' +
+                  '<h1 class="ana-baslik">Hikâyeler</h1>' +
+                '</div>' +
+                '<button class="ben-ust-dugme" type="button" title="Ben ve Ayarlar (üst köşede)">' +
+                  V.ikonSvg('ben', 18, 1.6) + '<span>Ben</span>' +
+                '</button>' +
+              '</header>' +
+
+              '<section class="devam-kart" aria-label="Kaldığın yerden devam">' +
+                '<div class="devam-gorsel-kutu">' +
+                  '<img src="' + devam.kapak + '" alt="' + devam.sanatci + '">' +
+                  '<div class="devam-gorsel-perde"></div>' +
+                  '<span class="devam-sure-pul">' + devam.sureDk + ' dk · Fola</span>' +
+                '</div>' +
+                '<div class="devam-govde">' +
+                  '<p class="ust-yazi">Kaldığın yerden · ' + devam.sanatci + '</p>' +
+                  '<h2 class="devam-baslik">' + devam.baslik + '</h2>' +
+                  '<p class="devam-alt">' + devam.alt_baslik + '</p>' +
+                  '<div class="devam-iz-ust">' +
+                    '<span>' + devam.ilerleme.bolumAdi + '</span>' +
+                    '<strong>' + devam.ilerleme.kalanDk + ' dk kaldı</strong>' +
+                  '</div>' +
+                  '<div class="ilerleme-ray"><div class="ilerleme-dolgu" style="width:' + Math.round(devam.ilerleme.oran * 100) + '%"></div></div>' +
+                  '<div class="devam-eylem">' +
+                    '<button class="dolu-hap" id="ana-dinle-devam">' + kulaklikSvg(17) + '<span>Dinlemeye devam</span></button>' +
+                    '<button class="cam-hap" id="ana-oku-devam">Oku</button>' +
+                  '</div>' +
+                '</div>' +
+              '</section>' +
+
+              '<div class="donem-serit" role="tablist">' + donemlerHtml + '</div>' +
+              '<div class="bolum-satir-baslik">' +
+                '<p class="ust-yazi">Kitaplık</p>' +
+                '<span>' + suzulen.length + ' sanatçı</span>' +
+              '</div>' +
+              '<div class="liste-kart">' + listeHtml + '</div>' +
+            '</div>';
+
+          document.getElementById('ana-dinle-devam').onclick = function () {
+            sanatciSec('caravaggio');
+            ekranSec('dinleme');
+          };
+          document.getElementById('ana-oku-devam').onclick = function () {
+            sanatciSec('caravaggio');
+            ekranSec('okuma');
+          };
+          document.querySelectorAll('#ekran-ana .donem-sekme').forEach(function (btn) {
+            btn.onclick = function () {
+              durum.donem = btn.dataset.donem;
+              anaCiz();
+            };
+          });
+          document.querySelectorAll('#ekran-ana .liste-satir').forEach(function (btn) {
+            btn.onclick = function () {
+              const id = btn.dataset.ac;
+              if (V.HIKAYELER[id]) {
+                sanatciSec(id);
+                ekranSec('okuma');
+              }
+            };
+          });
+        }
+
+        /* ===== EKRAN 2: OKUMA (DERGİ / KİTAP AKIŞI) ===== */
+        function okumaCiz() {
+          const h = hikaye();
+          const aktifBolum = h.ilerleme.bolumIndex || 0;
+          const oran = h.ilerleme.oran > 0 ? Math.round(h.ilerleme.oran * 100) : 18;
+          const kalan = h.ilerleme.kalanDk || h.sureDk;
+
+          const fihristHtml = h.bolumler.map(function (b, i) {
+            const cls = i < aktifBolum ? ' bitti' : i === aktifBolum ? ' aktif' : '';
+            return (
+              '<button class="fihrist-oge' + cls + '" data-git-bolum="' + i + '">' +
+                '<span class="fihrist-nokta"></span>' +
+                '<span class="fihrist-yil">' + b.yillar + '</span>' +
+                '<span class="fihrist-ad">' + b.baslik + '</span>' +
+              '</button>'
+            );
+          }).join('');
+
+          const girisHtml = h.giris.map(function (p, idx) {
+            return '<p class="okuma-paragraf' + (idx === 0 ? ' ilk-harf' : '') + '">' + p + '</p>';
+          }).join('');
+
+          const bolumlerHtml = h.bolumler.map(function (b, idx) {
+            const eserlerHtml = b.eserler.map(function (e) {
+              return (
+                '<figure class="eser-levha">' +
+                  '<div class="eser-cerceve">' +
+                    '<img src="' + e.gorsel + '" alt="' + e.ad + '">' +
+                    '<span class="eser-buyutec" aria-hidden="true">' +
+                      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>' +
+                    '</span>' +
+                  '</div>' +
+                  '<figcaption class="eser-kunye">' +
+                    '<h4 class="eser-ad">' + e.ad + '</h4>' +
+                    '<p class="eser-muze">' + e.yil + ' · ' + e.muze + '</p>' +
+                    '<p class="eser-bag"><span class="eser-bag-etiket">Bu dönemle bağı</span>' + e.bag + '</p>' +
+                  '</figcaption>' +
+                '</figure>'
+              );
+            }).join('');
+
+            return (
+              '<section class="bolum-ayrim" id="bolum-' + idx + '">' +
+                '<p class="ust-yazi">' + b.yillar + ' · ' + b.sureDk + ' dk</p>' +
+                '<h2 class="bolum-h2">' + b.baslik + '</h2>' +
+              '</section>' +
+              b.paragraflar.map(function (p) { return '<p class="okuma-paragraf">' + p + '</p>'; }).join('') +
+              eserlerHtml
+            );
+          }).join('');
+
+          const kapanisHtml =
+            '<section class="bolum-ayrim">' +
+              '<p class="ust-yazi">Kapanış</p>' +
+              '<h2 class="bolum-h2">Gölgenin ardında kalan</h2>' +
+            '</section>' +
+            h.kapanis.map(function (p) { return '<p class="okuma-paragraf">' + p + '</p>'; }).join('') +
+            '<div style="margin-top:26px; display:flex; gap:10px;">' +
+              '<button class="cam-hap" style="flex:1" id="okuma-baglantilara">Bağlantılar ve kaynaklar</button>' +
+            '</div>';
+
+          document.getElementById('ekran-okuma').innerHTML =
+            '<div class="okuma-cam-ust">' +
+              '<div class="okuma-ust-satir">' +
+                '<button class="cam-yuvarlak" id="okuma-geri" aria-label="Geri">' + okGeriSvg() + '</button>' +
+                '<div class="okuma-ust-orta">' +
+                  '<div class="okuma-ust-sanatci">' + h.sanatci + ' · ' + h.bolumler[aktifBolum].yillar + '</div>' +
+                  '<div class="okuma-ust-bolum">' + h.bolumler[aktifBolum].baslik + '</div>' +
+                '</div>' +
+                '<button class="cam-yuvarlak" id="okuma-dinle-ikon" aria-label="Fola ile dinle">' + kulaklikSvg(18) + '</button>' +
+              '</div>' +
+              '<div class="okuma-ust-cizgi">' +
+                '<div class="ilerleme-ray"><div class="ilerleme-dolgu" style="width:' + oran + '%"></div></div>' +
+                '<span class="okuma-kalan">' + kalan + ' dk kaldı</span>' +
+              '</div>' +
+            '</div>' +
+            '<article class="okuma-govde">' +
+              '<header class="okuma-kapak-baslik">' +
+                '<p class="ust-yazi">' + h.akim + ' · ' + h.yillar + '</p>' +
+                '<h1 class="okuma-h1">' + h.baslik + '</h1>' +
+                '<p class="okuma-alt-baslik">' + h.alt_baslik + '</p>' +
+                '<div class="okuma-meta-satir">' +
+                  '<div class="okuma-meta-yazi">' + h.sureDk + ' dk okuma · ' + h.kelime.toLocaleString('tr-TR') + ' kelime</div>' +
+                  '<button class="dolu-hap" id="okuma-fola-baslat" style="min-height:44px; padding:0 16px; font-size:13.5px;">' +
+                    kulaklikSvg(16) + '<span>Fola ile dinle</span>' +
+                  '</button>' +
+                '</div>' +
+              '</header>' +
+              '<section class="fihrist-kart" aria-label="Hikâye dönemleri">' +
+                '<p class="ust-yazi">Dönemler</p>' +
+                '<div class="fihrist-liste">' + fihristHtml + '</div>' +
+              '</section>' +
+              girisHtml +
+              bolumlerHtml +
+              kapanisHtml +
+            '</article>';
+
+          document.getElementById('okuma-geri').onclick = function () { ekranSec('ana'); };
+          document.getElementById('okuma-dinle-ikon').onclick = function () { ekranSec('dinleme'); };
+          document.getElementById('okuma-fola-baslat').onclick = function () { ekranSec('dinleme'); };
+          document.getElementById('okuma-baglantilara').onclick = function () { ekranSec('baglantilar'); };
+          document.querySelectorAll('#ekran-okuma .fihrist-oge').forEach(function (btn) {
+            btn.onclick = function () {
+              const target = document.getElementById('bolum-' + btn.dataset.gitBolum);
+              if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
+          });
+        }
+
+        /* ===== EKRAN 3: DİNLEME (FOLA) ===== */
+        function dinlemeCiz() {
+          const d = motor.durum();
+          const h = d.hikaye;
+
+          document.getElementById('ekran-dinleme').innerHTML =
+            '<div class="dinle-sahne">' +
+              '<header class="dinle-ust">' +
+                '<button class="cam-yuvarlak" id="dinle-kucult" aria-label="Küçült ve başka sekmeye geç">' +
+                  '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+                '</button>' +
+                '<div class="dinle-baslik-kutu">' +
+                  '<div class="dinle-sanatci" id="d-sanatci">' + h.sanatci + ' · ' + d.parca.yillar + '</div>' +
+                  '<div class="dinle-bolum-ad" id="d-bolum">' + d.parca.bolumBaslik + '</div>' +
+                '</div>' +
+                '<button class="cam-yuvarlak" id="dinle-baglanti" aria-label="Bağlantılar">' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 10.9 15.7 7.1M8.3 13.1l7.4 3.8"/></svg>' +
+                '</button>' +
+              '</header>' +
+
+              '<div class="dinle-eser-alan">' +
+                '<div class="dinle-eser-kutu" id="d-eser-kutu">' +
+                  '<img id="d-eser-img" src="' + d.parca.eser.gorsel + '" alt="' + d.parca.eser.ad + '">' +
+                  '<div class="dinle-eser-etiket">' +
+                    '<strong id="d-eser-ad">' + d.parca.eser.ad + '</strong>' +
+                    '<span id="d-eser-yil">' + d.parca.eser.yil + '</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="fola-altyazi-kutu">' +
+                '<div class="fola-rozet-satir">' +
+                  '<span class="fola-ses-iz"><span class="fola-dalga"><i></i><i></i><i></i></span> Fola anlatıyor</span>' +
+                  '<span class="okuma-kalan" id="d-kalan">' + d.kalanDk + ' dk kaldı</span>' +
+                '</div>' +
+                '<p class="fola-altyazi" id="d-altyazi">' + V.kelimeHtml(d.parca, d.kelimeIndex) + '</p>' +
+              '</div>' +
+
+              '<div class="dinle-denetim-kart">' +
+                '<div class="zaman-iz-sarici" id="d-ray">' +
+                  '<div class="zaman-ray">' +
+                    '<div class="zaman-dolgu" id="d-dolgu" style="width:' + (d.oran * 100).toFixed(2) + '%"></div>' +
+                    d.bolumOranlari.slice(1).map(function (o) {
+                      return '<span class="zaman-centik" style="left:' + (o * 100).toFixed(2) + '%"></span>';
+                    }).join('') +
+                  '</div>' +
+                '</div>' +
+                '<div class="zaman-sayilar">' +
+                  '<span id="d-gecen">' + d.gecenYazi + '</span>' +
+                  '<span id="d-toplam">' + d.toplamYazi + '</span>' +
+                '</div>' +
+                '<div class="denetim-satir">' +
+                  '<button class="denetim-kucuk" id="d-bolum-once" aria-label="Önceki bölüm">' +
+                    '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6v12"/><path d="M18 6 9 12l9 6z"/></svg>' +
+                  '</button>' +
+                  '<button class="denetim-kucuk" id="d-geri-15" aria-label="15 saniye geri">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>' +
+                    '<span style="font-size:10px; line-height:1;">15</span>' +
+                  '</button>' +
+                  '<button class="denetim-ana" id="d-oynat" aria-label="Oynat veya duraklat">' + oynatSvg(d.oynuyor, 24) + '</button>' +
+                  '<button class="denetim-kucuk" id="d-ileri-15" aria-label="15 saniye ileri">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>' +
+                    '<span style="font-size:10px; line-height:1;">15</span>' +
+                  '</button>' +
+                  '<button class="denetim-kucuk" id="d-bolum-sonra" aria-label="Sonraki bölüm">' +
+                    '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6v12"/><path d="m6 6 9 6-9 6z"/></svg>' +
+                  '</button>' +
+                '</div>' +
+                '<div class="dinle-alt-sec">' +
+                  '<button class="hiz-btn" id="d-hiz">' + String(d.hiz).replace('.', ',') + '×</button>' +
+                  '<button class="metin-gec-btn" id="d-metne-don">' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>' +
+                    '<span>Metne dön</span>' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+          document.getElementById('dinle-kucult').onclick = function () { ekranSec('mini'); };
+          document.getElementById('dinle-baglanti').onclick = function () { ekranSec('baglantilar'); };
+          document.getElementById('d-oynat').onclick = function () { motor.degistir(); };
+          document.getElementById('d-geri-15').onclick = function () { motor.atlaSaniye(-15); };
+          document.getElementById('d-ileri-15').onclick = function () { motor.atlaSaniye(15); };
+          document.getElementById('d-bolum-once').onclick = function () { motor.bolumAtla(-1); };
+          document.getElementById('d-bolum-sonra').onclick = function () { motor.bolumAtla(1); };
+          document.getElementById('d-hiz').onclick = function () { motor.hizDegistir(); };
+          document.getElementById('d-metne-don').onclick = function () { ekranSec('okuma'); };
+          document.getElementById('d-ray').onclick = function (ev) {
+            const r = this.getBoundingClientRect();
+            motor.oranaGit((ev.clientX - r.left) / r.width);
+          };
+        }
+
+        function dinlemeGuncelle(d) {
+          const img = document.getElementById('d-eser-img');
+          if (!img) return;
+          if (img.getAttribute('src') !== d.parca.eser.gorsel) {
+            img.src = d.parca.eser.gorsel;
+            img.alt = d.parca.eser.ad;
+          }
+          document.getElementById('d-eser-kutu').classList.toggle('oynuyor', d.oynuyor);
+          document.getElementById('d-sanatci').textContent = d.hikaye.sanatci + ' · ' + d.parca.yillar;
+          document.getElementById('d-bolum').textContent = d.parca.bolumBaslik;
+          document.getElementById('d-eser-ad').textContent = d.parca.eser.ad;
+          document.getElementById('d-eser-yil').textContent = d.parca.eser.yil;
+          document.getElementById('d-kalan').textContent = d.kalanDk + ' dk kaldı';
+          document.getElementById('d-altyazi').innerHTML = V.kelimeHtml(d.parca, d.kelimeIndex);
+          document.getElementById('d-dolgu').style.width = (d.oran * 100).toFixed(2) + '%';
+          document.getElementById('d-gecen').textContent = d.gecenYazi;
+          document.getElementById('d-oynat').innerHTML = oynatSvg(d.oynuyor, 24);
+          document.getElementById('d-hiz').textContent = String(d.hiz).replace('.', ',') + '×';
+        }
+
+        /* ===== EKRAN 4: BAĞLANTILAR (SOYKÜTÜĞÜ) & KAYNAKLAR ===== */
+        function baglantilarCiz() {
+          const h = hikaye();
+          const gruplar = [
+            { baslik: 'Hocası ve etkilendikleri', uyeler: h.baglantilar.filter(function (b) { return b.yon === 'geri'; }) },
+            { baslik: 'Dostlar, rakipler ve kırılmalar', uyeler: h.baglantilar.filter(function (b) { return b.yon === 'yan'; }) },
+            { baslik: 'Etkilediği sanatçılar', uyeler: h.baglantilar.filter(function (b) { return b.yon === 'ileri'; }) }
+          ].filter(function (g) { return g.uyeler.length > 0; });
+
+          const gruplarHtml = gruplar.map(function (g) {
+            return (
+              '<p class="bag-grup-etiket">' + g.baslik + '</p>' +
+              '<div class="bag-kart">' +
+                g.uyeler.map(function (b) {
+                  return (
+                    '<button class="bag-satir" data-bag-id="' + b.id + '">' +
+                      '<img class="bag-pul" src="' + b.gorsel + '" alt="' + b.sanatci + '">' +
+                      '<div class="bag-orta">' +
+                        '<div class="bag-ad-satir">' +
+                          '<h3 class="bag-ad">' + b.sanatci + '</h3>' +
+                          '<span class="bag-yil">' + b.yillar + '</span>' +
+                        '</div>' +
+                        '<div class="bag-iliski">' + b.iliskiEtiketi + '</div>' +
+                        '<p class="bag-not">' + b.ozet + '</p>' +
+                        (b.hikayesiVar
+                          ? '<span class="bag-gecis">Hikâyeye geç <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></span>'
+                          : '') +
+                      '</div>' +
+                    '</button>'
+                  );
+                }).join('') +
+              '</div>'
+            );
+          }).join('');
+
+          const kaynaklarHtml = h.kaynaklar.map(function (k) {
+            const alan = k.adres.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+            return (
+              '<a class="kaynak-satir" href="' + k.adres + '" target="_blank" rel="noopener">' +
+                '<div>' +
+                  '<p class="kaynak-ad">' + k.baslik + '</p>' +
+                  '<span class="kaynak-alan">' + k.tur + ' · ' + alan + '</span>' +
+                '</div>' +
+                disOkSvg() +
+              '</a>'
+            );
+          }).join('');
+
+          document.getElementById('ekran-baglantilar').innerHTML =
+            '<div class="baglanti-ic">' +
+              '<header class="baglanti-ust">' +
+                '<button class="cam-yuvarlak" id="bag-geri" aria-label="Okumaya dön">' + okGeriSvg() + '</button>' +
+                '<div>' +
+                  '<p class="ust-yazi">' + h.sanatci + ' · Sanatçı ağı</p>' +
+                  '<h1 class="baglanti-baslik">Bağlantılar</h1>' +
+                '</div>' +
+              '</header>' +
+              '<p class="baglanti-giris">Kim kime ne geçirdi: ' + h.sanatci + '’nun ışığını devraldığı ve bıraktığı izler.</p>' +
+              gruplarHtml +
+              '<section class="kaynaklar-bolum">' +
+                '<p class="ust-yazi">Kaynaklar</p>' +
+                '<div class="kaynak-liste">' + kaynaklarHtml + '</div>' +
+              '</section>' +
+            '</div>';
+
+          document.getElementById('bag-geri').onclick = function () { ekranSec('okuma'); };
+          document.querySelectorAll('#ekran-baglantilar .bag-satir').forEach(function (btn) {
+            btn.onclick = function () {
+              const id = btn.dataset.bagId;
+              if (V.HIKAYELER[id]) {
+                sanatciSec(id);
+                ekranSec('okuma');
+              }
+            };
+          });
+        }
+
+        /* ===== EKRAN 5: BAŞKA SEKMEDE KÜÇÜK ÇALAR ===== */
+        function miniArkaCiz() {
+          document.getElementById('ekran-mini').innerHTML =
+            '<div class="galeri-arka">' +
+              '<header class="galeri-ust">' +
+                '<h1 class="galeri-h1">Galeri</h1>' +
+                '<button class="ben-ust-dugme" type="button">' + V.ikonSvg('ben', 18, 1.6) + '<span>Ben</span></button>' +
+              '</header>' +
+              '<div class="galeri-sekmeler">' +
+                '<span class="aktif">Akımlar</span><span>Başyapıtlar</span><span>Konular</span>' +
+              '</div>' +
+              '<div class="kemer-onizleme">' +
+                '<div class="kemer-kart"><img src="gorseller/artemisia-judith.jpg" alt="İtalyan Barok"></div>' +
+                '<p class="ust-yazi">XVII. yüzyıl</p>' +
+                '<h2 class="kemer-ad">İtalyan Barok</h2>' +
+                '<p class="kemer-alt">Sert ışık, karanlık zemin ve sahne gerilimi</p>' +
+              '</div>' +
+            '</div>';
+        }
+
+        function miniCiz(d) {
+          const el = document.getElementById('mini-calar');
+          el.innerHTML =
+            '<div class="mini-ic">' +
+              '<img class="mini-kapak" src="' + d.parca.eser.gorsel + '" alt="' + d.hikaye.sanatci + '">' +
+              '<div class="mini-orta" id="mini-ac">' +
+                '<div class="mini-ust"><span>' + d.hikaye.sanatci + '</span> · <em>' + d.parca.bolumBaslik + '</em></div>' +
+                '<div class="mini-satir">' + d.parca.metin + '</div>' +
+              '</div>' +
+              '<button class="mini-btn" id="mini-oynat" aria-label="Oynat veya duraklat">' + oynatSvg(d.oynuyor, 20) + '</button>' +
+              '<button class="mini-btn" id="mini-kapat" aria-label="Çaları kapat">' +
+                '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
+              '</button>' +
+            '</div>' +
+            '<div class="mini-ray"><div class="mini-dolgu" style="width:' + (d.oran * 100).toFixed(2) + '%"></div></div>';
+
+          document.getElementById('mini-ac').onclick = function () { ekranSec('dinleme'); };
+          document.getElementById('mini-oynat').onclick = function () { motor.degistir(); };
+          document.getElementById('mini-kapat').onclick = function () {
+            motor.durdur();
+            ekranSec('ana');
+          };
+        }
+
+        /* ===== 5 SEKMELİ ALT ÇUBUK (Ben sağ üstte) ===== */
+        function sekmeCubuguCiz() {
+          const sekmeler = [
+            { id: 'bugun', ad: 'Bugün' },
+            { id: 'hikayeler', ad: 'Hikâyeler' },
+            { id: 'yolculuk', ad: 'Yolculuk' },
+            { id: 'galeri', ad: 'Galeri' },
+            { id: 'calis', ad: 'Çalış', rozet: 14 }
+          ];
+          const goster = durum.ekran === 'ana' || durum.ekran === 'mini';
+          const nav = document.getElementById('sekme-cubugu');
+          nav.hidden = !goster;
+          if (!goster) return;
+
+          nav.innerHTML = sekmeler.map(function (s) {
+            const aktif = s.id === durum.aktifSekme;
+            return (
+              '<button class="sekme-oge' + (aktif ? ' aktif' : '') + '" data-sekme="' + s.id + '">' +
+                V.ikonSvg(s.id, 21, aktif ? 1.75 : 1.5) +
+                '<span>' + s.ad + '</span>' +
+                (s.rozet ? '<i class="sekme-rozet">' + s.rozet + '</i>' : '') +
+              '</button>'
+            );
+          }).join('');
+
+          nav.querySelectorAll('.sekme-oge').forEach(function (btn) {
+            btn.onclick = function () {
+              if (btn.dataset.sekme === 'hikayeler') ekranSec('ana');
+              else if (btn.dataset.sekme === 'galeri') ekranSec('mini');
+            };
+          });
+        }
+
+        function sanatciSec(id) {
+          durum.sanatciId = id;
+          haleGuncelle();
+          motor.hikayeYukle(V.HIKAYELER[id], true);
+          document.querySelectorAll('#vitrin-sanatcilar .vitrin-btn').forEach(function (b) {
+            b.classList.toggle('aktif', b.dataset.sanatci === id);
+          });
+          if (durum.ekran === 'okuma') okumaCiz();
+          if (durum.ekran === 'dinleme') dinlemeCiz();
+          if (durum.ekran === 'baglantilar') baglantilarCiz();
+          if (durum.ekran === 'mini') miniCiz(motor.durum());
+        }
+
+        function ekranSec(ad) {
+          durum.ekran = ad;
+          durum.aktifSekme = ad === 'mini' ? 'galeri' : 'hikayeler';
+
+          ['ana', 'okuma', 'dinleme', 'baglantilar', 'mini'].forEach(function (k) {
+            document.getElementById('ekran-' + k).hidden = k !== ad;
+          });
+          document.getElementById('mini-calar').hidden = ad !== 'mini';
+
+          if (ad === 'ana') anaCiz();
+          else if (ad === 'okuma') okumaCiz();
+          else if (ad === 'dinleme') dinlemeCiz();
+          else if (ad === 'baglantilar') baglantilarCiz();
+          else if (ad === 'mini') {
+            miniArkaCiz();
+            miniCiz(motor.durum());
+          }
+          sekmeCubuguCiz();
+
+          document.querySelectorAll('#vitrin-ekranlar .vitrin-btn').forEach(function (b) {
+            b.classList.toggle('aktif', b.dataset.ekran === ad);
+          });
+
+          if (params.kaydir && (ad === 'okuma' || ad === 'baglantilar')) {
+            document.getElementById('ekran-' + ad).scrollTop = params.kaydir;
+          }
+        }
+
+        /* Vitrin çubuğu olayları */
+        document.querySelectorAll('#vitrin-ekranlar .vitrin-btn').forEach(function (b) {
+          b.onclick = function () { ekranSec(b.dataset.ekran); };
+        });
+        document.querySelectorAll('#vitrin-sanatcilar .vitrin-btn').forEach(function (b) {
+          b.onclick = function () { sanatciSec(b.dataset.sanatci); };
+        });
+        document.querySelectorAll('#vitrin-temalar .vitrin-btn').forEach(function (b) {
+          b.onclick = function () {
+            durum.tema = b.dataset.tema;
+            document.documentElement.setAttribute('data-tema', durum.tema);
+            document.querySelectorAll('#vitrin-temalar .vitrin-btn').forEach(function (x) {
+              x.classList.toggle('aktif', x.dataset.tema === durum.tema);
+            });
+          };
+        });
+
+        haleGuncelle();
+        ekranSec(durum.ekran);
+      })();
+    </script>
+  </body>
+</html>
