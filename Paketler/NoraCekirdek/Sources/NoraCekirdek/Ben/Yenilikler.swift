@@ -96,7 +96,7 @@ public enum Yenilikler {
     public static func gosterilecekler(sonGorulen: String?, surum: String, calismis: Bool, liste: [Yenilik]) -> [Yenilik] {
         let son = sonGorulen.flatMap { $0.isEmpty ? nil : $0 }
         if son == nil && !calismis { return [] }
-        let uygun = liste.filter { !yeniMi($0.surum, surum) && (son.map { s in yeniMi($0.surum, s) } ?? true) }
+        let uygun = liste.filter { x in !yeniMi(x.surum, surum) && (son.map { s in yeniMi(x.surum, s) } ?? true) }
         return son != nil ? uygun : Array(uygun.prefix(1))
     }
 
