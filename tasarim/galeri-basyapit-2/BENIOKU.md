@@ -55,6 +55,10 @@ Uygulama bugün bir başyapıtın okunduğunu **kaydetmiyor** (`localStorage['sa
   20. Vincent van Gogh — *Yıldızlı Gece* (`by-yildizligece.jpg`)
   21. Edvard Munch — *Çığlık* (`by-ciglik.jpg`)
   22. Gustav Klimt — *Öpücük* (`by-opucuk.jpg`)
+  23. Johannes Vermeer — *Süt Boşaltan Kadın* (`by-sutcu.jpg`, Yön 5 Barok görünümü için)
+  24. Caravaggio — *Aziz Matta’nın Çağrılışı* (`by-matta.jpg`, Yön 5 Barok görünümü için)
+  25. Rembrandt van Rijn — *Müsrif Oğulun Dönüşü* (`by-musrifogul.jpg`, Yön 5 Barok görünümü için)
+  26. Caravaggio — *Yudit Holofernes’in Başını Keserken* (`by-caravaggio-judith.jpg`, Yön 5 Barok görünümü için)
 
 Her yönün varsayılan tam sayfa görünümünde tek bir tablo bile iki kez yinelenmez (`dupes = 0`).
 
@@ -126,14 +130,26 @@ Emre’nin **Yön 1**’i seçip *“ekran çok kalabalık oluyor, daha sade ols
 
 ---
 
+## Yön 5 — Büyüteçten Tabloya · Yapışkan Dönem (`yon-5.html`) *(Yön 4’ün dönem süzgeci üstte düzeltilmiş sürümü)*
+
+Emre’nin Yön 4 için *“kategoriler aşağıda kaldı”* geri bildirimi üzerine, Yön 4’e dokunmadan sadeliğini koruyup dönem süzgecini sayfanın tepesine taşıyan ve bütün sayfayı o döneme göre süzen sürüm.
+
+- **Yapılan düzeltmeler:**
+  - **Üstte yapışkan cam dönem sekmeleri:** `Hepsi 264 · Orta Çağ 12 · Rönesans 98 · Barok 43 · …` bölüm sekmelerinin (`Akımlar · Başyapıtlar · Konular · Zaman`) hemen altına çıktı; kaydırınca cam zeminli olarak üstte yapışkan kalır (`position: sticky; top: 0`). Seçili dönemin altındaki `2 px` pirinç çizgi dönem değiştirirken yumuşakça kayar.
+  - **Bütün sayfayı süzen dönem seçimi ve geçiş hareketi:** Bir dönem seçilince (ör. `Barok 43`), açılış ayrıntısı (*Nedimeler* · Aynadaki çift), “Gözün hangisine takıldı?” pencereleri (*Süt*, *İsa’nın eli*, *Babanın iki eli*, *İnci*), “Bu dönemin başyapıtları” şeridi (*Holofernes’in Kafasını Kesen Judith*, *Gece Devriyesi*, *Yudit Holofernes’in Başını Keserken*) ve alttaki açılır dizin (`Barok başyapıtları · 43 eser`) hep o dönemden gelir — üstelik Barok görünümünde bile 8 farklı başyapıtla sıfır tekrar (`dupes = 0`). Geçişte gövde hafif bir dikey solma/yükselme hareketiyle yenilenir, zemin halesi ve dönem deseni yeni döneme erir.
+  - **16:10 açılış ayrıntısı ve ilk ekran dengesi:** Mercek tuvali `16:10` oranına daraltılarak ilk `844 px` ekran içinde yapışkan dönem çubuğu, açılış ayrıntısı, soru, eser adı, tek dolu `Yakın okumayı aç` düğmesi ve altından **`Gözün hangisine takıldı?`** başlığı (`y = 638..667 px`) aynı anda görünecek biçimde dengelendi.
+  - **Alttaki ayrı “Dönemlere göre” bölümü kaldırıldı:** Süzgeç yukarı taşındığı için şerit doğrudan **`Bu dönemin başyapıtları`** başlığıyla, en altta **`Bütün başyapıtlar · N`** (dönem seçiliyken `<Dönem> başyapıtları · N`) açılır diziniyle biter. Sayfa `1720 px` (`2,04 ekran`) uzunluğundadır; yeni kutu ya da çizgi eklenmedi.
+- **Görüntüler:** [Gece (Hepsi)](goruntuler/yon-5-gece.png) · [Gündüz (Hepsi)](goruntuler/yon-5-gunduz.png) · [Gece (Barok seçili)](goruntuler/yon-5-barok-gece.png)
+
+---
+
 ## Kısa karşılaştırma
 
-| Ölçüt | Yön 1 · Büyüteçten Tabloya | Yön 2 · Sorular ve İzler | Yön 3 · Haftanın Başyapıtı ve Deste | Yön 4 · Büyüteçten Tabloya (Sade) |
-|---|---|---|---|---|
-| **Keşif mekaniği** | Ayrıntıdan bütüne canlı mercek + 3×2 pencere | Çift tablo diyaloğu + merak yolları | Haftalık derin vitrin + sürüklenebilir deste | Kutusuz canlı mercek + 2×2 büyük pencere |
-| **Girmeden sezme** | Gerçek kırpım + tablo içi noktalar + ayrıntı adları | Karşılaştırma cümlesi + 1 satırlık sır ipucu | 3 sekmeli “İçinde ne var?” + fişte 1 cümle sır | Yakın kırpım + tek soru + düğmede özet satırı |
-| **Dönem gezinmesi** | 9 dönem sekmesi + uzun dönem fihristi | 9 dönemlik oransal Zaman Spektrumu | 9 dönem sekmesi + hızlı müze fihristi | 9 dönem sekmesi + tek yatay şerit + açılır dizin |
-| **Sayfa uzunluğu (`390 px`)** | `3960 px` (`4,7 ekran`) | `4286 px` (`5,1 ekran`) | `3554 px` (`4,2 ekran`) | **`1862 px` (`2,2 ekran`)** |
-| **Bugünkü veriyle uyum** | **%100 hazır** | Kürasyon dosyası gerekir | **%100 hazır** | **%100 hazır** |
-| **Okundu kaydı bağımlılığı** | Yok | Yok | Yok | Yok |
-| **Doğrulama (`390 px`, @2x)** | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 20 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px |
+| Ölçüt | Yön 1 · Büyüteçten Tabloya | Yön 2 · Sorular ve İzler | Yön 3 · Haftanın Başyapıtı ve Deste | Yön 4 · Sade | Yön 5 · Yapışkan Dönem |
+|---|---|---|---|---|---|
+| **Keşif mekaniği** | Canlı mercek + 3×2 pencere | Çift tablo diyaloğu + yollar | Haftalık vitrin + deste | Kutusuz mercek + 2×2 pencere | 16:10 mercek + 2×2 pencere |
+| **Dönem gezinmesi** | Altta 9 dönem + uzun liste | Altta oransal Zaman Spektrumu | Altta 9 dönem + fihrist | Altta 9 dönem + yatay şerit | **Üstte yapışkan 9 dönem (tüm sayfayı süzer)** |
+| **Sayfa uzunluğu (`390 px`)** | `3960 px` (`4,7 ekran`) | `4286 px` (`5,1 ekran`) | `3554 px` (`4,2 ekran`) | `1862 px` (`2,2 ekran`) | **`1720 px` (`2,04 ekran`)** |
+| **Bugünkü veriyle uyum** | **%100 hazır** | Kürasyon dosyası gerekir | **%100 hazır** | **%100 hazır** | **%100 hazır** |
+| **Okundu kaydı bağımlılığı** | Yok | Yok | Yok | Yok | Yok |
+| **Doğrulama (`390 px`, @2x)** | `scrollW=390`, 22 eser, ≥44 px | `scrollW=390`, 22 eser, ≥44 px | `scrollW=390`, 20 eser, ≥44 px | `scrollW=390`, 22 eser, ≥44 px | `scrollW=390`, 26 eser (Barok 8/8), `stickyTop=0`, ≥44 px |
