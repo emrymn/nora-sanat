@@ -1,0 +1,1795 @@
+<!doctype html>
+<html lang="tr" data-tema="gece" data-hareket="tam">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Durak İçi · Yön 3 — Küratör Sahnesi</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* =====================================================================
+         Yön 3 · Küratör Sahnesi — Cesur ama sade: inci izi, yüzen cam tepsi,
+         büyük stüdyo karşılaştırması ve yıldız yayı
+         ===================================================================== */
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --surface-cam: rgba(24, 22, 20, 0.78);
+        --border: #2e2b28;
+        --border-ince: rgba(235, 229, 218, 0.12);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --right: #6fb487;
+        --wrong: #d66854;
+        --overlay-btn: rgba(18, 17, 16, 0.62);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.04;
+        --desen-filtre: invert(1);
+        --hale-1: rgba(46, 98, 72, 0.34);
+        --hale-2: rgba(162, 74, 58, 0.18);
+        --golge-resim: 0 24px 56px rgba(0, 0, 0, 0.6);
+        --golge-tepsi: 0 18px 44px rgba(0, 0, 0, 0.48);
+        --sayfa-zemin: #0a0908;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --surface-cam: rgba(247, 245, 241, 0.86);
+        --border: #d6d0c6;
+        --border-ince: rgba(31, 27, 23, 0.1);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #665f56;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --right: #2a6644;
+        --wrong: #9a3726;
+        --overlay-btn: rgba(247, 245, 241, 0.84);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.045;
+        --desen-filtre: none;
+        --hale-1: rgba(46, 98, 72, 0.16);
+        --hale-2: rgba(162, 74, 58, 0.09);
+        --golge-resim: 0 18px 38px rgba(20, 17, 14, 0.15);
+        --golge-tepsi: 0 14px 32px rgba(20, 17, 14, 0.1);
+        --sayfa-zemin: #dfd9cf;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', Georgia, serif;
+        --okuma: 'Newsreader', Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, sans-serif;
+        --sure: 280ms;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      .onizleme-cubuk {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px 12px;
+        padding: 10px 16px;
+        background: rgba(var(--bg-rgb), 0.92);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(18px);
+      }
+
+      .onizleme-ad {
+        font: 500 13px/1.2 var(--sans);
+        color: var(--pirinc);
+        margin-right: 4px;
+      }
+
+      .grup-hap {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px;
+        border-radius: 999px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        gap: 2px;
+      }
+
+      .grup-hap button {
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 12px/1 var(--sans);
+        padding: 7px 11px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      .grup-hap button[aria-pressed='true'] {
+        background: var(--ink);
+        color: var(--bg);
+      }
+
+      .sahne-sar {
+        display: flex;
+        justify-content: center;
+        padding: 24px 12px 44px;
+      }
+
+      .telefon {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        border-radius: 44px;
+        overflow: hidden;
+        background-color: var(--bg);
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        border: 1px solid var(--border);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        isolation: isolate;
+      }
+
+      body.goruntu-modu {
+        background: var(--bg);
+      }
+      body.goruntu-modu .onizleme-cubuk {
+        display: none;
+      }
+      body.goruntu-modu .sahne-sar {
+        padding: 0;
+        display: block;
+      }
+      body.goruntu-modu .telefon {
+        width: 390px;
+        height: 844px;
+        border-radius: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(310px 300px at 50% 18%, var(--hale-1), transparent 74%),
+          radial-gradient(250px 240px at 86% 86%, var(--hale-2), transparent 72%);
+        transition: background 500ms ease;
+      }
+
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-ronesans@3x.png');
+        background-size: 96px 96px;
+        opacity: var(--desen-opaklik);
+        filter: var(--desen-filtre);
+      }
+
+      .durum-cubugu {
+        position: relative;
+        z-index: 8;
+        height: 44px;
+        padding: 14px 26px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 13px/1 var(--sans);
+        flex: none;
+      }
+
+      .durum-cubugu.acik-ustu {
+        color: #ebe5da;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .durum-sag {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .ekran {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* İnci adım izli minimalist üst çubuk */
+      .inci-ust {
+        position: relative;
+        z-index: 6;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 4px 16px 8px;
+        flex: none;
+      }
+
+      .inci-ust.yuzen {
+        position: absolute;
+        top: 6px;
+        left: 0;
+        right: 0;
+      }
+
+      .cam-yuvarlak {
+        width: 44px;
+        height: 44px;
+        flex: none;
+        border-radius: 50%;
+        border: 1px solid var(--border-ince);
+        background: var(--overlay-btn);
+        backdrop-filter: blur(22px) saturate(1.5);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .inci-ust.yuzen .cam-yuvarlak {
+        background: rgba(18, 17, 16, 0.52);
+        border-color: rgba(235, 229, 218, 0.18);
+        color: #ebe5da;
+      }
+
+      .inci-dizi {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border-ince);
+        backdrop-filter: blur(20px) saturate(1.5);
+      }
+
+      .inci-ust.yuzen .inci-dizi {
+        background: rgba(18, 17, 16, 0.52);
+        border-color: rgba(235, 229, 218, 0.18);
+      }
+
+      .inci {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(var(--ink-rgb), 0.24);
+        transition: transform var(--sure) ease, background var(--sure) ease;
+      }
+
+      .inci-ust.yuzen .inci {
+        background: rgba(235, 229, 218, 0.34);
+      }
+
+      .inci.gecmis {
+        background: var(--pirinc);
+      }
+
+      .inci.dogru {
+        background: var(--right);
+      }
+
+      .inci.yanlis {
+        background: transparent;
+        box-shadow: inset 0 0 0 1.8px var(--wrong);
+      }
+
+      .inci.simdi {
+        background: var(--ink);
+        transform: scale(1.45);
+      }
+
+      .inci-ust.yuzen .inci.simdi {
+        background: #ebe5da;
+      }
+
+      .sayac-hap {
+        min-height: 36px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border-ince);
+        backdrop-filter: blur(20px);
+        font: 500 12.5px/1 var(--sans);
+        font-variant-numeric: tabular-nums;
+        color: var(--ink-2);
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .inci-ust.yuzen .sayac-hap {
+        background: rgba(18, 17, 16, 0.52);
+        border-color: rgba(235, 229, 218, 0.18);
+        color: #ebe5da;
+      }
+
+      /* =====================================================================
+         TANIŞMA — Kenardan kenara şövale perdesi (Çalış Yön 4 akrabalığı)
+         ===================================================================== */
+      .sovale-sar {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sovale-perde {
+        position: relative;
+        height: 472px;
+        margin-top: -44px;
+        overflow: hidden;
+        flex: none;
+      }
+
+      .sovale-perde img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+        display: block;
+      }
+
+      .sovale-erime {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(16, 14, 12, 0.42) 0%, rgba(16, 14, 12, 0) 24%, rgba(var(--bg-rgb), 0) 56%, var(--bg) 99%);
+        pointer-events: none;
+      }
+
+      .sovale-cekmece {
+        position: absolute;
+        right: 18px;
+        bottom: 24px;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .sovale-cekmece button {
+        width: 44px;
+        height: 52px;
+        padding: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1.5px solid rgba(235, 229, 218, 0.25);
+        background: var(--surface);
+        cursor: pointer;
+        opacity: 0.65;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .sovale-cekmece button[aria-pressed='true'] {
+        opacity: 1;
+        border-color: var(--pirinc);
+        transform: scale(1.05);
+      }
+
+      .sovale-cekmece img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .sovale-fisilti {
+        position: absolute;
+        left: 22px;
+        bottom: 24px;
+        z-index: 3;
+        max-width: 260px;
+        min-height: 44px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border-ince);
+        backdrop-filter: blur(18px);
+        font: italic 400 13.5px/1.2 var(--okuma);
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+      }
+
+      .sovale-govde {
+        flex: 1;
+        min-height: 0;
+        padding: 0 22px 10px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .sovale-govde::-webkit-scrollbar {
+        display: none;
+      }
+
+      .sovale-etiket {
+        font: 600 13px/1.2 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .sovale-ad {
+        font: 500 34px/1.05 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 4px 0 0;
+      }
+
+      .sovale-meta {
+        font: 500 13px/1.3 var(--sans);
+        color: var(--ink-2);
+        margin: 5px 0 0;
+      }
+
+      .sovale-ipucu {
+        font: 400 16px/1.55 var(--okuma);
+        color: var(--ink);
+        margin: 14px 0 0;
+      }
+
+      .alt-bar {
+        flex: none;
+        padding: 12px 22px 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .dolu-dugme {
+        flex: 1;
+        min-height: 52px;
+        padding: 0 22px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        font: 600 15.5px/1.2 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .duz-dugme {
+        min-height: 44px;
+        padding: 0 14px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 14px/1.2 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+
+      /* =====================================================================
+         SORU — Spotlu müze sahnesi + yüzen cam şık tepsisi
+         ===================================================================== */
+      .spot-sahne {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0 18px 18px;
+      }
+
+      .spot-resim-alan {
+        flex: 1;
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 6px 14px;
+      }
+
+      .spot-resim-btn {
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+        max-width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .spot-resim-btn img {
+        max-width: 100%;
+        max-height: 390px;
+        width: auto;
+        height: auto;
+        border-radius: 18px;
+        box-shadow: var(--golge-resim);
+        display: block;
+      }
+
+      .cam-tepsi {
+        border-radius: 26px;
+        padding: 16px;
+        background: var(--surface-cam);
+        backdrop-filter: blur(26px) saturate(1.6);
+        border: 1px solid var(--border-ince);
+        box-shadow: var(--golge-tepsi);
+      }
+
+      .tepsi-baslik {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 0 4px 12px;
+      }
+
+      .tepsi-baslik h1 {
+        font: 500 22px/1.15 var(--serif);
+        margin: 0;
+      }
+
+      .tepsi-baslik span {
+        font: 600 12.5px/1 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .hap-izgara {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .hap-secenek {
+        min-height: 54px;
+        padding: 10px 14px;
+        border-radius: 16px;
+        border: 1px solid var(--border-ince);
+        background: rgba(var(--ink-rgb), 0.045);
+        color: var(--ink);
+        font: 500 14.5px/1.2 var(--sans);
+        text-align: left;
+        cursor: pointer;
+        transition: background 140ms ease, transform 120ms ease;
+      }
+
+      .hap-secenek:active {
+        transform: scale(0.98);
+      }
+
+      .tepsi-alt {
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+      }
+
+      /* =====================================================================
+         YANLIŞ CEVAP — Stüdyo masası: sorulan eser + büyük yan yana karşılaştırma
+         ===================================================================== */
+      .studyo-kaydir {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+        padding: 4px 20px 14px;
+      }
+      .studyo-kaydir::-webkit-scrollbar {
+        display: none;
+      }
+
+      .studyo-eser-satir {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 20px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .studyo-thumb {
+        width: 78px;
+        height: 98px;
+        border-radius: 12px;
+        object-fit: cover;
+        object-position: center 20%;
+        flex: none;
+        cursor: pointer;
+      }
+
+      .studyo-durum {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font: 600 13px/1 var(--sans);
+        margin-bottom: 5px;
+      }
+
+      .studyo-durum.dogru {
+        color: var(--right);
+      }
+
+      .studyo-durum.yanlis {
+        color: var(--wrong);
+      }
+
+      .studyo-ad {
+        font: 500 22px/1.1 var(--serif);
+        margin: 0;
+      }
+
+      .studyo-kunye {
+        font: italic 400 14.5px/1.35 var(--okuma);
+        color: var(--ink-2);
+        margin: 3px 0 0;
+      }
+
+      /* Büyük, gerçek fırça farkını gösteren yan yana stüdyo karşılaştırması */
+      .studyo-kiyas {
+        margin-top: 14px;
+      }
+
+      .studyo-kiyas-baslik {
+        font: 600 13px/1.35 var(--sans);
+        color: var(--pirinc);
+        margin: 0 0 10px;
+      }
+
+      .studyo-iki {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .studyo-sutun {
+        padding: 10px;
+        border-radius: 18px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .studyo-sutun-ust {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 8px;
+      }
+
+      .studyo-sutun-ust small {
+        font: 600 11.5px/1 var(--sans);
+        color: var(--ink-3);
+      }
+
+      .studyo-sutun-ust b {
+        font: 500 16px/1.15 var(--serif);
+        color: var(--ink);
+      }
+
+      .studyo-sutun-resim {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .studyo-sutun-resim img {
+        width: 100%;
+        height: 102px;
+        object-fit: cover;
+        object-position: center 20%;
+        border-radius: 10px;
+        display: block;
+      }
+
+      .studyo-ipucu {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .studyo-ipucu-baslik {
+        font: 600 12.5px/1.2 var(--sans);
+        color: var(--pirinc);
+        margin: 0 0 6px;
+      }
+
+      .studyo-ipucu-yazi {
+        font: 400 15px/1.5 var(--okuma);
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .ayrintilar {
+        margin-top: 8px;
+        padding-bottom: 10px;
+      }
+
+      .ayrintilar summary {
+        list-style: none;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font: 500 13px/1 var(--sans);
+        color: var(--ink-2);
+        cursor: pointer;
+      }
+
+      .ayrintilar summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .ayrinti-ic {
+        padding: 6px 0 4px;
+        font: 400 12.5px/1.45 var(--sans);
+        color: var(--ink-2);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      /* =====================================================================
+         SONUÇ — Yıldız yayı, inci ritmi ve hafıza şeridi
+         ===================================================================== */
+      .sonuc-yay-alan {
+        padding: 8px 20px 16px;
+        text-align: center;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .sonuc-yay-alan::-webkit-scrollbar {
+        display: none;
+      }
+
+      .yay-sar {
+        position: relative;
+        width: 240px;
+        height: 126px;
+        margin: 4px auto 0;
+      }
+
+      .yay-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .yay-sayi {
+        position: absolute;
+        inset: auto 0 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .yay-yuzde {
+        font: 500 50px/0.95 var(--serif);
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .yay-kesir {
+        margin-top: 6px;
+        font: 500 14px/1.2 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .yay-baslik {
+        font: 500 28px/1.1 var(--serif);
+        margin: 12px 0 0;
+      }
+
+      .yay-alt {
+        font: 500 13px/1.3 var(--sans);
+        color: var(--pirinc);
+        margin-top: 6px;
+      }
+
+      .donem-muhur {
+        margin: 16px auto 0;
+        padding: 11px 16px;
+        border-radius: 999px;
+        background: rgba(var(--pirinc-rgb), 0.13);
+        border: 1px solid rgba(var(--pirinc-rgb), 0.36);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font: 500 13px/1.2 var(--sans);
+        color: var(--ink);
+      }
+
+      .donem-muhur b {
+        color: var(--pirinc);
+      }
+
+      /* 8 soruluk inci ritmi + eser önizleme */
+      .ritim-kart {
+        margin-top: 20px;
+        padding: 18px;
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        text-align: left;
+      }
+
+      .ritim-ust {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+
+      .ritim-ust span {
+        font: 600 13px/1 var(--sans);
+        color: var(--pirinc);
+      }
+
+      .ritim-ust small {
+        font: 400 12.5px/1 var(--sans);
+        color: var(--ink-3);
+      }
+
+      .ritim-inciler {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        align-items: center;
+      }
+
+      .ritim-dugme {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        min-width: 44px;
+        min-height: 44px;
+        justify-content: center;
+      }
+
+      .ritim-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid transparent;
+        transition: transform 140ms ease;
+      }
+
+      .ritim-dugme.dogru .ritim-top {
+        border-color: var(--right);
+      }
+
+      .ritim-dugme.yanlis .ritim-top {
+        border-color: var(--wrong);
+      }
+
+      .ritim-dugme[aria-pressed='true'] .ritim-top {
+        transform: scale(1.18);
+      }
+
+      .ritim-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .ritim-dugme.yanlis .ritim-top img {
+        filter: saturate(0.25);
+      }
+
+      .ritim-secili {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .ritim-secili img {
+        width: 52px;
+        height: 64px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex: none;
+      }
+
+      .ritim-secili-ad {
+        font: 500 18px/1.15 var(--serif);
+      }
+
+      .ritim-secili-alt {
+        font: italic 400 14px/1.3 var(--okuma);
+        color: var(--ink-2);
+        margin-top: 2px;
+      }
+
+      .ritim-secili-durum {
+        font: 600 12px/1 var(--sans);
+        margin-top: 5px;
+      }
+
+      .ritim-secili-durum.dogru {
+        color: var(--right);
+      }
+
+      .ritim-secili-durum.yanlis {
+        color: var(--wrong);
+      }
+
+      /* Seviye bağlantılı düğüm çizgisi (Çalış Yön 4 omurgası) */
+      .seviye-omurga {
+        margin-top: 18px;
+        padding: 16px 18px;
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .seviye-omurga::before {
+        content: '';
+        position: absolute;
+        left: 44px;
+        right: 44px;
+        top: 25px;
+        height: 1.5px;
+        background: var(--border);
+      }
+
+      .omurga-dugum {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .omurga-nokta {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .omurga-dugum.gecti .omurga-nokta {
+        background: var(--right);
+        border-color: var(--right);
+        color: var(--bg);
+      }
+
+      .omurga-dugum.sirada .omurga-nokta {
+        border-color: var(--pirinc);
+        box-shadow: 0 0 0 4px rgba(var(--pirinc-rgb), 0.2);
+      }
+
+      .omurga-dugum span {
+        font: 600 12.5px/1 var(--sans);
+      }
+
+      .omurga-dugum small {
+        font: 400 11.5px/1 var(--sans);
+        color: var(--ink-3);
+      }
+
+      .katman {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        background: rgba(12, 11, 10, 0.88);
+        backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .katman[hidden] {
+        display: none;
+      }
+
+      .katman-resim {
+        max-width: 100%;
+        max-height: 68%;
+        border-radius: 14px;
+      }
+
+      .katman-yazi {
+        margin-top: 14px;
+        font: italic 400 16px/1.4 var(--okuma);
+        color: #ebe5da;
+        text-align: center;
+      }
+
+      .cikis-kart {
+        width: 100%;
+        max-width: 320px;
+        padding: 22px;
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .cikis-kart h3 {
+        font: 500 22px/1.15 var(--serif);
+        margin: 0;
+      }
+
+      .cikis-kart p {
+        font: 400 14px/1.45 var(--sans);
+        color: var(--ink-2);
+        margin: 8px 0 18px;
+      }
+
+      .cikis-dugmeler {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      [data-hareket='az'] *,
+      [data-hareket='az'] *::before,
+      [data-hareket='az'] *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="onizleme-cubuk" aria-label="Tasarım önizleme denetimleri">
+      <span class="onizleme-ad">Yön 3 · Küratör Sahnesi</span>
+      <div class="grup-hap" role="group" aria-label="Adım">
+        <button type="button" data-git="tanisma">Tanışma</button>
+        <button type="button" data-git="soru">Soru</button>
+        <button type="button" data-git="yanlis">Yanlış cevap</button>
+        <button type="button" data-git="sonuc">Sonuç</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Seviye">
+        <button type="button" data-seviye="kolay">Kolay</button>
+        <button type="button" data-seviye="orta">Orta</button>
+        <button type="button" data-seviye="zor">Zor</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Tema">
+        <button type="button" data-tema-sec="gece">Gece</button>
+        <button type="button" data-tema-sec="gunduz">Gündüz</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Hareket">
+        <button type="button" data-hareket-sec="tam">Tam hareket</button>
+        <button type="button" data-hareket-sec="az">Hareketi azalt</button>
+      </div>
+    </nav>
+
+    <main class="sahne-sar">
+      <section class="telefon" aria-label="Bölüm turu telefon önizlemesi">
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <div class="zemin-desen" aria-hidden="true"></div>
+
+        <div class="durum-cubugu" id="durumCubugu" aria-hidden="true">
+          <span>09:41</span>
+          <div class="durum-sag">
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><rect x="0" y="6" width="2.4" height="5" rx="0.8"/><rect x="4" y="4" width="2.4" height="7" rx="0.8"/><rect x="8" y="2" width="2.4" height="9" rx="0.8"/><rect x="12" y="0" width="2.4" height="11" rx="0.8"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x="0.7" y="0.7" width="18.6" height="9.6" rx="2.6" stroke="currentColor" stroke-width="1.2"/><rect x="2.5" y="2.5" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="20.4" y="3.6" width="1.4" height="3.8" rx="0.7" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <div class="ekran" id="ekran"></div>
+
+        <div class="katman" id="buyutKatman" hidden>
+          <button type="button" class="cam-yuvarlak" id="buyutKapat" aria-label="Kapat" style="position:absolute;top:52px;right:20px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <img class="katman-resim" id="buyutImg" alt="" />
+          <p class="katman-yazi" id="buyutYazi"></p>
+        </div>
+
+        <div class="katman" id="cikisKatman" hidden>
+          <div class="cikis-kart">
+            <h3>Turdan çıkılsın mı?</h3>
+            <p>İlerlemen saklanır. Kaldığın soruya haritadan tek dokunuşla dönebilirsin.</p>
+            <div class="cikis-dugmeler">
+              <button type="button" class="dolu-dugme" id="cikisDevam">Tura devam et</button>
+              <button type="button" class="duz-dugme" id="cikisOnay">Haritaya dön</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const DURAK = { ad: 'Kuzey Rönesansı · 1. bölüm', donem: 'Rönesans' };
+      const SEVIYE_AD = { kolay: 'Kolay', orta: 'Orta', zor: 'Zor' };
+
+      const SANATCILAR = [
+        {
+          id: 'jan-van-eyck',
+          ad: 'Jan van Eyck',
+          kisa: 'Van Eyck',
+          yillar: '1390–1441',
+          akim: 'Kuzey Rönesansı',
+          ipucu:
+            'Yağlı boyanın bütün imkânı: mücevher parlaklığında kırmızılar ve yeşiller, pencereden süzülen gün ışığı; ayna, kürk ve camda fotoğrafik ayrıntı. Petrus Christus’un daha yalın düzeninden zengin atmosferiyle ayrılır.',
+          eserler: [
+            { id: 'e1', ad: 'Arnolfini Portresi', yil: '1434', src: 'gorseller/01-van-eyck-arnolfini.jpg', h1: '46, 98, 72', h2: '162, 74, 58' },
+            { id: 'e2', ad: 'Şansölye Rolin’in Meryem’i', yil: '1435', src: 'gorseller/02-van-eyck-rolin.jpg', h1: '138, 52, 62', h2: '78, 110, 146' },
+            { id: 'e3', ad: 'Kırmızı Sarıklı Adam', yil: '1433', src: 'gorseller/03-van-eyck-kirmizi-sarik.jpg', h1: '166, 54, 46', h2: '122, 92, 62' },
+          ],
+        },
+        {
+          id: 'robert-campin',
+          ad: 'Robert Campin',
+          kisa: 'Campin',
+          yillar: '1375–1444',
+          akim: 'Kuzey Rönesansı',
+          ipucu:
+            'Flaman ev içine yerleşmiş dini sahneler: gündelik eşyalarla dolu odalar, kalın ve köşeli kıvrımlı giysiler, yuvarlak yüzlü tıknaz figürler. Van Eyck’ten daha ağır ve evcil havasıyla ayrılır.',
+          eserler: [
+            { id: 'e4', ad: 'Mérode Sunağı (Müjde)', yil: 'y. 1427', src: 'gorseller/04-campin-merode.jpg', h1: '154, 62, 52', h2: '142, 114, 72' },
+            { id: 'e5', ad: 'Werl Sunağı: Azize Barbara', yil: '1438', src: 'gorseller/05-campin-aziz-barbara.jpg', h1: '66, 116, 62', h2: '176, 116, 56' },
+            { id: 'e6', ad: 'Bir Kadın Portresi', yil: 'y. 1435', src: 'gorseller/06-campin-kadin-portresi.jpg', h1: '126, 118, 108', h2: '112, 58, 66' },
+          ],
+        },
+        {
+          id: 'rogier-van-der-weyden',
+          ad: 'Rogier van der Weyden',
+          kisa: 'Van der Weyden',
+          yillar: '1399–1464',
+          akim: 'Kuzey Rönesansı',
+          ipucu:
+            'Gözyaşlı, acı dolu yüzler, uzun ince figürler, keskin çizgili kıvrımlı kumaşlar ve sığ, sahne gibi mekânlar ipucudur. Van Eyck’in dinginliğine karşı Rogier duygu ve çizgi gerilimiyle öne çıkar.',
+          eserler: [
+            { id: 'e7', ad: 'Haç’tan İndirme', yil: 'y. 1435', src: 'gorseller/07-weyden-hactan-indirme.jpg', h1: '174, 134, 64', h2: '68, 92, 134' },
+            { id: 'e8', ad: 'Bir Hanımefendi Portresi', yil: 'y. 1460', src: 'gorseller/08-weyden-kadin-portresi.jpg', h1: '136, 56, 68', h2: '112, 104, 94' },
+            { id: 'e9', ad: 'Okuyan Azize Magdalena', yil: 'y. 1435', src: 'gorseller/09-weyden-azize-magdalena.jpg', h1: '58, 106, 84', h2: '156, 98, 52' },
+          ],
+        },
+        {
+          id: 'petrus-christus',
+          ad: 'Petrus Christus',
+          kisa: 'Christus',
+          yillar: '1410–1476',
+          akim: 'Kuzey Rönesansı',
+          ipucu:
+            'Van Eyck’i izleyen ama daha yalın bir dünya: tek nokta perspektifli düzenli iç mekânlar, mine gibi pürüzsüz yüzey, porselen bebek yüzlü ve durgun figürler.',
+          eserler: [
+            { id: 'e10', ad: 'Genç Bir Kızın Portresi', yil: 'y. 1470', src: 'gorseller/10-christus-genc-kiz.jpg', h1: '122, 66, 72', h2: '88, 94, 102' },
+            { id: 'e11', ad: 'Dükkânında Bir Kuyumcu', yil: '1449', src: 'gorseller/11-christus-kuyumcu.jpg', h1: '152, 58, 52', h2: '168, 132, 74' },
+            { id: 'e12', ad: 'Bir Kartuzyen Keşişin Portresi', yil: '1446', src: 'gorseller/12-christus-kartuzyen.jpg', h1: '154, 52, 46', h2: '136, 126, 112' },
+          ],
+        },
+      ];
+
+      const SORULAR = [
+        { sid: 'jan-van-eyck', eserId: 'e1' },
+        { sid: 'robert-campin', eserId: 'e4' },
+        { sid: 'rogier-van-der-weyden', eserId: 'e7' },
+        { sid: 'petrus-christus', eserId: 'e10' },
+        { sid: 'jan-van-eyck', eserId: 'e2' },
+        { sid: 'robert-campin', eserId: 'e5' },
+        { sid: 'rogier-van-der-weyden', eserId: 'e8' },
+        { sid: 'petrus-christus', eserId: 'e11' },
+      ];
+
+      const durum = {
+        adim: 'tanisma',
+        seviye: 'kolay',
+        tanismaIdx: 0,
+        eserIdx: 0,
+        soruIdx: 0,
+        cevap: null,
+        cevaplar: Array(SORULAR.length).fill(null),
+        ritimIdx: 3, // Sonuçta seçili eser (varsayılan: yanılınan eser)
+      };
+
+      const bulSanatci = (id) => SANATCILAR.find((s) => s.id === id);
+      const bulEser = (sid, eid) => bulSanatci(sid).eserler.find((e) => e.id === eid);
+
+      const ikonX = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+      const ikonIleri = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`;
+      const ikonGeri = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>`;
+      const ikonOnay = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+      const ikonAsagi = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>`;
+
+      function haleGuncelle(eser) {
+        const gunduz = document.documentElement.dataset.tema === 'gunduz';
+        document.documentElement.style.setProperty('--hale-1', `rgba(${eser.h1}, ${gunduz ? 0.16 : 0.34})`);
+        document.documentElement.style.setProperty('--hale-2', `rgba(${eser.h2}, ${gunduz ? 0.09 : 0.18})`);
+      }
+
+      function cubukGuncelle() {
+        const aktif = durum.adim === 'soru' && durum.cevap && durum.cevap !== SORULAR[durum.soruIdx].sid ? 'yanlis' : durum.adim;
+        document.querySelectorAll('[data-git]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.git === aktif)));
+        document.querySelectorAll('[data-seviye]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.seviye === durum.seviye)));
+        document.querySelectorAll('[data-tema-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.temaSec === document.documentElement.dataset.tema)));
+        document.querySelectorAll('[data-hareket-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.hareketSec === document.documentElement.dataset.hareket)));
+      }
+
+      function cizTanisma() {
+        const s = SANATCILAR[durum.tanismaIdx];
+        const e = s.eserler[durum.eserIdx];
+        haleGuncelle(e);
+        const son = durum.tanismaIdx === SANATCILAR.length - 1;
+        const sonraki = son ? null : SANATCILAR[durum.tanismaIdx + 1];
+        const inciler = SANATCILAR.map((_, i) => `<i class="inci ${i < durum.tanismaIdx ? 'gecmis' : i === durum.tanismaIdx ? 'simdi' : ''}"></i>`).join('');
+
+        return `
+          <div class="sovale-sar">
+            <header class="inci-ust yuzen">
+              <button type="button" class="cam-yuvarlak" id="cikisAc" aria-label="Turdan çık">${ikonX}</button>
+              <div class="inci-dizi" aria-hidden="true">${inciler}</div>
+              <span class="sayac-hap">${durum.tanismaIdx + 1} / ${SANATCILAR.length}</span>
+            </header>
+
+            <div class="sovale-perde">
+              <img src="${e.src}" alt="${e.ad}" id="vitrinBuyut" style="cursor:pointer;" />
+              <div class="sovale-erime"></div>
+              <button type="button" class="sovale-fisilti" id="fisiltiBuyut">${e.ad}, ${e.yil}</button>
+              <div class="sovale-cekmece" role="group" aria-label="${s.ad} eserleri">
+                ${s.eserler
+                  .map(
+                    (x, i) => `
+                  <button type="button" data-eser-sec="${i}" aria-pressed="${i === durum.eserIdx}" aria-label="${x.ad}">
+                    <img src="${x.src}" alt="" />
+                  </button>`,
+                  )
+                  .join('')}
+              </div>
+            </div>
+
+            <div class="sovale-govde">
+              <div class="sovale-etiket">${DURAK.ad} · Tanışma</div>
+              <h1 class="sovale-ad">${s.ad}</h1>
+              <p class="sovale-meta">${s.yillar} · ${s.akim}</p>
+              <p class="sovale-ipucu">${s.ipucu}</p>
+            </div>
+
+            <div class="alt-bar">
+              ${durum.tanismaIdx > 0 ? `<button type="button" class="cam-yuvarlak" id="tanismaGeri" aria-label="Önceki sanatçı">${ikonGeri}</button>` : ''}
+              <button type="button" class="dolu-dugme" id="tanismaIleri">
+                <span>${son ? `${SEVIYE_AD[durum.seviye]}’a başla` : `Sıradaki · ${sonraki.kisa}`}</span>
+                ${ikonIleri}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function cizSoru() {
+        const q = SORULAR[durum.soruIdx];
+        const s = bulSanatci(q.sid);
+        const e = bulEser(q.sid, q.eserId);
+        haleGuncelle(e);
+        const cevapli = durum.cevap !== null;
+        const dogruMu = durum.cevap === q.sid;
+        const bilmiyorMu = durum.cevap === '?';
+        const secilen = !dogruMu && !bilmiyorMu && cevapli ? bulSanatci(durum.cevap) : null;
+        const sonSoru = durum.soruIdx === SORULAR.length - 1;
+
+        const inciler = SORULAR.map((_, i) => {
+          if (i < durum.soruIdx) return `<i class="inci ${durum.cevaplar[i] ? 'dogru' : 'yanlis'}"></i>`;
+          if (i === durum.soruIdx) return `<i class="inci ${cevapli ? (dogruMu ? 'dogru' : 'yanlis') : 'simdi'}"></i>`;
+          return `<i class="inci"></i>`;
+        }).join('');
+
+        if (!cevapli) {
+          return `
+            <header class="inci-ust">
+              <button type="button" class="cam-yuvarlak" id="cikisAc" aria-label="Turdan çık">${ikonX}</button>
+              <div class="inci-dizi" aria-hidden="true">${inciler}</div>
+              <span class="sayac-hap">${durum.soruIdx + 1} / ${SORULAR.length}</span>
+            </header>
+
+            <div class="spot-sahne">
+              <div class="spot-resim-alan">
+                <button type="button" class="spot-resim-btn" id="soruBuyut" aria-label="Sorulan eser — yakın incele">
+                  <img src="${e.src}" alt="Sorulan tablo" />
+                </button>
+              </div>
+
+              <section class="cam-tepsi" aria-label="Cevap seçenekleri">
+                <div class="tepsi-baslik">
+                  <h1>Bu eser kimin?</h1>
+                  <span>${SEVIYE_AD[durum.seviye]}</span>
+                </div>
+                <div class="hap-izgara" role="group" aria-label="Sanatçılar">
+                  ${SANATCILAR.map((x) => `<button type="button" class="hap-secenek" data-sec="${x.id}">${x.ad}</button>`).join('')}
+                </div>
+                <div class="tepsi-alt">
+                  <button type="button" class="duz-dugme" id="bilmiyorumBtn" style="font:italic 400 15.5px/1 var(--okuma);">Bilmiyorum</button>
+                </div>
+              </section>
+            </div>
+          `;
+        }
+
+        // Cevaplandı: Stüdyo Masası
+        const dogruKiyas = s.eserler.filter((x) => x.id !== e.id).slice(0, 2);
+        const secilenKiyas = secilen ? secilen.eserler.slice(0, 2) : [];
+
+        return `
+          <header class="inci-ust">
+            <button type="button" class="cam-yuvarlak" id="cikisAc" aria-label="Turdan çık">${ikonX}</button>
+            <div class="inci-dizi" aria-hidden="true">${inciler}</div>
+            <span class="sayac-hap">${durum.soruIdx + 1} / ${SORULAR.length}</span>
+          </header>
+
+          <div class="studyo-kaydir">
+            <div class="studyo-eser-satir">
+              <img class="studyo-thumb" src="${e.src}" alt="${e.ad}" id="soruBuyut" />
+              <div>
+                <div class="studyo-durum ${dogruMu ? 'dogru' : 'yanlis'}">
+                  ${dogruMu ? ikonOnay : ikonX}
+                  <span>${dogruMu ? 'Doğru' : bilmiyorMu ? 'Bilmiyorum' : 'Yanlış'}</span>
+                </div>
+                <h2 class="studyo-ad">${s.ad}</h2>
+                <p class="studyo-kunye">${e.ad}, ${e.yil} · ${s.akim}</p>
+              </div>
+            </div>
+
+            ${
+              secilen
+                ? `
+              <section class="studyo-kiyas" aria-label="Yan yana karşılaştırma">
+                <p class="studyo-kiyas-baslik">Bu ikisini 2. kez karıştırdın. Yan yana bak:</p>
+                <div class="studyo-iki">
+                  <div class="studyo-sutun">
+                    <div class="studyo-sutun-ust">
+                      <small>Doğrusu</small>
+                      <b>${s.kisa}</b>
+                    </div>
+                    <div class="studyo-sutun-resim">
+                      ${dogruKiyas.map((x) => `<img src="${x.src}" alt="${x.ad}" />`).join('')}
+                    </div>
+                  </div>
+                  <div class="studyo-sutun">
+                    <div class="studyo-sutun-ust">
+                      <small>Senin cevabın</small>
+                      <b>${secilen.kisa}</b>
+                    </div>
+                    <div class="studyo-sutun-resim">
+                      ${secilenKiyas.map((x) => `<img src="${x.src}" alt="${x.ad}" />`).join('')}
+                    </div>
+                  </div>
+                </div>
+              </section>`
+                : ''
+            }
+
+            <div class="studyo-ipucu">
+              <p class="studyo-ipucu-baslik">Nasıl tanırım?</p>
+              <p class="studyo-ipucu-yazi">${s.ipucu}</p>
+            </div>
+
+            <details class="ayrintilar">
+              <summary><span>Ayrıntılar</span>${ikonAsagi}</summary>
+              <div class="ayrinti-ic">
+                <div>Tekrar kutusu: ${dogruMu ? '2. kutu · 3 gün sonra tekrar' : 'Baştan · bu turda yine gelecek'}</div>
+                <div>${DURAK.ad} · ${SEVIYE_AD[durum.seviye]} · geçmek için 6 / 8 doğru</div>
+                <div>Kaynak: Wikimedia Commons · Kamu malı</div>
+              </div>
+            </details>
+          </div>
+
+          <div class="alt-bar">
+            <button type="button" class="duz-dugme" id="sanatciBilgi">Sanatçı</button>
+            <button type="button" class="dolu-dugme" id="sonrakiBtn">
+              <span>${sonSoru ? 'Sonucu gör' : 'Sonraki soru'}</span>
+              ${ikonIleri}
+            </button>
+          </div>
+        `;
+      }
+
+      function cizSonuc() {
+        const izler = durum.cevaplar.map((v, i) => (v === null ? i !== 3 : v));
+        const dogru = izler.filter(Boolean).length;
+        const toplam = SORULAR.length;
+        const yuzde = Math.round((dogru / toplam) * 100);
+        const gecti = yuzde >= 75;
+        const sv = durum.seviye;
+        const yildiz = !gecti ? (sv === 'kolay' ? 0 : sv === 'orta' ? 1 : 2) : sv === 'kolay' ? 1 : sv === 'orta' ? 2 : 3;
+        const donemTamam = gecti && sv === 'zor';
+        const sonrakiSv = sv === 'kolay' ? 'orta' : sv === 'orta' ? 'zor' : null;
+        const secQ = SORULAR[durum.ritimIdx];
+        const secS = bulSanatci(secQ.sid);
+        const secE = bulEser(secQ.sid, secQ.eserId);
+        const secOk = izler[durum.ritimIdx];
+        haleGuncelle(secE);
+
+        // Yarım yay: r=96 için yay uzunluğu π*96 ≈ 301.6
+        const yayDolu = Math.round((yuzde / 100) * 301.6);
+        const yildizKonum = [
+          { x: 52, y: 42 },
+          { x: 120, y: 18 },
+          { x: 188, y: 42 },
+        ];
+
+        return `
+          <header class="inci-ust">
+            <button type="button" class="cam-yuvarlak" id="sonucHaritaUst" aria-label="Haritaya dön">${ikonGeri}</button>
+            <span class="sayac-hap" style="color:var(--pirinc);">${DURAK.donem} · ${SEVIYE_AD[sv]}</span>
+            <span class="sayac-hap">${dogru} / ${toplam}</span>
+          </header>
+
+          <div class="sonuc-yay-alan">
+            <div class="yay-sar">
+              <svg class="yay-svg" viewBox="0 0 240 126" fill="none" aria-label="${yildiz} / 3 yıldız, %${yuzde}">
+                <path d="M24 114 A96 96 0 0 1 216 114" stroke="rgba(var(--ink-rgb), 0.14)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M24 114 A96 96 0 0 1 216 114" stroke="var(--pirinc)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="${yayDolu} 320"/>
+                ${yildizKonum
+                  .map(
+                    (p, i) => `
+                  <g transform="translate(${p.x - 12}, ${p.y - 12})">
+                    <path d="M12 2.4l2.75 5.88 6.45.78-4.76 4.41 1.24 6.38L12 16.65 6.32 19.85l1.24-6.38L2.8 9.06l6.45-.78L12 2.4z"
+                      fill="${i < yildiz ? 'var(--pirinc)' : 'rgba(var(--ink-rgb), 0.16)'}"/>
+                  </g>`,
+                  )
+                  .join('')}
+              </svg>
+              <div class="yay-sayi">
+                <span class="yay-yuzde">%${yuzde}</span>
+                <span class="yay-kesir">${dogru} / ${toplam} doğru</span>
+              </div>
+            </div>
+
+            <h1 class="yay-baslik">${DURAK.ad}</h1>
+            <div class="yay-alt">Senin gözün %${yuzde} · Hedef %75</div>
+
+            ${
+              donemTamam
+                ? `<div class="donem-muhur">${ikonOnay}<span><b>${DURAK.donem} tamamlandı</b> · bütün duraklar üç yıldız</span></div>`
+                : ''
+            }
+
+            <section class="ritim-kart" aria-label="Tur hafıza şeridi">
+              <div class="ritim-ust">
+                <span>Hafıza şeridi</span>
+                <small>İncelemek için esere dokun</small>
+              </div>
+              <div class="ritim-inciler">
+                ${SORULAR.map((q, i) => {
+                  const es = bulEser(q.sid, q.eserId);
+                  const ok = izler[i];
+                  return `
+                    <button type="button" class="ritim-dugme ${ok ? 'dogru' : 'yanlis'}" data-ritim="${i}" aria-pressed="${i === durum.ritimIdx}" aria-label="${es.ad}">
+                      <span class="ritim-top"><img src="${es.src}" alt="" /></span>
+                    </button>`;
+                }).join('')}
+              </div>
+              <div class="ritim-secili">
+                <img src="${secE.src}" alt="${secE.ad}" />
+                <div>
+                  <div class="ritim-secili-ad">${secS.ad}</div>
+                  <div class="ritim-secili-alt">${secE.ad}, ${secE.yil}</div>
+                  <div class="ritim-secili-durum ${secOk ? 'dogru' : 'yanlis'}">${secOk ? 'İlk denemede tanıdın' : 'Karıştırdığın eser · sonraki turda öne gelir'}</div>
+                </div>
+              </div>
+            </section>
+
+            <div class="seviye-omurga" aria-label="Seviye ilerlemesi">
+              ${['kolay', 'orta', 'zor']
+                .map((k, i) => {
+                  const g = i < yildiz;
+                  const sira = !g && ((sv === 'kolay' && gecti && k === 'orta') || (sv === 'orta' && gecti && k === 'zor') || (!gecti && k === sv));
+                  return `
+                    <div class="omurga-dugum ${g ? 'gecti' : sira ? 'sirada' : ''}">
+                      <span class="omurga-nokta">${g ? ikonOnay : ''}</span>
+                      <span>${SEVIYE_AD[k]}</span>
+                      <small>${g ? 'Geçildi' : sira ? 'Açık' : 'Kilitli'}</small>
+                    </div>`;
+                })
+                .join('')}
+            </div>
+          </div>
+
+          <div class="alt-bar">
+            ${
+              gecti && sonrakiSv
+                ? `<button type="button" class="duz-dugme" id="haritayaDon">Haritaya dön</button>
+                   <button type="button" class="dolu-dugme" id="sonrakiSeviyeBtn"><span>${SEVIYE_AD[sonrakiSv]}’ya geç</span>${ikonIleri}</button>`
+                : !gecti
+                  ? `<button type="button" class="duz-dugme" id="haritayaDon">Haritaya dön</button>
+                     <button type="button" class="dolu-dugme" id="tekrarDeneBtn"><span>Tekrar dene</span>${ikonIleri}</button>`
+                  : `<button type="button" class="duz-dugme" id="tekrarDeneBtn">Tekrarla</button>
+                     <button type="button" class="dolu-dugme" id="haritayaDon"><span>Haritaya dön</span></button>`
+            }
+          </div>
+        `;
+      }
+
+      function ciz() {
+        const el = document.getElementById('ekran');
+        const dc = document.getElementById('durumCubugu');
+        dc.classList.toggle('acik-ustu', durum.adim === 'tanisma');
+        if (durum.adim === 'tanisma') el.innerHTML = cizTanisma();
+        else if (durum.adim === 'soru') el.innerHTML = cizSoru();
+        else el.innerHTML = cizSonuc();
+        cubukGuncelle();
+        olaylariBagla();
+      }
+
+      function buyutAc(src, yazi) {
+        document.getElementById('buyutImg').src = src;
+        document.getElementById('buyutYazi').textContent = yazi;
+        document.getElementById('buyutKatman').hidden = false;
+      }
+
+      function olaylariBagla() {
+        document.getElementById('cikisAc')?.addEventListener('click', () => {
+          document.getElementById('cikisKatman').hidden = false;
+        });
+
+        document.querySelectorAll('[data-eser-sec]').forEach((b) =>
+          b.addEventListener('click', () => {
+            durum.eserIdx = Number(b.dataset.eserSec);
+            ciz();
+          }),
+        );
+
+        const tanismaBuyut = () => {
+          const s = SANATCILAR[durum.tanismaIdx];
+          const e = s.eserler[durum.eserIdx];
+          buyutAc(e.src, `${e.ad}, ${e.yil} · ${s.ad}`);
+        };
+        document.getElementById('vitrinBuyut')?.addEventListener('click', tanismaBuyut);
+        document.getElementById('fisiltiBuyut')?.addEventListener('click', tanismaBuyut);
+
+        document.getElementById('tanismaGeri')?.addEventListener('click', () => {
+          durum.tanismaIdx = Math.max(0, durum.tanismaIdx - 1);
+          durum.eserIdx = 0;
+          ciz();
+        });
+
+        document.getElementById('tanismaIleri')?.addEventListener('click', () => {
+          if (durum.tanismaIdx < SANATCILAR.length - 1) {
+            durum.tanismaIdx++;
+            durum.eserIdx = 0;
+          } else {
+            durum.adim = 'soru';
+            durum.soruIdx = 0;
+            durum.cevap = null;
+            durum.cevaplar = Array(SORULAR.length).fill(null);
+          }
+          ciz();
+        });
+
+        document.querySelectorAll('[data-sec]').forEach((b) =>
+          b.addEventListener('click', () => {
+            durum.cevap = b.dataset.sec;
+            durum.cevaplar[durum.soruIdx] = durum.cevap === SORULAR[durum.soruIdx].sid;
+            ciz();
+          }),
+        );
+
+        document.getElementById('bilmiyorumBtn')?.addEventListener('click', () => {
+          durum.cevap = '?';
+          durum.cevaplar[durum.soruIdx] = false;
+          ciz();
+        });
+
+        document.getElementById('soruBuyut')?.addEventListener('click', () => {
+          const q = SORULAR[durum.soruIdx];
+          const s = bulSanatci(q.sid);
+          const e = bulEser(q.sid, q.eserId);
+          buyutAc(e.src, durum.cevap ? `${e.ad}, ${e.yil} · ${s.ad}` : 'Yakın inceleme');
+        });
+
+        document.getElementById('sanatciBilgi')?.addEventListener('click', () => {
+          durum.tanismaIdx = Math.max(0, SANATCILAR.findIndex((x) => x.id === SORULAR[durum.soruIdx].sid));
+          durum.eserIdx = 0;
+          durum.adim = 'tanisma';
+          ciz();
+        });
+
+        document.getElementById('sonrakiBtn')?.addEventListener('click', () => {
+          if (durum.soruIdx < SORULAR.length - 1) {
+            durum.soruIdx++;
+            durum.cevap = null;
+          } else {
+            durum.adim = 'sonuc';
+            const ilkYanlis = durum.cevaplar.findIndex((v) => v === false);
+            durum.ritimIdx = ilkYanlis >= 0 ? ilkYanlis : 0;
+          }
+          ciz();
+        });
+
+        document.querySelectorAll('[data-ritim]').forEach((b) =>
+          b.addEventListener('click', () => {
+            durum.ritimIdx = Number(b.dataset.ritim);
+            ciz();
+          }),
+        );
+
+        document.getElementById('sonrakiSeviyeBtn')?.addEventListener('click', () => {
+          durum.seviye = durum.seviye === 'kolay' ? 'orta' : 'zor';
+          durum.adim = 'soru';
+          durum.soruIdx = 0;
+          durum.cevap = null;
+          durum.cevaplar = Array(SORULAR.length).fill(null);
+          ciz();
+        });
+
+        document.getElementById('tekrarDeneBtn')?.addEventListener('click', () => {
+          durum.adim = 'soru';
+          durum.soruIdx = 0;
+          durum.cevap = null;
+          durum.cevaplar = Array(SORULAR.length).fill(null);
+          ciz();
+        });
+
+        const haritaya = () => {
+          durum.adim = 'tanisma';
+          durum.tanismaIdx = 0;
+          durum.eserIdx = 0;
+          ciz();
+        };
+        document.getElementById('haritayaDon')?.addEventListener('click', haritaya);
+        document.getElementById('sonucHaritaUst')?.addEventListener('click', haritaya);
+      }
+
+      document.getElementById('buyutKapat').addEventListener('click', () => {
+        document.getElementById('buyutKatman').hidden = true;
+      });
+      document.getElementById('buyutKatman').addEventListener('click', (ev) => {
+        if (ev.target.id === 'buyutKatman') document.getElementById('buyutKatman').hidden = true;
+      });
+      document.getElementById('cikisDevam').addEventListener('click', () => {
+        document.getElementById('cikisKatman').hidden = true;
+      });
+      document.getElementById('cikisOnay').addEventListener('click', () => {
+        document.getElementById('cikisKatman').hidden = true;
+        durum.adim = 'tanisma';
+        durum.tanismaIdx = 0;
+        durum.eserIdx = 0;
+        ciz();
+      });
+
+      function adimaGit(ad) {
+        if (ad === 'tanisma') {
+          durum.adim = 'tanisma';
+          durum.tanismaIdx = 0;
+          durum.eserIdx = 0;
+        } else if (ad === 'soru') {
+          durum.adim = 'soru';
+          durum.soruIdx = 0;
+          durum.cevap = null;
+          durum.cevaplar = Array(SORULAR.length).fill(null);
+        } else if (ad === 'yanlis') {
+          durum.adim = 'soru';
+          durum.soruIdx = 0;
+          durum.cevap = 'petrus-christus';
+          durum.cevaplar = [false, null, null, null, null, null, null, null];
+        } else if (ad === 'sonuc') {
+          durum.adim = 'sonuc';
+          durum.seviye = 'zor';
+          durum.ritimIdx = 3;
+          durum.cevaplar = [true, true, true, false, true, true, true, true];
+        }
+        ciz();
+      }
+
+      document.querySelectorAll('[data-git]').forEach((b) => b.addEventListener('click', () => adimaGit(b.dataset.git)));
+      document.querySelectorAll('[data-seviye]').forEach((b) =>
+        b.addEventListener('click', () => {
+          durum.seviye = b.dataset.seviye;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-tema-sec]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.documentElement.dataset.tema = b.dataset.temaSec;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-hareket-sec]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.documentElement.dataset.hareket = b.dataset.hareketSec;
+          cubukGuncelle();
+        }),
+      );
+
+      const q = new URLSearchParams(location.search);
+      if (q.get('goruntu') === '1') document.body.classList.add('goruntu-modu');
+      if (q.get('tema') === 'gunduz' || q.get('tema') === 'gece') document.documentElement.dataset.tema = q.get('tema');
+      if (q.get('hareket') === 'az') document.documentElement.dataset.hareket = 'az';
+      if (q.get('seviye') && SEVIYE_AD[q.get('seviye')]) durum.seviye = q.get('seviye');
+      if (q.get('adim')) adimaGit(q.get('adim'));
+      else ciz();
+    </script>
+  </body>
+</html>
