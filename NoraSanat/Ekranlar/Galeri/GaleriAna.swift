@@ -20,11 +20,15 @@ struct KemerSalonlari: View {
 
     @Environment(TemaDeposu.self) private var tema
     @Environment(\.accessibilityReduceMotion) private var hareketAz
-    /// Şeridin anlık konumu (akım cinsinden, kesirli): kartlar, kılavuzun çentikleri ve eylem yuvası bunu izler
-    @State private var konum: Double = 0
+    /// Şeridin anlık konumu (akım cinsinden, kesirli). Z3z2: her karede değiştiği için `@State` değil; yalnız kılavuzun
+    /// çentikleri ve eylem yuvasının saydamlığı okur, ekranın geri kalanı (kartlar) kaydırırken yeniden kurulmaz.
+    @State private var iz = SeritKonumu()
     @State private var secim: Int?
     /// Z3z: akımın yılları (`KemerYayi.yillar`); kaydırırken her karede katalog taranmasın diye bir kez hesaplanır
     @State private var yillar: [String: String] = [:]
+    /// Z3z2: akımın kapak adresi (`carkKapagi`, her çağrıda bütün sanatçıları süzüp sıralıyor); bir kez hesaplanır.
+    /// Önceden kaydırırken her karede görünen her kart için yeniden aranıyordu (Z3z'den sonra da "kasıyor").
+    @State private var kapaklar: [String: KapakAdresi] = [:]
 
     private var kartG: CGFloat { CGFloat(KemerYayi.kartGenisligi) }
     private var kartY: CGFloat { CGFloat(KemerYayi.kartYuksekligi) }
@@ -32,6 +36,10 @@ struct KemerSalonlari: View {
     static let yaziYuksekligi: CGFloat = 100
     /// `.kemer-serit`: 10 üst + kemer + yazı + yay düşüşü (15) ve gölge payı
     static var seritYuksekligi: CGFloat { 10 + CGFloat(KemerYayi.kartYuksekligi) + 10 + yaziYuksekligi + 18 }
+
+    private var kurulumAnahtari: [String] {
+        salonlar.map { "\($0.ad)|\($0.acik)" } + [String(il.kotuGorseller.values.reduce(0) { $0 + $1.count })]
+    }
 
     private var hareketYok: Bool { hareketAz || tema.ayar.hareketAzaltilmis }
 
@@ -47,8 +55,9 @@ struct KemerSalonlari: View {
             .frame(width: w)
         }
         .frame(height: Self.seritYuksekligi + 2 + 46 + 10 + 52 + 2 + 44)
-        .onAppear { secim = sira; konum = Double(sira); yillariKur() }
-        .onChange(of: salonlar.map(\.ad)) { _, _ in yillariKur() }
+        .onAppear { secim = sira; iz.deger = Double(sira); yillariKur() }
+        // Kapak açılan akıma ve bozuk görsellere de bağlı (`carkKapagi`)
+        .onChange(of: kurulumAnahtari) { _, _ in yillariKur() }
         .sheet(isPresented: $dizinAcik) {
             AkimDizini(salonlar: salonlar, galeri: galeri, sira: sira, pul: pul) { i in
                 dizinAcik = false
@@ -104,7 +113,7 @@ struct KemerSalonlari: View {
             guard let yeni else { return }
             if yeni != sira { sira = yeni }
             // Şerit bir karta oturduysa konum da orada olmalı (kaydırma bildirimi gelmese bile)
-            if abs(konum - Double(yeni)) > 0.5 { konum = Double(yeni) }
+            if abs(iz.deger - Double(yeni)) > 0.5 { iz.deger = Double(yeni) }
         }
         .frame(height: Self.seritYuksekligi, alignment: .top)
         // Kart değişince sesli okuyucu ve sayfa zemini için yalnız `sira` değişir; şerit yalnız yatay sürüklemeyi alır,
@@ -113,49 +122,61 @@ struct KemerSalonlari: View {
 
     private func yillariKur() {
         var y: [String: String] = [:]
-        for s in salonlar { y[s.ad] = KemerYayi.yillar(galeri.katalog.sanatcilar.filter { $0.akim == s.ad }) }
+        var k: [String: KapakAdresi] = [:]
+        for s in salonlar {
+            y[s.ad] = KemerYayi.yillar(galeri.katalog.sanatcilar.filter { $0.akim == s.ad })
+            let a = kapak(s.ad)
+            k[s.ad] = KapakAdresi(url: a.url, yedek: a.yedek)
+        }
         yillar = y
+        kapaklar = k
     }
 
     /// Şeridin kaydığı yol (içerik başından) → anlık konum ve seçili akım
     private func konumYaz(_ yol: CGFloat) {
         let p = KemerYayi.konum(yol: Double(yol), sayi: salonlar.count)
-        if abs(p - konum) > 0.001 { konum = p }
+        if abs(p - iz.deger) > 0.001 { iz.deger = p }
         let yeni = Int(p.rounded())
         if yeni != sira { sira = yeni }
     }
 
-    /// `.kemer-oge`: kemer ve ona bağlı yazı birlikte eğilir, alçalır ve küçülür
+    /// `.kemer-oge`: kemer ve ona bağlı yazı birlikte eğilir, alçalır ve küçülür.
+    /// Z3z2: eğim, ölçek, düşüş ve saydamlıklar `visualEffect` ile kartın şeritteki yerinden her karede çizim sırasında
+    /// hesaplanır (`seritteKart`); kartın gövdesi kaydırırken yeniden kurulmaz.
     private func kart(_ i: Int, _ salon: AkimDurumu) -> some View {
-        let k = KemerYayi.kart(fark: Double(i) - konum, acik: salon.acik, hareketAz: hareketYok)
+        let acik = salon.acik, az = hareketYok
         return Button {
             if i != sira { git(i) } else if salon.acik { gir(salon.ad) }
         } label: {
             VStack(spacing: 0) {
-                kemer(salon, k)
+                kemer(salon)
                 yazi(salon)
-                    .opacity(k.yaziOpakligi)
-                    .offset(y: CGFloat(k.yaziKaymasi))
+                    .visualEffect { c, g in
+                        let k = seritteKart(g, acik: acik, hareketAz: az)
+                        return c.opacity(k.yaziOpakligi).offset(y: CGFloat(k.yaziKaymasi))
+                    }
             }
             .frame(width: kartG)
             .contentShape(Rectangle())
         }
         .buttonStyle(KartBasma())
-        .scaleEffect(CGFloat(k.olcek))
-        .rotationEffect(.degrees(k.aci))
-        .offset(y: CGFloat(k.kayma))
-        .opacity(k.opaklik)
+        .visualEffect { c, g in
+            let k = seritteKart(g, acik: acik, hareketAz: az)
+            return c.scaleEffect(CGFloat(k.olcek))
+                .rotationEffect(.degrees(k.aci))
+                .offset(y: CGFloat(k.kayma))
+                .opacity(k.opaklik)
+        }
         .accessibilityElement(children: .combine)
         .accessibilityHint(i == sira && salon.acik ? "Salona gir" : "")
     }
 
     /// `.kemer-dis` + `.kemer-kutu`: çift ince çerçeve (dışta 1 pt pirinç, 5 pt pay, içte kapağın kendi ince kenarı)
-    private func kemer(_ salon: AkimDurumu, _ k: KemerYayi.Kart) -> some View {
+    private func kemer(_ salon: AkimDurumu) -> some View {
         let r = tema.renkler
-        let adres = kapak(salon.ad)
+        let adres = kapaklar[salon.ad] ?? KapakAdresi(url: nil, yedek: nil)
         let ic = CGSize(width: kartG - 10, height: kartY - 10)
-        // yakınlık: ölçekten (0,89 → 1)
-        let t = (k.olcek - 0.89) / 0.11
+        let acik = salon.acik, az = hareketYok
         let golge: RGBA = r.koyu ? r.zemin : r.murekkep
         let altGolge: [Gradient.Stop] = [.init(color: Color(golge, 0), location: 0.76),
                                          .init(color: Color(golge, r.koyu ? 0.32 : 0.14), location: 1)]
@@ -163,7 +184,6 @@ struct KemerSalonlari: View {
         // görseli her karede yeniden işletiyordu (Emre: "kasıyor"). Kapak katmanı artık kaydırmayla değişmiyor ve bir kez
         // dokuya çiziliyor (`drawingGroup`): kilitli kapağın bulanıklığı sabit, komşu kartın bulanıklığı kalktı (tasarımda da
         // yoktu, yalnız soluyorlardı), parlaklık üstte bir peçe, gölge sabit yarıçaplı; yakınlık yalnız saydamlıkla.
-        let karartma = salon.acik ? 1 - k.parlaklik : 0
         return ZStack {
             Color(r.yuzey)
             UzakGorsel(url: adres.url, icerik: .fill, yedek: adres.yedek)
@@ -177,17 +197,25 @@ struct KemerSalonlari: View {
         .frame(width: ic.width, height: ic.height)
         .clipShape(Kemer(alt: 16))
         .drawingGroup()
-        .overlay(Kemer(alt: 16).fill(Color.black.opacity(karartma)))
-        .overlay(Kemer(alt: 16).stroke(Color(r.pirinc, 0.12 + 0.2 * t), lineWidth: 0.5))
+        // Kaydırmaya bağlı katmanlar yalnız saydamlıklarıyla değişir (`visualEffect`, gövde yeniden kurulmaz)
+        .overlay {
+            if acik {
+                Kemer(alt: 16).fill(Color.black)
+                    .visualEffect { c, g in c.opacity(1 - seritteKart(g, acik: true, hareketAz: az).parlaklik) }
+            }
+        }
+        .overlay(Kemer(alt: 16).stroke(Color(r.pirinc), lineWidth: 0.5)
+            .visualEffect { c, g in c.opacity(0.12 + 0.2 * kartYakinligi(seritteKart(g, acik: acik, hareketAz: az))) })
         .padding(5)
-        .overlay(Kemer(alt: 21).stroke(Color(r.pirinc, k.cerceve), lineWidth: 1))
+        .overlay(Kemer(alt: 21).stroke(Color(r.pirinc), lineWidth: 1)
+            .visualEffect { c, g in c.opacity(seritteKart(g, acik: acik, hareketAz: az).cerceve) })
         .frame(width: kartG, height: kartY)
         // `--kart-golge` (ortada) ↔ `--kart-golge-yan`: yarıçap sabit, yakınlık yalnız saydamlıkta
         .background(
             Kemer(alt: 21).fill(Color(golge))
                 .shadow(color: Color(golge, r.koyu ? 0.52 : 0.17), radius: 24, y: 22)
-                .opacity(0.45 + 0.55 * t)
                 .padding(4)
+                .visualEffect { c, g in c.opacity(0.45 + 0.55 * kartYakinligi(seritteKart(g, acik: acik, hareketAz: az))) }
         )
     }
 
@@ -275,7 +303,7 @@ struct KemerSalonlari: View {
         }
         .frame(height: 46)
         .frame(maxWidth: .infinity)
-        .opacity(KemerYayi.eylemOpakligi(konum: konum, aciklar: salonlar.map(\.acik)))
+        .modifier(EylemSoluklugu(iz: iz, aciklar: salonlar.map(\.acik)))
     }
 
     // MARK: Işık kılavuzu
@@ -288,7 +316,7 @@ struct KemerSalonlari: View {
         let sonraki = KemerYayi.komsu(sira, yon: 1, sayi: salonlar.count)
         let donem = salonlar.indices.contains(sira) ? DonemSembolu.bul(salonlar[sira].sira) : nil
         return ZStack(alignment: .top) {
-            Canvas { c, boyut in kilavuzCiz(&c, boyut) }
+            KilavuzCizimi(iz: iz) { c, boyut, konum in kilavuzCiz(&c, boyut, konum) }
                 .frame(width: w, height: 52)
                 .allowsHitTesting(false)
             HStack(spacing: 0) {
@@ -345,7 +373,7 @@ struct KemerSalonlari: View {
 
     /// SVG `viewBox 0 0 390 54`, `preserveAspectRatio="none"`: `M 18 24 Q 195 4 372 24` (iki uca silinen pirinç),
     /// çentikler (`centikCiz`), `circle 195 14` ışık (r 11 hale, r 3 nokta)
-    private func kilavuzCiz(_ c: inout GraphicsContext, _ boyut: CGSize) {
+    private func kilavuzCiz(_ c: inout GraphicsContext, _ boyut: CGSize, _ konum: Double) {
         let r = tema.renkler
         let sx = boyut.width / 390, sy = boyut.height / 54
         func n(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x * sx, y: y * sy) }
@@ -395,7 +423,7 @@ struct KemerSalonlari: View {
             secim = hedef
             sira = hedef
         }
-        if hareketYok { konum = Double(hedef) }
+        if hareketYok { iz.deger = Double(hedef) }
     }
 }
 
@@ -595,6 +623,48 @@ struct DonemIkonu: View {
 }
 
 // MARK: Yardımcılar
+
+/// Z3z2: şeridin anlık konumu. Yalnız okuyan görünümler (kılavuz çizimi, eylem yuvasının saydamlığı) her karede yenilenir.
+@MainActor @Observable
+final class SeritKonumu {
+    var deger: Double = 0
+}
+
+struct KapakAdresi {
+    let url: URL?
+    let yedek: URL?
+}
+
+/// Kartın şeritteki yerinden `KemerYayi.kart`: `fark` = (kartın ortası − şeridin ortası) / adım. Önceden `konum`'dan
+/// (i − konum) hesaplanıyordu; ikisi aynı, yalnız uçtaki esnek taşmada kart da hafifçe eğilir.
+func seritteKart(_ g: GeometryProxy, acik: Bool, hareketAz: Bool) -> KemerYayi.Kart {
+    let f = g.frame(in: .scrollView(axis: .horizontal))
+    let genislik = g.bounds(of: .scrollView(axis: .horizontal))?.width ?? f.width
+    let fark = Double(f.midX - genislik / 2) / KemerYayi.adim
+    return KemerYayi.kart(fark: fark, acik: acik, hareketAz: hareketAz)
+}
+
+/// Yakınlık ölçekten (0,89 → 1)
+func kartYakinligi(_ k: KemerYayi.Kart) -> Double { (k.olcek - 0.89) / 0.11 }
+
+/// Eylem yuvası açık ile kilitli akım arasında geçerken söner (`KemerYayi.eylemOpakligi`); konumu yalnız bu okur
+private struct EylemSoluklugu: ViewModifier {
+    let iz: SeritKonumu
+    let aciklar: [Bool]
+    func body(content: Content) -> some View {
+        content.opacity(KemerYayi.eylemOpakligi(konum: iz.deger, aciklar: aciklar))
+    }
+}
+
+/// Işık kılavuzunun çizimi; konumu yalnız bu okur
+private struct KilavuzCizimi: View {
+    let iz: SeritKonumu
+    let ciz: (inout GraphicsContext, CGSize, Double) -> Void
+    var body: some View {
+        let p = iz.deger
+        Canvas { c, boyut in ciz(&c, boyut, p) }
+    }
+}
 
 /// iOS 18: şeridin kaydırma geometrisi; `degisti`'ye içeriğin başından kayılan yol verilir
 /// (`contentOffset.x + contentInsets.leading`; ilk kart ortadayken 0). iOS 17'de tercih (`SeritKaymasi`) kullanılır.

@@ -201,6 +201,7 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - Açık bir durağa dokun: öğrenci patikadan yürüyor, altta koyu kart açılıyor (kapak, "Dönem · n sanatçı", ad, beyaz düğme, tanışma grupları, Kolay / Orta / Zor, Akım sayfası). Aşağı çekince kapanıyor.
   - Kurs rozetine dokun: "n / 57 konu işlendi", sıradaki konunun Türkçe adı, "k sanatçı açılacak", **İşlendi yap**. Resimdeki saklı bir motife dokun: çerçeveli eser, hikâye, "… sayfası".
   - Kartta "1. grupla tanış" ya da "Kolay'a başla": tanışma ve sorular Çalış'taki turun aynısı. Grup bitince "Grup tamam" ve "2. grupla tanış"; seviye bitince sergi duvarı, madalyon, yıldızlar, skor, salonlar ve "Orta salonuna geç".
+- [ ] (Z3z2) Galeri → Akımlar: şeridi hızlıca sağa sola, sonra yavaşça kaydır; kartlar parmağı takılmadan izliyor mu? Eğilme, küçülme ve yazının sönmesi eskisi gibi mi?
 - [ ] (Z3z) Galeri → Akımlar akıcılık: şeridi hızlı hızlı sağa sola kaydır, kartlar takılmadan akıyor mu? Kilitli kapaklar hâlâ bulanık ve ortasında kilit mührü var mı? Gece ve Gündüz'de bak.
 - [ ] (Z3w) Galeri → Akımlar (Neon'un "Yön 2 · Kemerlerin yayı"):
   - Üstte eskisi gibi "Galeri", arama, kalp ve bölüm sekmeleri; altında ortada büyük kemerli kart, iki yanda komşular küçük ve soluk. Kartın altında dönem sembolüyle yıllar (ör. "1582–1682"), akım adı ve "N / M sanatçı açık" ya da kilit + "Konu N'de açılır".
