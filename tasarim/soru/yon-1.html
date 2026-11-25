@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="tr" data-tema="gece" data-hareket="tam">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Soru Ekranı · Yön 1 — İnceltilmiş Cam Tepsi</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* =====================================================================
+         Yön 1 · İnceltilmiş Cam Tepsi
+         Durak-içi Yön 3'ün doğrudan inceltilmiş ve oran-uyarlamalı hâli
+         ===================================================================== */
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --surface-cam: rgba(24, 22, 20, 0.8);
+        --border: #2e2b28;
+        --border-ince: rgba(235, 229, 218, 0.12);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --right: #6fb487;
+        --right-bg: rgba(111, 180, 135, 0.16);
+        --wrong: #d66854;
+        --wrong-bg: rgba(214, 104, 84, 0.16);
+        --overlay-btn: rgba(18, 17, 16, 0.62);
+        --secenek-bg: rgba(235, 229, 218, 0.045);
+        --secenek-basili: rgba(235, 229, 218, 0.11);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.04;
+        --desen-filtre: invert(1);
+        --hale-1: rgba(46, 98, 72, 0.34);
+        --hale-2: rgba(162, 74, 58, 0.16);
+        --golge-resim: 0 24px 54px rgba(0, 0, 0, 0.6);
+        --golge-tepsi: 0 18px 44px rgba(0, 0, 0, 0.46);
+        --sayfa-zemin: #0a0908;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --surface-cam: rgba(247, 245, 241, 0.88);
+        --border: #d6d0c6;
+        --border-ince: rgba(31, 27, 23, 0.1);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #665f56;
+        --pirinc: #8a651c;
+        --pirinc-rgb: 138, 101, 28;
+        --right: #2a6644;
+        --right-bg: rgba(42, 102, 68, 0.12);
+        --wrong: #9a3726;
+        --wrong-bg: rgba(154, 55, 38, 0.11);
+        --overlay-btn: rgba(247, 245, 241, 0.84);
+        --secenek-bg: rgba(31, 27, 23, 0.04);
+        --secenek-basili: rgba(31, 27, 23, 0.1);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.045;
+        --desen-filtre: none;
+        --hale-1: rgba(46, 98, 72, 0.16);
+        --hale-2: rgba(162, 74, 58, 0.08);
+        --golge-resim: 0 18px 36px rgba(20, 17, 14, 0.15);
+        --golge-tepsi: 0 14px 30px rgba(20, 17, 14, 0.1);
+        --sayfa-zemin: #dfd9cf;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', Georgia, serif;
+        --okuma: 'Newsreader', Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, sans-serif;
+        --sure: 280ms;
+        --tel-w: 390px;
+        --tel-h: 844px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      /* Masaüstü önizleme çubuğu */
+      .onizleme-cubuk {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px 10px;
+        padding: 10px 14px;
+        background: rgba(var(--bg-rgb), 0.94);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(18px);
+      }
+
+      .onizleme-ad {
+        font: 600 13px/1.2 var(--sans);
+        color: var(--pirinc);
+        margin-right: 4px;
+      }
+
+      .grup-hap {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px;
+        border-radius: 999px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        gap: 2px;
+      }
+
+      .grup-hap button {
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 12px/1 var(--sans);
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      .grup-hap button[aria-pressed='true'] {
+        background: var(--ink);
+        color: var(--bg);
+      }
+
+      .sahne-sar {
+        display: flex;
+        justify-content: center;
+        padding: 22px 12px 44px;
+      }
+
+      .telefon {
+        position: relative;
+        width: var(--tel-w);
+        height: var(--tel-h);
+        border-radius: 44px;
+        overflow: hidden;
+        background-color: var(--bg);
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        border: 1px solid var(--border);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        isolation: isolate;
+      }
+
+      .telefon.kucuk {
+        --tel-w: 375px;
+        --tel-h: 667px;
+        border-radius: 30px;
+      }
+
+      body.goruntu-modu {
+        background: var(--bg);
+      }
+      body.goruntu-modu .onizleme-cubuk {
+        display: none;
+      }
+      body.goruntu-modu .sahne-sar {
+        padding: 0;
+        display: block;
+      }
+      body.goruntu-modu .telefon {
+        border-radius: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      /* Üç katmanlı zemin: yalnız sorulan eserin kendi paletinden hale + çok silik dönem deseni */
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(300px 280px at 50% 24%, var(--hale-1), transparent 74%),
+          radial-gradient(240px 220px at 84% 82%, var(--hale-2), transparent 72%);
+        animation: haleNefes 7s ease-in-out infinite alternate;
+      }
+
+      @keyframes haleNefes {
+        from {
+          opacity: 0.78;
+          transform: scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1.04);
+        }
+      }
+
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-ronesans@3x.png');
+        background-size: 96px 96px;
+        opacity: var(--desen-opaklik);
+        filter: var(--desen-filtre);
+      }
+
+      /* iOS durum çubuğu */
+      .durum-cubugu {
+        position: relative;
+        z-index: 6;
+        height: 44px;
+        padding: 14px 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 13px/1 var(--sans);
+        flex: none;
+      }
+
+      .telefon.kucuk .durum-cubugu {
+        height: 26px;
+        padding: 6px 18px 0;
+        font-size: 12px;
+      }
+
+      .durum-sag {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Ekran içi */
+      .ekran {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Üst çubuk: cam kapatma + nokta ilerleme + 1 / 8 hapı */
+      .ust-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 4px 16px 6px;
+        flex: none;
+      }
+
+      .telefon.kucuk .ust-bar {
+        padding: 2px 14px 4px;
+      }
+
+      .cam-yuvarlak {
+        width: 44px;
+        height: 44px;
+        flex: none;
+        border-radius: 50%;
+        border: 1px solid var(--border-ince);
+        background: var(--overlay-btn);
+        backdrop-filter: blur(22px) saturate(1.5);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 140ms ease;
+      }
+
+      .cam-yuvarlak:active {
+        transform: scale(0.94);
+      }
+
+      .inci-dizi {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border-ince);
+        backdrop-filter: blur(20px) saturate(1.5);
+      }
+
+      .inci {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(var(--ink-rgb), 0.24);
+        transition: transform var(--sure) ease, background var(--sure) ease;
+      }
+
+      .inci.dogru {
+        background: var(--right);
+      }
+
+      .inci.yanlis {
+        background: transparent;
+        box-shadow: inset 0 0 0 1.8px var(--wrong);
+      }
+
+      .inci.simdi {
+        background: var(--ink);
+        transform: scale(1.45);
+      }
+
+      .sayac-hap {
+        min-height: 36px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border-ince);
+        backdrop-filter: blur(20px);
+        font: 500 12.5px/1 var(--sans);
+        font-variant-numeric: tabular-nums;
+        color: var(--ink-2);
+        display: inline-flex;
+        align-items: center;
+      }
+
+      /* Orta sahne: eser her zaman en büyük öğe */
+      .sahne {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0 16px 16px;
+      }
+
+      .telefon.kucuk .sahne {
+        padding: 0 14px 12px;
+      }
+
+      .eser-bolge {
+        flex: 1;
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 6px 14px;
+        transition: padding var(--sure) ease;
+      }
+
+      .telefon.kucuk .eser-bolge {
+        padding: 4px 4px 10px;
+      }
+
+      .eser-btn {
+        position: relative;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+        max-width: 100%;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .eser-btn img {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 16px;
+        box-shadow: var(--golge-resim);
+        outline: 1px solid rgba(255, 255, 255, 0.08);
+        outline-offset: -1px;
+        transition: max-height var(--sure) cubic-bezier(0.22, 1, 0.36, 1), transform var(--sure) ease;
+      }
+
+      /* Orana göre akıllı sınırlar */
+      .eser-bolge.dikey .eser-btn img {
+        max-height: 406px;
+      }
+      .eser-bolge.yatay .eser-btn img {
+        max-width: 100%;
+        max-height: 310px;
+      }
+      .eser-bolge.kare .eser-btn img {
+        max-height: 368px;
+      }
+
+      .telefon.kucuk .eser-bolge.dikey .eser-btn img {
+        max-height: 290px;
+      }
+      .telefon.kucuk .eser-bolge.yatay .eser-btn img {
+        max-height: 224px;
+      }
+      .telefon.kucuk .eser-bolge.kare .eser-btn img {
+        max-height: 274px;
+      }
+
+      /* Cevaplandıktan sonra eser üstte görünür kalır, yaprak alt kenara sıfır oturur */
+      .sahne.cevapli .eser-bolge {
+        flex: 1;
+        min-height: 160px;
+        padding: 4px 6px 12px;
+      }
+      .sahne.cevapli .eser-bolge .eser-btn img {
+        max-height: 310px;
+      }
+      .telefon.kucuk .sahne.cevapli .eser-bolge .eser-btn img {
+        max-height: 196px;
+      }
+
+      /* Görsel yüklenemedi durumu */
+      .hata-kutu {
+        width: 248px;
+        padding: 28px 20px;
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .hata-kutu p {
+        margin: 0;
+        font: 400 14.5px/1.45 var(--sans);
+        color: var(--ink-2);
+      }
+
+      .cam-hap-btn {
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--overlay-btn);
+        color: var(--ink);
+        font: 500 14px/1 var(--sans);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Alt cam tepsi */
+      .cam-tepsi {
+        flex: none;
+        border-radius: 26px;
+        padding: 16px;
+        background: var(--surface-cam);
+        backdrop-filter: blur(26px) saturate(1.6);
+        border: 1px solid var(--border-ince);
+        box-shadow: var(--golge-tepsi);
+        transition: padding var(--sure) ease;
+      }
+
+      .telefon.kucuk .cam-tepsi {
+        border-radius: 22px;
+        padding: 12px 13px 10px;
+      }
+
+      .tepsi-ust {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 4px 12px;
+      }
+
+      .telefon.kucuk .tepsi-ust {
+        padding: 0 4px 9px;
+      }
+
+      .tepsi-baslik {
+        font: 500 22px/1.12 var(--serif);
+        letter-spacing: -0.01em;
+        margin: 0;
+        color: var(--ink);
+      }
+
+      .telefon.kucuk .tepsi-baslik {
+        font-size: 20px;
+      }
+
+      .tepsi-seviye {
+        font: 600 13px/1.1 var(--sans);
+        color: var(--pirinc);
+        white-space: nowrap;
+      }
+
+      /* 2×2 şık ızgarası — ipucu yok, 44 px+ dokunma hedefi */
+      .secenekler {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        animation: soruDegis var(--sure) ease;
+      }
+
+      @keyframes soruDegis {
+        from {
+          opacity: 0.3;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .telefon.kucuk .secenekler {
+        gap: 8px;
+      }
+
+      .secenek {
+        min-height: 54px;
+        padding: 10px 13px;
+        border-radius: 16px;
+        border: 1px solid var(--border-ince);
+        background: var(--secenek-bg);
+        color: var(--ink);
+        font: 500 14.5px/1.22 var(--sans);
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        cursor: pointer;
+        transition: transform 130ms ease, background 160ms ease, border-color 180ms ease;
+      }
+
+      .telefon.kucuk .secenek {
+        min-height: 48px;
+        padding: 8px 11px;
+        font-size: 13.5px;
+      }
+
+      .secenek:active {
+        transform: scale(0.975);
+        background: var(--secenek-basili);
+      }
+
+      .secenek.dogru {
+        background: var(--right-bg);
+        border-color: var(--right);
+      }
+
+      .secenek.yanlis {
+        background: var(--wrong-bg);
+        border-color: var(--wrong);
+        animation: sarsil 280ms ease;
+      }
+
+      @keyframes sarsil {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-4px);
+        }
+        65% {
+          transform: translateX(4px);
+        }
+      }
+
+      .secenek-ikon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bg);
+      }
+
+      .secenek.dogru .secenek-ikon {
+        background: var(--right);
+      }
+
+      .secenek.yanlis .secenek-ikon {
+        background: var(--wrong);
+      }
+
+      .secenekler.tek {
+        grid-template-columns: 1fr;
+      }
+
+      .tepsi-alt {
+        display: flex;
+        justify-content: center;
+        margin-top: 6px;
+      }
+
+      .telefon.kucuk .tepsi-alt {
+        margin-top: 4px;
+      }
+
+      .bilmiyorum {
+        min-height: 44px;
+        padding: 0 20px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: italic 400 15.5px/1 var(--okuma);
+        cursor: pointer;
+      }
+
+      /* Cevap yaprağına geçiş şeridi (yaprağın içi tasarlanmaz; yalnızca alttan geliş geçişi) */
+      .yaprak-gecis {
+        flex: none;
+        margin: 10px -16px -16px;
+        padding: 10px 20px 22px;
+        border-radius: 26px 26px 0 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border-ince);
+        box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.35);
+        animation: yaprakYuksel 320ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .telefon.kucuk .yaprak-gecis {
+        margin: 8px -14px -12px;
+        padding: 8px 16px 14px;
+      }
+
+      @keyframes yaprakYuksel {
+        from {
+          opacity: 0;
+          transform: translateY(36px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .yaprak-tutamak {
+        width: 36px;
+        height: 4px;
+        border-radius: 99px;
+        background: rgba(var(--ink-rgb), 0.22);
+        margin: 0 auto 12px;
+      }
+
+      .yaprak-ozet-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .yaprak-durum {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font: 600 14px/1.2 var(--sans);
+      }
+
+      .yaprak-durum.dogru {
+        color: var(--right);
+      }
+
+      .yaprak-durum.yanlis {
+        color: var(--wrong);
+      }
+
+      .yaprak-not {
+        font: 400 12.5px/1.2 var(--sans);
+        color: var(--ink-3);
+      }
+
+      .yaprak-eylemler {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .dolu-dugme {
+        flex: 1;
+        min-height: 48px;
+        padding: 0 20px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        font: 600 15px/1.2 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .duz-dugme {
+        min-height: 44px;
+        padding: 0 12px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 14px/1 var(--sans);
+        cursor: pointer;
+      }
+
+      /* Tam ekran yakın inceleme (eser adı GİZLİ) & çıkış onayı */
+      .katman {
+        position: absolute;
+        inset: 0;
+        z-index: 25;
+        background: rgba(10, 9, 8, 0.94);
+        backdrop-filter: blur(22px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .katman[hidden] {
+        display: none;
+      }
+
+      .katman-resim {
+        max-width: 100%;
+        max-height: 74%;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72);
+      }
+
+      .katman-gizli-not {
+        margin-top: 16px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: rgba(235, 229, 218, 0.08);
+        border: 1px solid rgba(235, 229, 218, 0.14);
+        font: 400 12.5px/1.2 var(--sans);
+        color: #aca498;
+      }
+
+      .cikis-kart {
+        width: 100%;
+        max-width: 312px;
+        padding: 22px;
+        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .cikis-kart h3 {
+        font: 500 22px/1.15 var(--serif);
+        margin: 0;
+      }
+
+      .cikis-kart p {
+        font: 400 14px/1.45 var(--sans);
+        color: var(--ink-2);
+        margin: 8px 0 18px;
+      }
+
+      .cikis-dugmeler {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      [data-hareket='az'] *,
+      [data-hareket='az'] *::before,
+      [data-hareket='az'] *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="onizleme-cubuk" aria-label="Soru ekranı önizleme denetimleri">
+      <span class="onizleme-ad">Yön 1 · İnceltilmiş Cam Tepsi</span>
+      <div class="grup-hap" role="group" aria-label="Eser oranı">
+        <button type="button" data-oran="dikey">Dikey</button>
+        <button type="button" data-oran="yatay">Yatay</button>
+        <button type="button" data-oran="kare">Kare</button>
+        <button type="button" data-oran="hata">Yükleme hatası</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Soru türü">
+        <button type="button" data-soru-tur="sanatci">Bu eser kimin?</button>
+        <button type="button" data-soru-tur="akim">Hangi akım?</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Seviye">
+        <button type="button" data-seviye="kolay">Kolay</button>
+        <button type="button" data-seviye="orta">Orta</button>
+        <button type="button" data-seviye="zor">Zor</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Ekran boyutu">
+        <button type="button" data-boyut="390">390×844</button>
+        <button type="button" data-boyut="375">375×667</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Tema">
+        <button type="button" data-tema-sec="gece">Gece</button>
+        <button type="button" data-tema-sec="gunduz">Gündüz</button>
+      </div>
+      <div class="grup-hap" role="group" aria-label="Hareket">
+        <button type="button" data-hareket-sec="tam">Tam hareket</button>
+        <button type="button" data-hareket-sec="az">Hareketi azalt</button>
+      </div>
+    </nav>
+
+    <main class="sahne-sar">
+      <section class="telefon" id="telefon" aria-label="Soru ekranı önizlemesi">
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <div class="zemin-desen" aria-hidden="true"></div>
+
+        <div class="durum-cubugu" aria-hidden="true">
+          <span>09:41</span>
+          <div class="durum-sag">
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><rect x="0" y="6" width="2.4" height="5" rx="0.8"/><rect x="4" y="4" width="2.4" height="7" rx="0.8"/><rect x="8" y="2" width="2.4" height="9" rx="0.8"/><rect x="12" y="0" width="2.4" height="11" rx="0.8"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x="0.7" y="0.7" width="18.6" height="9.6" rx="2.6" stroke="currentColor" stroke-width="1.2"/><rect x="2.5" y="2.5" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="20.4" y="3.6" width="1.4" height="3.8" rx="0.7" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <div class="ekran" id="ekran"></div>
+
+        <div class="katman" id="buyutKatman" hidden>
+          <button type="button" class="cam-yuvarlak" id="buyutKapat" aria-label="Kapat" style="position:absolute;top:48px;right:18px;color:#ebe5da;background:rgba(24,22,20,0.72);border-color:rgba(235,229,218,0.18);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <img class="katman-resim" id="buyutImg" src="gorseller/01-van-eyck-arnolfini.jpg" alt="Yakın inceleme" />
+          <span class="katman-gizli-not">Eser adı cevaptan sonra görünür</span>
+        </div>
+
+        <div class="katman" id="cikisKatman" hidden>
+          <div class="cikis-kart">
+            <h3>Turdan çıkılsın mı?</h3>
+            <p>Kaldığın soru saklanır. İstediğin zaman haritadan devam edebilirsin.</p>
+            <div class="cikis-dugmeler">
+              <button type="button" class="dolu-dugme" id="cikisDevam">Tura devam et</button>
+              <button type="button" class="duz-dugme" id="cikisOnay">Haritaya dön</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const ESERLER = {
+        dikey: {
+          src: 'gorseller/01-van-eyck-arnolfini.jpg',
+          yedekSrc: 'gorseller/03-van-eyck-kirmizi-sarik.jpg',
+          dogruSanatci: 'Jan van Eyck',
+          dogruAkim: 'Kuzey Rönesansı',
+          h1: '46, 98, 72',
+          h2: '162, 74, 58',
+        },
+        yatay: {
+          src: 'gorseller/04-campin-merode.jpg',
+          yedekSrc: 'gorseller/07-weyden-hactan-indirme.jpg',
+          dogruSanatci: 'Robert Campin',
+          dogruAkim: 'Kuzey Rönesansı',
+          h1: '154, 62, 52',
+          h2: '142, 114, 72',
+        },
+        kare: {
+          src: 'gorseller/02-van-eyck-rolin.jpg',
+          yedekSrc: 'gorseller/03-van-eyck-kirmizi-sarik.jpg',
+          dogruSanatci: 'Jan van Eyck',
+          dogruAkim: 'Kuzey Rönesansı',
+          h1: '138, 52, 62',
+          h2: '78, 110, 146',
+        },
+      };
+
+      const SANATCI_SIKLAR = ['Jan van Eyck', 'Robert Campin', 'Rogier van der Weyden', 'Petrus Christus'];
+      const AKIM_SIKLAR = ['Kuzey Rönesansı', 'Erken Rönesans', 'Yüksek Rönesans', 'Barok'];
+      const SEVIYE_AD = { kolay: 'Kolay', orta: 'Orta', zor: 'Zor' };
+
+      const durum = {
+        oran: 'dikey', // dikey | yatay | kare
+        hata: false,
+        yedekKullanildi: false,
+        soruTur: 'sanatci', // sanatci | akim
+        karisik: false,
+        seviye: 'kolay',
+        soruNo: 3, // 1..8
+        toplam: 8,
+        cevap: null, // null | string | '?'
+        gecmis: ['dogru', 'dogru'],
+      };
+
+      const ikonX = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+      const ikonKucukX = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+      const ikonOnay = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+      const ikonIleri = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`;
+      const ikonYenile = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg>`;
+
+      function haleGuncelle(eser) {
+        const gunduz = document.documentElement.dataset.tema === 'gunduz';
+        document.documentElement.style.setProperty('--hale-1', `rgba(${eser.h1}, ${gunduz ? 0.16 : 0.34})`);
+        document.documentElement.style.setProperty('--hale-2', `rgba(${eser.h2}, ${gunduz ? 0.08 : 0.16})`);
+      }
+
+      function cubukGuncelle() {
+        const tel = document.getElementById('telefon');
+        document.querySelectorAll('[data-oran]').forEach((b) => {
+          const aktif = b.dataset.oran === 'hata' ? durum.hata : !durum.hata && b.dataset.oran === durum.oran;
+          b.setAttribute('aria-pressed', String(aktif));
+        });
+        document.querySelectorAll('[data-soru-tur]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.soruTur === durum.soruTur)));
+        document.querySelectorAll('[data-seviye]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.seviye === durum.seviye)));
+        document.querySelectorAll('[data-boyut]').forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.boyut === '375') === tel.classList.contains('kucuk'))));
+        document.querySelectorAll('[data-tema-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.temaSec === document.documentElement.dataset.tema)));
+        document.querySelectorAll('[data-hareket-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.hareketSec === document.documentElement.dataset.hareket)));
+      }
+
+      function ciz() {
+        const eser = ESERLER[durum.oran];
+        haleGuncelle(eser);
+        const aktifSrc = durum.yedekKullanildi ? eser.yedekSrc : eser.src;
+        const ikinci = durum.soruTur === 'akim';
+        const dogruDeger = ikinci ? eser.dogruAkim : eser.dogruSanatci;
+        const liste = ikinci ? AKIM_SIKLAR : SANATCI_SIKLAR;
+        const cevapli = durum.cevap !== null;
+        const dogruMu = durum.cevap === dogruDeger;
+        const bilmiyorMu = durum.cevap === '?';
+
+        const inciler = Array.from({ length: durum.toplam }, (_, i) => {
+          const idx = i + 1;
+          if (idx < durum.soruNo) return `<i class="inci ${durum.gecmis[i] || 'dogru'}"></i>`;
+          if (idx === durum.soruNo) return `<i class="inci ${cevapli ? (dogruMu ? 'dogru' : 'yanlis') : 'simdi'}"></i>`;
+          return `<i class="inci"></i>`;
+        }).join('');
+
+        // Cevaptan sonra yalnız doğru ve seçilen şık kalır
+        const kalan = liste.filter((ad) => !cevapli || ad === dogruDeger || ad === durum.cevap);
+        const seviyeYazi = ikinci || durum.karisik ? `Soru ${ikinci ? 2 : 1} / 2 · ${SEVIYE_AD[durum.seviye]}` : SEVIYE_AD[durum.seviye];
+
+        const ortaEser = durum.hata
+          ? `<div class="hata-kutu">
+               <p>Görsel yüklenemedi.</p>
+               <button type="button" class="cam-hap-btn" id="baskaEserBtn">${ikonYenile}<span>Başka eser dene</span></button>
+             </div>`
+          : `<button type="button" class="eser-btn" id="eserBuyut" aria-label="Sorulan eser — yakın incele">
+               <img src="${aktifSrc}" alt="Sorulan tablo" />
+             </button>`;
+
+        const yaprakGecis = cevapli
+          ? `<section class="yaprak-gecis" aria-live="polite" aria-label="Cevap yaprağı geçişi">
+               <div class="yaprak-tutamak" aria-hidden="true"></div>
+               <div class="yaprak-ozet-satir">
+                 <span class="yaprak-durum ${dogruMu ? 'dogru' : 'yanlis'}">
+                   ${dogruMu ? ikonOnay : ikonKucukX}
+                   <span>${dogruMu ? 'Doğru' : bilmiyorMu ? 'Bilmiyorum' : 'Yanlış'}</span>
+                 </span>
+                 <span class="yaprak-not">Cevap yaprağı alttan açılır</span>
+               </div>
+               <div class="yaprak-eylemler">
+                 <button type="button" class="duz-dugme" id="sifirlaBtn">Soruya dön</button>
+                 ${
+                   !ikinci
+                     ? `<button type="button" class="dolu-dugme" id="ikinciSoruBtn"><span>Hangi akım?</span>${ikonIleri}</button>`
+                     : `<button type="button" class="dolu-dugme" id="sonrakiKartBtn"><span>Sonraki soru</span>${ikonIleri}</button>`
+                 }
+               </div>
+             </section>`
+          : '';
+
+        document.getElementById('ekran').innerHTML = `
+          <header class="ust-bar">
+            <button type="button" class="cam-yuvarlak" id="cikisAc" aria-label="Turdan çık">${ikonX}</button>
+            <div class="inci-dizi" aria-hidden="true">${inciler}</div>
+            <span class="sayac-hap" aria-label="Soru ${durum.soruNo} / ${durum.toplam}">${durum.soruNo} / ${durum.toplam}</span>
+          </header>
+
+          <div class="sahne ${cevapli ? 'cevapli' : ''}">
+            <div class="eser-bolge ${durum.oran}">${ortaEser}</div>
+
+            <section class="cam-tepsi" aria-label="Cevap seçenekleri">
+              <div class="tepsi-ust">
+                <h1 class="tepsi-baslik">${ikinci ? 'Hangi akım?' : 'Bu eser kimin?'}</h1>
+                <span class="tepsi-seviye">${seviyeYazi}</span>
+              </div>
+              <div class="secenekler ${kalan.length === 1 ? 'tek' : ''}" role="group" aria-label="${ikinci ? 'Akım seçenekleri' : 'Sanatçı seçenekleri'}">
+                ${kalan
+                  .map((ad) => {
+                    const cls = !cevapli ? '' : ad === dogruDeger ? ' dogru' : ad === durum.cevap ? ' yanlis' : '';
+                    const ic = !cevapli ? '' : ad === dogruDeger ? `<span class="secenek-ikon" aria-hidden="true">${ikonOnay}</span>` : ad === durum.cevap ? `<span class="secenek-ikon" aria-hidden="true">${ikonKucukX}</span>` : '';
+                    return `<button type="button" class="secenek${cls}" data-sec="${ad}" ${cevapli ? 'disabled' : ''}><span>${ad}</span>${ic}</button>`;
+                  })
+                  .join('')}
+              </div>
+              ${!cevapli ? `<div class="tepsi-alt"><button type="button" class="bilmiyorum" id="bilmiyorumBtn">Bilmiyorum</button></div>` : ''}
+            </section>
+
+            ${yaprakGecis}
+          </div>
+        `;
+
+        cubukGuncelle();
+        olaylariBagla(aktifSrc);
+      }
+
+      function olaylariBagla(aktifSrc) {
+        document.getElementById('cikisAc')?.addEventListener('click', () => {
+          document.getElementById('cikisKatman').hidden = false;
+        });
+
+        document.getElementById('eserBuyut')?.addEventListener('click', () => {
+          document.getElementById('buyutImg').src = aktifSrc;
+          document.getElementById('buyutKatman').hidden = false;
+        });
+
+        document.getElementById('baskaEserBtn')?.addEventListener('click', () => {
+          durum.hata = false;
+          durum.yedekKullanildi = true;
+          ciz();
+        });
+
+        document.querySelectorAll('[data-sec]').forEach((b) =>
+          b.addEventListener('click', () => {
+            durum.cevap = b.dataset.sec;
+            ciz();
+          }),
+        );
+
+        document.getElementById('bilmiyorumBtn')?.addEventListener('click', () => {
+          durum.cevap = '?';
+          ciz();
+        });
+
+        document.getElementById('sifirlaBtn')?.addEventListener('click', () => {
+          durum.cevap = null;
+          ciz();
+        });
+
+        document.getElementById('ikinciSoruBtn')?.addEventListener('click', () => {
+          durum.karisik = true;
+          durum.soruTur = 'akim';
+          durum.cevap = null;
+          ciz();
+        });
+
+        document.getElementById('sonrakiKartBtn')?.addEventListener('click', () => {
+          const sira = ['dikey', 'yatay', 'kare'];
+          durum.oran = sira[(sira.indexOf(durum.oran) + 1) % sira.length];
+          durum.soruTur = 'sanatci';
+          durum.karisik = false;
+          durum.yedekKullanildi = false;
+          durum.cevap = null;
+          durum.soruNo = durum.soruNo < durum.toplam ? durum.soruNo + 1 : 1;
+          ciz();
+        });
+      }
+
+      document.getElementById('buyutKapat').addEventListener('click', () => {
+        document.getElementById('buyutKatman').hidden = true;
+      });
+      document.getElementById('buyutKatman').addEventListener('click', (ev) => {
+        if (ev.target.id === 'buyutKatman') document.getElementById('buyutKatman').hidden = true;
+      });
+      document.getElementById('cikisDevam').addEventListener('click', () => {
+        document.getElementById('cikisKatman').hidden = true;
+      });
+      document.getElementById('cikisOnay').addEventListener('click', () => {
+        document.getElementById('cikisKatman').hidden = true;
+        durum.cevap = null;
+        durum.soruTur = 'sanatci';
+        ciz();
+      });
+
+      document.querySelectorAll('[data-oran]').forEach((b) =>
+        b.addEventListener('click', () => {
+          if (b.dataset.oran === 'hata') {
+            durum.hata = true;
+            durum.cevap = null;
+          } else {
+            durum.hata = false;
+            durum.oran = b.dataset.oran;
+            durum.yedekKullanildi = false;
+            durum.cevap = null;
+          }
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-soru-tur]').forEach((b) =>
+        b.addEventListener('click', () => {
+          durum.soruTur = b.dataset.soruTur;
+          durum.karisik = b.dataset.soruTur === 'akim';
+          durum.cevap = null;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-seviye]').forEach((b) =>
+        b.addEventListener('click', () => {
+          durum.seviye = b.dataset.seviye;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-boyut]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.getElementById('telefon').classList.toggle('kucuk', b.dataset.boyut === '375');
+          cubukGuncelle();
+        }),
+      );
+      document.querySelectorAll('[data-tema-sec]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.documentElement.dataset.tema = b.dataset.temaSec;
+          ciz();
+        }),
+      );
+      document.querySelectorAll('[data-hareket-sec]').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.documentElement.dataset.hareket = b.dataset.hareketSec;
+          cubukGuncelle();
+        }),
+      );
+
+      // URL parametreleri
+      const q = new URLSearchParams(location.search);
+      if (q.get('goruntu') === '1') document.body.classList.add('goruntu-modu');
+      if (q.get('tema') === 'gunduz' || q.get('tema') === 'gece') document.documentElement.dataset.tema = q.get('tema');
+      if (q.get('hareket') === 'az') document.documentElement.dataset.hareket = 'az';
+      if (q.get('boyut') === '375') document.getElementById('telefon').classList.add('kucuk');
+      if (q.get('oran') && ESERLER[q.get('oran')]) durum.oran = q.get('oran');
+      if (q.get('oran') === 'hata') durum.hata = true;
+      if (q.get('tur') === 'akim') {
+        durum.soruTur = 'akim';
+        durum.karisik = true;
+      }
+      if (q.get('seviye') && SEVIYE_AD[q.get('seviye')]) durum.seviye = q.get('seviye');
+      if (q.get('cevap') === 'yanlis') durum.cevap = 'Petrus Christus';
+      if (q.get('cevap') === 'dogru') durum.cevap = ESERLER[durum.oran].dogruSanatci;
+      ciz();
+    </script>
+  </body>
+</html>
