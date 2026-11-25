@@ -273,6 +273,8 @@ struct SoruGorseli: View {
     var yedek: URL?
     let yukseklik: CGFloat
     let enGenis: CGFloat
+    /// Köşe yarıçapı (Çalış 4; Yolculuk Z3y "Geniş Tuval" 16)
+    var kose: CGFloat = 4
     var hata: () -> Void = {}
     @Environment(\.displayScale) private var olcek
     @Environment(TemaDeposu.self) private var tema
@@ -286,12 +288,12 @@ struct SoruGorseli: View {
                 let h = min(yukseklik, enGenis / max(oran, 0.01))
                 Image(uiImage: resim).resizable().aspectRatio(contentMode: .fit)
                     .frame(width: h * oran, height: h)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .clipShape(RoundedRectangle(cornerRadius: kose))
                     .shadow(color: .black.opacity(0.6), radius: 30, y: 24)
                     .transition(.opacity)
             } else {
-                RoundedRectangle(cornerRadius: 4).fill(Color(tema.renkler.yuzey))
-                    .frame(width: yukseklik * 0.75, height: yukseklik)
+                RoundedRectangle(cornerRadius: kose).fill(Color(tema.renkler.yuzey))
+                    .frame(width: min(enGenis, yukseklik * 0.75), height: yukseklik)
                     .overlay(Text(olmadi ? "Görsel yüklenemedi." : "Yükleniyor…")
                         .font(Yazi.sans(13)).foregroundStyle(Color(tema.renkler.murekkep3)))
             }

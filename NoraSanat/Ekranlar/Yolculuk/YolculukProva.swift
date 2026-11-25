@@ -15,7 +15,8 @@ import NoraCekirdek
         Task { await site() }
     }
 
-    static let turlar = ["tanisma","soru","cevap","sergi","seviye-tamam","grup-sonu"]
+    /// `cevap-yanlis` yalnız yerli (Z3y: yelpazede yanlış cevapta iki kart döner)
+    static let turlar = ["tanisma","soru","cevap","cevap-yanlis","sergi","seviye-tamam","grup-sonu"]
     static func hazir(_ ad: String) {
         try? Data(ad.utf8).write(to: FileManager.default.temporaryDirectory.appendingPathComponent("yolculuk-hazir"), options: .atomic)
     }

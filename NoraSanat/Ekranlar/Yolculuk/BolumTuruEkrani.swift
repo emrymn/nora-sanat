@@ -95,10 +95,13 @@ final class BolumOyunu {
             if t.bitti || (ad == "tanisma" && t.tanismaBekliyor) { break }
             if let kart = t.kart, kart.tanisma == nil, !t.tanismaBekliyor {
                 if ad == "soru" && kart.sonuc == nil { break }
-                if ad == "cevap" && kart.sonuc != nil { break }
+                if (ad == "cevap" || ad == "cevap-yanlis") && kart.sonuc != nil { break }
                 if kart.sonuc == nil {
                     let dogru = kart.ikinci ? katalog.harita[kart.resim.id]?.akim : kart.dogru
-                    await yaz { b, il in b.cevapla(dogru, katalog: k, il: &il, rastgele: { 0.5 }) }
+                    // Z3y: `cevap-yanlis` ilk sorusunda dogru olmayan ilk şıkkı seçer
+                    let yanlis = (kart.ikinci ? kart.akimlar ?? [] : kart.secenekler).first { $0 != dogru }
+                    let secim = ad == "cevap-yanlis" ? yanlis ?? dogru : dogru
+                    await yaz { b, il in b.cevapla(secim, katalog: k, il: &il, rastgele: { 0.5 }) }
                     continue
                 }
             }
@@ -168,6 +171,9 @@ struct BolumTuruEkrani: View {
                     }
                 }
                     .id("\(tur.gorunenKonum)|\(k.resim.eser.anahtar)|\(k.ikinci)")
+                    // Z3y: soru ekranının halesi sorulan eserin paletinden (Pekiştirme'deki gibi; değiştirici `.id`'nin
+                    // dışında: karışık turun ikinci sorusunda renk sürer). Ters kartta renk değişmez.
+                    .ekranRengi(url: k.ters == nil ? oyun.model.gorsel(k.resim.eser, 400) : nil)
             } else if oyun.bolum.seviye.grup != nil {
                 GrupOzeti(oyun: oyun, haritaya: haritaya, yeniTur: yeniTur)
             } else if let r = oyun.bolum.sonuc {
