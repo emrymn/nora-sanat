@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="tr" data-tema="gece" data-hareket="tam">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dinleyerek bak · Yön 2 — Müze Defteri ve Fenerli Bakış</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --border: rgba(235, 229, 218, 0.14);
+        --border-ince: rgba(235, 229, 218, 0.09);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #837c72;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --right: #6fb487;
+        --cam: rgba(24, 22, 20, 0.68);
+        --cam-koyu: rgba(22, 20, 18, 0.84);
+        --perde-renk: 14, 13, 12;
+        --dolu-bg: #ebe5da;
+        --dolu-ink: #121110;
+        --sayfa-zemin: #0a0909;
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-op: 0.04;
+        --vinyet-renk: 12, 11, 10;
+        --vinyet-guc: 0.20;
+        --cerceve-golge: 0 22px 54px rgba(0, 0, 0, 0.48);
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --border: rgba(31, 27, 23, 0.14);
+        --border-ince: rgba(31, 27, 23, 0.08);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #6c645a;
+        --pirinc: #8b631b;
+        --pirinc-rgb: 139, 99, 27;
+        --right: #2a6644;
+        --cam: rgba(247, 245, 241, 0.80);
+        --cam-koyu: rgba(247, 245, 241, 0.90);
+        --perde-renk: 236, 232, 225;
+        --dolu-bg: #1f1b17;
+        --dolu-ink: #f7f5f1;
+        --sayfa-zemin: #dfd9cf;
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-op: 0.045;
+        --vinyet-renk: 24, 20, 16;
+        --vinyet-guc: 0.16;
+        --cerceve-golge: 0 18px 42px rgba(20, 17, 14, 0.15);
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', Didot, Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, sans-serif;
+        --okuma: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+        --hale-1-rgb: 154, 112, 68;
+        --hale-2-rgb: 72, 58, 50;
+        --desen-url: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-barok@3x.png');
+        --gecis: 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: clip;
+      }
+
+      .onizleme-ust {
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 14px;
+        padding: 10px 18px;
+        background: var(--cam-koyu);
+        border-bottom: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .onizleme-ust .baslik-grup { display: flex; flex-direction: column; gap: 1px; }
+      .onizleme-ust .ust-not { font: 600 12px/1.2 var(--sans); color: var(--pirinc); }
+      .onizleme-ust strong { font: 500 18px/1.15 var(--serif); letter-spacing: -0.01em; }
+      .onizleme-araclar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+      .hap-grup {
+        display: inline-flex;
+        padding: 3px;
+        border-radius: 999px;
+        background: var(--cam);
+        border: 1px solid var(--border);
+      }
+      .hap-grup button {
+        min-height: 32px;
+        padding: 0 11px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 12px/1 var(--sans);
+        cursor: pointer;
+        transition: background var(--gecis), color var(--gecis);
+      }
+      .hap-grup button[aria-pressed='true'] { background: var(--dolu-bg); color: var(--dolu-ink); }
+
+      .sahne { display: flex; justify-content: center; padding: 22px 0 44px; }
+
+      .telefon {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        background-color: var(--bg);
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        border-radius: 42px;
+        border: 1px solid var(--border);
+        box-shadow: 0 32px 88px rgba(0, 0, 0, 0.50);
+        overflow: hidden;
+        isolation: isolate;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      html.cek-kipi, html.cek-kipi body { background: var(--bg); }
+      html.cek-kipi .onizleme-ust { display: none; }
+      html.cek-kipi .sahne { padding: 0; display: block; }
+      html.cek-kipi .telefon { border-radius: 0; border: 0; box-shadow: none; }
+      html.cek-kipi *, html.cek-kipi *::before, html.cek-kipi *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+
+      /* Üç katmanlı zemin */
+      .zemin-hale {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(ellipse 310px 330px at 15% 10%, rgba(var(--hale-1-rgb), 0.24), transparent 72%),
+          radial-gradient(ellipse 260px 280px at 86% 80%, rgba(var(--hale-2-rgb), 0.16), transparent 74%);
+      }
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-color: var(--ink);
+        opacity: var(--desen-op);
+        -webkit-mask-image: var(--desen-url);
+        mask-image: var(--desen-url);
+        -webkit-mask-size: 96px 96px;
+        mask-size: 96px 96px;
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
+      }
+
+      /* Tuval sahnesi: Başlangıç/Bitiş'te zarif müze çerçevesinde, anlatımda kenardan kenara */
+      .tuval-sahne {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        overflow: hidden;
+        cursor: pointer;
+        transition: clip-path 0.75s cubic-bezier(0.32, 0, 0.18, 1);
+      }
+      .tuval-resim {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-origin: center center;
+        will-change: transform, opacity;
+        pointer-events: none;
+        display: block;
+        border-radius: 3px;
+        box-shadow: var(--cerceve-golge);
+      }
+      .tuval-resim.yedek { opacity: 0; }
+      .tuval-resim.capraz { transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+
+      /* Yön 2 Ayrıntı Işığı: İnce pirinç köşe nişanları + hafif çevresel peçe */
+      .fener-pece {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.22s linear;
+      }
+      .kose-nisan {
+        position: absolute;
+        z-index: 3;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.25s linear;
+      }
+      .kose-nisan span {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-color: rgba(var(--pirinc-rgb), 0.78);
+        border-style: solid;
+        border-width: 0;
+        filter: drop-shadow(0 0 6px rgba(var(--pirinc-rgb), 0.35));
+      }
+      .kose-nisan .k1 { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; border-top-left-radius: 3px; }
+      .kose-nisan .k2 { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; border-top-right-radius: 3px; }
+      .kose-nisan .k3 { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; border-bottom-left-radius: 3px; }
+      .kose-nisan .k4 { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; border-bottom-right-radius: 3px; }
+
+      /* Hafif üst perde */
+      .perde-ust {
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 120px;
+        z-index: 4;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(var(--perde-renk), 0.68) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .telefon[data-denetim='acik'] .perde-ust,
+      .telefon[data-kip='baslangic'] .perde-ust,
+      .telefon[data-kip='bitis'] .perde-ust { opacity: 1; }
+
+      /* iOS durum çubuğu */
+      .durum-cubugu {
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 50px;
+        padding: 14px 26px 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 600 14px/1 var(--sans);
+        color: var(--ink);
+        pointer-events: none;
+        transition: opacity 0.38s ease;
+      }
+      .telefon[data-kip='oynuyor'][data-denetim='kapali'] .durum-cubugu { opacity: 0; }
+      .durum-simgeler { display: flex; align-items: center; gap: 6px; }
+
+      /* Üst bar */
+      .ust-bar {
+        position: absolute;
+        top: 56px;
+        left: 18px;
+        right: 18px;
+        z-index: 15;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .telefon[data-kip='oynuyor'][data-denetim='kapali'] .ust-bar {
+        opacity: 0;
+        transform: translateY(-6px);
+        pointer-events: none;
+      }
+      .cam-daire {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--cam);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .ust-baslik-kutu {
+        min-width: 0;
+        flex: 1;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .telefon[data-denetim='acik'] .ust-baslik-kutu { opacity: 1; }
+      .ust-baslik-kutu .evre-ad { display: block; font: 600 12px/1.2 var(--sans); color: var(--pirinc); }
+      .ust-baslik-kutu .eser-ad {
+        display: block;
+        font: 500 15.5px/1.2 var(--serif);
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Üst sağ süre seçici hap (yalnız denetimler açıkken) */
+      .sure-hap {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--cam);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .sure-hap button {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0 8px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 12.5px/1 var(--sans);
+        cursor: pointer;
+      }
+      .sure-hap button[aria-pressed='true'] {
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+      }
+      .telefon[data-kip='baslangic'] .sure-hap,
+      .telefon[data-kip='bitis'] .sure-hap { opacity: 0; pointer-events: none; }
+
+      /* ===== 1. BAŞLANGIÇ YAPRAĞI (Alt müze künyesi, üstte çerçeveli tablo) ===== */
+      .baslangic-yaprak {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 11;
+        padding: 24px 24px 36px;
+        background: linear-gradient(180deg, rgba(var(--bg-rgb), 0.0) 0%, rgba(var(--bg-rgb), 0.92) 14%, var(--bg) 32%);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .telefon:not([data-kip='baslangic']) .baslangic-yaprak {
+        opacity: 0;
+        transform: translateY(24px);
+        pointer-events: none;
+      }
+      .ust-etiket { font: 600 13px/1.25 var(--sans); color: var(--pirinc); }
+      .baslangic-baslik {
+        margin: 2px 0 0;
+        font: 500 34px/1.05 var(--serif);
+        letter-spacing: -0.012em;
+        color: var(--ink);
+      }
+      .baslangic-kunye {
+        margin: 4px 0 0;
+        font: 400 14px/1.35 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* TASARIM_DILI.md: Alt çizgili yazı sekmeleri (seçili olanın altında 2 px pirinç çizgi) */
+      .sure-cizgi-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-ince);
+        padding-bottom: 2px;
+      }
+      .sure-cizgiler {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .sure-cizgiler button {
+        position: relative;
+        min-height: 44px;
+        padding: 0 2px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-3);
+        font: 500 15px/1 var(--sans);
+        cursor: pointer;
+        transition: color 0.25s ease;
+      }
+      .sure-cizgiler button[aria-pressed='true'] {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .sure-cizgiler button[aria-pressed='true']::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--pirinc);
+      }
+
+      .ses-yazi-dugme {
+        min-height: 44px;
+        padding: 0 6px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 13.5px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .ses-yazi-dugme[aria-pressed='true'] { color: var(--pirinc); }
+
+      .baslangic-aciklama {
+        margin: 0;
+        font: 400 15px/1.46 var(--okuma);
+        color: var(--ink-2);
+      }
+
+      .dolu-dugme {
+        width: 100%;
+        min-height: 52px;
+        padding: 0 24px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+        font: 600 15.5px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+      .dolu-dugme:active { transform: scale(0.985); }
+
+      /* ===== 2 & 3. YÜZEN CAM KURDELE (Altyazı + Açılır Denetim Tepsisi Tek Bütün) ===== */
+      .cam-kurdele-sar {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 24px;
+        z-index: 12;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: opacity 0.4s ease, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .telefon[data-kip='baslangic'] .cam-kurdele-sar,
+      .telefon[data-kip='bitis'] .cam-kurdele-sar {
+        opacity: 0;
+        transform: translateY(16px);
+        pointer-events: none;
+      }
+
+      .cam-kurdele {
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: var(--cam);
+        -webkit-backdrop-filter: blur(26px) saturate(1.6);
+        backdrop-filter: blur(26px) saturate(1.6);
+        padding: 13px 18px 14px;
+        transition: background 0.35s ease, padding 0.35s ease;
+      }
+      .telefon[data-denetim='acik'] .cam-kurdele {
+        background: var(--cam-koyu);
+        padding: 14px 18px 14px;
+      }
+      .cam-kurdele.bos-gizli {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .telefon[data-denetim='acik'] .cam-kurdele.bos-gizli {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .kurdele-ust {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 4px;
+      }
+      .pirinc-nokta {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--pirinc);
+        flex-shrink: 0;
+      }
+      .kurdele-baslik {
+        font: 600 12.5px/1.2 var(--sans);
+        color: var(--pirinc);
+      }
+      .kurdele-metin {
+        margin: 0;
+        font: 400 17.5px/1.44 var(--okuma);
+        color: var(--ink);
+        transition: opacity 0.35s ease;
+      }
+
+      /* Açılır denetim bölmesi (dokununca kurdelenin içinde büyür) */
+      .kurdele-denetim {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 1px solid transparent;
+        transition: max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.32s ease,
+                    margin-top 0.32s ease,
+                    padding-top 0.32s ease,
+                    border-color 0.32s ease;
+      }
+      .telefon[data-denetim='acik'] .kurdele-denetim {
+        max-height: 120px;
+        opacity: 1;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top-color: var(--border-ince);
+      }
+
+      .denetim-satir {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .denetim-ana-grup {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .denetim-dugme {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .denetim-dugme.oynat {
+        width: 48px;
+        height: 48px;
+        background: var(--dolu-bg);
+        color: var(--dolu-ink);
+      }
+      .denetim-dugme[aria-pressed='true']:not(.oynat) { color: var(--pirinc); }
+      .kalan-etiket {
+        font: 500 12px/1 var(--sans);
+        font-variant-numeric: tabular-nums;
+        color: var(--ink-2);
+        min-width: 44px;
+        text-align: right;
+      }
+
+      /* İplik ve Boncuk İlerleme İzi (Açılış ◆ — Anlatı — • • • • — Sessiz — ◆ Kapanış) */
+      .iplik-iz {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        padding: 0 14px;
+        height: 16px;
+        pointer-events: none;
+      }
+      .iplik-dugum {
+        position: relative;
+        width: 14px;
+        height: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .iplik-dugum .sekil {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(var(--ink-rgb), 0.26);
+        transition: transform 0.35s ease, background 0.35s ease, width 0.35s ease;
+      }
+      .iplik-dugum[data-tur='acilis'] .sekil,
+      .iplik-dugum[data-tur='kapanis'] .sekil {
+        border-radius: 1.5px;
+        transform: rotate(45deg);
+      }
+      .iplik-dugum[data-tur='sessiz'] .sekil {
+        width: 12px;
+        height: 2.5px;
+        border-radius: 999px;
+      }
+      .iplik-dugum[data-durum='bitti'] .sekil { background: var(--right); }
+      .iplik-dugum[data-durum='aktif'] .sekil {
+        background: var(--pirinc);
+        transform: scale(1.42);
+      }
+      .iplik-dugum[data-tur='acilis'][data-durum='aktif'] .sekil,
+      .iplik-dugum[data-tur='kapanis'][data-durum='aktif'] .sekil {
+        transform: rotate(45deg) scale(1.35);
+      }
+      .iplik-bag {
+        flex: 1;
+        height: 1.5px;
+        max-width: 28px;
+        background: rgba(var(--ink-rgb), 0.16);
+      }
+      .iplik-bag[data-bitti='true'] { background: rgba(var(--pirinc-rgb), 0.55); }
+
+      /* ===== 4. BİTİŞ YAPRAĞI ===== */
+      .bitis-yaprak {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 12;
+        padding: 24px 24px 36px;
+        background: linear-gradient(180deg, rgba(var(--bg-rgb), 0.0) 0%, rgba(var(--bg-rgb), 0.94) 14%, var(--bg) 32%);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .telefon:not([data-kip='bitis']) .bitis-yaprak {
+        opacity: 0;
+        transform: translateY(24px);
+        pointer-events: none;
+      }
+      .bitis-baslik {
+        margin: 2px 0 0;
+        font: 500 28px/1.1 var(--serif);
+        font-style: italic;
+        color: var(--ink);
+      }
+      .bitis-alt {
+        margin: -6px 0 0;
+        font: 400 14px/1.4 var(--sans);
+        color: var(--ink-2);
+      }
+      .bitis-liste {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .bitis-hap {
+        min-height: 44px;
+        padding: 0 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--ink);
+        font: 500 13.5px/1 var(--sans);
+        cursor: pointer;
+      }
+      .bitis-hap[aria-pressed='true'] {
+        border-color: var(--pirinc);
+        color: var(--pirinc);
+        background: rgba(var(--pirinc-rgb), 0.12);
+      }
+      .bitis-eylem-satir {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 2px;
+      }
+      .yazi-dugme {
+        min-height: 52px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--ink);
+        font: 600 15px/1 var(--sans);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .bitis-eylem-satir .dolu-dugme { flex: 1; }
+
+      .ev-cubugu {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 134px;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(var(--ink-rgb), 0.22);
+        z-index: 20;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+      .telefon[data-kip='oynuyor'][data-denetim='kapali'] .ev-cubugu { opacity: 0; }
+
+      :root[data-hareket='az'] .baslangic-yaprak,
+      :root[data-hareket='az'] .bitis-yaprak,
+      :root[data-hareket='az'] .cam-kurdele-sar,
+      :root[data-hareket='az'] .ust-bar { transform: none !important; }
+    </style>
+  </head>
+  <body>
+    <header class="onizleme-ust">
+      <div class="baslik-grup">
+        <span class="ust-not">Dinleyerek bak · Yön 2</span>
+        <strong>Müze Defteri · Fenerli Bakış</strong>
+      </div>
+      <div class="onizleme-araclar">
+        <div class="hap-grup" role="group" aria-label="Eser seçimi">
+          <button type="button" data-eser="nedimeler" aria-pressed="true">Nedimeler</button>
+          <button type="button" data-eser="arnolfini" aria-pressed="false">Arnolfini</button>
+          <button type="button" data-eser="karda" aria-pressed="false">Karda Avcılar</button>
+        </div>
+        <div class="hap-grup" role="group" aria-label="Durum">
+          <button type="button" data-durum="baslangic" aria-pressed="true">Başlangıç</button>
+          <button type="button" data-durum="anlatim" aria-pressed="false">Anlatım</button>
+          <button type="button" data-durum="denetim" aria-pressed="false">Denetimler</button>
+          <button type="button" data-durum="bitis" aria-pressed="false">Bitiş</button>
+        </div>
+        <div class="hap-grup" role="group" aria-label="Tema">
+          <button type="button" data-tema-sec="gece" aria-pressed="true">Gece</button>
+          <button type="button" data-tema-sec="gunduz" aria-pressed="false">Gündüz</button>
+        </div>
+        <div class="hap-grup" role="group" aria-label="Hareket">
+          <button type="button" data-hareket-sec="tam" aria-pressed="true">Tam hareket</button>
+          <button type="button" data-hareket-sec="az" aria-pressed="false">Hareketi azalt</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="sahne">
+      <div class="telefon" id="telefon" data-kip="baslangic" data-denetim="kapali">
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <div class="zemin-desen" aria-hidden="true"></div>
+
+        <div class="tuval-sahne" id="tuvalSahne" role="region" aria-label="Tablo sahnesi">
+          <img class="tuval-resim" id="tuvalImgA" src="gorseller/nedimeler.jpg" alt="Diego Velázquez, Nedimeler" />
+          <img class="tuval-resim yedek" id="tuvalImgB" src="gorseller/nedimeler.jpg" alt="" aria-hidden="true" />
+        </div>
+
+        <!-- Yön 2: Hafif çevresel peçe + ince pirinç köşe nişanları -->
+        <div class="fener-pece" id="fenerPece" aria-hidden="true"></div>
+        <div class="kose-nisan" id="koseNisan" aria-hidden="true">
+          <span class="k1"></span><span class="k2"></span><span class="k3"></span><span class="k4"></span>
+        </div>
+
+        <div class="perde-ust" aria-hidden="true"></div>
+
+        <div class="durum-cubugu" aria-hidden="true">
+          <span>9:41</span>
+          <span class="durum-simgeler">
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="2.6" height="4" rx="0.8"/><rect x="4.2" y="5" width="2.6" height="6" rx="0.8"/><rect x="8.4" y="2.6" width="2.6" height="8.4" rx="0.8"/><rect x="12.6" y="0" width="2.6" height="11" rx="0.8"/></svg>
+            <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.7" y="1" width="19.6" height="10" rx="2.6" stroke="currentColor" stroke-width="1.2" opacity="0.45"/><rect x="2.4" y="2.7" width="15" height="6.6" rx="1.4" fill="currentColor"/><path d="M22 4.2v3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/></svg>
+          </span>
+        </div>
+
+        <div class="ust-bar">
+          <button type="button" class="cam-daire" id="btnKapat" aria-label="Kapat">
+            <svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l10 10M14 4L4 14"/></svg>
+          </button>
+          <div class="ust-baslik-kutu">
+            <span class="evre-ad" id="ustEvre">Ayrıntı</span>
+            <span class="eser-ad" id="ustAd">Nedimeler</span>
+          </div>
+          <div class="sure-hap" role="group" aria-label="Süre">
+            <button type="button" data-sure="3" aria-pressed="false">3</button>
+            <button type="button" data-sure="5" aria-pressed="true">5</button>
+            <button type="button" data-sure="10" aria-pressed="false">10</button>
+          </div>
+        </div>
+
+        <!-- 1. BAŞLANGIÇ -->
+        <section class="baslangic-yaprak" aria-label="Başlangıç">
+          <div>
+            <span class="ust-etiket" id="akimEtiket">Dinleyerek bak · İspanyol Barok</span>
+            <h1 class="baslangic-baslik" id="baslikEser">Nedimeler</h1>
+            <p class="baslangic-kunye" id="kunyeEser">Diego Velázquez · 1656</p>
+          </div>
+          <div class="sure-cizgi-satir">
+            <div class="sure-cizgiler" role="group" aria-label="Bakış süresi">
+              <button type="button" data-sure-bas="3" aria-pressed="false">3 dk</button>
+              <button type="button" data-sure-bas="5" aria-pressed="true">5 dk</button>
+              <button type="button" data-sure-bas="10" aria-pressed="false">10 dk</button>
+            </div>
+            <button type="button" class="ses-yazi-dugme" id="btnSesBas" aria-pressed="false">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.2h3.2L11.5 4.5v11L7.2 11.8H4a1 1 0 0 1-1-1V9.2a1 1 0 0 1 1-1z"/><path d="M14.5 7.4a4.2 4.2 0 0 1 0 5.2"/></svg>
+              <span id="sesBasYazi">Yalnız altyazı</span>
+            </button>
+          </div>
+          <p class="baslangic-aciklama" id="ozetEser">4 ayrıntı · hikâyesiyle sakin yürüyüş.</p>
+          <button type="button" class="dolu-dugme" id="btnBasla">Başla</button>
+        </section>
+
+        <!-- 2 & 3. YÜZEN CAM KURDELE + İPLİK İZİ -->
+        <div class="cam-kurdele-sar">
+          <div class="cam-kurdele" id="camKurdele">
+            <div class="kurdele-ust" id="kurdeleUst">
+              <span class="pirinc-nokta" aria-hidden="true"></span>
+              <span class="kurdele-baslik" id="altyaziBaslik">Aynadaki çift</span>
+            </div>
+            <p class="kurdele-metin" id="altyaziMetin" aria-live="polite"></p>
+
+            <div class="kurdele-denetim" role="region" aria-label="Oynatma denetimleri">
+              <div class="denetim-satir">
+                <button type="button" class="denetim-dugme" id="btnSesOynat" aria-pressed="false" aria-label="Sesi aç veya kapat">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.2h3.2L11.5 4.5v11L7.2 11.8H4a1 1 0 0 1-1-1V9.2a1 1 0 0 1 1-1z"/><path d="M14.5 7.4a4.2 4.2 0 0 1 0 5.2"/></svg>
+                </button>
+                <div class="denetim-ana-grup">
+                  <button type="button" class="denetim-dugme" id="btnOnceki" aria-label="Önceki adım">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><rect x="3" y="4.5" width="2" height="11" rx="1"/><path d="M16.2 4.8a1 1 0 0 0-1.54-.84l-7.6 5.2a1 1 0 0 0 0 1.68l7.6 5.2a1 1 0 0 0 1.54-.84V4.8z"/></svg>
+                  </button>
+                  <button type="button" class="denetim-dugme oynat" id="btnOynatDuraklat" aria-label="Duraklat">
+                    <svg id="ikonDuraklat" width="17" height="17" viewBox="0 0 18 18" fill="currentColor"><rect x="3.5" y="2.8" width="3.8" height="12.4" rx="1.2"/><rect x="10.7" y="2.8" width="3.8" height="12.4" rx="1.2"/></svg>
+                    <svg id="ikonOynat" width="17" height="17" viewBox="0 0 18 18" fill="currentColor" hidden><path d="M4.6 3.1a1 1 0 0 1 1.52-.85l8.8 5.9a1 1 0 0 1 0 1.7l-8.8 5.9A1 1 0 0 1 4.6 14.9V3.1z"/></svg>
+                  </button>
+                  <button type="button" class="denetim-dugme" id="btnSonraki" aria-label="Sonraki adım">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><rect x="15" y="4.5" width="2" height="11" rx="1"/><path d="M3.8 4.8a1 1 0 0 1 1.54-.84l7.6 5.2a1 1 0 0 1 0 1.68l-7.6 5.2a1 1 0 0 1-1.54-.84V4.8z"/></svg>
+                  </button>
+                </div>
+                <span class="kalan-etiket" id="kalanZaman">4:12</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="iplik-iz" id="iplikIz" role="tablist" aria-label="Adım izi"></div>
+        </div>
+
+        <!-- 4. BİTİŞ -->
+        <section class="bitis-yaprak" aria-label="Bakış tamamlandı">
+          <div>
+            <span class="ust-etiket">Bakış tamamlandı</span>
+            <h2 class="bitis-baslik">En çok neye baktın?</h2>
+          </div>
+          <p class="bitis-alt" id="bitisOzet">4 ayrıntı · 5 dakikalık müze yürüyüşü</p>
+          <div class="bitis-liste" id="bitisHaplar"></div>
+          <div class="bitis-eylem-satir">
+            <button type="button" class="yazi-dugme" id="btnBirDaha">Bir daha</button>
+            <button type="button" class="dolu-dugme" id="btnBitirKapat">Kapat</button>
+          </div>
+        </section>
+
+        <div class="ev-cubugu" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <script src="kamera.js"></script>
+    <script>
+      (function () {
+        const DC = window.DinleCekirdek;
+        const param = DC.urlParametreleri();
+        if (param.cek) document.documentElement.classList.add('cek-kipi');
+        if (param.tema === 'gunduz' || param.tema === 'gece') {
+          document.documentElement.setAttribute('data-tema', param.tema);
+        }
+        const sistemAz = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const ilkHareketAz = param.hareket || sistemAz;
+        if (ilkHareketAz) document.documentElement.setAttribute('data-hareket', 'az');
+
+        const el = {
+          tel: document.getElementById('telefon'),
+          sahne: document.getElementById('tuvalSahne'),
+          imgA: document.getElementById('tuvalImgA'),
+          imgB: document.getElementById('tuvalImgB'),
+          pece: document.getElementById('fenerPece'),
+          nisan: document.getElementById('koseNisan'),
+          ustEvre: document.getElementById('ustEvre'),
+          ustAd: document.getElementById('ustAd'),
+          akimEtiket: document.getElementById('akimEtiket'),
+          baslikEser: document.getElementById('baslikEser'),
+          kunyeEser: document.getElementById('kunyeEser'),
+          ozetEser: document.getElementById('ozetEser'),
+          camKurdele: document.getElementById('camKurdele'),
+          kurdeleUst: document.getElementById('kurdeleUst'),
+          altyaziBaslik: document.getElementById('altyaziBaslik'),
+          altyaziMetin: document.getElementById('altyaziMetin'),
+          iplikIz: document.getElementById('iplikIz'),
+          kalanZaman: document.getElementById('kalanZaman'),
+          ikonDuraklat: document.getElementById('ikonDuraklat'),
+          ikonOynat: document.getElementById('ikonOynat'),
+          btnOynatDuraklat: document.getElementById('btnOynatDuraklat'),
+          btnSesBas: document.getElementById('btnSesBas'),
+          sesBasYazi: document.getElementById('sesBasYazi'),
+          btnSesOynat: document.getElementById('btnSesOynat'),
+          bitisOzet: document.getElementById('bitisOzet'),
+          bitisHaplar: document.getElementById('bitisHaplar')
+        };
+
+        let aktifImg = el.imgA;
+        let yedekImg = el.imgB;
+        let bitisSecili = -1;
+
+        function resimUygula(img, y) {
+          img.style.width = y.taban.w + 'px';
+          img.style.height = y.taban.h + 'px';
+          img.style.marginLeft = (-y.taban.w / 2) + 'px';
+          img.style.marginTop = (-y.taban.h / 2) + 'px';
+          img.style.transform = 'translate3d(' + y.tx.toFixed(2) + 'px,' + y.ty.toFixed(2) + 'px,0) scale(' + y.s.toFixed(4) + ')';
+        }
+
+        function eserTemasiYaz(eser) {
+          document.documentElement.style.setProperty('--hale-1-rgb', eser.hale1);
+          document.documentElement.style.setProperty('--hale-2-rgb', eser.hale2);
+          document.documentElement.style.setProperty('--desen-url', "url('" + eser.donemDesen + "')");
+          el.imgA.src = eser.gorsel;
+          el.imgB.src = eser.gorsel;
+          el.imgA.alt = eser.sanatci + ', ' + eser.ad;
+          el.akimEtiket.textContent = 'Dinleyerek bak · ' + eser.akim;
+          el.baslikEser.textContent = eser.ad;
+          el.kunyeEser.textContent = eser.sanatci + ' · ' + eser.tarih;
+          el.ustAd.textContent = eser.ad;
+        }
+
+        const motor = new DC.DinleMotoru({
+          eserId: param.eser,
+          sureDk: 5,
+          hareketAz: ilkHareketAz,
+          sesli: false,
+          sahneW: 390,
+          sahneH: 844,
+          gizleSuresi: 4.0,
+          // Başlangıç/bitişte tablo üstteki çerçeve alanında rahat durur (tamPay: 28, tamYOrani: 0.34)
+          kameraSecenek: { odakYOrani: 0.42, tamYOrani: 0.34, tamPay: 26 },
+          caprazGecis: function (durum, eser) {
+            const y = DC.kameraYerlesim(durum, eser, 390, 844, 26);
+            yedekImg.classList.remove('capraz');
+            yedekImg.style.opacity = '0';
+            resimUygula(yedekImg, y);
+            void yedekImg.offsetWidth;
+            yedekImg.classList.add('capraz');
+            aktifImg.classList.add('capraz');
+            yedekImg.style.opacity = '1';
+            aktifImg.style.opacity = '0';
+            const tmp = aktifImg;
+            aktifImg = yedekImg;
+            yedekImg = tmp;
+          },
+          kareCiz: function (k) {
+            if (!motor.hareketAz) {
+              aktifImg.classList.remove('capraz');
+              aktifImg.style.opacity = '1';
+              yedekImg.style.opacity = '0';
+              resimUygula(aktifImg, k.yerlesim);
+            }
+
+            // Yön 2: İnce mimari pirinç köşe nişanları + çok yumuşak çevresel peçe
+            if (k.kutu && k.isikOpaklik > 0.01) {
+              const pay = 14;
+              const x = Math.max(12, k.kutu.x - pay);
+              const y = Math.max(60, k.kutu.y - pay);
+              const w = Math.min(390 - x - 12, k.kutu.w + pay * 2);
+              const h = Math.min(620 - y, k.kutu.h + pay * 2);
+              el.nisan.style.left = x.toFixed(1) + 'px';
+              el.nisan.style.top = y.toFixed(1) + 'px';
+              el.nisan.style.width = Math.max(44, w).toFixed(1) + 'px';
+              el.nisan.style.height = Math.max(44, h).toFixed(1) + 'px';
+              el.nisan.style.opacity = (k.isikOpaklik * 0.92).toFixed(3);
+
+              const rx = Math.max(110, k.kutu.w * 1.15);
+              const ry = Math.max(110, k.kutu.h * 1.15);
+              el.pece.style.background =
+                'radial-gradient(ellipse ' + rx.toFixed(0) + 'px ' + ry.toFixed(0) + 'px at ' +
+                k.kutu.cx.toFixed(1) + 'px ' + k.kutu.cy.toFixed(1) + 'px, ' +
+                'transparent 44%, rgba(var(--vinyet-renk), var(--vinyet-guc)) 100%)';
+              el.pece.style.opacity = k.isikOpaklik.toFixed(3);
+            } else {
+              el.nisan.style.opacity = '0';
+              el.pece.style.opacity = '0';
+            }
+
+            el.kalanZaman.textContent = DC.sureBicim(motor.kalanSaniye());
+          },
+          durumDegisti: function (m) {
+            el.tel.setAttribute('data-kip', m.kip);
+            el.tel.setAttribute('data-denetim', m.denetimlerAcik ? 'acik' : 'kapali');
+
+            el.ozetEser.textContent = m.plan.noktaSayisi + ' ayrıntı · yaklaşık ' + m.sureDk + ' dk. ' + m.eser.davet;
+            document.querySelectorAll('[data-sure-bas]').forEach(function (b) {
+              b.setAttribute('aria-pressed', String(parseInt(b.dataset.sureBas, 10) === m.sureDk));
+            });
+            document.querySelectorAll('[data-sure]').forEach(function (b) {
+              b.setAttribute('aria-pressed', String(parseInt(b.dataset.sure, 10) === m.sureDk));
+            });
+
+            el.btnSesBas.setAttribute('aria-pressed', String(m.sesli));
+            el.sesBasYazi.textContent = m.sesli ? 'Sesli rehber' : 'Yalnız altyazı';
+            el.btnSesOynat.setAttribute('aria-pressed', String(m.sesli));
+
+            const oynuyor = m.kip === 'oynuyor';
+            el.ikonDuraklat.hidden = !oynuyor;
+            el.ikonOynat.hidden = oynuyor;
+            el.btnOynatDuraklat.setAttribute('aria-label', oynuyor ? 'Duraklat' : 'Sürdür');
+
+            const adim = m.plan.adimlar[m.adimSira];
+            if (adim) {
+              el.ustEvre.textContent = adim.tur === 'nokta' ? 'Ayrıntı · ' + adim.baslik : adim.evrAd;
+            }
+
+            // İplik ve boncuk izi (sessiz görsel iz)
+            el.iplikIz.innerHTML = m.plan.adimlar.map(function (a, i) {
+              const d = i < m.adimSira ? 'bitti' : (i === m.adimSira ? 'aktif' : 'bekliyor');
+              const dugum = '<span class="iplik-dugum" data-tur="' + a.tur + '" data-durum="' + d + '" title="' + a.evrAd + ': ' + a.baslik + '"><span class="sekil"></span></span>';
+              const bag = i < m.plan.adimlar.length - 1 ? '<span class="iplik-bag" data-bitti="' + (i < m.adimSira) + '"></span>' : '';
+              return dugum + bag;
+            }).join('');
+
+            // Kurdele metni
+            const cumle = m.aktifCumle();
+            if (adim && cumle && (m.kip === 'oynuyor' || m.kip === 'duraklatildi')) {
+              const baslikVar = adim.tur === 'nokta' || adim.tur === 'anlati';
+              el.kurdeleUst.hidden = !baslikVar;
+              el.altyaziBaslik.textContent = adim.baslik;
+              el.altyaziMetin.textContent = cumle.metin;
+              el.camKurdele.classList.remove('bos-gizli');
+            } else {
+              el.kurdeleUst.hidden = false;
+              el.altyaziBaslik.textContent = adim ? adim.evrAd : '';
+              el.altyaziMetin.textContent = adim && adim.tur === 'sessiz' ? 'Sessizce tabloya bak.' : '';
+              el.camKurdele.classList.toggle('bos-gizli', !m.denetimlerAcik);
+            }
+
+            // Bitiş
+            el.bitisOzet.textContent = m.plan.noktaSayisi + ' ayrıntı · ' + m.sureDk + ' dakikalık müze yürüyüşü';
+            if (el.bitisHaplar.dataset.eser !== m.eser.id) {
+              el.bitisHaplar.dataset.eser = m.eser.id;
+              bitisSecili = -1;
+              el.bitisHaplar.innerHTML = m.eser.noktalar.map(function (n, idx) {
+                return '<button type="button" class="bitis-hap" data-bak="' + idx + '" aria-pressed="false">' + n.ad + '</button>';
+              }).join('');
+            }
+
+            const onizDurum = m.kip === 'baslangic' ? 'baslangic'
+              : m.kip === 'bitis' ? 'bitis'
+              : (m.denetimlerAcik ? 'denetim' : 'anlatim');
+            document.querySelectorAll('[data-durum]').forEach(function (b) {
+              b.setAttribute('aria-pressed', String(b.dataset.durum === onizDurum));
+            });
+          }
+        });
+
+        eserTemasiYaz(motor.eser);
+        motor.baslangicaDon(true);
+
+        document.getElementById('btnBasla').addEventListener('click', function () { motor.baslat(0); });
+        document.getElementById('btnKapat').addEventListener('click', function () { motor.baslangicaDon(false); });
+        document.getElementById('btnBitirKapat').addEventListener('click', function () { motor.baslangicaDon(false); });
+        document.getElementById('btnBirDaha').addEventListener('click', function () { bitisSecili = -1; motor.baslat(0); });
+        el.btnOynatDuraklat.addEventListener('click', function () { motor.etkilesimKaydet(); motor.duraklatSurdur(); });
+        document.getElementById('btnOnceki').addEventListener('click', function () { motor.etkilesimKaydet(); motor.onceki(); });
+        document.getElementById('btnSonraki').addEventListener('click', function () { motor.etkilesimKaydet(); motor.sonraki(); });
+
+        el.sahne.addEventListener('click', function () {
+          if (motor.kip === 'oynuyor' || motor.kip === 'duraklatildi') {
+            motor.denetimDokun();
+          } else if (motor.kip === 'bitis' && bitisSecili >= 0) {
+            bitisSecili = -1;
+            el.bitisHaplar.querySelectorAll('.bitis-hap').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+            motor.bitisteBak(-1);
+          }
+        });
+
+        el.btnSesBas.addEventListener('click', function () { motor.sesDegistir(!motor.sesli); });
+        el.btnSesOynat.addEventListener('click', function () { motor.etkilesimKaydet(); motor.sesDegistir(!motor.sesli); });
+
+        document.querySelectorAll('[data-sure-bas]').forEach(function (b) {
+          b.addEventListener('click', function () { motor.sureDegistir(parseInt(b.dataset.sureBas, 10)); });
+        });
+        document.querySelectorAll('[data-sure]').forEach(function (b) {
+          b.addEventListener('click', function () { motor.etkilesimKaydet(); motor.sureDegistir(parseInt(b.dataset.sure, 10)); });
+        });
+
+        el.iplikIz.addEventListener('click', function (e) {
+          const btn = e.target.closest('button[data-git]');
+          if (!btn) return;
+          motor.etkilesimKaydet();
+          motor.kip = 'oynuyor';
+          motor.adimaGit(parseInt(btn.dataset.git, 10), false);
+        });
+
+        el.bitisHaplar.addEventListener('click', function (e) {
+          const btn = e.target.closest('button[data-bak]');
+          if (!btn) return;
+          const idx = parseInt(btn.dataset.bak, 10);
+          bitisSecili = bitisSecili === idx ? -1 : idx;
+          el.bitisHaplar.querySelectorAll('.bitis-hap').forEach(function (b) {
+            b.setAttribute('aria-pressed', String(parseInt(b.dataset.bak, 10) === bitisSecili));
+          });
+          motor.bitisteBak(bitisSecili);
+        });
+
+        document.querySelectorAll('[data-eser]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.querySelectorAll('[data-eser]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+            eserTemasiYaz(DC.ESERLER[b.dataset.eser]);
+            motor.eserDegistir(b.dataset.eser);
+          });
+        });
+        document.querySelectorAll('[data-tema-sec]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.documentElement.setAttribute('data-tema', b.dataset.temaSec);
+            document.querySelectorAll('[data-tema-sec]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+          });
+        });
+        document.querySelectorAll('[data-hareket-sec]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            const az = b.dataset.hareketSec === 'az';
+            document.documentElement.setAttribute('data-hareket', az ? 'az' : 'tam');
+            document.querySelectorAll('[data-hareket-sec]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+            motor.hareketDegistir(az);
+          });
+        });
+        function durumaGec(durum, aninda) {
+          if (durum === 'baslangic') {
+            motor.baslangicaDon(aninda);
+          } else if (durum === 'anlatim') {
+            motor.kip = 'oynuyor';
+            motor.denetimlerAcik = false;
+            motor.adimaGit(param.adim, aninda);
+            if (!aninda) motor._donguyuBaslat();
+          } else if (durum === 'denetim') {
+            motor.kip = 'oynuyor';
+            motor.denetimlerAcik = true;
+            motor.otomatikGizle = !aninda;
+            motor.sonDokunus = performance.now() / 1000;
+            motor.adimaGit(param.adim, aninda);
+            if (!aninda) motor._donguyuBaslat();
+          } else if (durum === 'bitis') {
+            motor.bitir(aninda);
+          }
+        }
+        document.querySelectorAll('[data-durum]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            motor.otomatikGizle = true;
+            durumaGec(b.dataset.durum, false);
+          });
+        });
+
+        if (param.durum) durumaGec(param.durum, param.cek);
+      })();
+    </script>
+  </body>
+</html>
