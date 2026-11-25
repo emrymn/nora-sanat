@@ -296,7 +296,8 @@ ben() {
   ilerleme_yaz
   # C4 + C4b: gerçek ilerleme ile yerli Ben ekranı ve ayarları; her biri sitenin aynı sayfasıyla yan yana
   # (solda site -yalnizSite, sağda yerli). -benKaydir aynı bölüme kaydırır (kurs, akim, yedek).
-  for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek ayarlar:cevrimdisi; do
+  # Z3x: Ayarlar'ın yeni grupları (hatirlatma, hakkinda; sitede karşılığı yok, yan yana alınmaz).
+  for IS in ilerleme: ilerleme:kurs ilerleme:akim ayarlar: ayarlar:yedek ayarlar:cevrimdisi ayarlar:hatirlatma ayarlar:hakkinda; do
     SAYFA="${IS%%:*}"; BOLUM="${IS#*:}"
     AD="ben-$SAYFA${BOLUM:+-$BOLUM}"
     KAYDIR=()
@@ -318,6 +319,9 @@ ben() {
     if [ -z "$BOLUM" ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "$SOZ"; fi
     # C5: çevrimdışı bölüm Swift'in listesiyle (sitenin sayfası okunmadan)
     if [ "$BOLUM" = cevrimdisi ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Telefonda: 0 / "; fi
+    # Z3x: hatırlatma uygulamanın içinde; Yenilikler siteden okunan sürüm notlarıyla
+    if [ "$BOLUM" = hatirlatma ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Tekrar hatırlatması"; continue; fi
+    if [ "$BOLUM" = hakkinda ]; then "$RUNNER_TEMP/ben-ekran" "ekranlar/$AD.png" "Yenilikler"; continue; fi
     # Site: aynı adres, aynı bölüm
     xcrun simctl terminate "$UDID" "$PAKET"
     xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/$SAYFA" "${KAYDIR[@]}"
@@ -325,6 +329,27 @@ ben() {
     xcrun simctl io "$UDID" screenshot "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png"
     "$RUNNER_TEMP/yan-yana" "ekranlar/site-$SAYFA${BOLUM:+-$BOLUM}.png" "ekranlar/$AD.png" "ekranlar/yan-yana-$SAYFA${BOLUM:+-$BOLUM}.png"
   done
+  # Z3x: Ayarlar Gündüz temasında da (renkler yalnız tema.renkler'den). Kayıttaki temayı Gündüz yapıp üstünü ve
+  # Yedek'i (ekranın tek dolu düğmesi) çeker, sonra Gece'ye döner.
+  IL="$VERI/Library/Application Support/Ilerleme/ilerleme.json"
+  for BOLUM in "" yedek; do
+    xcrun simctl terminate "$UDID" "$PAKET" || true
+    python3 -c 'import json,sys; p=sys.argv[1]; v=json.load(open(p)); v.setdefault("ayarlar",{})["tema"]="gunduz"; json.dump(v,open(p,"w"),ensure_ascii=False)' "$IL"
+    rm -f "$VERI/tmp/ben-hazir"
+    KAYDIR=()
+    if [ -n "$BOLUM" ]; then KAYDIR=(-benKaydir "$BOLUM"); fi
+    xcrun simctl launch "$UDID" "$PAKET" -adres "#/ayarlar" -benSayfa ayarlar "${KAYDIR[@]}"
+    for _ in {1..90}; do
+      test -f "$VERI/tmp/ben-hazir" && break
+      sleep 1
+    done
+    sleep 3
+    xcrun simctl io "$UDID" screenshot "ekranlar/ben-ayarlar-gunduz${BOLUM:+-$BOLUM}.png"
+  done
+  "$RUNNER_TEMP/ben-ekran" ekranlar/ben-ayarlar-gunduz.png "Gündüz rengi"
+  "$RUNNER_TEMP/ben-ekran" ekranlar/ben-ayarlar-gunduz-yedek.png "İlerlemeni yedekle"
+  xcrun simctl terminate "$UDID" "$PAKET" || true
+  python3 -c 'import json,sys; p=sys.argv[1]; v=json.load(open(p)); v.setdefault("ayarlar",{})["tema"]="gece"; json.dump(v,open(p,"w"),ensure_ascii=False)' "$IL"
   # C5: Swift'te gerçek indirme (arka plan URLSession). Küçük bir parça (2 en büyük kopya kadar) iner,
   # dosyalar uygulamanın Application Support/CevrimdisiGorseller klasörüne yazılmalı.
   xcrun simctl terminate "$UDID" "$PAKET"

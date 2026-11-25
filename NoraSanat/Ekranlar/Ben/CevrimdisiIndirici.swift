@@ -287,6 +287,7 @@ final class CevrimdisiIndirici {
         defer { if bekleyen.isEmpty { sureyiBitir() } }
         i.bitir(durduruldu: durdurIstendi)
         durum = i
+        if let h = i.sonHata, i.hata > 0 || i.yerYok { HataGunluguDeposu.shared.ekle("cevrimdisi", h) }   // Z3x
         // parça bitti, sıradaki parçalar var: sürer. Hiç görsel inemediyse (internet yok) durur
         if !i.parcaBitti || Self.denemeParcasi != nil { surdur = false }
         kaydet()

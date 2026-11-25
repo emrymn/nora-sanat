@@ -9,15 +9,16 @@ import WebKit
 /// - Sayılar Swift'teki kayıttan gelir (Z2c: `SayacDeposu.hatirlatmalariYenile`, `TekrarTakvimi.hesapla`): uygulama her
 ///   kapanışta ve açılışta önümüzdeki 14 günün "tekrar bekliyor" sayılarını hesaplar; burada her gün için seçilen saatte
 ///   bir bildirim kurulur.
-/// - Açma/kapama ve saat iOS Ayarlar'ında: Ayarlar → Uygulamalar → Nora Sanat (Settings.bundle).
+/// - Açma/kapama ve saat iki yerde: uygulamanın Ayarlar → Hatırlatma'sı (Z3x) ve iOS Ayarlar → Uygulamalar → Nora Sanat
+///   (Settings.bundle). İkisi aynı UserDefaults anahtarlarını yazar (`HatirlatmaAyari`); değişince bildirimler yeniden kurulur.
 /// - Rozet: Ben → Ayarlar → "Simge rozeti" açıksa (`SayacDeposu`) ve bildirimlerde.
 @MainActor
 final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
     static let shared = Hatirlatici()
 
     enum Anahtar {
-        static let acik = "hatirlatma"
-        static let saat = "hatirlatmaSaati"
+        static let acik = HatirlatmaAyari.acikAnahtari
+        static let saat = HatirlatmaAyari.saatAnahtari
         static let sonTakvim = "sonTekrarTakvimi"
     }
 
@@ -27,7 +28,7 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
 
     override init() {
         super.init()
-        ayarlar.register(defaults: [Anahtar.acik: true, Anahtar.saat: 20])
+        ayarlar.register(defaults: [Anahtar.acik: HatirlatmaAyari.varsayilanAcik, Anahtar.saat: HatirlatmaAyari.varsayilanSaat])
         // iOS Ayarlar'da saat değişince (uygulamaya dönüldüğünde) yeniden kur
         degisimGozlemi = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { _ in
@@ -72,7 +73,7 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
         // İzni, gerçekten bekleyen bir tekrar olduğunda bir kez sor
         guard t.gunler.contains(where: { $0 > 0 }), await izinVar(sor: true) else { return }
 
-        let saat = min(23, max(0, ayarlar.integer(forKey: Anahtar.saat)))
+        let saat = HatirlatmaAyari.saat(ayarlar.integer(forKey: Anahtar.saat))
         let simdi = Date()
         let c = Calendar.current.dateComponents([.hour, .minute], from: simdi)
         let plan = TekrarPlani.plan(t, saat: saat, dakika: 0, simdiGun: GunTarihi.gun(simdi),
@@ -89,6 +90,29 @@ final class Hatirlatici: NSObject, UNUserNotificationCenterDelegate {
             let istek = UNNotificationRequest(identifier: h.kimlik, content: icerik,
                                               trigger: UNCalendarNotificationTrigger(dateMatching: zaman, repeats: false))
             try? await merkez.add(istek)
+        }
+    }
+
+    // MARK: Uygulama içi ayar (Z3x)
+
+    var acik: Bool { ayarlar.bool(forKey: Anahtar.acik) }
+    var saat: Int { HatirlatmaAyari.saat(ayarlar.integer(forKey: Anahtar.saat)) }
+
+    /// Ayarlar → Hatırlatma'dan: anahtarı yazar ve bildirimleri hemen yeniden kurar (iOS Ayarlar'dan gelen değişiklik
+    /// `UserDefaults.didChangeNotification` ile aynı yoldan geçer; imza aynıysa ikinci kez kurulmaz).
+    func ayarla(acik: Bool? = nil, saat: Int? = nil) {
+        if let acik { ayarlar.set(acik, forKey: Anahtar.acik) }
+        if let saat { ayarlar.set(HatirlatmaAyari.saat(saat), forKey: Anahtar.saat) }
+        sonAyar = ayarImzasi
+        Task { await planla() }
+    }
+
+    /// Bildirim izninin durumu (Ayarlar'ın dipnotu için; sormaz)
+    func izinDurumu() async -> HatirlatmaAyari.Izin {
+        switch await merkez.notificationSettings().authorizationStatus {
+        case .authorized, .provisional, .ephemeral: return .var_
+        case .notDetermined: return .sorulmadi
+        default: return .yok
         }
     }
 
