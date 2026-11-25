@@ -33,6 +33,13 @@ struct GaleriResim {
         UzakGorsel(url: url(e, boy), icerik: kip, yedek: yedek(e))
     }
     func bilinenAd(_ sid: String) -> String { k.bilinenAd(sid) ?? "" }
+    /// Z3m: `odakliGorsel(el, e, genislik)`: yüzün / elle odağın çevresinden kırpılan kart görseli (Başyapıtlar
+    /// kartları ve sahnesi, yakın okumada sıradaki ve karşılaştırma görselleri, akım sahnesi)
+    /// `akimRenk(ad)`: `d.akimRenk[ad] || '#8A827A'` (ekran renginin yedeği)
+    func akimRengi(_ ad: String) -> String { k.akimRenk[ad].flatMap { $0.isEmpty ? nil : $0 } ?? "#8A827A" }
+    func odakli(_ e: Eser, _ boy: Int) -> OdakliGorsel {
+        OdakliGorsel(url: url(e, boy), yedek: yedek(e), eser: e, adresler: k.gorsel, kotuler: il.kotuGorseller)
+    }
 }
 
 // MARK: Üslup
@@ -342,7 +349,7 @@ struct AkimSalonu: View {
         let yazi = RGBA(css: "#ebe5da")!
         return ZStack(alignment: .bottomLeading) {
             Color(RGBA(css: "#1a1816")!)
-            if let ilk { resim.gorsel(ilk.eser, 960).frame(height: yukseklik).clipped() }
+            if let ilk { resim.odakli(ilk.eser, 960).frame(height: yukseklik).clipped() }
             LinearGradient(stops: [
                 .init(color: Color(RGBA(css: "#121110")!, 0.5), location: 0), .init(color: Color(RGBA(css: "#121110")!, 0), location: 0.2),
                 .init(color: Color(RGBA(css: "#121110")!, 0), location: 0.44), .init(color: Color(RGBA(css: "#121110")!, 0.82), location: 0.8),

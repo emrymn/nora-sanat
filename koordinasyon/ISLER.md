@@ -170,10 +170,19 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3d | Süzme telefonda görünmüyordu: renkler canlı, süzme güçlü | K | Z3c | 1 | PR açık |
 | Z3e | Telefonda görülen iki hata: Galeri çarkı (iOS 18 kaydırma), Yolculuk dönem köprüsü | K | G2b, Z3a | 1 | PR açık |
 | Z3f | Dönemin harfi: akım başlığı ve harita dönem adları (js/harfler.js, İş 48) | K | G2b, Z3a | 1 | birleşti (#38) |
+| Z3o | Kilit ekranı ve StandBy widget'ı, Spotlight (sanatçı ve akım), Siri ve Kısayollar (dört eylem) | K | Z3n | 1 | PR açık |
 | Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | birleşti (#41) |
+| Z3r | Bugün: yarının tablosunun büyük kopyası bugünden iner; telefonda varsa açılışta doğrudan büyük kopya | K | Z3n | 1 | PR açık |
+| Z3t | Bugün: yürüyüş kaydında `"bugun": false` olan sanatçı günün havuzuna girmez (sitenin `yuruyusHavuzu`; Berlinghieri) | K | Z3r | 1 | PR açık |
+| Z3v | Bugün → "Paylaş": günün tablosu tek görsel (hikâye 1080×1920, gönderi 1080×1350), tasarım Yön 4 (PR #54; yeni, sitede yok) | K | Z3t | 1 | PR açık (#57) |
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
-| Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | PR açık |
+| Z3s | Çevrimdışı indirme telefonu kasmasın: parça hazırlığı arka planda, `tahminiBayt` düzenli ifadesiz | K | Z3n | 1 | PR açık |
+| Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | bitti (#44) |
+| Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | PR açık (#46) |
+| Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
+| Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
+| Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | PR açık (#47) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1029,7 +1038,47 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - CI: `8-yerli-sekme` ile `8b-site-cubuk` alttan kesilip üst üste kondu; simgeler, yerleşim, hap, Çalış rozeti ve dişli dil birebir. `8c-hizli-ayar` sitenin üslubunda.
 - 1–10 ve Ben görüntüleri eskisi gibi. Telefonda hiçbir sekme yerli değil, uygulama aynı.
 - Hızlı ayar yaprağı kapsam dışı değil: sitenin çubuğundaki dişli dil onu açıyor.
+
+### Z3m · Ekran rengi ve odaklı kırpma (Claude)
+**Devir notu:** Claude, 2026-11-24 · [PR #46](https://github.com/emrymn/nora-sanat/pull/46) · dal `claude/Z3m-ekran-rengi`. Z3l'in (#44) üstüne kuruldu (`TemaHesabi.pikseller` orada dışa açıldı); #44 birleşince main dala alındı.
+- **Kaynak:** sanat-atlasi `cca62eb`: `js/ekranlar/ortak.js` (`ekranRengi`, `renkSabitle`, `gununRengi`, `eserPaleti`, `renkleriYaz`, `odakliGorsel`, `odagaKaydir`, `kucukGorsel { odak }`, `odaklariYukle`), `js/renk.js` (`paletGetir`, `renkTemasi`), `js/gorsel.js` (`paletUrl`, `gorselOdakNoktasi`, `gorselOdagi`), çağıranlar: `js/ekranlar/gozat.js` (`sanatciSayfasi`, `tumEserler`, `konuSayfasi`, `karsilastirSayfasi`, Başyapıtlar kartı ve sahnesi), `js/ekranlar/basyapit.js` (`basyapitSayfasi`, sıradaki ve kıyas görselleri), `js/ekranlar/ders.js` (`kapaklariDoldur`), `js/ekranlar/pekistir.js` (`kartCiz`, ters soru), `js/ekranlar/soruTurlari.js`, `js/ekranlar/akim.js` (sahne).
+  K7: `git -C /tmp/sa log cca62eb..HEAD -- js/ekranlar/ortak.js js/renk.js js/gorsel.js js/ekranlar/gozat.js js/ekranlar/basyapit.js js/ekranlar/ders.js js/ekranlar/pekistir.js js/ekranlar/soruTurlari.js`
+- **Ekran rengi** (`NoraSanat/Kabuk/EkranRengi.swift`): `.ekranRengi(url:yedek:notr:)` ortamdaki `TemaDeposu`'nun yerine aynı temayı, vurgusu o eserin paletinden bir kopya koyar (`TemaRenkleri.ekran`, çekirdek, testli). Ekranın kendi gövdesi de `tema.renkler` okuduğu için değiştirici ekranın **dışında**, kurulduğu yerde verilir. Palet gelene kadar önceki renk durur (sitede de); görsel açılmazsa yedek (`ResimRengi.eserPaleti`), yedek yoksa nötr; eser de yedek de yoksa ortamın rengi. Geçiş 0,45 sn, hareket azaltılmışsa (ayar ya da sistem) anında. Paletler bellekte (`EkranPaletleri`).
+  - Galeri (`GaleriSekmesi.hedefSayfa`): sanatçı, tüm eserler, karşılaştırma (ilk eser, yedek akım rengi), konu (kapak, yedek `#8A827A`), yakın okuma (eser, yedek akım rengi).
+  - Çalış (`CalisSekmesi`): giriş bugünün dersinin kapağından (`CalisAnaGorunumu.dersler`, gövdedeki hesap buraya çıkarıldı), ders sayfası ve adımları o dersin kapağından (sitede adımlar renk yazmaz, ders sayfasının rengi sürer). Kapak yoksa renk değişmez.
+  - Pekiştirme ve soru turu kartları (`PekistirmeEkrani`): sorulan eser, yedek yok; ters soruda cevaptan önce nötr. Değiştirici kartın `.id`'sinin dışında: kart değişince önceki kartın rengi yenisi gelene kadar durur.
+  - Sekme ana ekranları, Pekiştir menüsü (dönem turları), tanışma ve öbürleri günün rengini (`TemaHesabi`) taşır.
+- **Odaklı kırpma:** `OdakliKirpim.yerlesim` (çekirdek, testli): `object-fit: cover; object-position: x% y%` (taşan pay × yüzde; odak yoksa ortadan). `OdakVerisi.odak(eser, adresler:, kotuler:)`: gösterilen görselin yerel adıyla odak. `UzakGorsel(odak:)` (isteğe bağlı), `GorselOdaklari` (odak dosyaları bir kez; cihazdaki elle odaklar her okumada), `OdakliGorsel`; Galeri'de `GaleriResim.odakli(e, boy)`: Başyapıtlar kartları ve öne çıkan sahne, yakın okumada sıradaki ve kıyas görselleri, akım sahnesi.
+- **Ortak dosyalarda küçük değişiklik:** `Tema.swift` (`TemaDeposu.gunduz`, iki `init`, `uygula(gunduz:)`), `TemaHesabi.swift` (`gunduz: g` geçiyor), `Gorsel.swift` (`UzakGorsel.odak`).
+- **Bilinen farklar / kalan:**
+  - Sitede `--vurgu` belgenin kökünde değişir, sekme çubuğu da dahil; uygulamada yalnız ekranın altı (sekme çubuğu vurgu kullanmıyor, fark görünmez). Sitenin Gündüz'deki `--golge-rgb`'si (`golgeyiYaz`) taşınmadı (uygulamada karşılığı yok).
+  - Palet adresi 400'lük kopya (`gorselAdresi(e, 400)`); sitenin `paletUrl`'si yerel kopyası olmayan Commons görselinde `commonsKucuk(PALET_GENISLIGI)` kullanır. 64 piksele küçültüldüğü için palet aynı ya da çok yakın.
+  - Paletler cihazda saklanmıyor (sitede IndexedDB); uygulama açıldıktan sonra her eser bir kez hesaplanır.
+  - Odaklı kırpma Yolculuk'taki Zaman kartlarında (`gozat.js` zaman fonu) ve Çalış'taki ders/salon kapaklarında yok (o dosyalar bu işin dışında / başka oturumda). Yakın okumanın kapağı sitede de kırpılmaz.
+- **Ayrıca:** sanatçı künyesindeki "Dinle" yazısı sitedeki gibi `--vurgu-acik` (`.isim-ek .dinle`; önce vurgu ile mürekkebin karışımıydı, eserin rengi görünmüyordu).
+- **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
+
+
+### Z3v · Bugün → Paylaş kartı (Claude)
+**Devir notu:** Claude, 2026-11-24 · [PR #57](https://github.com/emrymn/nora-sanat/pull/57) · dal `claude/Z3v-paylas-karti`. Yeni özellik, sitede yok (kâhin yerine davranış testi ve CI görüntüsü). Tasarım: dal `neon/paylas-karti-tasarim` (PR #54, birleştirilmedi, yalnız referans), Emre **Yön 4**'ü ("Perde ve ayrıntı") seçti: `tasarim/paylas-karti/yon-4.html`, `goruntuler/yon-4-*.png`.
+- **Geometri çekirdekte** (`NoraCekirdek/Bugun/PaylasKarti.swift`, `PaylasKartiTests`, 10 test): `kirpim` (yürüyüş kırpımı; geçersizse bütün tablo, `YuruyusKamerasi` kuralı), `yerlesim` (tablo kırpımı "cover" ile kaplar, Bugün'deki odak — `adlaOdak`: yuruyus_odak / elle odak — kutunun `hedef` noktasına gelir, kırpımın dışı görünmez), `alan` (noktanın 0–1 x, y, w, h'si → tablonun çizildiği dikdörtgene göre kutuda), `kapak` (ayrıntı odakla görünen paya — kapağın %93'ü — sığmıyorsa odak ayrıntının ortasına alınır; o da sığmazsa çerçeve yok), `kareKirpim` (not kartındaki kare: ayrıntının ortasında, %6 payla, tablonun içinde), `noktaSirasi` (yürüyüşte açık nokta, değilse ilki), `dosyaAdi`, `sanatciYil`. Neon'un HTML'indeki kayma burada yok: çerçeve elle yüzde değil, tablonun gerçek yerleşiminden.
+- **Görünüm** (`NoraSanat/Ekranlar/Bugun/BugunPaylas.swift`): `PaylasIcerigi` (hepsi `BugunDeposu`/`BugunTablosu`'ndan: ad `s.tablo.eser`, `PaylasKarti.sanatciYil`, `s.akim` — `BugunTablosu`'na eklendi —, nokta, `depo.odak`, `depo.kirp`, akımın dönem karosu `GaleriDonem`), `PaylasMalzemesi` (tablo önce `GorselCozucu`/`GorselDeposu`'ndan büyük kopya, 2560 px, `UIImage` olarak yüklenir; inemezse Bugün'ün gösterdiği; kare kırpım `CGImage.cropping`), `PaylasKartiGorunumu` (Yön 4'ün CSS ölçüleri; yazılar `Yazi.uiFont` ile Dinamik Yazı'sız), `ImageRenderer` scale 1 → 1080 px. Renkler yalnız `TemaRenkleri`'nden: tablonun üstündeki hap, çerçeve ve büyüteç temanın koyu ucu (Gece'de `zemin`, Gündüz'de `murekkep`) zemin + açık ucu yazı (tasarımda iki temada da koyu hap, krem çerçeve). Cam (`backdrop-filter`) ImageRenderer'da çizilmediği için yarı saydam `yuzey` (%72 / %88).
+- **Bugün'de:** üst çubukta Ben'in solunda aynı cam daire (`square.and.arrow.up`, erişilebilirlik kimliği `bugun-paylas`): dolu düğme değil, yürüyüşün her adımında görünür. Yaprak (`PaylasYapragi`): Hikâye / Gönderi seçimi (Hikâye varsayılan), önizleme, `ShareLink` (dosya `tmp/Paylas/<boy>/nora-sanat-<tarih>.png`; ad iki boyda aynı olduğu için alt klasörler). Tema o anki tema (renkli Gündüz ve vurgu dahil); tema değişince kart yeniden çizilir.
+- **CI** (`Testler/ci/ekran.sh`, bugun): DEBUG `-paylasKartiCiz` kartın iki boyunu ve iki temasını (`TemaRenkleri.sabit`) `tmp/paylas-<boy>-<tema>.png`'ye yazar ve yaprağı açar; betik PNG'leri `ekranlar/paylas-*.png` olarak artifact'a koyar, boyları yazdırır (`sips`), `bugun-paylas-yaprak.png` ekran görüntüsü alır ve hikâye/Gece'de OCR ile "Sanat Atlas" arar.
+- **CI:** a95b156 yeşil (8 iş; derleme ilk denemede kuyrukta iptal oldu, yeniden çalıştırıldı). `ekran (bugun)`: dört PNG 1080×1920 / 1080×1350; o günün tablosu Bruegel, *Karda Avcılar*. Kartın OCR'ı: "Günün tablosu · Kuzey Rönesansı · Karda Avcılar · Pieter Bruegel (Yaşlı) · 1565 · Yorgun avcılar · Üç avcı ve köpekleri omuzları düşük… · Sanat Atlası · sanat-atlasi.pages.dev". Bugün kapağının OCR'ında paylaş dairesi BEN'in yanında. PNG'ler oturumdan indirilemedi: tasarımla (yon-4-*.png) yan yana bakışı denetçi / Emre yapsın (`ekranlar-bugun` → `paylas-*.png`, `bugun-paylas-yaprak.png`).
+- **Bilinen farklar:** zemin deseni akımın dönem karosu (Galeri'nin 96 px karosu; tasarımda 144 px), hale tek renk pirinç (tasarımda tablonun iki rengi). Uzun not metni hikâyede 8, gönderide 5 satırda kesilir; uzun eser adı iki satıra sığacak kadar küçülür.
+
 ---
+
+### Z3u · Çalış ana ekranı: Bugünün oturumu (Claude)
+**Devir notu:** Claude, 2026-11-24 · [PR #58](https://github.com/emrymn/nora-sanat/pull/58) · dal `claude/Z3u-calis-oturum`.
+- **Kaynak:** Neon'un tasarımı, dal `neon/calis-tasarim` (PR #55, birleştirilmedi): `tasarim/calis/yon-4.html`, `BENIOKU.md` "Yön 4", `goruntuler/yon-4-{gece,gunduz}.png`. Kullanıcı olduğu gibi onayladı. Davranış sitenin kurallarından (sanat-atlasi `a866b86`: `js/ekranlar/ders.js`, `soruTurlari.js`, `calisma.js`); yeni bir site kuralı taşınmadı.
+- **Ekran** (`CalisAnaGorunumu`): kenardan kenara kapak (`KapakYuruyusu` aynen; "Çalış", "~N dk · Konu N'desin" hapı = `ders-konum`, eser künyesi), bugünün dersi (düğümlü iz + soluk Harita, davet, tek dolu düğme `ders-devam`, "Ardından günlük tekrar" ipliği, tekrar kartı `karisik-dugme`), hafıza ritmi (2×7 boncuk, güne dokununca satır, yarın), dönem yolu (omurga, `ders-kilitli`, yolculuk ufku + akım yayı), derinleşmek istersen (`hatalar-satir`, `tur-*`; kutular en az 92 pt). Devam kartı, boş durum, "hepsi bitti" kartı korundu. Kapak üstü yazı/hap renkleri iki temada aynı sabitler (`KapakUstu`), gerisi `tema.renkler`.
+- **Çekirdek** `NoraCekirdek/Calis/CalisOturumu.swift` (Z3u, yeni, sitede yok): ders süresi (Gör ayrıntısı 20 sn, Öğren özelliği 60 sn, Ayırt ikilisi 60 sn; süren adımda 1 − i), kapak hapı = ders kalanı + `TurOzeti.yaklasikDakika`; ritim günleri/yazıları, boncuk çapı, dönem yolu yazıları, akım yayı. `CalisOturumuTests` (10).
+- **CalisSekmesi:** `masaSekmesi` (Dersler / Başka turlar) kalktı → `kaydirHedefi` (`"turlar"`). `CalisKarsilastirma.kaydir(_:)` tek argüman; `tekrar`, `yuk`, `turlar` çapaları üst çubuk payıyla (`kaydirmaCapasi`).
+- **Tasarımdan farklar:** gün notları tasarımda elle yazılmıştı; uygulamada yalnız "en yoğun gün" / "dinlenme günü". "N konu kaldı" = açılacağı konu − işlenen en büyük konu. Devam düğmesinin süresi yalnız sıradaki adımın.
+- **CI:** e2d74db yeşil (8 iş; galeri-2 ve genel ilk koşuda başlamadan iptal edilmişti, bir kez yeniden koştu). `calis-calis` ve `t7-acilis-calis`'ta OCR "Bugünün dersi" buldu. Ekran görüntülerine (`ekranlar-calis`) bu oturumdan bakılamadı: Gece/Gündüz kullanıcı ya da denetçi bakmalı. Yan yana görüntülerde solda hâlâ sitenin eski Çalış'ı var (bilinçli fark).
+- **Kalan:** süre sabitleri telefonda denenince ayarlanabilir.
 
 ## Yeni özellikler (Y): sitede olmayan, iPhone'a özgü
 

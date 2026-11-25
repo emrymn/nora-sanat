@@ -279,7 +279,7 @@ struct BasyapitListesi: View {
             VStack(alignment: .leading, spacing: 9) {
                 Color(r.yuzey)
                     .aspectRatio(genis ? 16.0 / 10 : 4.0 / 5, contentMode: .fit)
-                    .overlay { if let e { resim.gorsel(e, genis ? 800 : 500) } }
+                    .overlay { if let e { resim.odakli(e, genis ? 800 : 500) } }
                     .overlay(alignment: .topLeading) {
                         if !acik {
                             Text("HENÜZ KURSTA YOK").font(Yazi.sans(9.5, agirlik: 600, stil: .caption2)).tracking(0.95)
@@ -378,7 +378,7 @@ struct BasyapitSahnesi: View {
                     Button { ac(b.anahtar) } label: {
                         ZStack(alignment: .bottomLeading) {
                             Color(tema.renkler.yuzey)
-                            if let e { resim.gorsel(e, 900) }
+                            if let e { resim.odakli(e, 900) }
                             LinearGradient(stops: [.init(color: .black.opacity(0), location: 0.35), .init(color: .black.opacity(0.75), location: 1)],
                                            startPoint: .top, endPoint: .bottom)
                             VStack(alignment: .leading, spacing: 5) {

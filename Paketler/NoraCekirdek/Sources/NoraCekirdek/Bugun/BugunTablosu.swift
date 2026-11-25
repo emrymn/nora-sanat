@@ -20,6 +20,8 @@ public struct BugunTablosu {
   public let kunye, taninma, hayat, kaynak: String
   /// Yürüyüş sonundaki künye: `kunye(gs, { bag: false, konuYok: true })` → "1431–1506 · Erken Rönesans"
   public let sonKunye: String
+  /// Sanatçının akımı ("Post-Empresyonizm"; Z3v paylaş kartının üst yazısı)
+  public let akim: String
   public let eser: Eser?
   public let buyuk: URL?
 
@@ -49,6 +51,7 @@ public struct BugunTablosu {
     ad = katalog.adParcalari(s)
     kunye = [s.ad, tablo.yil.map(String.init), s.akim].compactMap { $0 }.joined(separator: " · ")
     sonKunye = s.yillar + " · " + s.akim
+    akim = s.akim
     func json(_ dosya: String) -> JSONDeger? { veriler[dosya].flatMap { try? JSONDeger.coz($0) } }
     let bio = json("biyografiler.json")?["sanatcilar"]?[id]
     hayat = bio?["metin"]?.metin ?? ""

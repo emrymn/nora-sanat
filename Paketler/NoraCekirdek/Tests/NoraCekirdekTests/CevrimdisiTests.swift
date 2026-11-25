@@ -223,3 +223,19 @@ final class CevrimdisiTests: XCTestCase {
         XCTAssertEqual(depo.adlar().count, 30)
     }
 }
+
+/// Z3s: `tahminiBayt`'ın düzenli ifadesiz denetimi (`/d/[0-9a-f]`, `/k/[0-9a-f]`) eskisiyle aynı
+final class KlasordeTests: XCTestCase {
+    func testEskiDuzenliIfadeyleAyni() {
+        let ornekler = ["https://gorsel.noracloud.ai/d/0a1b2c3d4e5f.jpg", "https://x/d/A12.jpg", "https://x/d/z1.jpg",
+                        "https://x/k/9f.jpg", "https://x/b/0a.jpg", "/d/0", "/d/", "d/0", "https://x/ad/0", "https://x/dd/0",
+                        "gorseller/k/abc.jpg", "", "/k/f", "/k/g", "https://x/y/d/e"]
+        for u in ornekler {
+            for h in ["d", "k"] {
+                let eski = u.range(of: "/\(h)/[0-9a-f]", options: .regularExpression) != nil
+                XCTAssertEqual(CevrimdisiListe.klasorde(u, Character(h)), eski, "\(h) \(u)")
+            }
+        }
+    }
+}
+

@@ -47,6 +47,10 @@ struct PekistirmeEkrani: View {
                         disAdreseGit: { adreseGit($0) }
                     )
                     .id("\(tur.gorunenKonum)|\(k.resim.eser.anahtar)|\(k.ikinci)")
+                    // Z3m: kartın rengi sorulan eserden; yedek yok (cevaptan önce akım rengi ipucu olurdu), palet gelene
+                    // kadar önceki kartın rengi durur. Ters soruda cevaptan önce nötr (pekistir.js kartCiz / tersGoster:
+                    // `ekranRengi(k.eser, null)`, `renkSabitle(null)`; soruTurlari.js aynı).
+                    .ekranRengi(url: model.gorsel(k.resim.eser, 400), yedek: nil, notr: k.ters != nil && k.sonuc == nil)
                 } else {
                     ScrollView { ozet(tur).padding(.horizontal, 24) }
                 }

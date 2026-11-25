@@ -229,6 +229,26 @@ bugun() {
     done
   done
   "$RUNNER_TEMP/yan-yana" ekranlar/bugun-site.png ekranlar/bugun-yerli.png ekranlar/yan-yana-bugun.png
+  # Z3v: paylaş kartı. Uygulama kartın iki boyunu (hikâye 1080×1920, gönderi 1080×1350) ve iki temasını (Gece, Gündüz)
+  # ImageRenderer ile tmp/paylas-<boy>-<tema>.png'ye yazar, sonra paylaş yaprağını açar. Tasarımla (neon/paylas-karti-tasarim,
+  # yon-4-*.png) karşılaştırmak için PNG'ler artifact'a.
+  xcrun simctl terminate "$UDID" "$PAKET"
+  rm -f "$VERI/tmp/paylas-hazir" "$VERI"/tmp/paylas-*.png
+  xcrun simctl launch "$UDID" "$PAKET" -yerliSekme bugun -adres "#/" -paylasKartiCiz
+  for _ in {1..60}; do
+    test -s "$VERI/tmp/paylas-hazir" && break
+    sleep 2
+  done
+  echo "paylaş kartı: $(cat "$VERI/tmp/paylas-hazir")"
+  xcrun simctl io "$UDID" screenshot ekranlar/bugun-paylas-yaprak.png
+  for BOY in hikaye gonderi; do
+    for TEMA in gece gunduz; do
+      test -s "$VERI/tmp/paylas-$BOY-$TEMA.png"
+      cp "$VERI/tmp/paylas-$BOY-$TEMA.png" "ekranlar/paylas-$BOY-$TEMA.png"
+      sips -g pixelWidth -g pixelHeight "ekranlar/paylas-$BOY-$TEMA.png" | tail -2
+    done
+  done
+  "$RUNNER_TEMP/ben-ekran" ekranlar/paylas-hikaye-gece.png "Sanat Atlas"
   # Denetim: aynı sanatçı, aynı gerçek ayrıntı, iki kart konumu ve yürüyüş sonu.
   for BOLUM in ayrinti-alt ayrinti-ust hayati eserler tur; do
     BETIK=$(node Testler/bugun-site-cekimi.mjs "$BOLUM")

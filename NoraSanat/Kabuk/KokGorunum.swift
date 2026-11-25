@@ -1,3 +1,4 @@
+import CoreSpotlight
 import NoraCekirdek
 import SwiftUI
 
@@ -50,12 +51,15 @@ struct KokGorunum: View {
         .preferredColorScheme(tema.koyu ? .dark : .light)
         // Widget'a dokununca: norasanat://bugun
         .onOpenURL { Gezgin.shared.ac($0) }
+        // Z3o: iPhone aramasında (Spotlight) sanatçıya ya da akıma dokununca o sayfa
+        .onContinueUserActivity(CSSearchableItemActionType) { Spotlight.ac($0) }
         .onChange(of: durum.secili) { _, yeni in girisSayaci[yeni, default: 0] += 1 }
         // Z2c: renkler (TemaHesabi), rozetler ve hatırlatmalar (SayacDeposu) Swift'teki kayıttan; açılışta ve her
         // dönüşte (gün değişmiş olabilir); kapanırken yarının sayısı
         .task {
             TemaHesabi.yenile()
             await SayacDeposu.hatirlatmalariYenile()
+            await Spotlight.guncelle()
         }
         .onChange(of: evre) { _, yeni in
             switch yeni {

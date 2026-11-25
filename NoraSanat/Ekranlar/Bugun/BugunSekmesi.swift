@@ -42,6 +42,8 @@ struct BugunSekmesi: View {
   @State private var ekranUstu = 0.0
   @State private var ekranAlti = 0.0
   @State private var konumHedefi: Double?
+  /// Z3v: "Paylaş" yaprağı (günün tablosu tek görsel olarak)
+  @State private var paylas: PaylasIcerigi?
 
   private enum Acilis: String, Identifiable {
     case resim, hikaye, incele, dinle
@@ -96,6 +98,10 @@ struct BugunSekmesi: View {
       yaziGizli = false
     }
     .alert("Hareket ayarı kaydedilemedi", isPresented: $hareketHatasi) { Button("Tamam") {} }
+    .sheet(item: $paylas) { PaylasYapragi(icerik: $0) }
+    #if DEBUG
+    .task(id: depo.sayfa?.tablo.tarih) { await paylasKartlariniCiz() }
+    #endif
     .sekmeCubuguGizli(cubukGizli && etkin, sekme: .bugun)
     .fullScreenCover(item: $acilan) { kip in
       if let e = depo.sayfa?.eser, kip == .dinle, let b = depo.baglam {
@@ -216,7 +222,7 @@ struct BugunSekmesi: View {
           .modifier(BugunKonumaGit(y: konumHedefi))
         #endif
         .onPreferenceChange(BugunKartBoyu.self) { boylar = $0 }
-        ustCubuk(perde: asma)
+        ustCubuk(s, perde: asma)
         if p >= 0.5 && asma < 0.3 {
           VStack(spacing: 8) {
             ForEach(0...son, id: \.self) { j in
@@ -352,8 +358,8 @@ struct BugunSekmesi: View {
   }
 
   /// `.bugun-ust`: tarih ve Ben sabit; Hayatı'na inerken arkasında koyu bir şerit belirir (`::before`, `--perde`)
-  private func ustCubuk(perde asmaUst: Double) -> some View {
-    HStack {
+  private func ustCubuk(_ s: BugunTablosu, perde asmaUst: Double) -> some View {
+    HStack(spacing: 10) {
       Text(
         Date().formatted(.dateTime.day().month(.wide).locale(Locale(identifier: "tr_TR")))
           .uppercased(with: Locale(identifier: "tr_TR"))
@@ -361,6 +367,20 @@ struct BugunSekmesi: View {
       .font(Yazi.sans(11.5, agirlik: 600)).tracking(2.3)
       .foregroundStyle(Color(.sRGB, red: 172 / 255, green: 164 / 255, blue: 152 / 255))
       Spacer()
+      // Z3v: "Paylaş" (yeni, sitede yok). Ben'in yanında aynı cam daire: dolu düğme değil; yürüyüşün her adımında
+      // görünür, o an açık olan ayrıntıyla paylaşır.
+      Button {
+        paylas = PaylasIcerigi(s, depo: depo, adim: Int(izlenenAdim.rounded()))
+      } label: {
+        Image(systemName: "square.and.arrow.up").font(.system(size: 16, weight: .medium))
+          .foregroundStyle(YurRenk.yazi).offset(y: -1)
+          .frame(width: 44, height: 44)
+          .background(YurRenk.zemin(0.5), in: Circle())
+          .overlay(Circle().strokeBorder(Color(.sRGB, red: 104 / 255, green: 78 / 255, blue: 61 / 255, opacity: 0.28)))
+          .contentShape(Circle())
+      }.buttonStyle(.plain)
+        .accessibilityLabel("Günün tablosunu paylaş")
+        .accessibilityIdentifier("bugun-paylas")
       Button { git("#/ilerleme", .ben) } label: {
         Text("BEN").font(Yazi.sans(11, agirlik: 600)).tracking(0.66).foregroundStyle(YurRenk.yazi)
           .frame(width: 44, height: 44)
@@ -515,6 +535,32 @@ struct BugunSekmesi: View {
         }
       }
   }
+
+  #if DEBUG
+  /// CI (Testler/ci/ekran.sh, bugun): `-paylasKartiCiz` ile kartın iki boyu ve iki teması tmp/paylas-<boy>-<tema>.png'ye
+  /// yazılır (ilk ayrıntıyla; tasarımla karşılaştırmak için), sonra paylaş yaprağı açılır; bitince tmp/paylas-hazir.
+  private func paylasKartlariniCiz() async {
+    guard CommandLine.arguments.contains("-paylasKartiCiz"), let s = depo.sayfa else { return }
+    try? await Task.sleep(for: .seconds(2))
+    let icerik = PaylasIcerigi(s, depo: depo, adim: 0)
+    guard let t = await icerik.tablo() else { return }
+    let m = PaylasMalzemesi(icerik, tablo: t)
+    let tmp = FileManager.default.temporaryDirectory
+    var yazilan: [String] = []
+    for boy in PaylasKarti.Boy.allCases {
+      for ad in TemaAdi.allCases {
+        guard let png = m.ciz(boy, renkler: .sabit(ad))?.pngData() else { continue }
+        let dosya = "paylas-\(boy.rawValue)-\(ad.rawValue).png"
+        try? png.write(to: tmp.appendingPathComponent(dosya), options: .atomic)
+        yazilan.append(dosya)
+      }
+    }
+    paylas = icerik
+    try? await Task.sleep(for: .seconds(4))
+    let ozet = yazilan.joined(separator: " ") + " | " + s.tablo.sanatciId + " | " + (icerik.nokta?.ad ?? "-")
+    try? Data(ozet.utf8).write(to: tmp.appendingPathComponent("paylas-hazir"), options: .atomic)
+  }
+  #endif
 
   private func git(_ adres: String, _ sekme: Sekme) {
     kabuk.sec(sekme)

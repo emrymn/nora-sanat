@@ -169,9 +169,12 @@ struct BenSekmesi: View {
         l = Array((l.filter { $0.kaynak == "kurs" } + l.filter { $0.kaynak != "kurs" }).prefix(12))
         while !l.isEmpty && l.count < 9 { l = Array((l + l).prefix(9)) }
         let duvar = l.map { bilgi.kucuk($0.id) }
-        // `.ilr-govde { margin-top: auto; padding-top: 120px }`: pano sahnenin dibinde, üst (52) en üstte
+        // `.ilr-govde { margin-top: auto }`: pano 560 pt'lik sahnenin dibinde (alttan 22), üst (`.pk-ust`, 60) en üstte.
+        // Z3n: sitede `padding-top: 120px` sonraki kuralla 16'ya iner (ölçüldü: 390×844, deste ve "Tekrar bekliyor"la
+        // pano 155'te başlıyor). Uygulama 120'yi üstün altına boşluk olarak koyuyordu: pano uzunken sahne uzuyor, pano
+        // sitedekinden ~30 pt aşağıda kalıyordu.
         return pano(il, k, p)
-            .padding(.top, ust + 12 + 52 + 120)
+            .padding(.top, ust + 12 + 60)
             .padding(.horizontal, BenOlcu.yan)
             .padding(.bottom, 22)
             .frame(maxWidth: .infinity, minHeight: 560 + ust, alignment: .bottomLeading)
@@ -181,7 +184,8 @@ struct BenSekmesi: View {
                         .buttonStyle(YuvarlakDugme())
                         .accessibilityLabel("Ayarlar")
                 }
-                .padding(.top, ust + 12)
+                // `.pk-ust` 12'de başlar, 60 yüksek; geri düğmesi 22–66 (ortası 44). BenUst 52: 6 pt aşağıdan.
+                .padding(.top, ust + 18)
                 .padding(.horizontal, BenOlcu.yan)
             }
             .background {
