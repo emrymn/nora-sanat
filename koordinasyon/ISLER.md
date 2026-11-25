@@ -184,7 +184,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3p | İncele yeniden (İş 180) | K | Z3o | 1 | PR açık (#52) |
 | Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
 | Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
-| Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | sürüyor (Claude, 2026-11-25) |
+| Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | PR açık (#64) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1119,7 +1119,7 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
 - **Kalan:** süre sabitleri telefonda denenince ayarlanabilir.
 
 ### Z3x · Ayarlar: kompakt fihrist ve yapışkan bölüm şeridi (Claude)
-**Devir notu:** Claude, 2026-11-25 · PR #PRNO · dal `claude/Z3x-ayarlar`.
+**Devir notu:** Claude, 2026-11-25 · [PR #64](https://github.com/emrymn/nora-sanat/pull/64) · dal `claude/Z3x-ayarlar`.
 - **Kaynak:** Neon'un tasarımı, dal `neon/ayarlar-tasarim` (PR #63, birleştirilmedi, yalnız referans): `tasarim/ayarlar/yon-2.html`, `BENIOKU.md` ("Yön 2" ve ayar yerleştirme haritası), `goruntuler/yon-2-{gece,gunduz}.png`. Emre Yön 2'yi seçti. Davranış eskisi gibi (C4b, C5, Z2c-3); site karşılığı `js/ekranlar/ayarlar.js`, `js/yenilikler.js` (sanat-atlasi `7cf00b8`, site 1.90.3).
 - **Ekran** (`NoraSanat/Ekranlar/Ben/`): `BenAyarlari` (üst: geri, 32 pt "Ayarlar", sağda sitenin sürümü; yapışkan bölüm şeridi; Görünüş, Çalışma, Yedek), `BenAraclari` (`HatirlatmaBolumu`, `HakkindaBolumu` + `YeniliklerYapragi`, `GelismisBolumu`, `HataGunluguDeposu`), `BenCevrimdisi` (kart), `AyarParcalari` (yeni: kart, simgeli satır, açılır satır, anahtar, mini parçalı, adım düğmesi, cam hap, tek dolu hap, seçenek satırı, ince ilerleme, 19 çizgi simge). Eski `AyarBolumu`/`ParcaliSecim`/`AnahtarBicimi`/`HapDugme` `BenGorunusu`'nda duruyor (Ben'in başka yerleri `HapDugme`'yi kullanabilir).
 - **Şerit:** sayfanın içinde yer tutucu, şerit ZStack'te üstte çizilir ve `max(0, yeri)`'ne oturur (yapışınca durum çubuğunun arkası da şeridin zemini). Dokununca `scrollTo(grup)`; her grubun çapası başlığın 60 pt üstünde (negatif dolgu), başlık şeridin altına gelir. Kaydırma gözcüsü grup başlıklarının yerinden; dokunuştan sonra 0,7 sn kilitli; sayfanın sonunda tepeye varamayan kısa gruplarda dokunulan grup (ekrandaysa) seçili kalır. Çapa adları `AyarGrubu.rawValue` (`gorunus` … `gelismis`); CI'ın `-benKaydir yedek|cevrimdisi`'si aynı.
