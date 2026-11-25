@@ -206,7 +206,7 @@ struct GaleriSekmesi: View {
         }
     }
 
-    /// Galeri'nin ana ekranı (`gozAt`): Galeri üstü, akımlar çarkı, bütün akımlar. Zemin seçili akımın döneminin deseni.
+    /// Galeri'nin ana ekranı (`gozAt`): Galeri üstü, kemer salonları (Z3w), bütün akımlar çekmecesi. Zemin seçili akımın döneminin deseni.
     private func anaSayfa(_ g: GaleriKatalogu, _ il: Ilerleme) -> some View {
         let salonlar = Kilit.akimDurumlari(g.katalog.akimlar, g.katalog.sanatcilar, islenen: il.islenenKume)
         let resim = GaleriResim(galeri: g, il: il)
@@ -215,12 +215,14 @@ struct GaleriSekmesi: View {
           ScrollView {
             VStack(spacing: 0) {
                 ust(.akimlar, g, il).padding(.horizontal, BenOlcu.yan).padding(.top, 12)
-                AkimCarki(salonlar: salonlar, galeri: g, il: il, sira: $sayfa, dizinAcik: $dizinAcik,
-                          kapak: { ad in
-                              guard let e = g.carkKapagi(ad, il) else { return (nil, nil) }
-                              return (resim.url(e, 800), resim.yedek(e))
-                          },
-                          gir: { yol.append(.akim($0)) })
+                // Z3w: Neon'un "Yön 2 · Kemerlerin yayı" (çarkın yerine ışık kılavuzu, "Bütün akımlar" cam çekmecede)
+                KemerSalonlari(salonlar: salonlar, galeri: g, il: il, sira: $sayfa, dizinAcik: $dizinAcik,
+                               kapak: { ad in
+                                   guard let e = g.carkKapagi(ad, il) else { return (nil, nil) }
+                                   return (resim.url(e, 800), resim.yedek(e))
+                               },
+                               pul: { ad in g.carkKapagi(ad, il).flatMap { resim.url($0, 400) } },
+                               gir: { yol.append(.akim($0)) })
             }
             // Z3h/Z3j: "Bütün akımlar" en alta kaydırınca sekme çubuğunun üstündeki dişlinin (hızlı ayar dili) üstünde
             // kalsın; 56 yetmiyordu (telefonda düğme dişlinin hizasındaydı). Çalış'taki sayfalarla aynı pay.
@@ -228,12 +230,12 @@ struct GaleriSekmesi: View {
           }
           .scrollIndicators(.hidden)
           #if DEBUG
-          // dizin açılınca alta: "Bütün akımlar" düğmesi ve ilk satırlar ekranda (sitede `.akim-dizin` başa gelir)
+          // dizin: Z3w'de "Bütün akımlar" cam çekmece (`dizinAcik` onu açar); sayfa tetiğe kayar, sonra hazır yazılır
           .task { await GaleriKarsilastirma.kaydir(kaydir, "dizin") }
           #endif
         }
         .background(SayfaZemini(donem: donem, tablo: salonlar.indices.contains(sayfa)
-            ? g.carkKapagi(salonlar[sayfa].ad, il).flatMap { resim.url($0, 400) } : nil))
+            ? g.carkKapagi(salonlar[sayfa].ad, il).flatMap { resim.url($0, 400) } : nil, ortaHale: true))
     }
 
     /// Z3m: sanatçının ilk eseri (`sanatciEserleri(s)[0]`; sanatçı, tüm eserler ve karşılaştırma sayfasının rengi)
