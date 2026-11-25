@@ -105,6 +105,9 @@ struct SayfaZemini: View {
     /// sitenin tek renkli soluk halesi.
     var tablo: URL? = nil
     var alan: ZeminTablosu.Alan = .galeri
+    /// Z3w (yeni tasarım, sitede yok; yon-2.html `.zemin-hale` üçüncü katman): kemerin arkasında tablonun birinci renginden
+    /// ortada bir hale (66% × 36%, merkez 50% 38%; Gece %24, Gündüz %16 → %74'te sıfır). Yalnız Galeri › Akımlar'da.
+    var ortaHale = false
     @Environment(TemaDeposu.self) private var tema
     @State private var cift: TabloRenkleri.Cift?
     private var kaynak: URL? { tablo ?? ZeminTablosu.shared.son[alan] }
@@ -124,6 +127,14 @@ struct SayfaZemini: View {
                         .blendMode(karisim)
                     elips(c.ikinci, [(0.36 * k, 0), (0.1 * k, 0.45), (0, 0.8)], rx: 0.9 * w, ry: 0.5 * h, merkez: .bottomTrailing, w: w, h: h)
                         .blendMode(karisim)
+                    if ortaHale {
+                        let duraklar: [Gradient.Stop] = [.init(color: Color(c.birinci, r.koyu ? 0.24 : 0.16), location: 0),
+                                                         .init(color: Color(c.birinci, 0), location: 0.74)]
+                        EllipticalGradient(stops: duraklar, center: .center, startRadiusFraction: 0, endRadiusFraction: 0.5)
+                            .frame(width: 1.32 * w, height: 0.72 * h)
+                            .position(x: w / 2, y: 0.38 * h)
+                            .blendMode(karisim)
+                    }
                 } else if ustHale {
                     elips(r.vurgu, [(0.11, 0), (0.03, 0.45), (0, 0.7)], rx: 1.2 * w, ry: 0.8 * 520, merkez: .topLeading, w: w, h: 520)
                 } else {
