@@ -183,6 +183,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
 | Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
 | Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
+| Z3w | Galeri › Akımlar Neon'un "Yön 2 · Kemerlerin yayı" tasarımıyla (Emre seçti; dal `neon/galeri-akimlar-2`, PR #60) | K | Z3u | 1 | sürüyor (Claude, 2026-11-25) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | – | G1, G4 | 1 | fikir: kullanıcı başlatınca |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1058,6 +1059,16 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 - **Ayrıca:** sanatçı künyesindeki "Dinle" yazısı sitedeki gibi `--vurgu-acik` (`.isim-ek .dinle`; önce vurgu ile mürekkebin karışımıydı, eserin rengi görünmüyordu).
 - **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
 
+
+### Z3w · Galeri › Akımlar: Kemerlerin yayı (Claude)
+**Devir notu:** Claude, 2026-11-25 · dal `claude/Z3w-galeri-akimlar`. Yeni tasarım, sitede yok (sitede hâlâ çark var; kâhin yerine davranış testi ve CI görüntüsü). Kaynak: dal `neon/galeri-akimlar-2` (PR #60, birleştirilmedi, yalnız referans), Emre **Yön 2**'yi seçti: `tasarim/galeri-akimlar-2/yon-2.html` (`cizKonum`, `centikCiz`), `BENIOKU.md` "Yön 2", `goruntuler/yon-2-{gece,gunduz,gecis}.png`.
+- **Çekirdek** `NoraCekirdek/Galeri/KemerYayi.swift` (Z3w, `KemerYayiTests`, 11 test): `kart(fark:acik:hareketAz:)` (ölçek 0,89 + 0,11·yakınlık, yay düşüşü 15, eğim fark·2,6° en çok ±3,2°, opaklık, dış çerçeve opaklığı, komşu bulanıklığı 2,4 pt, parlaklık, yazı opaklığı/kayması; hareket azaltılmışsa eğim, kayma, bulanıklık 0), `konum(yol:)`, `oturma`, `komsu` (kılavuz), `eylemOpakligi` (açık↔kilitli sınırında %38'e söner), `centikler` (kılavuz çentikleri, genişliğe ölçekli), `yillar` (en erken doğum – en geç ölüm), `durum`.
+- **Ekran** (`GaleriAna.swift` → `KemerSalonlari`; `AkimCarki`/`CarkTekeri` ve kullanılmayan `GaleriCarki.swift` kalktı): yatay `ScrollView` şerit (234 × 278 kemer, aralık 18, `viewAligned`; dikey sürükleme sayfanın), çift ince çerçeve, kilitli kapak hep bulanık + cam kilit mührü, kemere bağlı yazı (dönem sembolü + yıllar, 31 pt ad, durum). Sabit eylem yuvası: "Salona gir" ya da "N sanatçı · yakında" hapı. Işık kılavuzu 52 pt (Canvas: yay, çentikler, ışık; iki yanda önceki/sonraki akımın adı, ortada dönem); yalnız düğmeler, sürükleme jesti yok. Erişilebilirlik: kılavuz "Akımlar çarkı", değer "n / 28, ad", ayarlanabilir eylem. "Bütün akımlar · 28 salon" → `.sheet` (%78 / büyük, buzlu cam = `.ultraThinMaterial` + `yuzey`), dönem grupları (`DonemSembolu`, tasarımın SVG'leri), satıra dokununca çekmece kapanır, şerit o akıma gider.
+- **Zemin:** `SayfaZemini(ortaHale: true)`: tablonun birinci renginden ortada üçüncü hale (yon-2 `.zemin-hale`). Hale ve desen geçişi var olan `ZeminTablosu`/`TabloRengi` animasyonuyla.
+- **Tasarımdan farklar:** kılavuzun iki yanı dönem değil **önceki/sonraki akım** (görev: "dokununca önceki ya da sonraki akıma geçer"; yazı da gideceği yeri söylesin diye). Kılavuzda yatay süpürme yok (dikey kaydırmayı hiç engellemesin). Komşu kartlara bulanıklık eklendi (tasarımda yalnız soluyordu). Durum her zaman "N / M sanatçı açık".
+- **CI:** `-galeriKaydir dizin` → `dizinAcik` çekmeceyi açar, sayfa tetiğe kayar, sonra `galeri-hazir`. Ana ekranda "Salona gir" ilk ekranda (şerit 416 + yuva). Linux'ta Swift yok: derleme ve `swift test` yalnız CI'da.
+
+---
 
 ### Z3v · Bugün → Paylaş kartı (Claude)
 **Devir notu:** Claude, 2026-11-24 · [PR #57](https://github.com/emrymn/nora-sanat/pull/57) · dal `claude/Z3v-paylas-karti`. Yeni özellik, sitede yok (kâhin yerine davranış testi ve CI görüntüsü). Tasarım: dal `neon/paylas-karti-tasarim` (PR #54, birleştirilmedi, yalnız referans), Emre **Yön 4**'ü ("Perde ve ayrıntı") seçti: `tasarim/paylas-karti/yon-4.html`, `goruntuler/yon-4-*.png`.
