@@ -353,7 +353,8 @@ ben() {
   python3 -c 'import json,sys; p=sys.argv[1]; v=json.load(open(p)); v.setdefault("ayarlar",{})["tema"]="gece"; json.dump(v,open(p,"w"),ensure_ascii=False)' "$IL"
   # C5: Swift'te gerçek indirme (arka plan URLSession). Küçük bir parça (2 en büyük kopya kadar) iner,
   # dosyalar uygulamanın Application Support/CevrimdisiGorseller klasörüne yazılmalı.
-  xcrun simctl terminate "$UDID" "$PAKET"
+  # (Z3x: Gündüz adımı uygulamayı zaten kapattı; kapalıysa terminate hata verir.)
+  xcrun simctl terminate "$UDID" "$PAKET" || true
   VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
   rm -f "$VERI/tmp/ben-hazir"
   xcrun simctl launch "$UDID" "$PAKET" -adres "#/ayarlar" -benSayfa ayarlar -benKaydir cevrimdisi -cevrimdisiIndir -cevrimdisiParca 2
