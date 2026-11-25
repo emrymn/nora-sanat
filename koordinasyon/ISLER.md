@@ -187,6 +187,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3w | Galeri › Akımlar Neon'un "Yön 2 · Kemerlerin yayı" tasarımıyla (Emre seçti; dal `neon/galeri-akimlar-2`, PR #60) | K | Z3u | 1 | bitti (#61) |
 | Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | PR açık (#64) |
 | Z3z | Akımlar şeridi akıcılık: kaydırırken her karede değişen bulanıklık/parlaklık/gölge yarıçapı ve katalog taraması kalktı (Emre: "kasıyor") | K | Z3w | 1 | PR açık |
+| Z3z2 | Akımlar şeridi akıcılık 2: kartın kapağı her karede aranıyordu; kaydırmaya bağlı görünüş `visualEffect` ile (Emre: "hala kasıyor") | K | Z3z | 1 | PR açık |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1098,6 +1099,15 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
 - **Ayrıca:** sanatçı künyesindeki "Dinle" yazısı sitedeki gibi `--vurgu-acik` (`.isim-ek .dinle`; önce vurgu ile mürekkebin karışımıydı, eserin rengi görünmüyordu).
 - **CI:** abf7c6d yeşil (8 iş, 151 çekirdek testi). İlk koşu derlemede kalmıştı (`CalisAnaGorunumu`'nda yardımcıya taşınan `bugunkuAkim`). Galeri yan yana görüntülerinde (sanatçı, akım) düzen siteyle aynı.
 
+
+### Z3z2 · Akımlar şeridi akıcılık 2 (Claude)
+**Devir notu:** Claude, 2026-11-25 · dal `claude/Z3z2-akimlar-akici`. Z3z'den sonra Emre "çark hala kasıyor" dedi.
+- **Neden** (kodda bulundu): kaydırırken `konum` (`@State`) her karede değişiyor, `KemerSalonlari`'nin bütün gövdesi yeniden kuruluyordu. Bu gövdede görünen her kart için `kapak(salon.ad)` → `GaleriKatalogu.carkKapagi` çağrılıyordu: bütün sanatçıları süzüp sıralıyor, eserleri tarıyor. Yani her karede kart başına bir katalog taraması.
+- **Düzeltme** (`GaleriAna.swift`):
+  - Kapak adresleri `@State kapaklar` ile bir kez (açılışta, açık akım ya da bozuk görsel değişince) hesaplanıyor.
+  - Konum `@Observable SeritKonumu`'nda; yalnız kılavuz çizimi (`KilavuzCizimi`) ve eylem yuvasının saydamlığı (`EylemSoluklugu`) okuyor.
+  - Kartın eğimi, ölçeği, düşüşü, saydamlığı, yazının sönmesi, çerçeve, peçe ve gölge saydamlığı `visualEffect` ile kartın şeritteki yerinden (`seritteKart`: (kartın ortası − şeridin ortası) / adım) çizim sırasında hesaplanıyor; gövde kaydırırken kurulmuyor. Formüller `KemerYayi.kart`'ta, değişmedi.
+- **Görünüş farkı:** yok; yalnız uçta esnek taşmada kart da hafifçe eğilir (önceden konum sınırlanıyordu).
 
 ### Z3z · Akımlar şeridi akıcılık (Claude)
 **Devir notu:** Claude, 2026-11-25 · dal `claude/Z3z-akimlar-akici`. Emre telefonda Akımlar şeridinin kastığını söyledi.
