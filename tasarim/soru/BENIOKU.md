@@ -100,3 +100,83 @@ Mevcut `NoraSanat/Kabuk/Titresim.swift` ile birebir uyumlu (Ayarlar → Titreşi
 | `"Bilmiyorum"` yeri | Tepsi alt ortası | Tepsi alt ortası | Başlık satırının sağı (`+44 px` esere alan) |
 | Cevap yaprağı geçişi | Tepsinin altından yükselen ayrı yaprak | Tepsinin altından yükselen ayrı yaprak | Aynı tepsinin yerinde genişlemesi |
 | `375×667` sığma | Tek ekranda, kaydırmasız | Tek ekranda, kaydırmasız | Tek ekranda, en ferah tablo |
+
+
+---
+
+## İkinci Tur · Yön 3 (Geniş Tuval) Üzerinde Üç Yeni Şık Alanı Önerisi
+
+Yön 3 (*Geniş Tuval*) seçildi. Üst bölüm (cam `×`, birleşik nokta + `3 / 8` hapı, sağda pirinç `Kolay`, ortada büyük kırpılmayan eser) aynen korunarak yalnızca alttaki **şık alanı**, **basılı/seçili hâl** ve **cevap sonrası geçiş** üç farklı dille yeniden tasarlandı (`sik-1.html`, `sik-2.html`, `sik-3.html`).
+
+### Ortak mimari çözüm: Şıka basınca eserin küçülmesini önleme (`0 px` kayma)
+
+Önceki düzenlerde cevap verilince kalan 2 şığın altına ek bir cevap yaprağı eklendiği için alt panel uzuyor, üstteki tablo sıkışıp küçülüyordu. Üç yeni öneride de **sabit alt yükseklik rezervi + yer değiştirme** uygulandı:
+
+- Cevap verilmeden önce 4 şık sabit bir alt yükseklik içinde yaşar (`sik-1`: `224 px`, `sik-2`: `254 px`, `sik-3`: `238 px`; `375×667`'de sırasıyla `196 / 234 / 214 px`).
+- Şıka basıldığı anda elenen 2 şık çekilir; **elenen şıkların boşalttığı satır/yükseklik** doğrudan sonuç etiketi (`Doğru` / `Yanlış`) ve tek dolu geçiş düğmesinin (`Hangi akım?` / `Sonraki`) yeri olur.
+- **Ölçülen sonuç (`390×844`):** Üç öneride de cevap öncesi ve cevap sonrası tablo yüksekliği **birebir aynıdır (`fark = 0 px`)**:
+  - `sik-1`: `446 px → 446 px`
+  - `sik-2`: `416 px → 416 px`
+  - `sik-3`: `432 px → 432 px`
+
+### Şık etkileşiminde titreşim anları
+
+- **Parmağı şıkka bastırma (`touchstart` / basılı hâl):** `Titresim.secim` (`UISelectionFeedbackGenerator`) — özellikle `sik-3`'teki ters renk mühür hissi ve `sik-2`'deki sol pirinç iz ile eşzamanlı hafif tık.
+- **Doğru seçim:** `Titresim.dogru` (`.success`, tek darbe) + yeşil ✓ dairesi.
+- **Yanlış seçim:** `Titresim.yanlis` (`.error`, çift darbe) + mercan × dairesi ve `4 px` yatay sarsılma (*Hareketi azalt* açıksa sarsılma kalkar, yalnız renk ve ikon değişir).
+- **`"Bilmiyorum"`:** `Titresim.dokunus` (`.light`) — yumuşak geçiş.
+
+---
+
+### Şık 1 — İnce Haçlı Cam Kartela (`sik-1.html`)
+
+**Rolü:** *Bugünkü 2×2 yerleşimin inceltilmiş, dört ayrı koyu kutudan arındırılmış hâli.*
+
+- **Biçim ve yerleşim:** 4 kapalı dikdörtgen kutu yerine tek pürüzsüz cam tepsi içinde saç kılı inceliğinde `+` (haç) çizgisiyle ayrılmış 4 açık dokunma kadranı.
+- **Basılı hâl:** Dokunulan kadran kadife aydınlanmayla öne çıkar, metin hafifçe içe çöker (`scale(0.975)`) ve kadranın alt kenarında `2 px` pirinç bir iz açılır.
+- **Cevap sonrası:** Elenen alt satır kapanır; üstte doğru ve seçilen iki kadran yeşil `✓` / mercan `×` ile kalır, alt satırın tam yerine geçiş bandı oturur (`0 px` tablo küçülmesi).
+- **Güçlü yanı:** Mevcut 2×2 kas hafızasını korurken koyu kutu ağırlığını tamamen yok eder; tabloya en fazla yüksekliği (`446 px`) bırakır.
+- **Ödün:** 2 sütunlu olduğu için *Rogier van der Weyden* gibi uzun adlar `390×844`'te iki satıra kırılır.
+- **Görüntüler:**
+  - [Gece](goruntuler/sik-1-gece.png) · [Basılı an](goruntuler/sik-1-basili-gece.png) · [Cevap sonrası](goruntuler/sik-1-cevap-gece.png) · [Gündüz](goruntuler/sik-1-gunduz.png) · [Hangi akım?](goruntuler/sik-1-akim-gece.png) · [Küçük ekran 375×667](goruntuler/sik-1-kucuk-gece.png)
+
+---
+
+### Şık 2 — Kutusuz Mürekkep Şeritleri (`sik-2.html`)
+
+**Rolü:** *Cam tepsi ve 2×2 ızgarayı tamamen kaldırıp doğrudan zemin üzerinde akan 4 tek satırlı mürekkep şeridi.*
+
+- **Biçim ve yerleşim:** Altta ağır bir panel duvarı yoktur; ince çizgilerle ayrılmış 4 tam genişlikli satır (`47 px`, `375×667`'de `44 px`) doğrudan kömür / sıcak kâğıt zemine oturur.
+- **Basılı hâl:** Dokunulan satır yuvarlatılmış mürekkep hapına dönüşür, sol kenarında `3 px` dikey pirinç iz yanar, metin hafifçe sağa kayar ve sağda pirinç ok (`>`) belirir.
+- **Cevap sonrası:** Elenen 2 satırın boşalttığı tam `~94 px` alana geçiş bandı oturur; kalan doğru ve seçilen şeritler üstte yeşil `✓` / mercan `×` ile kalır (`0 px` tablo küçülmesi).
+- **Güçlü yanı:** En uzun sanatçı ve akım adları bile **asla iki satıra kırılmaz**; göz yukarıdan aşağı tek düz çizgide tarar; Gündüz temasında dergi/katalog kadar sakin görünür.
+- **Ödün:** 4 satır dikeyde `254 px` aldığı için dikey tablo yüksekliği `sik-1`'e göre `30 px` daha kısadır (`416 px`, yine ekranın en büyük öğesi).
+- **Görüntüler:**
+  - [Gece](goruntuler/sik-2-gece.png) · [Basılı an](goruntuler/sik-2-basili-gece.png) · [Cevap sonrası](goruntuler/sik-2-cevap-gece.png) · [Gündüz](goruntuler/sik-2-gunduz.png) · [Hangi akım?](goruntuler/sik-2-akim-gece.png) · [Küçük ekran 375×667](goruntuler/sik-2-kucuk-gece.png)
+
+---
+
+### Şık 3 — Akışkan Müze Fişleri (`sik-3.html`)
+
+**Rolü:** *Sert ızgara ve satırları bırakıp her adı kendi doğal genişliğinde saran tam yuvarlak cam kapsüller.*
+
+- **Biçim ve yerleşim:** Alt tepsi kutusu olmadan, hafif zemin geçişi üzerinde her sanatçı/akım adı kendi genişliğine uyumlu `999 px` yuvarlak cam fişler (`min-height: 48 px`, `375×667`'de `44 px`) hâlinde akar. Uzun ad (*Rogier van der Weyden*) kırpılmadan tek satırda oturur.
+- **Basılı hâl:** Dokunulan fiş ters renge (Gece'de krem dolgu / koyu yazı, Gündüz'de koyu dolgu / krem yazı) dönerek mühür gibi öne çıkar (`scale(0.96)`), diğer 3 fiş `%42` opaklığa çekilir.
+- **Cevap sonrası:** Elenen 2 fiş kapanır; kalan doğru ve seçilen 2 fiş tek satırda yeşil `✓` / mercan `×` ile yan yana kalır, açılan alt satır yerine geçiş çubuğu oturur (`0 px` tablo küçülmesi).
+- **Güçlü yanı:** Koyu 2×2 kutu hissinden en çok uzaklaşan, müze etiketleri gibi hafif ve çağdaş görünüm; basılı hâldeki "mühür" geri bildirimi çok net; tablo alanı hâlâ çok büyük (`432 px`).
+- **Ödün:** Dört şığın tamamı çok uzun isimlerden oluşursa 3 satıra sarkabilir (bu durumda sabit `238 px` içinde hâlâ sığar, `375×667`'de sıkılaşır).
+- **Görüntüler:**
+  - [Gece](goruntuler/sik-3-gece.png) · [Basılı an](goruntuler/sik-3-basili-gece.png) · [Cevap sonrası](goruntuler/sik-3-cevap-gece.png) · [Gündüz](goruntuler/sik-3-gunduz.png) · [Hangi akım?](goruntuler/sik-3-akim-gece.png) · [Küçük ekran 375×667](goruntuler/sik-3-kucuk-gece.png)
+
+---
+
+### Şık önerileri karşılaştırması
+
+| Ölçüt | Şık 1 · İnce Haçlı Kartela | Şık 2 · Mürekkep Şeritleri | Şık 3 · Akışkan Müze Fişleri |
+|---|---|---|---|
+| Yerleşim | Tek cam yüzeyde `+` çizgili 2×2 | Zemin üstünde kutusuz 4 satır | Doğal genişlikli akışkan cam kapsüller |
+| Uzun ad (`Rogier van der Weyden`) | 2 satır (rahat, kırpılmaz) | Tek satır (hiç kırılmaz) | Tek satır (doğal genişlik) |
+| Basılı/seçili his | Kadife dolgu + `2 px` pirinç alt iz | Mürekkep hapı + sol dikey pirinç çizgi + ok | Ters renk mühür + diğerleri `%42` soluk |
+| Tablo yüksekliği (`390×844`) | `446 px` (`0 px` değişim) | `416 px` (`0 px` değişim) | `432 px` (`0 px` değişim) |
+| Alt zemin ağırlığı | Orta (kesintisiz cam tepsi) | En hafif (tepsisiz, saf zemin) | Hafif (yalnız yumuşak sis geçişi) |
+| `375×667` sığma | Tek ekranda, tüm hedefler `≥ 44 px` | Tek ekranda, tüm hedefler `≥ 44 px` | Tek ekranda, tüm hedefler `≥ 44 px` |
