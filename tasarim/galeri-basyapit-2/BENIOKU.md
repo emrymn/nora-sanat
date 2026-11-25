@@ -108,14 +108,32 @@ Her yönün varsayılan tam sayfa görünümünde tek bir tablo bile iki kez yin
 
 ---
 
+## Yön 4 — Büyüteçten Tabloya · Sade (`yon-4.html`) *(Seçilen yönün sadeleştirilmiş sürümü)*
+
+Emre’nin **Yön 1**’i seçip *“ekran çok kalabalık oluyor, daha sade olsun”* geri bildiriminden sonra, Yön 1’in özünü koruyup `TASARIM_DILI.md`’nin **“Az şey, çok boşluk”** ilkesine damıtılmış sürüm.
+
+- **Korunan öz:**
+  - Ekran, `eser_ayrintilari.json` koordinatlarıyla (`kirpim()`) yakın kırpılmış tek bir ayrıntıyla (*Elçiler* · Anamorfik kurukafa) açılır; tek soru cümlesi merak uyandırır ve **`Tabloya uzaklaş`** cam düğmesiyle kamera akıcı biçimde bütün tabloya geri çekilir. Uzaklaşınca ayrıntının tablodaki yeri ince bir odak çerçevesiyle, diğer 5 ayrıntıysa doğrudan tablonun üstünde cam noktalarla belirir.
+  - Ekranda tek dolu düğme (**`Yakın okumayı aç`**) ve altında **`Gözün hangisine takıldı?`** ayrıntı pencereleri yer alır.
+  - Sıfır okundu kaydı, **%100 bugünkü veriyle** çalışır.
+- **Neyi neden çıkardık?**
+  - **Açılış kartının dış kutusu, üst yazısı ve tablo üstü rozet kalabalığı kaldırıldı:** Resim artık doğrudan 3 katmanlı zeminin üstünde tek başına duruyor (kutu içinde kutu ve ara çizgi yok). `Hikâye · 6 ayrıntı · ~2 dk · +7 dk ders` bilgisi tek sakin satır olarak **`Yakın okumayı aç`** düğmesinin alt yazısına taşındı; böylece tablonun köşeleri tamamen temiz kaldı ve ilk ekranda tablo + soru + eser adı + tek dolu düğme rahatça sığdı.
+  - **6 ayrıntı hapı listesi kaldırıldı:** Ayrıntılar zaten `Tabloya uzaklaş` deyince tablonun kendi üzerinde noktalar hâlinde beliriyor; kart altında tekrarlanması gereksiz görsel gürültü ve dikey kalabalık yaratıyordu.
+  - **“Gözün hangisine takıldı?” 6’dan 4 büyük pencereye indirildi (2×2):** Kart kutuları, büyüteç ikonları ve altındaki ayrıntı sayıları çıkarıldı; yalnızca büyük kırpım (*Aynadaki çift*, *Tek mum*, *Uçan ayakkabı*, *Servinin alevleri*) ve altında ayrıntının adı bırakıldı.
+  - **Dönem dönem uzayan 15 satırlık liste ve içerik süzgeç hapları kaldırıldı:** Yerine 9 dönem sekmesi ve seçili dönemin eserlerini gösteren tek sakin yatay şerit konuldu; altta tek satırlık **`Bütün başyapıtlar · 264 ⌄`** açıcısı başlangıçta kapalı durur (dokununca yerinde açılır).
+  - **Sayfa boyu yarıdan fazla kısaldı:** Yön 1’de `3960 px` (`4,69 ekran`) olan sayfa, Yön 4’te **`1862 px` (`2,21 ekran` — ilk ekrandan sonra ~1,2 ekran)** uzunluğa indi; bölümler arası boşluk `44 px`’e çıkarıldı ve her bölümde en çok bir başlık ile bir alt yazı bırakıldı.
+- **Görüntüler:** [Gece (Yakın)](goruntuler/yon-4-gece.png) · [Gece (Tabloya uzaklaşılmış)](goruntuler/yon-4-uzak-gece.png) · [Gündüz](goruntuler/yon-4-gunduz.png)
+
+---
+
 ## Kısa karşılaştırma
 
-| Ölçüt | Yön 1 · Büyüteçten Tabloya | Yön 2 · Sorular ve İzler | Yön 3 · Haftanın Başyapıtı ve Deste |
-|---|---|---|---|
-| **Keşif mekaniği** | Ayrıntıdan bütüne canlı mercek + 3×2 pencere | Çift tablo diyaloğu + merak yolları | Haftalık derin vitrin + sürüklenebilir deste |
-| **Girmeden sezme** | Gerçek kırpım + tablo içi noktalar + ayrıntı adları | Karşılaştırma cümlesi + 1 satırlık sır ipucu | 3 sekmeli “İçinde ne var?” + fişte 1 cümle sır |
-| **Dönem gezinmesi** | 9 dönem alt çizgili sekme + içerik süzgeci | 9 dönemlik oransal Zaman Spektrumu | 9 dönem sekmesi + hızlı müze fihristi |
-| **Bugünkü veriyle uyum** | **%100 hazır** (sıfır yeni veri) | Kürasyon dosyası gerekir (`sorular/yollar`) | **%100 hazır** (hafta sırası deterministik) |
-| **Okundu kaydı bağımlılığı** | Yok | Yok | Yok (ileride isteğe bağlı eklenebilir) |
-| **SwiftUI geçiş karmaşıklığı** | Orta (`matchedGeometryEffect` / ölçekli kırpım) | Düşük–orta (çift pencere + oransal bar) | Orta (`DragGesture` kart destesi) |
-| **Doğrulama (`390 px`, @2x)** | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px |
+| Ölçüt | Yön 1 · Büyüteçten Tabloya | Yön 2 · Sorular ve İzler | Yön 3 · Haftanın Başyapıtı ve Deste | Yön 4 · Büyüteçten Tabloya (Sade) |
+|---|---|---|---|---|
+| **Keşif mekaniği** | Ayrıntıdan bütüne canlı mercek + 3×2 pencere | Çift tablo diyaloğu + merak yolları | Haftalık derin vitrin + sürüklenebilir deste | Kutusuz canlı mercek + 2×2 büyük pencere |
+| **Girmeden sezme** | Gerçek kırpım + tablo içi noktalar + ayrıntı adları | Karşılaştırma cümlesi + 1 satırlık sır ipucu | 3 sekmeli “İçinde ne var?” + fişte 1 cümle sır | Yakın kırpım + tek soru + düğmede özet satırı |
+| **Dönem gezinmesi** | 9 dönem sekmesi + uzun dönem fihristi | 9 dönemlik oransal Zaman Spektrumu | 9 dönem sekmesi + hızlı müze fihristi | 9 dönem sekmesi + tek yatay şerit + açılır dizin |
+| **Sayfa uzunluğu (`390 px`)** | `3960 px` (`4,7 ekran`) | `4286 px` (`5,1 ekran`) | `3554 px` (`4,2 ekran`) | **`1862 px` (`2,2 ekran`)** |
+| **Bugünkü veriyle uyum** | **%100 hazır** | Kürasyon dosyası gerekir | **%100 hazır** | **%100 hazır** |
+| **Okundu kaydı bağımlılığı** | Yok | Yok | Yok | Yok |
+| **Doğrulama (`390 px`, @2x)** | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 20 eşsiz eser, 0 tekrar, ≥44 px | `scrollW=390`, 22 eşsiz eser, 0 tekrar, ≥44 px |

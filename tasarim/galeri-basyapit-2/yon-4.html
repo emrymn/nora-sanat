@@ -1,0 +1,1297 @@
+<!doctype html>
+<html lang="tr" data-tema="gece" data-donem="ronesans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Galeri · Başyapıtlar · Yön 4 — Büyüteçten Tabloya (Sade)</title>
+    <style>
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Bodoni Moda';
+        src: url('../../NoraSanat/YaziTipleri/BodoniModa-Italic.ttf') format('truetype');
+        font-weight: 400 900;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Newsreader';
+        src: url('../../NoraSanat/YaziTipleri/Newsreader-Italic.ttf') format('truetype');
+        font-weight: 200 800;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Archivo';
+        src: url('../../NoraSanat/YaziTipleri/Archivo.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root,
+      :root[data-tema='gece'] {
+        --bg: #121110;
+        --bg-rgb: 18, 17, 16;
+        --surface: #1c1a18;
+        --surface-2: #24211e;
+        --border: #2e2b28;
+        --border-ince: rgba(235, 229, 218, 0.09);
+        --ink: #ebe5da;
+        --ink-rgb: 235, 229, 218;
+        --ink-2: #aca498;
+        --ink-3: #8a8379;
+        --pirinc: #c9a45c;
+        --pirinc-rgb: 201, 164, 92;
+        --tab-bg: rgba(24, 22, 20, 0.86);
+        --overlay-btn: rgba(18, 17, 16, 0.64);
+        --doku: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.04;
+        --hale-karisim: normal;
+        --hale-1-op: 0.36;
+        --hale-2-op: 0.24;
+        --kart-golge: 0 24px 52px rgba(0, 0, 0, 0.46);
+        --sekme-golge: 0 10px 30px rgba(0, 0, 0, 0.48);
+        --sayfa-zemin: #0c0b0a;
+        color-scheme: dark;
+      }
+
+      :root[data-tema='gunduz'] {
+        --bg: #ece8e1;
+        --bg-rgb: 236, 232, 225;
+        --surface: #f7f5f1;
+        --surface-2: #efebe3;
+        --border: #d6d0c6;
+        --border-ince: rgba(31, 27, 23, 0.08);
+        --ink: #1f1b17;
+        --ink-rgb: 31, 27, 23;
+        --ink-2: #4c463f;
+        --ink-3: #686057;
+        --pirinc: #8c661c;
+        --pirinc-rgb: 140, 102, 28;
+        --tab-bg: rgba(247, 245, 241, 0.90);
+        --overlay-btn: rgba(247, 245, 241, 0.84);
+        --doku: radial-gradient(rgba(31, 27, 23, 0.035) 1px, transparent 1px);
+        --desen-opaklik: 0.045;
+        --hale-karisim: multiply;
+        --hale-1-op: 0.24;
+        --hale-2-op: 0.16;
+        --kart-golge: 0 22px 44px rgba(20, 17, 14, 0.14);
+        --sekme-golge: 0 10px 28px rgba(20, 17, 14, 0.12);
+        --sayfa-zemin: #e2ddd4;
+        color-scheme: light;
+      }
+
+      :root {
+        --serif: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+        --sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --okuma: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+        --hale-1-rgb: 54, 108, 86;
+        --hale-2-rgb: 172, 126, 62;
+      }
+
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--sayfa-zemin);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      /* Önizleme üst çubuğu */
+      .onizleme-ust {
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 18px;
+        background: var(--tab-bg);
+        border-bottom: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .onizleme-ust .baslik-grup { display: flex; flex-direction: column; gap: 1px; }
+      .onizleme-ust .ust-not { font: 600 12px/1.2 var(--sans); color: var(--pirinc); }
+      .onizleme-ust strong { font: 500 18px/1.15 var(--serif); letter-spacing: -0.01em; }
+      .tema-kabi {
+        display: inline-flex;
+        padding: 3px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+      }
+      .tema-kabi button {
+        min-height: 36px;
+        min-width: 64px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 600 12.5px/1 var(--sans);
+        cursor: pointer;
+      }
+      .tema-kabi button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+
+      .sahne { display: flex; justify-content: center; padding: 24px 0 48px; }
+
+      .telefon {
+        position: relative;
+        width: 390px;
+        min-height: 844px;
+        background-color: var(--bg);
+        background-image: var(--doku);
+        background-size: 3px 3px;
+        border-radius: 40px;
+        border: 1px solid var(--border);
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+        overflow: clip;
+        isolation: isolate;
+      }
+
+      html.cek-kipi, html.cek-kipi body { background: var(--bg); }
+      html.cek-kipi .onizleme-ust { display: none; }
+      html.cek-kipi .sahne { padding: 0; display: block; }
+      html.cek-kipi .telefon { border-radius: 0; border: 0; box-shadow: none; width: 390px; }
+
+      /* Üç katmanlı zemin */
+      .zemin-hale {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        mix-blend-mode: var(--hale-karisim);
+        background:
+          radial-gradient(ellipse 320px 340px at 14% 10%, rgba(var(--hale-1-rgb), var(--hale-1-op)), transparent 72%),
+          radial-gradient(ellipse 280px 320px at 88% 72%, rgba(var(--hale-2-rgb), var(--hale-2-op)), transparent 74%);
+      }
+      .zemin-desen {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-color: var(--ink);
+        opacity: var(--desen-opaklik);
+        -webkit-mask-image: var(--desen-url);
+        mask-image: var(--desen-url);
+        -webkit-mask-size: 96px 96px;
+        mask-size: 96px 96px;
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
+      }
+
+      .icerik { position: relative; z-index: 1; padding-bottom: 92px; }
+
+      /* iOS durum çubuğu & Galeri üst */
+      .durum-cubugu {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 26px 8px;
+        font: 600 14px/1 var(--sans);
+        color: var(--ink);
+      }
+      .durum-simgeler { display: flex; align-items: center; gap: 6px; }
+
+      .galeri-ust {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 24px 12px;
+      }
+      .galeri-ust h1 {
+        margin: 0;
+        font: 500 28px/1.05 var(--serif);
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+      .arama-hapi {
+        flex: 1;
+        min-width: 0;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+        color: var(--ink-2);
+        font: 400 14px/1 var(--sans);
+        text-align: left;
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .arama-hapi span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .kalp-dugme {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        background: var(--overlay-btn);
+        border: 1px solid var(--border);
+        color: var(--pirinc);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+      }
+
+      .bolum-kabi-sar { padding: 0 24px 22px; }
+      .bolum-kabi {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        padding: 4px;
+        border-radius: 999px;
+        background: var(--tab-bg);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .bolum-sekme {
+        min-height: 44px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 13.5px/1 var(--sans);
+        cursor: pointer;
+        padding: 0 4px;
+      }
+      .bolum-sekme.secili { background: var(--ink); color: var(--bg); font-weight: 600; }
+
+      /* Bölümler — cömert boşluk (44 px), en çok bir başlık + bir alt yazı */
+      .bolum { padding: 0 24px; }
+      .bolum-ara { margin-top: 44px; }
+      .bolum-ust {
+        margin-bottom: 16px;
+      }
+      .bolum-ust h2 {
+        margin: 0 0 4px;
+        font: 500 26px/1.12 var(--serif);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+      .bolum-ust p {
+        margin: 0;
+        font: 400 13.5px/1.35 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* =====================================================================
+         BÖLÜM 1: SADE CANLI MERCEK (KUTUSUZ, NEFES ALAN)
+         ===================================================================== */
+      .mercek-tuval {
+        position: relative;
+        width: 100%;
+        height: 312px;
+        border-radius: 26px;
+        overflow: hidden;
+        background: #0e0d0c;
+        box-shadow: var(--kart-golge);
+        cursor: pointer;
+      }
+      .mercek-resim {
+        position: absolute;
+        display: block;
+        user-select: none;
+        -webkit-user-drag: none;
+        transition:
+          width 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+          height 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+          left 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+          top 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      /* Yakın bakışta fısıltı gibi nişangâh köşeleri */
+      .mercek-nisan {
+        position: absolute;
+        inset: 18px;
+        pointer-events: none;
+        opacity: 0.56;
+        transition: opacity 0.35s ease;
+      }
+      .mercek-tuval.tam-kip .mercek-nisan { opacity: 0; }
+      .mercek-nisan span {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-color: rgba(235, 229, 218, 0.65);
+        border-style: solid;
+      }
+      .mercek-nisan .k1 { top: 0; left: 0; border-width: 1.5px 0 0 1.5px; border-top-left-radius: 3px; }
+      .mercek-nisan .k2 { top: 0; right: 0; border-width: 1.5px 1.5px 0 0; border-top-right-radius: 3px; }
+      .mercek-nisan .k3 { bottom: 0; left: 0; border-width: 0 0 1.5px 1.5px; border-bottom-left-radius: 3px; }
+      .mercek-nisan .k4 { bottom: 0; right: 0; border-width: 0 1.5px 1.5px 0; border-bottom-right-radius: 3px; }
+
+      /* Uzaklaşınca tablonun üstünde beliren odak çerçevesi ve ayrıntı noktaları */
+      .mercek-katman {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.45s ease 0.22s;
+      }
+      .mercek-tuval.tam-kip .mercek-katman {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .odak-cerceve {
+        position: absolute;
+        border: 1.5px solid rgba(235, 229, 218, 0.92);
+        border-radius: 10px;
+        box-shadow: 0 0 0 1px rgba(18, 17, 16, 0.55), 0 0 22px rgba(201, 164, 92, 0.34);
+        pointer-events: none;
+        transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .tablo-nokta {
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        margin-left: -22px;
+        margin-top: -22px;
+        border: 0;
+        background: transparent;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        padding: 0;
+      }
+      .tablo-nokta i {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(18, 17, 16, 0.78);
+        border: 1.5px solid rgba(235, 229, 218, 0.9);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.48);
+        transition: transform 0.25s ease, background 0.25s ease;
+      }
+      .tablo-nokta.aktif i {
+        transform: scale(1.25);
+        background: #c9a45c;
+        border-color: #f7f5f1;
+      }
+
+      /* Tuval altında yalnızca hafif karartma + tek "Tabloya uzaklaş" cam düğmesi */
+      .tuval-alt-golge {
+        position: absolute;
+        inset: auto 0 0;
+        height: 84px;
+        background: linear-gradient(0deg, rgba(16, 15, 14, 0.64), transparent);
+        pointer-events: none;
+      }
+      .uzaklas-dugme {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        min-height: 44px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: rgba(20, 18, 16, 0.74);
+        border: 1px solid rgba(235, 229, 218, 0.24);
+        color: #f3eee4;
+        font: 600 13px/1 var(--sans);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        backdrop-filter: blur(20px) saturate(1.5);
+      }
+      .uzaklas-dugme:active { transform: scale(0.97); }
+      .ayrinti-konum {
+        position: absolute;
+        left: 14px;
+        bottom: 18px;
+        font: 500 13px/1.2 var(--sans);
+        color: rgba(243, 238, 228, 0.88);
+        pointer-events: none;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.65);
+      }
+
+      /* Tablo altı: doğrudan zemin üstünde saf editoryal blok */
+      .mercek-metin {
+        padding: 18px 2px 0;
+      }
+      .mercek-soru {
+        margin: 0 0 12px;
+        font: 400 18.5px/1.44 var(--okuma);
+        color: var(--ink);
+      }
+      .mercek-ad {
+        margin: 0 0 4px;
+        font: 500 30px/1.08 var(--serif);
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+      .mercek-kunye {
+        margin: 0 0 18px;
+        font: 400 14px/1.35 var(--sans);
+        color: var(--ink-2);
+      }
+
+      /* Ekrandaki TEK dolu düğme — rozetler ve süre düğmenin sakin alt yazısında */
+      .ana-dugme {
+        width: 100%;
+        min-height: 54px;
+        padding: 8px 20px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        cursor: pointer;
+        text-align: left;
+      }
+      .ana-dugme:active { transform: scale(0.99); }
+      .ana-dugme-sol {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .ana-dugme-sol b {
+        font: 600 15px/1.15 var(--sans);
+      }
+      .ana-dugme-sol span {
+        font: 500 12.5px/1.2 var(--sans);
+        opacity: 0.72;
+      }
+
+      /* =====================================================================
+         BÖLÜM 2: "GÖZÜN HANGİSİNE TAKILDI?" — 4 BÜYÜK PENCERE (2×2)
+         ===================================================================== */
+      .pencere-izgara {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .pencere-kart {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .pencere-kart:active .pencere-kirpim { transform: scale(0.98); }
+      .pencere-kirpim {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--surface);
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      :root[data-tema='gunduz'] .pencere-kirpim {
+        box-shadow: 0 10px 22px rgba(20, 17, 14, 0.11);
+      }
+      .pencere-kart.secili .pencere-kirpim {
+        box-shadow: 0 0 0 2px var(--pirinc), 0 14px 28px rgba(0, 0, 0, 0.28);
+      }
+      .pencere-kirpim img {
+        position: absolute;
+        display: block;
+      }
+      .pencere-ad {
+        font: 500 15.5px/1.2 var(--okuma);
+        color: var(--ink);
+        padding: 0 2px;
+      }
+      .pencere-kart.secili .pencere-ad { color: var(--pirinc); }
+
+      /* =====================================================================
+         BÖLÜM 3: DÖNEMLERE GÖRE — SAKİN YATAY ŞERİT + AÇILAN DİZİN
+         ===================================================================== */
+      .donem-serit {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 0 24px;
+        margin: 0 -24px 18px;
+      }
+      .donem-serit::-webkit-scrollbar { display: none; }
+      .donem-sekme {
+        flex: none;
+        min-height: 44px;
+        padding: 0;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 14.5px/1 var(--sans);
+        display: inline-flex;
+        align-items: baseline;
+        gap: 5px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .donem-sekme small { font-size: 12px; color: var(--ink-3); }
+      .donem-sekme.secili {
+        color: var(--ink);
+        font-weight: 600;
+        border-bottom-color: var(--pirinc);
+      }
+
+      /* Yatay eser şeridi (sayfa taşmadan yalnızca şerit içi kayar) */
+      .eser-serit {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        scroll-padding-left: 24px;
+        scrollbar-width: none;
+        padding: 2px 24px 8px;
+        margin: 0 -24px;
+      }
+      .eser-serit::-webkit-scrollbar { display: none; }
+      .serit-kart {
+        flex: none;
+        width: 152px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .serit-cerceve {
+        display: block;
+        position: relative;
+        width: 152px;
+        height: 190px;
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--surface);
+        margin-bottom: 9px;
+      }
+      .serit-cerceve img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .serit-rozetler {
+        position: absolute;
+        left: 8px;
+        bottom: 8px;
+        display: inline-flex;
+        gap: 4px;
+      }
+      .ikon-rozet {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: rgba(18, 17, 16, 0.72);
+        color: #c9a45c;
+        display: grid;
+        place-items: center;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+      }
+      .serit-ad {
+        font: 500 16px/1.22 var(--okuma);
+        color: var(--ink);
+        margin-bottom: 2px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .serit-alt {
+        font: 400 12.5px/1.3 var(--sans);
+        color: var(--ink-2);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Tek satırlık açılır "Bütün başyapıtlar · 264" bağlantısı */
+      .dizin-acici {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 20px;
+        padding: 0 2px;
+        border: 0;
+        border-top: 1px solid var(--border-ince);
+        background: transparent;
+        color: var(--ink);
+        font: 500 14.5px/1 var(--sans);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+      .dizin-acici span { color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; }
+      .dizin-acici svg { transition: transform 0.25s ease; }
+      .dizin-acici[aria-expanded='true'] svg { transform: rotate(180deg); }
+
+      .dizin-panel {
+        display: none;
+        margin-top: 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        overflow: hidden;
+      }
+      .dizin-panel.acik { display: block; }
+      .dizin-satir {
+        width: 100%;
+        min-height: 58px;
+        padding: 10px 14px;
+        border: 0;
+        border-bottom: 1px solid var(--border-ince);
+        background: transparent;
+        color: inherit;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+      }
+      .dizin-satir:last-child { border-bottom: 0; }
+      .dizin-kare {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--surface-2);
+      }
+      .dizin-kare img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .dizin-orta { flex: 1; min-width: 0; }
+      .dizin-orta b { display: block; font: 500 15.5px/1.2 var(--okuma); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .dizin-orta span { display: block; font: 400 12.5px/1.3 var(--sans); color: var(--ink-2); }
+      .dizin-sag { flex: none; font: 500 12px/1 var(--sans); color: var(--ink-3); }
+      .dizin-sag.pirinc { color: var(--pirinc); }
+
+      /* Alt sekme çubuğu */
+      .alt-cubuk-sar {
+        position: sticky;
+        bottom: 0;
+        z-index: 30;
+        padding: 8px 14px 16px;
+        background: linear-gradient(180deg, transparent 0%, rgba(var(--bg-rgb), 0.92) 38%, var(--bg) 100%);
+      }
+      .alt-cubuk {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        padding: 6px 4px;
+        border-radius: 30px;
+        background: var(--tab-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--sekme-golge);
+        -webkit-backdrop-filter: blur(24px) saturate(1.6);
+        backdrop-filter: blur(24px) saturate(1.6);
+      }
+      .sekme-oge {
+        min-height: 48px;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font: 500 10.5px/1 var(--sans);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .sekme-oge.secili { color: var(--ink); font-weight: 600; }
+      .sekme-oge.secili svg { color: var(--pirinc); }
+
+      /* Önizleme çekmecesi */
+      .cekmece-perde {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        background: rgba(12, 11, 10, 0.62);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      .cekmece-perde.acik { display: flex; }
+      .cekmece {
+        width: 390px;
+        max-height: 82vh;
+        overflow-y: auto;
+        background: var(--surface);
+        border-top-left-radius: 28px;
+        border-top-right-radius: 28px;
+        border: 1px solid var(--border);
+        border-bottom: 0;
+        padding: 12px 22px 28px;
+      }
+      .cekmece-tutamac { width: 38px; height: 4px; border-radius: 999px; background: var(--border); margin: 0 auto 14px; }
+      .cekmece-resim { width: 100%; height: 196px; border-radius: 18px; object-fit: cover; display: block; margin-bottom: 14px; }
+      .cekmece-ust { font: 600 13px/1.2 var(--sans); color: var(--pirinc); margin-bottom: 4px; }
+      .cekmece h3 { margin: 0 0 4px; font: 500 26px/1.15 var(--serif); }
+      .cekmece .meta { font: 400 13.5px/1.3 var(--sans); color: var(--ink-2); margin-bottom: 12px; }
+      .cekmece .ozet { font: 400 16px/1.55 var(--okuma); color: var(--ink); margin: 0 0 16px; }
+      .cekmece-kapat {
+        width: 100%;
+        min-height: 46px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        color: var(--ink);
+        font: 600 14px/1 var(--sans);
+        cursor: pointer;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .mercek-resim, .odak-cerceve { transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="onizleme-ust">
+      <div class="baslik-grup">
+        <span class="ust-not">Galeri · Başyapıtlar · Yön 4</span>
+        <strong>Büyüteçten Tabloya (Sade)</strong>
+      </div>
+      <div class="tema-kabi" role="group" aria-label="Tema seçimi">
+        <button type="button" data-tema-sec="gece" aria-pressed="true">Gece</button>
+        <button type="button" data-tema-sec="gunduz" aria-pressed="false">Gündüz</button>
+      </div>
+    </header>
+
+    <main class="sahne">
+      <div class="telefon">
+        <div class="zemin-hale" aria-hidden="true"></div>
+        <div class="zemin-desen" id="zeminDesen" style="--desen-url: url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-ronesans@3x.png')" aria-hidden="true"></div>
+
+        <div class="icerik">
+          <!-- iOS durum çubuğu -->
+          <div class="durum-cubugu" aria-hidden="true">
+            <span>9:41</span>
+            <div class="durum-simgeler">
+              <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13" y="0" width="3" height="11" rx="1"/></svg>
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3.5a9.5 9.5 0 0 1 13 0M3.5 6.3a6 6 0 0 1 8 0M6.2 9a2.2 2.2 0 0 1 2.6 0" stroke-linecap="round"/></svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.75" y="1.25" width="19.5" height="9.5" rx="2.5" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2"/><rect x="2.5" y="3" width="14.5" height="6" rx="1.2" fill="currentColor"/><path d="M22 4.2v3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Galeri üst -->
+          <div class="galeri-ust">
+            <h1>Galeri</h1>
+            <button type="button" class="arama-hapi" aria-label="Sanatçı veya eser ara">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8" stroke-linecap="round"/></svg>
+              <span>Sanatçı, eser ara</span>
+            </button>
+            <button type="button" class="kalp-dugme" aria-label="Koleksiyonum">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.4l-1.2-1.1C5.8 14.8 2.8 12.1 2.8 8.6 2.8 5.9 4.9 3.8 7.6 3.8c1.6 0 3.1.8 4.4 2.1 1.3-1.3 2.8-2.1 4.4-2.1 2.7 0 4.8 2.1 4.8 4.8 0 3.5-3 6.2-8 10.7L12 20.4z"/></svg>
+            </button>
+          </div>
+
+          <!-- Bölüm sekmeleri -->
+          <div class="bolum-kabi-sar">
+            <nav class="bolum-kabi" aria-label="Galeri bölümleri">
+              <button type="button" class="bolum-sekme">Akımlar</button>
+              <button type="button" class="bolum-sekme secili" aria-current="page">Başyapıtlar</button>
+              <button type="button" class="bolum-sekme">Konular</button>
+              <button type="button" class="bolum-sekme">Zaman</button>
+            </nav>
+          </div>
+
+          <!-- BÖLÜM 1: SADE CANLI MERCEK -->
+          <section class="bolum" aria-label="Ayrıntıdan tabloya">
+            <div class="mercek-tuval" id="mercekTuval" role="button" tabindex="0" aria-label="Tabloya uzaklaş veya ayrıntıya yakınlaş">
+              <img id="mercekImg" class="mercek-resim" src="gorseller/by-elciler.jpg" alt="Elçiler tablosundan ayrıntı" />
+              <div class="mercek-nisan" aria-hidden="true">
+                <span class="k1"></span><span class="k2"></span><span class="k3"></span><span class="k4"></span>
+              </div>
+              <div class="mercek-katman" id="mercekKatman"></div>
+              <div class="tuval-alt-golge" aria-hidden="true"></div>
+              <span class="ayrinti-konum" id="ayrintiKonum">Anamorfik kurukafa</span>
+              <button type="button" class="uzaklas-dugme" id="uzaklasBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span id="uzaklasYazi">Tabloya uzaklaş</span>
+              </button>
+            </div>
+
+            <div class="mercek-metin">
+              <p class="mercek-soru" id="mercekSoru">Yerdeki bu uzun eğri gölge aslında ne?</p>
+              <h2 class="mercek-ad" id="mercekAd">Elçiler</h2>
+              <p class="mercek-kunye" id="mercekKunye">Hans Holbein (Genç) · 1533</p>
+
+              <button type="button" class="ana-dugme" id="mercekAcBtn">
+                <span class="ana-dugme-sol">
+                  <b>Yakın okumayı aç</b>
+                  <span id="mercekDugmeAlt">Hikâye · 6 ayrıntı · ~2 dk · +7 dk ders</span>
+                </span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- BÖLÜM 2: 4 BÜYÜK AYRINTI PENCERESİ -->
+          <section class="bolum bolum-ara" aria-label="Gözün hangisine takıldı">
+            <div class="bolum-ust">
+              <h2>Gözün hangisine takıldı?</h2>
+              <p>Bir ayrıntıya dokun, tablosuna açılsın.</p>
+            </div>
+            <div class="pencere-izgara" id="pencereIzgara"></div>
+          </section>
+
+          <!-- BÖLÜM 3: DÖNEMLERE GÖRE SAKİN ŞERİT + AÇILAN DİZİN -->
+          <section class="bolum bolum-ara" aria-label="Dönemlere göre başyapıtlar">
+            <div class="bolum-ust">
+              <h2>Dönemlere göre</h2>
+              <p>264 başyapıt · 9 dönem</p>
+            </div>
+
+            <nav class="donem-serit" id="donemSerit" aria-label="Dönemler"></nav>
+            <div class="eser-serit" id="eserSerit"></div>
+
+            <button type="button" class="dizin-acici" id="dizinAcici" aria-expanded="false" aria-controls="dizinPanel">
+              <strong>Bütün başyapıtlar</strong>
+              <span>264 eser <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <div class="dizin-panel" id="dizinPanel"></div>
+          </section>
+        </div>
+
+        <!-- Alt sekme çubuğu -->
+        <div class="alt-cubuk-sar">
+          <nav class="alt-cubuk" aria-label="Ana sekmeler">
+            <button type="button" class="sekme-oge">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.5"/><path d="M21 15l-4.5-4.5L9 18"/></svg>
+              <span>Bugün</span>
+            </button>
+            <button type="button" class="sekme-oge">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2V6z"/><path d="M9 4v14M15 6v14"/></svg>
+              <span>Yolculuk</span>
+            </button>
+            <button type="button" class="sekme-oge secili" aria-current="page">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+              <span>Galeri</span>
+            </button>
+            <button type="button" class="sekme-oge">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="6.5" height="16" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="16" rx="1.8"/></svg>
+              <span>Çalış</span>
+            </button>
+            <button type="button" class="sekme-oge">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.5-3.2 4.2-4.8 7-4.8s5.5 1.6 7 4.8" stroke-linecap="round"/></svg>
+              <span>Ben</span>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </main>
+
+    <!-- Önizleme çekmecesi -->
+    <div class="cekmece-perde" id="cekmecePerde" role="dialog" aria-modal="true" aria-label="Başyapıt önizleme">
+      <div class="cekmece">
+        <div class="cekmece-tutamac"></div>
+        <img class="cekmece-resim" id="cekmeceResim" alt="" />
+        <div class="cekmece-ust" id="cekmeceUst"></div>
+        <h3 id="cekmeceBaslik"></h3>
+        <div class="meta" id="cekmeceMeta"></div>
+        <p class="ozet" id="cekmeceOzet"></p>
+        <button type="button" class="cekmece-kapat" id="cekmeceKapat">Kapat</button>
+      </div>
+    </div>
+
+    <script>
+      const DONEMLER = [
+        { id: '', ad: 'Hepsi', toplam: 264 },
+        { id: 'ortacag', ad: 'Orta Çağ', toplam: 12 },
+        { id: 'ronesans', ad: 'Rönesans', toplam: 98 },
+        { id: 'barok', ad: 'Barok', toplam: 43 },
+        { id: 'barok2', ad: 'Klasisizm', toplam: 14 },
+        { id: 'aydinlanma', ad: 'Rokoko ve Neoklasisizm', toplam: 20 },
+        { id: 'romantik', ad: 'Romantizmden Realizme', toplam: 34 },
+        { id: 'empresyonizm', ad: 'Empresyonizm', toplam: 14 },
+        { id: 'postempresyonizm', ad: 'Post-Empresyonizm', toplam: 18 },
+        { id: 'modern', ad: 'Modern sanat', toplam: 11 },
+      ];
+
+      // 22 farklı kamu malı başyapıt: 1 Hero + 4 Büyük Pencere + 17 Şerit/Dizin = 0 tekrar
+      const ESERLER = [
+        // 1 · Hero
+        {
+          id: 'elciler', rol: 'hero', baslik: 'Elçiler', sanatci: 'Hans Holbein (Genç)', yil: '1533', muze: 'National Gallery, Londra',
+          akim: 'Kuzey Rönesansı', donem: 'ronesans', img: 'gorseller/by-elciler.jpg', oran: 0.985,
+          hale: ['54, 108, 86', '172, 126, 62'], ykDk: 2, dersDk: 7, hikaye: true,
+          soru: 'Yerdeki bu uzun eğri gölge aslında ne?',
+          ozet: 'Fransız elçiler Jean de Dinteville ve Georges de Selve’nin arasına bilimsel aletler ve gizli bir ölüm hatırlatıcısı yerleştirilmiş çifte portre.',
+          noktalar: [
+            { ad: 'Anamorfik kurukafa', x: 0.24, y: 0.74, w: 0.52, h: 0.20, metin: 'Zemindeki uzun lekeye sağ alt kenardan çok eğik bakınca bir kurukafa görünür.' },
+            { ad: 'Lavta ve kopuk tel', x: 0.50, y: 0.54, w: 0.26, h: 0.16, metin: 'Lavtanın tellerinden biri kopmuş; Avrupa’da bozulan uyumu anlatır.' },
+            { ad: 'Yer küresi', x: 0.40, y: 0.53, w: 0.14, h: 0.17, metin: 'Alt raftaki yer küresi Avrupa’yı ve Dinteville’in şatosunu gösterir.' },
+            { ad: 'Gök aletleri', x: 0.39, y: 0.15, w: 0.36, h: 0.20, metin: 'Gök küresi, güneş saatleri ve kuadrant: 1533’te bilimin en ileri aletleri.' },
+            { ad: 'Gizli çarmıh', x: 0.01, y: 0.02, w: 0.14, h: 0.18, metin: 'Sol üstte yeşil perdenin aralığından yarı gizlenmiş gümüş bir çarmıh görünür.' },
+            { ad: 'Hançer ve yaş', x: 0.15, y: 0.48, w: 0.14, h: 0.18, metin: 'Dinteville’in hançer kınında 29, rahibin kitabında 25 yaşında olduğu yazar.' },
+          ],
+        },
+
+        // 2–5 · 4 Büyük Ayrıntı Penceresi (2×2)
+        {
+          id: 'nedimeler', rol: 'pencere', pencereNokta: 0, baslik: 'Nedimeler', sanatci: 'Diego Velázquez', yil: 'y. 1656', muze: 'Prado Müzesi, Madrid',
+          akim: 'İspanyol Barok', donem: 'barok', img: 'gorseller/by-nedimeler.jpg', oran: 1.151,
+          hale: ['146, 100, 62', '86, 68, 52'], ykDk: 2, dersDk: 0, hikaye: true,
+          soru: 'Arka duvardaki o küçük aynada tam bizim yerimizde kim duruyor?',
+          ozet: 'Saray atölyesinde beş yaşındaki prenses Margarita ve nedimeleri; herkes tablonun dışındaki kral ve kraliçeye — yani bize — bakıyor.',
+          noktalar: [
+            { ad: 'Aynadaki çift', x: 0.37, y: 0.51, w: 0.10, h: 0.11, metin: 'Arka duvardaki aynada Kral IV. Felipe ile Kraliçe Mariana’nın bulanık yansıması durur.' },
+            { ad: 'Ressamın otoportresi', x: 0.16, y: 0.50, w: 0.15, h: 0.20, metin: 'Velázquez elinde palet ve fırçayla dev tuvalin başında; göğsünde Santiago haçı var.' },
+            { ad: 'Prenses Margarita', x: 0.41, y: 0.63, w: 0.16, h: 0.18, metin: 'Resmin bütün ışığı beş yaşındaki prensesin altın saçları ve ipek elbisesinde toplanır.' },
+            { ad: 'Kapıdaki adam', x: 0.53, y: 0.52, w: 0.09, h: 0.15, metin: 'Kraliçenin mabeyincisi merdivende durmuş içeri bakıyor; gelmek mi gitmek mi üzere, belli değil.' },
+            { ad: 'Uyuklayan köpek', x: 0.60, y: 0.83, w: 0.32, h: 0.15, metin: 'Ön plandaki iri mastif, bu törensel kalabalığı hiç umursamayan tek varlık.' },
+          ],
+        },
+        {
+          id: 'arnolfini', rol: 'pencere', pencereNokta: 1, baslik: 'Arnolfini Portresi', sanatci: 'Jan van Eyck', yil: '1434', muze: 'National Gallery, Londra',
+          akim: 'Kuzey Rönesansı', donem: 'ronesans', img: 'gorseller/by-arnolfini.jpg', oran: 1.368,
+          hale: ['78, 108, 72', '156, 78, 56'], ykDk: 1, dersDk: 8, hikaye: false,
+          soru: 'Gündüz vakti altı kollu avizede neden tek bir mum yanıyor?',
+          ozet: 'Brugge’de yaşayan İtalyan tüccar ve eşinin, aynasında ressamın kendisini saklayan olağanüstü yağlıboya portresi.',
+          noktalar: [
+            { ad: 'Ayna ve imza', x: 0.40, y: 0.19, w: 0.20, h: 0.18, metin: 'Dışbükey aynada çiftin sırtı ve kapıda iki konuk görünür; üstünde “Jan van Eyck buradaydı” yazar.' },
+            { ad: 'Tek mum', x: 0.37, y: 0.04, w: 0.28, h: 0.15, metin: 'Pirinç avizede gündüz vakti tek bir mum yanıyor: Tanrı’nın her şeyi gören gözü ya da evlilik mumu.' },
+            { ad: 'Birleşen eller', x: 0.47, y: 0.37, w: 0.17, h: 0.09, metin: 'Erkek kadının elini avucuna almış, sağ elini yemin eder gibi kaldırmış.' },
+            { ad: 'Köpek', x: 0.36, y: 0.83, w: 0.24, h: 0.15, metin: 'Küçük tüylü köpek sadakatin geleneksel simgesidir.' },
+            { ad: 'Takunyalar', x: 0.12, y: 0.86, w: 0.20, h: 0.11, metin: 'Çıkarılıp bırakılmış ahşap takunyalar kutsal bir zemine basıldığını imler.' },
+            { ad: 'Portakallar', x: 0.02, y: 0.36, w: 0.18, h: 0.14, metin: 'Pencere kenarındaki portakallar hem servetin hem masumiyetin işareti.' },
+          ],
+        },
+        {
+          id: 'salincak', rol: 'pencere', pencereNokta: 0, baslik: 'Salıncak', sanatci: 'Jean-Honoré Fragonard', yil: '1766', muze: 'Wallace Koleksiyonu',
+          akim: 'Rokoko', donem: 'aydinlanma', img: 'gorseller/by-salincak.jpg', oran: 1.278,
+          hale: ['74, 114, 92', '186, 128, 122'], ykDk: 2, dersDk: 8, hikaye: false,
+          soru: 'Havaya fırlayan bu pembe ayakkabı kime doğru uçuyor?',
+          ozet: 'Yeşil bahçede sallanan genç kadın, gölgedeki gizli âşığına pembe ayakkabısını savurur.',
+          noktalar: [
+            { ad: 'Uçan ayakkabı', x: 0.17, y: 0.50, w: 0.18, h: 0.16, metin: 'Genç kadın sol ayağını uzatırken pembe ipek ayakkabısı havaya fırlayıp gizli bir oyuna dönüşür.' },
+            { ad: 'Susturan Cupid', x: 0.00, y: 0.45, w: 0.16, h: 0.22, metin: 'Soldaki taş heykel parmağını dudaklarına götürmüş; bahçedeki sırrı gizli tutmamızı ister.' },
+            { ad: 'Çalılıktaki âşık', x: 0.05, y: 0.73, w: 0.32, h: 0.22, metin: 'Çiçeklerin arasında gizlenen genç adam, yukarıdaki eteklerin hışırtısına hayranlıkla bakar.' },
+            { ad: 'İpi çeken adam', x: 0.75, y: 0.68, w: 0.22, h: 0.25, metin: 'Gölgede kalan yaşlı adam salıncağı iter ama çalılıktaki genç adamdan habersizdir.' },
+            { ad: 'Işık huzmesi', x: 0.35, y: 0.38, w: 0.34, h: 0.30, metin: 'Ağaçların arasından süzülen tek ışık huzmesi pembe ipek elbiseyi parlatır.' },
+            { ad: 'Köpek', x: 0.64, y: 0.86, w: 0.14, h: 0.12, metin: 'Sağ alttaki küçük köpek havlayarak bütün gizli oyuna itiraz eden tek tanıktır.' },
+          ],
+        },
+        {
+          id: 'yildizligece', rol: 'pencere', pencereNokta: 3, baslik: 'Yıldızlı Gece', sanatci: 'Vincent van Gogh', yil: '1889', muze: 'MoMA, New York',
+          akim: 'Post-Empresyonizm', donem: 'postempresyonizm', img: 'gorseller/by-yildizligece.jpg', oran: 0.792,
+          hale: ['46, 92, 158', '196, 156, 62'], ykDk: 2, dersDk: 7, hikaye: false,
+          soru: 'Sol önde göğe alev gibi yükselen bu koyu gölge nedir?',
+          ozet: 'Saint-Rémy’deki odasının penceresinden gece göğünü bir iç fırtınaya çeviren Van Gogh’un dönen yıldızları.',
+          noktalar: [
+            { ad: 'Büyük girdap', x: 0.33, y: 0.18, w: 0.45, h: 0.32, metin: 'Gökyüzünün ortasında iki sarmal birbirine dolanıyor; kalın fırça darbeleri rüzgârı görünür kılar.' },
+            { ad: 'Hilal ay', x: 0.80, y: 0.05, w: 0.20, h: 0.25, metin: 'Sağ üstteki hilal, güneşi andıran sarı-turuncu halkalarla çevrelenmiş.' },
+            { ad: 'Sabah yıldızı', x: 0.29, y: 0.44, w: 0.13, h: 0.15, metin: 'Ortanın solundaki en parlak yıldız: Van Gogh’un Theo’ya mektubunda andığı Venüs.' },
+            { ad: 'Servinin alevleri', x: 0.13, y: 0.55, w: 0.28, h: 0.35, metin: 'Koyu yeşil servide kahverengi ve siyah kıvrımlar alev gibi yükselir; toprağı göğe bağlar.' },
+            { ad: 'Kilise kulesi', x: 0.47, y: 0.65, w: 0.15, h: 0.24, metin: 'Provence’tan çok Van Gogh’un memleketi Hollanda’nın sivri kulelerini andırır.' },
+            { ad: 'Işıklı pencereler', x: 0.62, y: 0.78, w: 0.25, h: 0.15, metin: 'Sıcak sarı pencereler çalkantılı göğün altında sükûnet kurar.' },
+          ],
+        },
+
+        // 6–22 · Şerit ve açılan dizindeki 17 benzersiz başyapıt
+        { id: 'judith', rol: 'serit', baslik: 'Holofernes’in Kafasını Kesen Judith', sanatci: 'Artemisia Gentileschi', yil: '1620', muze: 'Uffizi', akim: 'İtalyan Barok', donem: 'barok', img: 'gorseller/by-judith.jpg', oran: 1.105, hale: ['166, 62, 48', '168, 128, 64'], ykDk: 2, dersDk: 8, hikaye: true, soru: 'Judith’in bileziğindeki madalyonlarda hangi tanrıça var?', ozet: 'İki kadının ortak kararlılığı ve keskin Barok ışık-gölge dramı.', noktalar: [{ ad: 'Haç biçimli kabza', x: 0.37, y: 0.40, w: 0.20, h: 0.16, metin: 'Holofernes’in kendi kılıcının kabzası bir haç gibi durur.' }, { ad: 'Judith’in yüzü', x: 0.80, y: 0.15, w: 0.16, h: 0.17, metin: 'Yüzünde ne korku ne öfke; kararlı bir fiziksel güç.' }, { ad: 'Hizmetçi Abra', x: 0.44, y: 0.05, w: 0.20, h: 0.22, metin: 'Kenarda beklemiyor, işe bizzat katılıyor.' }, { ad: 'Bilezik', x: 0.68, y: 0.51, w: 0.10, h: 0.12, metin: 'Ressamın adaşı av tanrıçası Artemis’i taşır.' }, { ad: 'Holofernes', x: 0.46, y: 0.56, w: 0.16, h: 0.14, metin: 'Uyanmış, direniyor ama artık çok geç.' }, { ad: 'Sıçrayan kan', x: 0.52, y: 0.42, w: 0.18, h: 0.16, metin: 'Keskin Barok ışıkla belirginleşen gerçekçi ayrıntı.' }] },
+        { id: 'medusa', rol: 'serit', baslik: 'Medusa’nın Salı', sanatci: 'Théodore Géricault', yil: '1819', muze: 'Louvre, Paris', akim: 'Romantizm', donem: 'romantik', img: 'gorseller/by-medusa.jpg', oran: 0.680, hale: ['138, 108, 68', '74, 88, 92'], ykDk: 2, dersDk: 7, hikaye: true, soru: 'On beş kazazedenin el salladığı gemi tablonun neresinde?', ozet: 'Gerçek bir deniz kazasından doğan, ölülerden umuda tırmanan dev Romantik başyapıt.', noktalar: [{ ad: 'Bez sallayan adam', x: 0.61, y: 0.06, w: 0.20, h: 0.37, metin: 'Fıçının tepesindeki siyahi figür bütün kurtuluş umudunu sırtlar.' }, { ad: 'Ufuktaki Argus', x: 0.76, y: 0.34, w: 0.11, h: 0.11, metin: 'Kurtarıcı gemi ufukta neredeyse görünmeyecek kadar küçük.' }, { ad: 'Baba ve ölü oğul', x: 0.21, y: 0.50, w: 0.26, h: 0.30, metin: 'Yaşlı baba gemiye bakmaz bile; umudun karşısındaki yas.' }, { ad: 'Suya kayan ceset', x: 0.60, y: 0.78, w: 0.38, h: 0.20, metin: 'İzleyici ön plandaki ölülerin arasından sahneye girer.' }, { ad: 'Direk ve yelken', x: 0.28, y: 0.16, w: 0.26, h: 0.32, metin: 'Rüzgâr yelkeni gemiden uzağa doğru şişirir.' }, { ad: 'Direğin yanındakiler', x: 0.46, y: 0.25, w: 0.20, h: 0.22, metin: 'Kazayı kitaplaştıran iki kurtulan.' }] },
+        { id: 'incikupeli', rol: 'serit', baslik: 'İnci Küpeli Kız', sanatci: 'Johannes Vermeer', yil: '1665', muze: 'Mauritshuis', akim: 'Hollanda Altın Çağı', donem: 'barok', img: 'gorseller/by-incikupeli.jpg', oran: 1.184, hale: ['58, 108, 152', '184, 146, 72'], ykDk: 2, dersDk: 0, hikaye: false, soru: 'Bu parlak küpe gerçekten tek bir inci mi, yoksa yalnız iki fırça darbesi mi?', ozet: 'Karanlık boşluktan omzunun üstünden dönüp bakan genç kız ve ışık yakalayan o ünlü küpe.', noktalar: [{ ad: 'İnci', x: 0.58, y: 0.50, w: 0.14, h: 0.14, metin: 'Yalnızca iki beyaz fırça darbesi karanlıkta hacim yaratır.' }, { ad: 'Bakış', x: 0.31, y: 0.33, w: 0.28, h: 0.14, metin: 'Adını yeni seslenmişiz gibi omzunun üstünden çevrilmiş canlı bir an.' }, { ad: 'Aralık dudaklar', x: 0.33, y: 0.48, w: 0.22, h: 0.12, metin: 'Bir sözün tam başlamak üzere olduğu hissini verir.' }, { ad: 'Mavi türban', x: 0.40, y: 0.10, w: 0.42, h: 0.24, metin: 'Değerli lapis lazuliden üretilen ultramarin mavi.' }, { ad: 'Sarı kumaş', x: 0.56, y: 0.62, w: 0.32, h: 0.28, metin: 'Karanlık fona sıcak bir denge kurar.' }] },
+        { id: 'agit', rol: 'serit', baslik: 'Ağıt', sanatci: 'Giotto di Bondone', yil: '1305', muze: 'Scrovegni Şapeli', akim: 'Gotik', donem: 'ortacag', img: 'gorseller/by-agit.jpg', oran: 0.925, hale: ['54, 96, 152', '166, 128, 72'], ykDk: 1, dersDk: 7, hikaye: false, soru: 'Ön plandaki iki figür neden sırtını bize dönmüş oturuyor?', ozet: 'Çarmıhtan indirilen İsa’nın başında yas tutan yakınları ve gökte feryat eden melekler.', noktalar: [{ ad: 'Meryem ve İsa', x: 0.12, y: 0.62, w: 0.28, h: 0.23, metin: 'Giotto acıyı jestle değil bakışla verir.' }, { ad: 'Ağlayan melekler', x: 0.08, y: 0.05, w: 0.40, h: 0.30, metin: 'Gökte on melek her biri ayrı biçimde ağlar.' }, { ad: 'Kuru ağaç', x: 0.74, y: 0.03, w: 0.24, h: 0.32, metin: 'Diriliş’le yeniden yeşerecek hayatı anlatır.' }, { ad: 'Sırtı dönük figürler', x: 0.37, y: 0.60, w: 0.24, h: 0.36, metin: 'Sahneye bizim yerimize bakarlar.' }, { ad: 'Yuhanna’nın kolları', x: 0.44, y: 0.44, w: 0.28, h: 0.20, metin: 'Duyguyu bütün bedenle anlatan geniş jest.' }, { ad: 'Mecdelli Meryem', x: 0.56, y: 0.65, w: 0.25, h: 0.26, metin: 'İsa’nın ayaklarını kucağında tutar.' }] },
+        { id: 'venus', rol: 'serit', baslik: 'Venüs’ün Doğuşu', sanatci: 'Sandro Botticelli', yil: '1485', muze: 'Uffizi', akim: 'Erken Rönesans', donem: 'ronesans', img: 'gorseller/by-venus.jpg', oran: 0.628, hale: ['88, 126, 122', '184, 146, 108'], ykDk: 2, dersDk: 0, hikaye: false, soru: 'Rüzgâr tanrılarının arasından kıyıya dökülen pembe güller neyi anlatıyor?', ozet: 'Deniz köpüğünden doğup istiridye kabuğu üzerinde kıyıya süzülen Venüs.', noktalar: [{ ad: 'Utangaç Venüs', x: 0.44, y: 0.22, w: 0.17, h: 0.35, metin: 'Antik heykellerdeki Venus Pudica duruşu.' }, { ad: 'Rüzgârlar', x: 0.19, y: 0.02, w: 0.23, h: 0.26, metin: 'Kanatlı Zephyros Venüs’ü kıyıya üfler.' }, { ad: 'Dökülen güller', x: 0.37, y: 0.25, w: 0.10, h: 0.15, metin: 'Efsaneye göre gül Venüs’le birlikte doğmuştur.' }, { ad: 'Yüz ve saçlar', x: 0.47, y: 0.05, w: 0.14, h: 0.18, metin: 'Altın yaldızlı saç telleri dalgalar gibi dökülür.' }, { ad: 'Bahar perisi', x: 0.72, y: 0.20, w: 0.22, h: 0.56, metin: 'Çiçekli peleriniyle Venüs’ü karşılar.' }, { ad: 'İstiridye kabuğu', x: 0.38, y: 0.76, w: 0.24, h: 0.16, metin: 'Denizden gelişin simgesi.' }] },
+        { id: 'monalisa', rol: 'serit', baslik: 'Mona Lisa', sanatci: 'Leonardo da Vinci', yil: '1503', muze: 'Louvre', akim: 'Yüksek Rönesans', donem: 'ronesans', img: 'gorseller/by-monalisa.jpg', oran: 1.491, hale: ['126, 114, 74', '74, 88, 76'], ykDk: 2, dersDk: 0, hikaye: false, soru: 'Gülümsemesi neden gözüne bakınca başka, dudaklarına bakınca başka görünür?', ozet: 'Sfumato ile dudak köşelerinin gölgede eridiği, dünyanın en çok konuşulan portresi.', noktalar: [{ ad: 'Gülümseme', x: 0.36, y: 0.26, w: 0.22, h: 0.09, metin: 'Dudak köşeleri gölgede eridiği için gülümseme belirsiz kalır.' }, { ad: 'Gözler', x: 0.34, y: 0.17, w: 0.26, h: 0.09, metin: 'Bakış izleyiciye çevrilmiş, sfumato ile yumuşar.' }, { ad: 'Eller', x: 0.22, y: 0.73, w: 0.38, h: 0.23, metin: 'Koltuğun kolunda üst üste duran sakin duruş.' }, { ad: 'Sol manzara', x: 0.00, y: 0.31, w: 0.30, h: 0.23, metin: 'Soldaki ufuk sağdakinden alçaktır.' }, { ad: 'İnce tül', x: 0.30, y: 0.06, w: 0.34, h: 0.14, metin: 'Saçların üstünden omuza inen şeffaf örtü.' }, { ad: 'Köprü', x: 0.68, y: 0.42, w: 0.26, h: 0.18, metin: 'Kayalıkların arasına gömülü taş kemerli köprü.' }] },
+        { id: 'gecedevriyesi', rol: 'serit', baslik: 'Gece Devriyesi', sanatci: 'Rembrandt van Rijn', yil: '1642', muze: 'Rijksmuseum', akim: 'Hollanda Altın Çağı', donem: 'barok', img: 'gorseller/by-gecedevriyesi.jpg', oran: 0.813, hale: ['164, 122, 62', '86, 68, 48'], ykDk: 2, dersDk: 0, hikaye: false, soru: 'Silahlı milis bölüğünün ortasında altın ışıkla parlayan küçük kız kim?', ozet: 'Durağan bir grup portresini yürüyüşe kalkmış canlı bir tiyatro sahnesine çeviren Rembrandt şaheseri.', noktalar: [{ ad: 'Kaptan ve gölge', x: 0.43, y: 0.44, w: 0.18, h: 0.22, metin: 'Elin gölgesi Amsterdam armasına düşer.' }, { ad: 'Küçük kız', x: 0.25, y: 0.58, w: 0.14, h: 0.22, metin: 'Bölüğün simgesini belinde taşıyan maskot figür.' }, { ad: 'Barut dolduran', x: 0.13, y: 0.48, w: 0.15, h: 0.26, metin: 'Yürürken tüfeğine barut dolduran asker.' }, { ad: 'Teğmen', x: 0.52, y: 0.50, w: 0.16, h: 0.34, metin: 'Parlak sarı giysisiyle öne çıkar.' }, { ad: 'Rembrandt’ın gözü', x: 0.48, y: 0.28, w: 0.10, h: 0.10, metin: 'Arka sırada ressamın kendi yüzü seçilir.' }] },
+        { id: 'gezgin', rol: 'serit', baslik: 'Sis Denizi Üzerinde Gezgin', sanatci: 'Caspar David Friedrich', yil: '1818', muze: 'Hamburg', akim: 'Romantizm', donem: 'romantik', img: 'gorseller/by-gezgin.jpg', oran: 1.274, hale: ['96, 118, 134', '142, 126, 108'], ykDk: 2, dersDk: 8, hikaye: false, soru: 'Adamın yüzünü hiç görmeden hissettiğini nasıl anlıyoruz?', ozet: 'Sırtı bize dönük bir yolcu, sislerle kaplı dağların eşiğinde.', noktalar: [{ ad: 'Rüzgârdaki saçlar', x: 0.44, y: 0.32, w: 0.12, h: 0.10, metin: 'Rüzgârda dağılan saçları yüksekliği hissettirir.' }, { ad: 'Zirkelstein kayası', x: 0.71, y: 0.32, w: 0.22, h: 0.24, metin: 'Gerçek kayalıkların hayal gücüyle birleştirilmesi.' }, { ad: 'Dalga gibi sis', x: 0.00, y: 0.68, w: 0.36, h: 0.24, metin: 'Sis bir deniz gibi kabarıp zirveleri adalara çevirir.' }, { ad: 'Ufuk çizgisi', x: 0.45, y: 0.42, w: 0.14, h: 0.18, metin: 'Bütün ufuk çizgisi tam gezginin göğsünde kesişir.' }, { ad: 'Baston', x: 0.54, y: 0.52, w: 0.14, h: 0.26, metin: 'İnsanla yüce doğayı karşı karşıya getirir.' }, { ad: 'Uzak zirve', x: 0.12, y: 0.38, w: 0.24, h: 0.18, metin: 'Sonsuzluk duygusunu büyütür.' }] },
+        { id: 'izlenim', rol: 'serit', baslik: 'İzlenim, Gün Doğumu', sanatci: 'Claude Monet', yil: '1872', muze: 'Marmottan Monet', akim: 'Empresyonizm', donem: 'empresyonizm', img: 'gorseller/by-izlenim.jpg', oran: 0.778, hale: ['88, 114, 134', '202, 114, 62'], ykDk: 2, dersDk: 8, hikaye: false, soru: 'Bu küçük turuncu güneş siyah-beyaz yapılsa neden neredeyse kaybolur?', ozet: 'Empresyonizme adını veren Le Havre sabahı ve suda kırılan ışık.', noktalar: [{ ad: 'Turuncu güneş', x: 0.55, y: 0.25, w: 0.11, h: 0.10, metin: 'Çevresindeki sisle aynı parlaklıkta; gözde titreşir.' }, { ad: 'Sudaki yansıma', x: 0.55, y: 0.50, w: 0.11, h: 0.30, metin: 'Kısa turuncu fırça vuruşlarıyla kırılır.' }, { ad: 'Kürekçi sandal', x: 0.42, y: 0.64, w: 0.12, h: 0.13, metin: 'Birkaç koyu dokunuşla sezdirilen figür.' }, { ad: 'Uzaktaki sandallar', x: 0.13, y: 0.53, w: 0.22, h: 0.13, metin: 'Sise karışan renk solmasıyla derinlik.' }, { ad: 'Liman vinçleri', x: 0.08, y: 0.26, w: 0.28, h: 0.24, metin: 'Sanayi limanı sabah sisinde hayalet gibi belirir.' }, { ad: 'İmza', x: 0.04, y: 0.88, w: 0.22, h: 0.08, metin: 'Sol altta Claude Monet 72 imzası.' }] },
+        { id: 'dalga', rol: 'serit', baslik: 'Kanagawa Açıklarında Büyük Dalga', sanatci: 'Katsushika Hokusai', yil: '1830', muze: 'Metropolitan Müzesi', akim: 'Ukiyo-e', donem: 'empresyonizm', img: 'gorseller/by-dalga.jpg', oran: 0.672, hale: ['46, 86, 134', '186, 166, 132'], ykDk: 2, dersDk: 0, hikaye: false, soru: 'Dev dalganın pençeleri altında saklanan üç teknede kimler var?', ozet: 'Prusya mavisi dev dalganın çukurunda sakin duran karlı Fuji Dağı.', noktalar: [{ ad: 'Dalganın tepesi', x: 0.38, y: 0.12, w: 0.22, h: 0.33, metin: 'Pençeye benzeyen köpükler teknelerin üstüne uzanır.' }, { ad: 'Fuji Dağı', x: 0.56, y: 0.62, w: 0.13, h: 0.12, metin: 'Kutsal dağ suyun gücüne sakin bir zıtlık kurar.' }, { ad: 'Soldaki tekne', x: 0.03, y: 0.46, w: 0.20, h: 0.25, metin: 'Edo’ya canlı balık taşıyan hızlı tekneler.' }, { ad: 'Ortadaki tekne', x: 0.44, y: 0.82, w: 0.30, h: 0.12, metin: 'Avrupa gravürlerinden öğrenilen perspektif.' }, { ad: 'Başlık mührü', x: 0.05, y: 0.05, w: 0.14, h: 0.28, metin: 'Fuji’nin Otuz Altı Görünümü dizisinin imzası.' }] },
+        { id: 'opucuk', rol: 'serit', baslik: 'Öpücük', sanatci: 'Gustav Klimt', yil: '1907', muze: 'Belvedere, Viyana', akim: 'Art Nouveau', donem: 'postempresyonizm', img: 'gorseller/by-opucuk.jpg', oran: 1.003, hale: ['186, 148, 62', '128, 102, 54'], ykDk: 1, dersDk: 9, hikaye: false, soru: 'İki âşığın giysisindeki dikdörtgenler ve daireler neden farklı?', ozet: 'Gerçek altın varak fonun içinde, uçurumun kıyısında sarmaş dolaş bir çift.', noktalar: [{ ad: 'Öpücük', x: 0.43, y: 0.02, w: 0.25, h: 0.20, metin: 'Klimt’in Altın Dönem başyapıtı.' }, { ad: 'Dikdörtgenler ve daireler', x: 0.36, y: 0.40, w: 0.26, h: 0.20, metin: 'Köşeli ve yuvarlak biçimler eril ile dişili simgeler.' }, { ad: 'Uçurumdaki ayaklar', x: 0.66, y: 0.64, w: 0.16, h: 0.24, metin: 'Aşkın mutluluğu ile tehlikesini aynı anda gösterir.' }, { ad: 'Çiçekli çayır', x: 0.10, y: 0.78, w: 0.30, h: 0.20, metin: 'Derinlik yerine düz süsleme öne çıkar.' }, { ad: 'Altın tozu fon', x: 0.05, y: 0.30, w: 0.18, h: 0.20, metin: 'Gerçek altın varak ışıltısı.' }, { ad: 'İmza', x: 0.91, y: 0.88, w: 0.08, h: 0.05, metin: 'Kare bir blok gibi yerleştirilmiş imza.' }] },
+        { id: 'ciglik', rol: 'serit', baslik: 'Çığlık', sanatci: 'Edvard Munch', yil: '1893', muze: 'Ulusal Müze, Oslo', akim: 'Ekspresyonizm', donem: 'modern', img: 'gorseller/by-ciglik.jpg', oran: 1.241, hale: ['182, 76, 46', '54, 86, 114'], ykDk: 2, dersDk: 8, hikaye: false, soru: 'Bu kızıl gökyüzüne kurşun kalemle gizli bir cümleyi kim yazdı?', ozet: 'Doğadan gelen çığlığı duymamak için kulaklarını kapatan figür ve modern kaygının imgesi.', noktalar: [{ ad: 'Kızıl gökyüzü', x: 0.05, y: 0.02, w: 0.45, h: 0.20, metin: 'Sol üstte Munch’un el yazısıyla soluk bir not durur: “Ancak deli bir adam tarafından yapılmış olabilir.”' }, { ad: 'Çığlık atan yüz', x: 0.39, y: 0.49, w: 0.21, h: 0.20, metin: 'Çığlık doğadan gelir; figür onu duymamak için kulaklarını kapatır.' }, { ad: 'İki siluet', x: 0.00, y: 0.33, w: 0.13, h: 0.21, metin: 'Uzaklaşan iki arkadaş yalnızlığı belirginleştirir.' }, { ad: 'İki tekne', x: 0.29, y: 0.33, w: 0.13, h: 0.05, metin: 'Oslo fiyordundaki sakin tekneler.' }, { ad: 'İmza', x: 0.03, y: 0.95, w: 0.15, h: 0.04, metin: 'Karton üzerine tempera ve boya kalemi.' }] },
+        { id: 'muneccimler', rol: 'serit', baslik: 'Müneccimlerin Tapınması', sanatci: 'Gentile da Fabriano', yil: '1423', muze: 'Uffizi', akim: 'Uluslararası Gotik', donem: 'ortacag', img: 'gorseller/by-muneccimler.jpg', oran: 1.093, hale: ['178, 134, 58', '114, 72, 48'], ykDk: 2, dersDk: 8, hikaye: false, soru: 'Kralların giysisindeki altın desenler neden yüzeyden kabarık duruyor?', ozet: 'Altın varak kabartmalar, tazılar ve şahinlerle bir saray alayına dönüşen sunak panosu.', noktalar: [{ ad: 'Ayağı öpen kral', x: 0.26, y: 0.60, w: 0.14, h: 0.12, metin: 'En yaşlı kral tacını yere bırakmış.' }, { ad: 'Genç kral', x: 0.48, y: 0.52, w: 0.14, h: 0.27, metin: 'Pastiglia tekniğiyle yüzeyden kabaran altın.' }, { ad: 'Av hayvanları', x: 0.64, y: 0.71, w: 0.18, h: 0.10, metin: 'Tazı, şahin ve maymunlar.' }, { ad: 'Kralların yolculuğu', x: 0.37, y: 0.30, w: 0.26, h: 0.13, metin: 'Tek panoda zamanın akması.' }, { ad: 'Gece Doğuşu', x: 0.14, y: 0.86, w: 0.21, h: 0.08, metin: 'Karanlıkta bebek İsa’dan yayılan ışık.' }, { ad: 'İmza', x: 0.24, y: 0.81, w: 0.16, h: 0.04, metin: 'Mayıs 1423 tarihi.' }] },
+        { id: 'uzunboyunlu', rol: 'serit', baslik: 'Uzun Boyunlu Meryem', sanatci: 'Parmigianino', yil: '1534–1540', muze: 'Uffizi', akim: 'Maniyerizm', donem: 'ronesans', img: 'gorseller/by-uzunboyunlu.jpg', oran: 1.566, hale: ['154, 118, 92', '96, 84, 72'], ykDk: 2, dersDk: 7, hikaye: false, soru: 'Arka plandaki sütun sırası neden hiçbir çatıya bağlanmıyor?', ozet: 'Kuğu gibi uzayan oranlarıyla Maniyerizmin manifestosu.', noktalar: [{ ad: 'Boyun ve parmaklar', x: 0.32, y: 0.09, w: 0.29, h: 0.23, metin: 'Doğa yerine zarafet ölçütü seçilmiş.' }, { ad: 'Kayan İsa Çocuk', x: 0.48, y: 0.38, w: 0.30, h: 0.28, metin: 'Gelecekteki çarmıh acısını anımsatır.' }, { ad: 'Parlak vazo', x: 0.00, y: 0.36, w: 0.18, h: 0.24, metin: 'Meryem’in boynuyla aynı kıvrımı yineler.' }, { ad: 'Bitmemiş sütunlar', x: 0.76, y: 0.14, w: 0.18, h: 0.45, metin: 'Üstünde hiçbir mimari yapı yok.' }, { ad: 'Küçük peygamber', x: 0.78, y: 0.68, w: 0.16, h: 0.26, metin: 'Ölçeği bilerek küçültülmüş figür.' }, { ad: 'Sıkışık melekler', x: 0.06, y: 0.18, w: 0.26, h: 0.24, metin: 'Sağdaki boşlukla gerilim kurar.' }] },
+        { id: 'arkadya', rol: 'serit', baslik: 'Arkadya’da Ben de Varım', sanatci: 'Nicolas Poussin', yil: '1637', muze: 'Louvre', akim: 'Fransız Klasisizmi', donem: 'barok2', img: 'gorseller/by-arkadya.jpg', oran: 0.713, hale: ['138, 114, 78', '74, 102, 128'], ykDk: 2, dersDk: 8, hikaye: false, soru: 'Çobanlar mezar taşının üzerindeki Latince cümlede ne okuyor?', ozet: 'Pastoral bir cennetin ortasında ölüm yazısıyla yüzleşen dingin çobanlar.', noktalar: [{ ad: 'Yazıt ve gölge', x: 0.40, y: 0.52, w: 0.22, h: 0.16, metin: '“Arkadya’da bile ben (ölüm) varım.”' }, { ad: 'Harfleri izleyen çoban', x: 0.33, y: 0.49, w: 0.18, h: 0.24, metin: 'Kolunun gölgesi tırpanı andırır.' }, { ad: 'Soran genç', x: 0.48, y: 0.34, w: 0.16, h: 0.26, metin: 'Sağdaki dingin kadına dönüp bakar.' }, { ad: 'Sakin kadın', x: 0.66, y: 0.28, w: 0.18, h: 0.46, metin: 'Antik heykel gibi ağırbaşlı.' }, { ad: 'Uzak dağlar', x: 0.08, y: 0.18, w: 0.36, h: 0.26, metin: 'Klasisizmin akılcı düzeni.' }] },
+        { id: 'marat', rol: 'serit', baslik: 'Marat’nın Ölümü', sanatci: 'Jacques-Louis David', yil: '1793', muze: 'Brüksel', akim: 'Neoklasisizm', donem: 'aydinlanma', img: 'gorseller/by-marat.jpg', oran: 1.287, hale: ['136, 122, 86', '92, 84, 68'], ykDk: 1, dersDk: 0, hikaye: false, soru: 'Üst yarının tamamı neden bomboş karanlık bir duvar?', ozet: 'Devrimin öldürülen gazetecisi, elinde katilinin mektubu ve sessiz boşluk.', noktalar: [{ ad: 'Corday’nin mektubu', x: 0.66, y: 0.52, w: 0.18, h: 0.18, metin: 'Katili Charlotte Corday’nin mektubu hâlâ okunur.' }, { ad: 'Sarkan kol', x: 0.40, y: 0.85, w: 0.24, h: 0.14, metin: 'Caravaggio’nun İsa’sını anımsatır.' }, { ad: 'Kanlı bıçak', x: 0.06, y: 0.94, w: 0.20, h: 0.06, metin: 'Yerdeki bıçakla eldeki kalem karşıt konmuş.' }, { ad: 'Ahşap sandık', x: 0.12, y: 0.72, w: 0.26, h: 0.24, metin: 'Bir mezar taşı gibi durur.' }, { ad: 'Boş üst alan', x: 0.20, y: 0.08, w: 0.60, h: 0.32, metin: 'Odaya derin bir yas bırakır.' }, { ad: 'Yara', x: 0.48, y: 0.56, w: 0.14, h: 0.12, metin: 'Tek küçük yara.' }] },
+        { id: 'basak', rol: 'serit', baslik: 'Başak Toplayanlar', sanatci: 'Jean-François Millet', yil: '1857', muze: 'Orsay Müzesi', akim: 'Barbizon ve Realizm', donem: 'romantik', img: 'gorseller/by-basak.jpg', oran: 0.748, hale: ['164, 134, 86', '104, 114, 122'], ykDk: 2, dersDk: 8, hikaye: false, soru: 'Arka plandaki dev saman yığınları ön plandaki üç kadınla ne karşıtlık kuruyor?', ozet: 'Hasat sonrası tarlada tek tük başak toplayan üç köylü kadına anıtsal bir onur.', noktalar: [{ ad: 'Toprağa uzanan el', x: 0.15, y: 0.62, w: 0.10, h: 0.11, metin: 'Yerde kalan son başağı arıyor.' }, { ad: 'Ortadaki kadın', x: 0.34, y: 0.57, w: 0.10, h: 0.23, metin: '1857 Salonu’nda tehlikeli bulunmuştu.' }, { ad: 'Başak demeti', x: 0.63, y: 0.53, w: 0.12, h: 0.30, metin: 'Arkadaki bollukla keskin zıtlık.' }, { ad: 'Saman yığınları', x: 0.13, y: 0.19, w: 0.30, h: 0.18, metin: 'Toprak sahibine giden dev yığınlar.' }, { ad: 'Atlı kâhya', x: 0.80, y: 0.28, w: 0.14, h: 0.14, metin: 'Uzakta tarlayı denetler.' }, { ad: 'Üç başörtüsü', x: 0.24, y: 0.44, w: 0.48, h: 0.16, metin: 'Sıcak toprak tonlarında ritim.' }] },
+      ];
+
+      function kirpim(n, oran, kutu, { pay = 1.12, enCok = 4.2 } = {}) {
+        const r = oran > 0 ? oran : 1;
+        const k = kutu > 0 ? kutu : 1;
+        const sinir = (v, alt, ust) => Math.min(ust, Math.max(alt, v));
+        const doldur = Math.max(1, 1 / (r * k));
+        const sigdir = Math.min(1 / (Math.max(n.w, 0.01) * pay), 1 / (Math.max(n.h, 0.01) * r * k * pay));
+        const w = Math.max(doldur, Math.min(sigdir, Math.max(doldur, enCok)));
+        const h = w * r * k;
+        return {
+          w: Math.round(w * 10000) / 100,
+          h: Math.round(h * 10000) / 100,
+          l: Math.round(sinir(0.5 - (n.x + n.w / 2) * w, 1 - w, 0) * 10000) / 100,
+          t: Math.round(sinir(0.5 - (n.y + n.h / 2) * h, 1 - h, 0) * 10000) / 100,
+        };
+      }
+
+      function tamYerlesim(oran, kutu) {
+        const imgAspect = 1 / oran;
+        if (imgAspect > kutu) {
+          const w = 100;
+          const h = (kutu / imgAspect) * 100;
+          return { w, h, l: 0, t: (100 - h) / 2 };
+        }
+        const h = 100;
+        const w = (imgAspect / kutu) * 100;
+        return { w, h, l: (100 - w) / 2, t: 0 };
+      }
+
+      const KUTU_ORANI = 342 / 312;
+      const durum = {
+        aktifEserId: 'elciler',
+        aktifNokta: 0,
+        tamKip: false,
+        donem: '',
+        dizinAcik: false,
+      };
+
+      const elTuval = document.getElementById('mercekTuval');
+      const elImg = document.getElementById('mercekImg');
+      const elKatman = document.getElementById('mercekKatman');
+
+      function eserBul(id) { return ESERLER.find((e) => e.id === id) || ESERLER[0]; }
+
+      function zeminGuncelle(donem, hale) {
+        document.documentElement.dataset.donem = donem;
+        document.getElementById('zeminDesen').style.setProperty('--desen-url', `url('../../NoraSanat/Ekranlar/Galeri/Desenler/desen-${donem}@3x.png')`);
+        if (hale) {
+          document.documentElement.style.setProperty('--hale-1-rgb', hale[0]);
+          document.documentElement.style.setProperty('--hale-2-rgb', hale[1]);
+        }
+      }
+
+      function mercekCiz() {
+        const e = eserBul(durum.aktifEserId);
+        const n = e.noktalar[durum.aktifNokta] || e.noktalar[0];
+        zeminGuncelle(e.donem, e.hale);
+
+        elImg.src = e.img;
+        elImg.alt = `${e.baslik} — ${n.ad}`;
+
+        const yer = durum.tamKip
+          ? tamYerlesim(e.oran, KUTU_ORANI)
+          : kirpim(n, e.oran, KUTU_ORANI, { pay: 1.12, enCok: 4.2 });
+
+        elImg.style.width = `${yer.w}%`;
+        elImg.style.height = `${yer.h}%`;
+        elImg.style.left = `${yer.l}%`;
+        elImg.style.top = `${yer.t}%`;
+
+        elTuval.classList.toggle('tam-kip', durum.tamKip);
+        document.getElementById('ayrintiKonum').textContent = n.ad;
+        document.getElementById('uzaklasYazi').textContent = durum.tamKip ? 'Ayrıntıya yakınlaş' : 'Tabloya uzaklaş';
+
+        // Tek soru cümlesi (yakın planda soru, uzaklaşınca ayrıntının tek cümlesi)
+        document.getElementById('mercekSoru').textContent =
+          !durum.tamKip && durum.aktifNokta === (e.pencereNokta || 0) ? e.soru : n.metin;
+        document.getElementById('mercekAd').textContent = e.baslik;
+        document.getElementById('mercekKunye').textContent = `${e.sanatci} · ${e.yil}`;
+
+        // Rozetler ve süre düğmenin tek sakin alt satırında
+        const parcalar = [];
+        if (e.hikaye) parcalar.push('Hikâye');
+        parcalar.push(`${e.noktalar.length} ayrıntı`);
+        parcalar.push(`~${e.ykDk} dk`);
+        if (e.dersDk) parcalar.push(`+${e.dersDk} dk ders`);
+        document.getElementById('mercekDugmeAlt').textContent = parcalar.join(' · ');
+
+        // Uzaklaşınca tablonun üstünde beliren odak çerçevesi ve diğer noktalar
+        const tam = tamYerlesim(e.oran, KUTU_ORANI);
+        const fx = tam.l + n.x * tam.w;
+        const fy = tam.t + n.y * tam.h;
+        const fw = n.w * tam.w;
+        const fh = n.h * tam.h;
+
+        elKatman.innerHTML =
+          `<div class="odak-cerceve" style="left:${fx}%;top:${fy}%;width:${fw}%;height:${fh}%"></div>` +
+          e.noktalar.map((pt, i) => {
+            const px = tam.l + (pt.x + pt.w / 2) * tam.w;
+            const py = tam.t + (pt.y + pt.h / 2) * tam.h;
+            return `<button type="button" class="tablo-nokta${i === durum.aktifNokta ? ' aktif' : ''}" data-nokta="${i}" style="left:${px}%;top:${py}%" aria-label="${pt.ad}"><i></i></button>`;
+          }).join('');
+
+        document.querySelectorAll('.pencere-kart').forEach((btn) => {
+          btn.classList.toggle('secili', btn.dataset.pencereId === durum.aktifEserId);
+        });
+      }
+
+      function pencereleriCiz() {
+        const pencereler = ESERLER.filter((e) => e.rol === 'pencere');
+        document.getElementById('pencereIzgara').innerHTML = pencereler.map((e) => {
+          const n = e.noktalar[e.pencereNokta || 0];
+          const k = kirpim(n, e.oran, 1, { pay: 1.45, enCok: 3.6 });
+          return `<button type="button" class="pencere-kart" data-pencere-id="${e.id}" data-pencere-nokta="${e.pencereNokta || 0}">
+            <span class="pencere-kirpim">
+              <img src="${e.img}" alt="${n.ad}" style="width:${k.w}%;height:${k.h}%;left:${k.l}%;top:${k.t}%" />
+            </span>
+            <span class="pencere-ad">${n.ad}</span>
+          </button>`;
+        }).join('');
+      }
+
+      function donemleriCiz() {
+        document.getElementById('donemSerit').innerHTML = DONEMLER.map((d) =>
+          `<button type="button" class="donem-sekme${durum.donem === d.id ? ' secili' : ''}" data-donem-id="${d.id}"><span>${d.ad}</span><small>${d.toplam}</small></button>`
+        ).join('');
+      }
+
+      function seritCiz() {
+        // Varsayılan "Hepsi" görünümünde yalnızca Hero + 4 pencerede olmayan 17 benzersiz eser yer alır → 1 + 4 + 17 = 22 farklı eser, 0 tekrar!
+        const havuz = durum.donem === ''
+          ? ESERLER.filter((e) => e.rol === 'serit')
+          : ESERLER.filter((e) => e.donem === durum.donem);
+
+        document.getElementById('eserSerit').innerHTML = havuz.map((e) => `
+          <button type="button" class="serit-kart" data-ac="${e.id}">
+            <span class="serit-cerceve">
+              <img src="${e.img}" alt="${e.baslik}" />
+              <span class="serit-rozetler" aria-hidden="true">
+                ${e.hikaye ? `<span class="ikon-rozet" title="Hikâye"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>` : ''}
+                <span class="ikon-rozet" title="${e.noktalar.length} ayrıntı"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg></span>
+              </span>
+            </span>
+            <div class="serit-ad">${e.baslik}</div>
+            <div class="serit-alt">${e.sanatci} · ${e.yil}</div>
+          </button>
+        `).join('');
+      }
+
+      function dizinCiz() {
+        const panel = document.getElementById('dizinPanel');
+        panel.classList.toggle('acik', durum.dizinAcik);
+        document.getElementById('dizinAcici').setAttribute('aria-expanded', String(durum.dizinAcik));
+        if (!durum.dizinAcik) {
+          panel.innerHTML = '';
+          return;
+        }
+        const havuz = durum.donem ? ESERLER.filter((e) => e.donem === durum.donem) : ESERLER;
+        panel.innerHTML = havuz.map((e) => `
+          <button type="button" class="dizin-satir" data-ac="${e.id}">
+            <span class="dizin-kare"><img src="${e.img}" alt="${e.baslik}" /></span>
+            <span class="dizin-orta">
+              <b>${e.baslik}</b>
+              <span>${e.sanatci} · ${e.yil}</span>
+            </span>
+            <span class="dizin-sag${e.hikaye ? ' pirinc' : ''}">${e.hikaye ? 'Hikâye' : `${e.noktalar.length} ayrıntı`}</span>
+          </button>
+        `).join('');
+      }
+
+      function cekmeceAc(id) {
+        const e = eserBul(id);
+        document.getElementById('cekmeceResim').src = e.img;
+        document.getElementById('cekmeceResim').alt = e.baslik;
+        document.getElementById('cekmeceUst').textContent = `${e.akim} · ${e.hikaye ? 'Hikâye · ' : ''}${e.noktalar.length} ayrıntı · ~${e.ykDk} dk${e.dersDk ? ` · +${e.dersDk} dk ders` : ''}`;
+        document.getElementById('cekmeceBaslik').textContent = e.baslik;
+        document.getElementById('cekmeceMeta').textContent = `${e.sanatci} · ${e.yil} · ${e.muze}`;
+        document.getElementById('cekmeceOzet').textContent = e.ozet;
+        document.getElementById('cekmecePerde').classList.add('acik');
+      }
+
+      // Etkileşimler
+      document.getElementById('uzaklasBtn').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        durum.tamKip = !durum.tamKip;
+        mercekCiz();
+      });
+
+      elTuval.addEventListener('click', (ev) => {
+        const pt = ev.target.closest('[data-nokta]');
+        if (pt) {
+          durum.aktifNokta = Number(pt.dataset.nokta);
+          durum.tamKip = false;
+          mercekCiz();
+          return;
+        }
+        if (ev.target.closest('#uzaklasBtn')) return;
+        durum.tamKip = !durum.tamKip;
+        mercekCiz();
+      });
+
+      document.getElementById('pencereIzgara').addEventListener('click', (ev) => {
+        const b = ev.target.closest('[data-pencere-id]');
+        if (!b) return;
+        durum.aktifEserId = b.dataset.pencereId;
+        durum.aktifNokta = Number(b.dataset.pencereNokta || 0);
+        durum.tamKip = false;
+        mercekCiz();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      document.getElementById('donemSerit').addEventListener('click', (ev) => {
+        const b = ev.target.closest('[data-donem-id]');
+        if (!b) return;
+        durum.donem = b.dataset.donemId;
+        donemleriCiz();
+        seritCiz();
+        dizinCiz();
+        if (durum.donem) zeminGuncelle(durum.donem);
+      });
+
+      document.getElementById('eserSerit').addEventListener('click', (ev) => {
+        const b = ev.target.closest('[data-ac]');
+        if (b) cekmeceAc(b.dataset.ac);
+      });
+
+      document.getElementById('dizinAcici').addEventListener('click', () => {
+        durum.dizinAcik = !durum.dizinAcik;
+        dizinCiz();
+      });
+
+      document.getElementById('dizinPanel').addEventListener('click', (ev) => {
+        const b = ev.target.closest('[data-ac]');
+        if (b) cekmeceAc(b.dataset.ac);
+      });
+
+      document.getElementById('mercekAcBtn').addEventListener('click', () => cekmeceAc(durum.aktifEserId));
+      document.getElementById('cekmeceKapat').addEventListener('click', () => document.getElementById('cekmecePerde').classList.remove('acik'));
+      document.getElementById('cekmecePerde').addEventListener('click', (ev) => {
+        if (ev.target.id === 'cekmecePerde') ev.target.classList.remove('acik');
+      });
+
+      function temaAyarla(t) {
+        document.documentElement.dataset.tema = t;
+        document.querySelectorAll('[data-tema-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.temaSec === t)));
+      }
+      document.querySelectorAll('[data-tema-sec]').forEach((b) => b.addEventListener('click', () => temaAyarla(b.dataset.temaSec)));
+
+      const p = new URLSearchParams(location.search);
+      if (p.get('tema') === 'gunduz') temaAyarla('gunduz');
+      if (p.get('cek') === '1') document.documentElement.classList.add('cek-kipi');
+      if (p.get('tam') === '1') durum.tamKip = true;
+
+      pencereleriCiz();
+      donemleriCiz();
+      seritCiz();
+      mercekCiz();
+    </script>
+  </body>
+</html>
