@@ -210,13 +210,14 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - **Eser cevaptan önce ve sonra aynı boyda mı?** Kartlar döndükten sonra cevap yaprağı alttan geliyor ve ekran yaprağın başını gösterecek kadar kayıyor (doğru sanatçı, ipucu, "Yan yana bak", Ayrıntılar, Sanatçı). Kayma miktarı rahat mı, yoksa hiç kaymasın mı?
   - Karışık turda "Hangi akım?"a geç: eser yerinde, kartlar çift pirinç çizgili, başlığın yanında "Soru 2 / 2".
   - Ayarlar'da hareketi azalt: sallanma, sıyrılma ve dönüş yok; seçince doğrudan sonuç. Gece ve Gündüz'de (keten karton) bak; küçük telefonda (SE boyu) de sığıyor mu?
+- [ ] (Z3z) Galeri → Akımlar akıcılık: şeridi hızlı hızlı sağa sola kaydır, kartlar takılmadan akıyor mu? Kilitli kapaklar hâlâ bulanık ve ortasında kilit mührü var mı? Gece ve Gündüz'de bak.
 - [ ] (Z3w) Galeri → Akımlar (Neon'un "Yön 2 · Kemerlerin yayı"):
-  - Üstte eskisi gibi "Galeri", arama, kalp ve bölüm sekmeleri; altında ortada büyük kemerli kart, iki yanda komşular küçük, soluk ve hafif bulanık. Kartın altında dönem sembolüyle yıllar (ör. "1582–1682"), akım adı ve "N / M sanatçı açık" ya da kilit + "Konu N'de açılır".
+  - Üstte eskisi gibi "Galeri", arama, kalp ve bölüm sekmeleri; altında ortada büyük kemerli kart, iki yanda komşular küçük ve soluk. Kartın altında dönem sembolüyle yıllar (ör. "1582–1682"), akım adı ve "N / M sanatçı açık" ya da kilit + "Konu N'de açılır".
   - Şeridi parmakla yatay kaydır: kartlar geniş bir yay boyunca hafifçe eğilip alçalıyor, yazı kendi kemeriyle akıyor; bırakınca bir karta oturuyor. Zeminin halesi ve deseni yeni akımın tablosuna yumuşakça geçiyor.
   - "Salona gir" hep aynı yerde (başparmak kovalamıyor); kilitli akımda yerinde "N sanatçı · yakında" hapı. Yan karta dokununca o kart ortaya geliyor; ortadaki açık karta dokununca salon açılıyor.
   - Işık kılavuzu (ince pirinç yay, çentikler, ortada dönem): "‹ önceki" / "sonraki ›" bir akım geçiyor. Kılavuzun ve şeridin üstünden **yukarı-aşağı kaydırınca sayfa takılmadan kayıyor mu?**
   - En alttaki "Bütün akımlar · 28 salon": alttan buzlu cam çekmece açılıyor, dönem dönem gruplar ("a / n açık"), kilitliler soluk ve bulanık kapakla. Bir akıma dokun: çekmece kapanıp şerit o akıma gidiyor.
-  - Ayarlar'da hareketi azalt (ya da iOS'ta Hareketi Azalt): kartlar düz, kaymıyor ve bulanıklaşmıyor; yalnız küçülme ve solma kalıyor. Gece ve Gündüz'de bak.
+  - Ayarlar'da hareketi azalt (ya da iOS'ta Hareketi Azalt): kartlar düz ve kaymıyor; yalnız küçülme ve solma kalıyor. Gece ve Gündüz'de bak.
 - [ ] (Z3v) Bugün → sağ üstte Ben'in solundaki **paylaş** dairesi (cam, dolu değil):
   - Kapakta dokun: "Günün tablosunu paylaş" yaprağı açılıyor, önce "Kart hazırlanıyor", sonra kartın önizlemesi. Üstte **Hikâye / Gönderi**; Hikâye uzun (9:16), Gönderi daha kısa (4:5).
   - Kartta: tablo kenardan kenara ve altta zemine eriyor, sol üstte "Günün tablosu" hapı, akım (pirinç), eserin Türkçe adı (Bodoni), "sanatçı · yıl", cam not kartında ayrıntının adı ve metni, solda o ayrıntının kare kırpımı (büyüteçli), altta "Sanat Atlası · sanat-atlasi.pages.dev".
@@ -224,3 +225,13 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - Aşağı kaydırıp 2. ya da 3. ayrıntıdayken paylaş: kartta o ayrıntı (adı, metni, çerçevesi, kırpımı). Kapakta, künyede ya da "Nasıl tanırım?"da ilk ayrıntı.
   - Ayarlar'da Gündüz'e geçip yeniden aç: kart Gündüz renkleriyle (açık zemin, koyu yazı).
   - **Paylaş** → iOS menüsü: Instagram (hikâye), Mesajlar ve "Görüntüyü Kaydet" çalışıyor; dosya adı `nora-sanat-<tarih>.png`, 1080 px genişlik. Uçak modunda da (tablo telefondaysa) kart çıkıyor.
+- [ ] (Z3x) Ben → Ayarlar'ın yeni görünüşü (Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi"):
+  - Üstte geri düğmesi, "Ayarlar", sağda sitenin sürümü; altında **Görünüş · Çalışma · Hatırlatma · Çevrimdışı · Yedek · Hakkında · Gelişmiş** şeridi. Aşağı kaydır: şerit tepeye yapışmalı (arkasından içerik geçmemeli), seçili bölümün altındaki pirinç çizgi kaydırdıkça değişmeli. Şeritte bir bölüme dokun: sayfa o gruba kaymalı, başlık şeridin hemen altına gelmeli. Hakkında ve Gelişmiş'e dokununca (sayfanın sonu) dokunduğun seçili kalmalı.
+  - Görünüş: üstteki önizleme kartında Arnolfini Portresi. Tema Gece ↔ Gündüz, Gündüz rengi (dokununca açılır; bir renk seçince Gündüz'e geçer), Yazı boyutu Standart ↔ Büyük: kart ve sayfa **anında** değişmeli; sağ üstte "Gece · Standart" / "Lapis · Büyük". Hareket (dokununca açılır) Tam / Sade / Kapalı. Eğim açık ve Hareket Tam iken önizlemedeki tablo yavaşça sağa sola dönmeli.
+  - Çalışma: kart sayısı − / + (5–100), Yeni sanatçıyla önce tanış, Titreşim (kapalıyken "Titreşimi dene" gizli), Günün sanatçısı → **Değiştir** (Bugün'de yeni sanatçı).
+  - **Hatırlatma (yeni, uygulamanın içinde):** Tekrar hatırlatması aç/kapa ve Saat (dokununca 07:00–23:00 ızgarası; kapalıyken soluk). Saati değiştir, sonra iPhone Ayarlar → Nora Sanat'a bak: aynı saat görünmeli (tersini de dene: oradan değiştirip uygulamaya dön, satır değişmeli). Bildirim o saatte gelmeli (tekrarın varsa). Bildirim izni kapalıysa dipnot iPhone Ayarlar'ın yolunu söylemeli. Simge rozeti eskisi gibi.
+  - Çevrimdışı: "En büyük kopyalar", "n / N görsel · x / y GB", yüzde, ince çizgi (süren pirinç, bitince yeşil); İndir / İndirmeyi sürdür, Durdur, Telefondan sil eskisi gibi; altta sitenin açıklaması.
+  - Yedek: ekrandaki **tek dolu düğme** "İlerlemeni yedekle" (panoya kopyalar, "Son yedek: bugün" olmalı), "JSON dosyası olarak kaydet". "Yedeği geri yükle" kapalı satır: açınca metin kutusu, Dosyadan seç, Geri yükle (onay sorar).
+  - Hakkında: **Yenilikler (yeni)** → alttan yaprak, sitenin sürüm notları (en yeni 1.90.3 başta). Sürüm → **Denetle** ("Güncel: …"). Kaynaklar.
+  - Gelişmiş (kapalı): Geliştirici modu (onay sorar), Hata günlüğü (Kopyala / Temizle; bir hata olunca sayısı artmalı), Bildirdiğim görseller, Elle odaklar, Ana ekranın resimleri → Sırayla ortala.
+  - Hepsini Gece ve Gündüz'de bak; Büyük yazıda satırlar taşmamalı.
