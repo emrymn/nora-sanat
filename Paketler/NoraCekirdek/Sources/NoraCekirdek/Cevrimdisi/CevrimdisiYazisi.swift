@@ -131,3 +131,50 @@ public struct CevrimdisiGorunum: Sendable, Equatable {
         return "\(onda < 0 ? "-" : "")\(s),\(kesir)"
     }
 }
+
+/// Z3x: Ayarlar → Çevrimdışı satırının özeti (yeni tasarım, sitede yok): "812 / 1.420 görsel · 2,4 / 4,1 GB", yüzde ve
+/// 3 pt'lik ilerleme çizgisi. Sitenin uzun açıklaması (`CevrimdisiGorunum.bilgi`) kartın altında dipnot olarak kalır.
+public struct CevrimdisiOzeti: Sendable, Equatable {
+    /// Telefondaki görsel sayısı (indirme sürerken parçada inenler dahil)
+    public let telefonda: Int
+    public let hepsi: Int
+    /// Telefondakilerin yaklaşık boyu (bayt); toplam bilinmiyorsa 0
+    public let bayt: Double
+    public let toplamBayt: Double
+
+    public init(liste: CevrimdisiListe, telefonda n: Int, durum i: CevrimdisiDurumu?) {
+        hepsi = liste.telefonAdresleri.count
+        toplamBayt = liste.toplamBayt
+        if let i, i.suruyor || i.bitti {
+            telefonda = min(hepsi, max(n, i.onceden + i.biten - i.hata))
+        } else {
+            telefonda = min(hepsi, n)
+        }
+        if let i, i.suruyor, toplamBayt > 0 {
+            bayt = min(toplamBayt, i.oncedenBayt + i.bitenBayt)
+        } else {
+            bayt = hepsi > 0 ? toplamBayt * Double(telefonda) / Double(hepsi) : 0
+        }
+    }
+
+    /// 0…1
+    public var oran: Double { hepsi > 0 ? min(1, Double(telefonda) / Double(hepsi)) : 0 }
+    public var tamam: Bool { hepsi > 0 && telefonda >= hepsi }
+    /// Aşağı yuvarlanır: hepsi inmeden %100 yazmaz
+    public var yuzde: Int { tamam ? 100 : min(99, Int((oran * 100).rounded(.down))) }
+    public var yuzdeYazisi: String { "%\(yuzde)" }
+
+    public var altYazi: String {
+        let sayi = "\(Self.binlik(telefonda)) / \(Self.binlik(hepsi)) görsel"
+        guard toplamBayt > 0 else { return sayi }
+        return "\(sayi) · \(CevrimdisiGorunum.gb(bayt)) / \(CevrimdisiGorunum.gb(toplamBayt)) GB"
+    }
+
+    /// 1420 → "1.420"
+    public static func binlik(_ n: Int) -> String {
+        var s = String(abs(n))
+        var i = s.count - 3
+        while i > 0 { s.insert(".", at: s.index(s.startIndex, offsetBy: i)); i -= 3 }
+        return (n < 0 ? "-" : "") + s
+    }
+}
