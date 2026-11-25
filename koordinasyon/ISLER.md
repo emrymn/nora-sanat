@@ -1055,6 +1055,8 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
 - **Kâhin:** `Testler/kahin/goruntuleyici.mjs`'e `alanliSahneler` (4 sahne × alan) ve her noktada `alanliOdaklar` eklendi.
   **Kâhin denetçide:** bu oturumda canlı siteye erişilemedi, `cevaplar.json` yeniden üretilmedi; `testAlanliNoktaOdagiKahin`
   şimdilik atlanır. Denetçi `node Testler/kahin/goruntuleyici.mjs` çalıştırıp cevapları eklesin.
+  **Denetçi (2026-11-25):** kâhin sanat-atlasi `78a8d7c` (yerel sunucu) karşısında çalıştırıldı; `cevaplar.json`'a yalnız
+  `alanliSahneler` ve `alanliOdaklar` eklendi (geri kalanı ve beş veri dosyası bire bir aynı), test artık atlanmıyor.
 - **Görünüm (`AyrintiGorunumu.swift`):** `AyrintiNoktalariKatmani` görünmez 44 pt dokunma alanı (numara, halka, karartma yok).
   `IncelemeKarti`: buzlu kart (malzeme + `rgba(24,22,20,.52)`, saydamlığı azalt açıkken .92), Archivo üst satır, Bodoni 24/1.12
   başlık (`CssBaslik`), Newsreader 17 metin; başlığa dokununca katlanır. `IncelemeDugmeleri`: geri, parçalı çubuk (etkin parça
