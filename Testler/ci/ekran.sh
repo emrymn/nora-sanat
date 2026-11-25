@@ -141,6 +141,16 @@ genel() {
   xcrun simctl launch "$UDID" "$PAKET" -ekran goruntuleyici
   sleep 30
   xcrun simctl io "$UDID" screenshot ekranlar/9-goruntuleyici.png
+  # Y1: "Dinleyerek bak": kurulum (süre ve ses seçimi), sonra sessiz seçenekte ilk ayrıntıya yaklaşmış hâli (altyazı)
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle
+  sleep 25
+  xcrun simctl io "$UDID" screenshot ekranlar/9d-dinle-kurulum.png
+  "$RUNNER_TEMP/ben-ekran" ekranlar/9d-dinle-kurulum.png "Başla"
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 1
+  sleep 45
+  xcrun simctl io "$UDID" screenshot ekranlar/9e-dinle-ayrinti.png
   # C1b/C1c: pekiştirme. Açılışlar arası aynı tur sürer: 10a ilk ekran (yeni sanatçıysa tanışma), 10 soru kartı,
   # 10c yanlış bir şıktan sonra cevap yaprağı. Her adım hazır olunca işaret dosyası yazılır; yükleme ve hata başarı sayılmaz.
   VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
