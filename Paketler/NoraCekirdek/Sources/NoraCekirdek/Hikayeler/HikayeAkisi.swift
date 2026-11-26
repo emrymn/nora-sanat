@@ -119,6 +119,13 @@ public enum HikayeAkisi {
         return l
     }
 
+    /// Yazının sonundaki kaynaklar: aynı alan adı bir kez (Emre: "topla"), ilk geçtiği yerde; adres o alandaki ilk
+    /// sayfa. Sıra verideki gibi (güvenilirliğe göre).
+    public static func kaynaklar(_ h: SanatciHikayesi) -> [HikayeKaynagi] {
+        var gorulen = Set<String>()
+        return h.kaynaklar.filter { gorulen.insert($0.baslik.lowercased()).inserted }
+    }
+
     /// Adresin alan adı ("https://www.nga.gov/x" → "nga.gov")
     public static func alanAdi(_ adres: String) -> String {
         var h = URL(string: adres)?.host ?? adres

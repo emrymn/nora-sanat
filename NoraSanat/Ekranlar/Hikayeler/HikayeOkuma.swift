@@ -323,10 +323,11 @@ struct HikayeOkuma: View {
                 }
                 .padding(.bottom, 34)
             }
-            if !hikaye.kaynaklar.isEmpty {
+            let kaynaklar = HikayeAkisi.kaynaklar(hikaye)
+            if !kaynaklar.isEmpty {
                 Text("Kaynaklar").font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc)
                 VStack(alignment: .leading, spacing: 0) {
-                    ForEach(Array(hikaye.kaynaklar.enumerated()), id: \.offset) { i, k in
+                    ForEach(Array(kaynaklar.enumerated()), id: \.offset) { i, k in
                         Button {
                             if let u = URL(string: k.adres) { adresAc(u) }
                         } label: {
@@ -338,7 +339,7 @@ struct HikayeOkuma: View {
                         }
                         .buttonStyle(.plain)
                         .overlay(alignment: .bottom) {
-                            if i < hikaye.kaynaklar.count - 1 { Rectangle().fill(c.kenar).frame(height: 1) }
+                            if i < kaynaklar.count - 1 { Rectangle().fill(c.kenar).frame(height: 1) }
                         }
                         .accessibilityHint("Safari'de açılır")
                     }

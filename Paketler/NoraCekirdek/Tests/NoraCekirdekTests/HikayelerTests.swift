@@ -275,6 +275,16 @@ final class HikayelerTests: XCTestCase {
         XCTAssertEqual(HikayeAkisi.ara(l, sorgu: "SESSİZ", sanatciAdi: ad).map(\.id), ["johannes-vermeer"])
         XCTAssertEqual(HikayeAkisi.ara(l, sorgu: "zzz", sanatciAdi: ad).count, 0)
         XCTAssertEqual(HikayeAkisi.alanAdi("https://www.nga.gov/x/y.pdf"), "nga.gov")
+        // Kaynaklar: aynı alan adı bir kez, ilk geçtiği yerde ve ilk adresiyle; sıra korunur
+        let v = l[0]
+        let k = HikayeAkisi.kaynaklar(v)
+        XCTAssertLessThan(k.count, v.kaynaklar.count)
+        XCTAssertEqual(Set(k.map(\.baslik)).count, k.count)
+        var sira: [String] = []
+        for x in v.kaynaklar where !sira.contains(x.baslik) { sira.append(x.baslik) }
+        XCTAssertEqual(k.map(\.baslik), sira)
+        let ev = try XCTUnwrap(k.first { $0.baslik == "essentialvermeer.com" })
+        XCTAssertEqual(ev.adres, v.kaynaklar.first { $0.baslik == "essentialvermeer.com" }?.adres)
         XCTAssertEqual(HikayeAkisi.alanAdi("https://tour.milan.it/a"), "tour.milan.it")
     }
 
