@@ -209,6 +209,7 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - Açık bir durağa dokun: öğrenci patikadan yürüyor, altta koyu kart açılıyor (kapak, "Dönem · n sanatçı", ad, beyaz düğme, tanışma grupları, Kolay / Orta / Zor, Akım sayfası). Aşağı çekince kapanıyor.
   - Kurs rozetine dokun: "n / 57 konu işlendi", sıradaki konunun Türkçe adı, "k sanatçı açılacak", **İşlendi yap**. Resimdeki saklı bir motife dokun: çerçeveli eser, hikâye, "… sayfası".
   - Kartta "1. grupla tanış" ya da "Kolay'a başla": tanışma ve sorular Çalış'taki turun aynısı. Grup bitince "Grup tamam" ve "2. grupla tanış"; seviye bitince sergi duvarı, madalyon, yıldızlar, skor, salonlar ve "Orta salonuna geç".
+- [ ] (Z3z3) Galeri → Akımlar: şeridi hızlıca kaydır; takılma kalktı mı? Zeminin rengi şerit durunca mı değişiyor?
 - [ ] (Z3z2) Galeri → Akımlar: şeridi hızlıca sağa sola, sonra yavaşça kaydır; kartlar parmağı takılmadan izliyor mu? Eğilme, küçülme ve yazının sönmesi eskisi gibi mi?
 - [ ] (Z3y) Yolculuk → bir durakta tura başla, soru ekranı (Neon'un "Yön 3 · Geniş Tuval" + "Şık 5 · El Yelpazesi"):
   - Üstte solda cam ×, ortada tek hapta noktalar ve "3 / 8", sağda pirinç "Kolay / Orta / Zor". Eser kırpılmadan ekranın en büyük öğesi; dikey, yatay ve kareye yakın bir eserde bak.

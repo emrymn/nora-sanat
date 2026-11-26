@@ -23,6 +23,11 @@ struct KemerSalonlari: View {
     /// Şeridin anlık konumu (akım cinsinden, kesirli). Z3z2: her karede değiştiği için `@State` değil; yalnız kılavuzun
     /// çentikleri ve eylem yuvasının saydamlığı okur, ekranın geri kalanı (kartlar) kaydırırken yeniden kurulmaz.
     @State private var iz = SeritKonumu()
+    /// Z3z3: şeridin kendi seçili akımı (kılavuz, eylem yuvası, erişilebilirlik). `sira` (üst görünüm: sayfa zemini,
+    /// tablonun renkleri, katalog süzmesi) kaydırma sürerken değişmez, şerit durunca bir kez yazılır. Önceden her akım
+    /// geçişinde bütün Galeri sayfası yeniden kuruluyor, zeminin tam ekran renk geçişi kaydırmanın ortasında başlıyordu.
+    @State private var yerel = 0
+    @State private var kayiyor = false
     @State private var secim: Int?
     /// Z3z: akımın yılları (`KemerYayi.yillar`); kaydırırken her karede katalog taranmasın diye bir kez hesaplanır
     @State private var yillar: [String: String] = [:]
@@ -55,11 +60,11 @@ struct KemerSalonlari: View {
             .frame(width: w)
         }
         .frame(height: Self.seritYuksekligi + 2 + 46 + 10 + 52 + 2 + 44)
-        .onAppear { secim = sira; iz.deger = Double(sira); yillariKur() }
+        .onAppear { secim = sira; yerel = sira; iz.deger = Double(sira); yillariKur() }
         // Kapak açılan akıma ve bozuk görsellere de bağlı (`carkKapagi`)
         .onChange(of: kurulumAnahtari) { _, _ in yillariKur() }
         .sheet(isPresented: $dizinAcik) {
-            AkimDizini(salonlar: salonlar, galeri: galeri, sira: sira, pul: pul) { i in
+            AkimDizini(salonlar: salonlar, galeri: galeri, sira: yerel, pul: pul) { i in
                 dizinAcik = false
                 git(i)
             }
@@ -108,10 +113,14 @@ struct KemerSalonlari: View {
             if #available(iOS 18, *) { return }
             konumYaz(kenar - x)
         }
-        .onChange(of: sira) { _, yeni in if secim != yeni { secim = yeni } }
+        .onChange(of: sira) { _, yeni in
+            if yerel != yeni { yerel = yeni }
+            if secim != yeni { secim = yeni }
+        }
+        .modifier(SeritEvresi { kayiyor = $0; if !$0 { siraYaz(yerel) } })
         .onChange(of: secim) { _, yeni in
             guard let yeni else { return }
-            if yeni != sira { sira = yeni }
+            siraYaz(yeni)
             // Şerit bir karta oturduysa konum da orada olmalı (kaydırma bildirimi gelmese bile)
             if abs(iz.deger - Double(yeni)) > 0.5 { iz.deger = Double(yeni) }
         }
@@ -136,8 +145,13 @@ struct KemerSalonlari: View {
     private func konumYaz(_ yol: CGFloat) {
         let p = KemerYayi.konum(yol: Double(yol), sayi: salonlar.count)
         if abs(p - iz.deger) > 0.001 { iz.deger = p }
-        let yeni = Int(p.rounded())
-        if yeni != sira { sira = yeni }
+        siraYaz(Int(p.rounded()))
+    }
+
+    /// Şeridin seçili akımı hemen; üst görünüme (`sira`) yalnız şerit dururken
+    private func siraYaz(_ yeni: Int) {
+        if yeni != yerel { yerel = yeni }
+        if !kayiyor && yeni != sira { sira = yeni }
     }
 
     /// `.kemer-oge`: kemer ve ona bağlı yazı birlikte eğilir, alçalır ve küçülür.
@@ -146,7 +160,7 @@ struct KemerSalonlari: View {
     private func kart(_ i: Int, _ salon: AkimDurumu) -> some View {
         let acik = salon.acik, az = hareketYok
         return Button {
-            if i != sira { git(i) } else if salon.acik { gir(salon.ad) }
+            if i != yerel { git(i) } else if salon.acik { gir(salon.ad) }
         } label: {
             VStack(spacing: 0) {
                 kemer(salon)
@@ -168,7 +182,7 @@ struct KemerSalonlari: View {
                 .opacity(k.opaklik)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityHint(i == sira && salon.acik ? "Salona gir" : "")
+        .accessibilityHint(i == yerel && salon.acik ? "Salona gir" : "")
     }
 
     /// `.kemer-dis` + `.kemer-kutu`: çift ince çerçeve (dışta 1 pt pirinç, 5 pt pay, içte kapağın kendi ince kenarı)
@@ -269,7 +283,7 @@ struct KemerSalonlari: View {
     /// `.eylem-yuva`: sabit yerde tek dolu düğme; başparmak düğmeyi kovalamaz. Kilitliyse cam bir hap.
     private var eylemYuvasi: some View {
         let r = tema.renkler
-        let salon = salonlar.indices.contains(sira) ? salonlar[sira] : nil
+        let salon = salonlar.indices.contains(yerel) ? salonlar[yerel] : nil
         return ZStack {
             if let salon, salon.acik {
                 Button { gir(salon.ad) } label: {
@@ -312,9 +326,9 @@ struct KemerSalonlari: View {
     /// sonraki akım. Hiçbir sürükleme yakalamaz (yalnız düğmeler): dikey sayfa kaydırması hep geçer.
     private func kilavuz(_ w: CGFloat) -> some View {
         let r = tema.renkler
-        let onceki = KemerYayi.komsu(sira, yon: -1, sayi: salonlar.count)
-        let sonraki = KemerYayi.komsu(sira, yon: 1, sayi: salonlar.count)
-        let donem = salonlar.indices.contains(sira) ? DonemSembolu.bul(salonlar[sira].sira) : nil
+        let onceki = KemerYayi.komsu(yerel, yon: -1, sayi: salonlar.count)
+        let sonraki = KemerYayi.komsu(yerel, yon: 1, sayi: salonlar.count)
+        let donem = salonlar.indices.contains(yerel) ? DonemSembolu.bul(salonlar[yerel].sira) : nil
         return ZStack(alignment: .top) {
             KilavuzCizimi(iz: iz) { c, boyut, konum in kilavuzCiz(&c, boyut, konum) }
                 .frame(width: w, height: 52)
@@ -344,9 +358,9 @@ struct KemerSalonlari: View {
         // Erişilebilirlik: eski çarkın ayarlanabilir eylemi ve değeri kılavuzda
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Akımlar çarkı")
-        .accessibilityValue(salonlar.indices.contains(sira) ? "\(sira + 1) / \(salonlar.count), \(salonlar[sira].ad)" : "")
+        .accessibilityValue(salonlar.indices.contains(yerel) ? "\(yerel + 1) / \(salonlar.count), \(salonlar[yerel].ad)" : "")
         .accessibilityAdjustableAction { yon in
-            git(yon == .increment ? sira + 1 : sira - 1)
+            git(yon == .increment ? yerel + 1 : yerel - 1)
         }
     }
 
@@ -421,6 +435,7 @@ struct KemerSalonlari: View {
         let hedef = max(0, min(salonlar.count - 1, i))
         withAnimation(hareketYok ? nil : .easeOut(duration: 0.35)) {
             secim = hedef
+            yerel = hedef
             sira = hedef
         }
         if hareketYok { iz.deger = Double(hedef) }
@@ -675,6 +690,18 @@ private struct SeritKaymaIzi: ViewModifier {
             content.onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.x + $0.contentInsets.leading } action: { _, x in
                 degisti(x)
             }
+        } else {
+            content
+        }
+    }
+}
+
+/// Z3z3, iOS 18: şerit kayıyor mu (sürükleme, fırlatma, oturma); iOS 17'de hep "durgun" (eski davranış)
+private struct SeritEvresi: ViewModifier {
+    let degisti: (Bool) -> Void
+    func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content.onScrollPhaseChange { _, yeni in degisti(yeni != .idle) }
         } else {
             content
         }

@@ -188,6 +188,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | bitti (#64) |
 | Z3z | Akımlar şeridi akıcılık: kaydırırken her karede değişen bulanıklık/parlaklık/gölge yarıçapı ve katalog taraması kalktı (Emre: "kasıyor") | K | Z3w | 1 | bitti (#69) |
 | Z3z2 | Akımlar şeridi akıcılık 2: kartın kapağı her karede aranıyordu; kaydırmaya bağlı görünüş `visualEffect` ile (Emre: "hala kasıyor") | K | Z3z | 1 | bitti (#72) |
+| Z3z3 | Akımlar şeridi akıcılık 3: kaydırırken üst Galeri sayfası (zemin, renk geçişi) yeniden kurulmasın; `sira` şerit durunca (Emre: "hâlâ kasıyor") | K | Z3z2 | 1 | PR açık |
 | Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | PR açık (#68) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 | Z4a | Dinleyerek bak (Y1) yeniden: Neon'un "Yön 3 · Canlı Ses · Kelime Akışı" tasarımı (dal `neon/dinle-tasarim`, PR #70), nefesli yay kamera, doğal ses (Gemini "Fola", R2) + kelime kelime altyazı | K | Y1 | 1 | PR açık (#71) |
@@ -1146,6 +1147,12 @@ alt panel ve Önceki/Sonraki/Bitir yerine yazısız kamera, buzlu yazı kartı v
   - İlk koşu `SoruYelpazesiTests.testSatirSayisiSozcukKirar`'da kırmızıydı: harf harf bölünen sözcüğün son satırı sayılmıyordu. Kod düzeltildi, test değişmedi.
   - `yerli-yolculuk-cevap-yanlis` OCR çıktısı: "1/9 Kolay · Bu eser kimin? · Andrea Mantegna Seçtiğin · Sandro Botticelli Doğrusu · × Yanlış · Sonraki > · bu kart 3-5 kart sonra yine gelecek". Altında yaprağın ipucu da görünüyor (kaydırma çalışıyor).
   - Görüntülere (`ekranlar-yolculuk` → `yerli-yolculuk-soru.png`, `-cevap.png`, `-cevap-yanlis.png`) bu oturumdan bakılamadı. Yelpaze, Gündüz ve küçük ekran Emre ya da denetçi tarafından görülmeli.
+
+### Z3z3 · Akımlar şeridi akıcılık 3 (Claude)
+**Devir notu:** Claude, 2026-11-26 · dal `claude/Z3z3-akimlar-akici`. Z3z2'den sonra Emre yine "kasıyor" dedi.
+- **Kalan neden** (kodda): şerit her akım geçişinde `sira` bağını yazıyordu (`konumYaz` ve `scrollPosition` → `onChange(secim)`). `sira` GaleriSekmesi'nin `sayfa`'sı: her geçişte bütün `anaSayfa` yeniden kuruluyor (`Kilit.akimDurumlari`, üst çubuk, `carkKapagi`) ve `SayfaZemini` yeni tablonun rengini indirip tam ekran radyal geçişleri (Gündüz'de `multiply`) 0,8 sn canlandırıyordu; bu, kaydırmanın tam ortasına denk geliyordu.
+- **Düzeltme** (`GaleriAna.swift`): şeridin kendi `@State yerel` sırası (kılavuz, eylem yuvası, erişilebilirlik, çekmece) anında; `sira` yalnız şerit dururken (`SeritEvresi`: iOS 18 `onScrollPhaseChange` → `.idle`). Dokunarak geçişte (`git`) ikisi birlikte. iOS 17'de eski davranış.
+- **Görünüş farkı:** zeminin rengi ve dönem deseni kaydırma bitince geçer (önceden kaydırırken).
 
 ### Z3z2 · Akımlar şeridi akıcılık 2 (Claude)
 **Devir notu:** Claude, 2026-11-25 · dal `claude/Z3z2-akimlar-akici`. Z3z'den sonra Emre "çark hala kasıyor" dedi.
