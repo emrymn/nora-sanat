@@ -14,6 +14,10 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
     private var motor: AVAudioEngine?
     private var sessizCalar: AVAudioPlayerNode?
     private var calar: AVAudioPlayer?
+    /// Z4c: hız (1, 1,5, 2); kayıtta `AVAudioPlayer.rate` (perdeyi korur), telefonun sesinde konuşma hızı
+    var hiz = 1.0 {
+        didSet { calar?.rate = Float(hiz) }
+    }
 
     /// Sentezin şu an söylediği yerin UTF-16 konumu (kelime kelime altyazı için); söz yoksa nil
     private(set) var sozKonumu: Int?
@@ -26,11 +30,6 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
     /// Kayıt çalıyorsa (ya da duraklatılmışsa) içindeki an (sn)
     var kayitAni: Double? { calar?.currentTime }
 
-    /// Z4b (Hikâyeler): okuma hızı. Kayıtta `AVAudioPlayer.rate` (hemen), telefonun sesinde sonraki sözden. Dinle (Z4a)
-    /// hep 1 kullanır: davranışı değişmez.
-    var hiz: Float = 1 {
-        didSet { calar?.rate = hiz }
-    }
 
     /// Telefondaki en iyi Türkçe ses (premium > gelişmiş > varsayılan).
     static var turkceSes: AVSpeechSynthesisVoice? {
@@ -63,7 +62,7 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
         c.delegate = self
         c.enableRate = true
         c.prepareToPlay()
-        c.rate = hiz
+        c.rate = Float(hiz)
         if bas > 0 { c.currentTime = min(bas, max(0, c.duration - 0.05)) }
         calar = c
         await withTaskCancellationHandler {
@@ -85,7 +84,7 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
         let soz = AVSpeechUtterance(string: metin)
         soz.voice = Self.turkceSes
         // Yavaş bakışa uygun, olağandan biraz yavaş (AVSpeech'te olağan hız 0,5)
-        soz.rate = min(AVSpeechUtteranceMaximumSpeechRate, AVSpeechUtteranceDefaultSpeechRate * 0.9 * hiz)
+        soz.rate = min(AVSpeechUtteranceMaximumSpeechRate, AVSpeechUtteranceDefaultSpeechRate * 0.9 * Float(hiz))
         soz.prefersAssistiveTechnologySettings = false
         sozKonumu = 0
         await withTaskCancellationHandler {

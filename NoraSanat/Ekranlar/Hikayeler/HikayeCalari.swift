@@ -163,7 +163,7 @@ final class HikayeCalari {
 
     func hiziDegistir() {
         hiz = HikayeSesi.sonrakiHiz(hiz)
-        ses.hiz = Float(hiz)
+        ses.hiz = hiz
         simdiCalan()
     }
 
@@ -172,7 +172,7 @@ final class HikayeCalari {
     private func calmaya(_ bas: Int, _ basAn: Double) {
         guard hikaye != nil, !parcalar.isEmpty else { return }
         akisIsi?.cancel()
-        ses.hiz = Float(hiz)
+        ses.hiz = hiz
         sesiAc()
         caliyor = true
         bitti = false
