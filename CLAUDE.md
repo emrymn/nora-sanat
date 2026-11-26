@@ -22,4 +22,4 @@ Sanat Atlası'nın ekranları sekme sekme Swift'e taşınıyor. **Her oturum ön
 - Bildirim/rozet: `Hatirlatici`. Ayarları `NoraSanat/Settings.bundle` (anahtarlar: `hatirlatma`, `hatirlatmaSaati`).
 - Arayüzden bağımsız mantık `Paketler/NoraCekirdek`'e girer ve test edilir (yalnız Foundation; SwiftUI/ImageIO dosyaları `#if canImport` ile korunur).
 - Swift dil modu 5.
-- Kod bulutta (Linux) yazılır; derleme ve simülatör ekran görüntüsünü `.github/workflows/ios-derle.yml` yapar. PR yeşil olmadan birleştirme yok.
+- Kod bulutta (Linux) yazılır; derleme ve simülatör ekran görüntüsünü `.github/workflows/ios-derle.yml` yapar. PR'da yalnız `derle` çalışır (~6 dk); ekran görüntüleri main'de ya da `ekran` etiketli PR'da. PR yeşil (`derle`) olmadan birleştirme yok.
