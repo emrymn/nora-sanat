@@ -36,7 +36,7 @@ G ve C şeritlerinin işleri **birbirinden ayrıdır**: farklı sekmeler, farkl�
 7. Hemen **taslak PR** aç; başlığı iş kimliğiyle başlasın (ör. "T3 · Kabuk"). Öbür araçlar ne yapıldığını açık PR'lardan görür.
 
 ### Bitirirken
-1. CI yeşil olmalı. Ekran görüntülerine bak: ekran sitedekine benziyor mu?
+1. CI yeşil olmalı (PR'da yalnız `derle`: çekirdek testleri + derleme, ~6 dk). Ekranı değiştiren işte PR'a `ekran` etiketini ekle; ekran görüntüleri o zaman alınır (1–2 saat). Görüntülere bak: ekran sitedekine/tasarıma benziyor mu? Etiketsiz PR'ların görüntüleri birleşince main'de alınır.
 2. Bu dosyada iki şeyi güncelle:
    - Tablodaki durum: `PR açık (#n)`.
    - İşinin altındaki **Devir notu**: ne yapıldı, ne kaldı, tuzaklar, kaynak commit, sonraki işe ipucu.
