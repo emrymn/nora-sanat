@@ -142,15 +142,52 @@ genel() {
   sleep 30
   xcrun simctl io "$UDID" screenshot ekranlar/9-goruntuleyici.png
   # Y1: "Dinleyerek bak": kurulum (süre ve ses seçimi), sonra sessiz seçenekte ilk ayrıntıya yaklaşmış hâli (altyazı)
+  # Z4a (Yön 3): başlangıç ("Dinlemeye başla"), anlatım Gece ve Gündüz (altyazının arkasındaki geçiş), denetimler
+  # (duraklatılmış, adım şeridi), bitiş ("Tur tamamlandı").
   xcrun simctl terminate "$UDID" "$PAKET"
   xcrun simctl launch "$UDID" "$PAKET" -ekran dinle
   sleep 25
   xcrun simctl io "$UDID" screenshot ekranlar/9d-dinle-kurulum.png
-  "$RUNNER_TEMP/ben-ekran" ekranlar/9d-dinle-kurulum.png "Başla"
+  "$RUNNER_TEMP/ben-ekran" ekranlar/9d-dinle-kurulum.png "Dinlemeye ba"
   xcrun simctl terminate "$UDID" "$PAKET"
   xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 1
   sleep 45
   xcrun simctl io "$UDID" screenshot ekranlar/9e-dinle-ayrinti.png
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 1 -dinleTema gunduz
+  sleep 45
+  xcrun simctl io "$UDID" screenshot ekranlar/9e-dinle-ayrinti-gunduz.png
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 1 -dinleDenetim
+  sleep 45
+  xcrun simctl io "$UDID" screenshot ekranlar/9f-dinle-denetim.png
+  "$RUNNER_TEMP/ben-ekran" ekranlar/9f-dinle-denetim.png "Kapan"
+  xcrun simctl terminate "$UDID" "$PAKET"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 0 -dinleBitis
+  sleep 35
+  xcrun simctl io "$UDID" screenshot ekranlar/9g-dinle-bitis.png
+  "$RUNNER_TEMP/ben-ekran" ekranlar/9g-dinle-bitis.png "Tur tamam"
+  # Z4a: doğal ses. Ses dizini yokmuş gibi (-dinleSesYok: R2'ye ya da ses_dizini.json'a ulaşılamaz) sesli başlayınca
+  # açılışı telefonun sesi (AVSpeech) okumalı; uygulama kimin okuduğunu tmp/dinle-ses'e yazar.
+  DVERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
+  xcrun simctl terminate "$UDID" "$PAKET"
+  rm -f "$DVERI/tmp/dinle-ses"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 0 -dinleSesli -dinleSesYok
+  for _ in {1..60}; do
+    test -f "$DVERI/tmp/dinle-ses" && break
+    sleep 1
+  done
+  echo "dinle (R2 yok): $(cat "$DVERI/tmp/dinle-ses" 2>/dev/null)"
+  grep -q "adim 0 acilis: AVSpeech" "$DVERI/tmp/dinle-ses"
+  # Bilgi için: dizin ve kayıtlar varsa (site ses_dizini.json'u yayınladıysa) açılışı Fola okur; yoksa yine AVSpeech.
+  xcrun simctl terminate "$UDID" "$PAKET"
+  rm -f "$DVERI/tmp/dinle-ses"
+  xcrun simctl launch "$UDID" "$PAKET" -ekran dinle -dinleAdim 0 -dinleSesli
+  for _ in {1..60}; do
+    test -f "$DVERI/tmp/dinle-ses" && break
+    sleep 1
+  done
+  echo "dinle (R2): $(cat "$DVERI/tmp/dinle-ses" 2>/dev/null)"
   # C1b/C1c: pekiştirme. Açılışlar arası aynı tur sürer: 10a ilk ekran (yeni sanatçıysa tanışma), 10 soru kartı,
   # 10c yanlış bir şıktan sonra cevap yaprağı. Her adım hazır olunca işaret dosyası yazılır; yükleme ve hata başarı sayılmaz.
   VERI=$(xcrun simctl get_app_container "$UDID" "$PAKET" data)
