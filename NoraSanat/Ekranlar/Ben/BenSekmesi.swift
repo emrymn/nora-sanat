@@ -179,7 +179,7 @@ struct BenSekmesi: View {
             .padding(.bottom, 22)
             .frame(maxWidth: .infinity, minHeight: 560 + ust, alignment: .bottomLeading)
             .overlay(alignment: .top) {
-                BenUst(baslik: "Ben", geri: { kabuk.sec(.bugun) }) {
+                BenUst(baslik: "Ben", geri: { kabuk.sec(kabuk.benOncesi) }) {
                     Button { gecis { ayarlar = true } } label: { BenIkon(simge: .ayarlar, boyut: 22, kalinlik: 1.4) }
                         .buttonStyle(YuvarlakDugme())
                         .accessibilityLabel("Ayarlar")

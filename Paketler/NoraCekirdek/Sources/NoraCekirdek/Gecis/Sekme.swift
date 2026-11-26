@@ -3,10 +3,11 @@
 // Kâhin: Testler/kahin/kabuk.mjs (sitenin sekme çubuğunda hangi sekmenin seçili olduğu).
 import Foundation
 
-/// Uygulamanın sekmeleri. İlk dördü sitenin sekme çubuğundakiler; Ben (İlerleme, Ayarlar) sitede Bugün'ün sağ üstündeki
-/// düğmedir, yerli uygulamada ayrı sekme olur.
+/// Uygulamanın sekmeleri. Bugün, Yolculuk, Galeri, Çalış sitenin sekme çubuğundakiler; Ben (İlerleme, Ayarlar) sitede
+/// Bugün'ün sağ üstündeki düğmedir, uygulamada da çubukta değil, ana ekranların sağ üstündeki düğmeyle açılır.
+/// Z4b: Hikâyeler yeni (sitede yok).
 public enum Sekme: String, CaseIterable, Hashable, Sendable, Identifiable {
-    case bugun, yolculuk, galeri, calis, ben
+    case bugun, hikayeler, yolculuk, galeri, calis, ben
 
     public var id: String { rawValue }
 
@@ -14,6 +15,7 @@ public enum Sekme: String, CaseIterable, Hashable, Sendable, Identifiable {
     public var kokAdres: String {
         switch self {
         case .bugun: return "#/"
+        case .hikayeler: return "#/hikayeler"
         case .yolculuk: return "#/harita"
         case .galeri: return "#/gozat"
         case .calis: return "#/pekistir"
@@ -25,6 +27,7 @@ public enum Sekme: String, CaseIterable, Hashable, Sendable, Identifiable {
     public var baslik: String {
         switch self {
         case .bugun: return "Bugün"
+        case .hikayeler: return "Hikâyeler"
         case .yolculuk: return "Yolculuk"
         case .galeri: return "Galeri"
         case .calis: return "Çalış"
@@ -32,14 +35,14 @@ public enum Sekme: String, CaseIterable, Hashable, Sendable, Identifiable {
         }
     }
 
-    /// Sitenin sekme kimliği (`SEKMELER`); Ben sitede sekme değil
+    /// Sitenin sekme kimliği (`SEKMELER`); Ben sitede sekme değil, Hikâyeler sitede yok
     public var siteKimligi: String? {
         switch self {
         case .bugun: return "bugun"
         case .yolculuk: return "harita"
         case .galeri: return "gozat"
         case .calis: return "pekistir"
-        case .ben: return nil
+        case .ben, .hikayeler: return nil
         }
     }
 
@@ -107,6 +110,8 @@ public enum SiteRotalari {
     public static func sekme(_ adres: String) -> Sekme? {
         let h = hash(adres)
         if h == "#/ilerleme" || h == "#/ayarlar" { return .ben }
+        // Z4b: sitede olmayan Hikâyeler'in adresleri (uygulamanın kendi bağlantıları: widget, Spotlight)
+        if HikayeAdresi.sekmeninMi(h) { return .hikayeler }
         return siteSekmesi(h).flatMap(Sekme.init(siteKimligi:))
     }
 
@@ -136,4 +141,21 @@ public enum SiteRotalari {
         if h.hasPrefix("#/karsilastir/") || h.hasPrefix("#/akim-karsilastir/") { return .galeri }
         return nil
     }
+}
+
+/// Z4b · Hikâyeler'in adresleri (sitede yok; uygulama içi): "#/hikayeler" ana ekran, "#/hikaye/<sanatçı>" yazı.
+public enum HikayeAdresi {
+    public static let kok = "#/hikayeler"
+
+    public static func yazi(_ sanatci: String) -> String { "#/hikaye/\(sanatci)" }
+
+    /// Adres bir yazınınsa sanatçının kimliği
+    public static func sanatci(_ adres: String) -> String? {
+        let h = SiteRotalari.hash(adres)
+        guard h.hasPrefix("#/hikaye/") else { return nil }
+        let id = String(h.dropFirst("#/hikaye/".count))
+        return id.isEmpty || id.contains("/") ? nil : id.removingPercentEncoding ?? id
+    }
+
+    static func sekmeninMi(_ h: String) -> Bool { h == kok || sanatci(h) != nil }
 }

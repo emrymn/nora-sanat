@@ -44,6 +44,14 @@ final class SekmeTests: XCTestCase {
         XCTAssertEqual(SiteRotalari.sekme("#/ilerleme"), .ben)
         XCTAssertEqual(SiteRotalari.sekme("#/ayarlar"), .ben)
         XCTAssertEqual(SiteRotalari.sekme("#/gunun"), .bugun)
+        // Z4b: Hikâyeler (sitede yok)
+        XCTAssertEqual(SiteRotalari.sekme("#/hikayeler"), .hikayeler)
+        XCTAssertEqual(SiteRotalari.sekme(HikayeAdresi.yazi("johannes-vermeer")), .hikayeler)
+        XCTAssertEqual(SiteRotalari.yerliSekme("#/hikaye/caravaggio"), .hikayeler)
+        XCTAssertEqual(HikayeAdresi.sanatci("#/hikaye/caravaggio"), "caravaggio")
+        XCTAssertNil(HikayeAdresi.sanatci("#/hikaye/"))
+        XCTAssertNil(HikayeAdresi.sanatci("#/hikayeler"))
+        XCTAssertNil(Sekme.hikayeler.siteKimligi)
         for s in Sekme.allCases {
             XCTAssertEqual(SiteRotalari.sekme(s.kokAdres), s, s.rawValue)
             if let k = s.siteKimligi { XCTAssertEqual(Sekme(siteKimligi: k), s) }

@@ -1,7 +1,7 @@
 #!/bin/bash
 # T8: CI ekran görüntüleri, grup grup. Her grup ayrı bir macOS işinde, aynı anda çalışır (.github/workflows/ios-derle.yml,
 # `ekran` matrisi). Kullanım: Testler/ci/ekran.sh <grup> <NoraSanat.app>
-# Gruplar: genel, bugun, ben, galeri-1, galeri-2, calis, yolculuk. Her grup temiz bir simülatörle başlar; Ben, Galeri, Çalış ve
+# Gruplar: genel, bugun, ben, galeri-1, galeri-2, calis, yolculuk, hikayeler. Her grup temiz bir simülatörle başlar; Ben, Galeri, Çalış ve
 # Yolculuk önce T2'nin deneme ilerlemesini yazar (7-8. konular), eskiden tek sırada önceki adımlardan kalan durum buydu.
 # Görüntüler ekranlar/ klasörüne; adlar eskisiyle aynı.
 set -e
@@ -567,8 +567,42 @@ yolculuk() {
   hazir_yolculuk geri-yukle
 }
 
+# Z4b: Hikâyeler (yeni sekme; sitede yok: yan yana yok). Ana ekran, okuma (baş, eser, son), okuma içinde dinleme,
+# başka sekmede küçük çalar; sonra ses: dizin yokken telefonun sesi (AVSpeech), R2'yle Fola (yalnız yazdırılır).
+hikayeler() {
+  ilk_acilis
+  for IS in "ana|Karanl|-adres #/hikayeler" \
+            "okuma|Sessizlik|-adres #/hikaye/johannes-vermeer" \
+            "okuma-eser|nemle ba|-adres #/hikaye/johannes-vermeer -hikayeKaydir eser" \
+            "dinleme|Han Duman|-adres #/hikaye/johannes-vermeer -hikayeDinle 5" \
+            "dinleme-gunduz|Han Duman|-adres #/hikaye/johannes-vermeer -hikayeDinle 5 -hikayeTema gunduz" \
+            "son|Kaynaklar|-adres #/hikaye/johannes-vermeer -hikayeKaydir son" \
+            "mini|Johannes Vermeer|-adres #/hikayeler -hikayeMini johannes-vermeer"; do
+    AD="${IS%%|*}"; GERI="${IS#*|}"; SOZ="${GERI%%|*}"; ARGS="${GERI#*|}"
+    xcrun simctl terminate "$UDID" "$PAKET" || true
+    # shellcheck disable=SC2086
+    xcrun simctl launch "$UDID" "$PAKET" $ARGS -izinSorma
+    sleep 20
+    xcrun simctl io "$UDID" screenshot "ekranlar/hikayeler-$AD.png"
+    "$RUNNER_TEMP/ben-ekran" "ekranlar/hikayeler-$AD.png" "$SOZ"
+  done
+  # Ses: dizin yok (-dinleSesYok) → telefonun sesi; uygulama kimin okuduğunu tmp/hikaye-ses'e yazar
+  for KIP in yok r2; do
+    xcrun simctl terminate "$UDID" "$PAKET" || true
+    rm -f "$VERI/tmp/hikaye-ses"
+    EK=(); [ "$KIP" = yok ] && EK=(-dinleSesYok)
+    xcrun simctl launch "$UDID" "$PAKET" -adres "#/hikaye/johannes-vermeer" -hikayeDinle 0 -hikayeSesli "${EK[@]}" -izinSorma
+    for _ in {1..40}; do
+      test -f "$VERI/tmp/hikaye-ses" && break
+      sleep 1
+    done
+    echo "hikaye ($KIP): $(cat "$VERI/tmp/hikaye-ses" 2>/dev/null)"
+    if [ "$KIP" = yok ]; then grep -q "AVSpeech" "$VERI/tmp/hikaye-ses"; fi
+  done
+}
+
 case "$GRUP" in
-  genel|bugun|ben|calis|yolculuk) "$GRUP" ;;
+  genel|bugun|ben|calis|yolculuk|hikayeler) "$GRUP" ;;
   galeri-1) galeri 1 ;;
   galeri-2) galeri 2 ;;
   *) echo "Bilinmeyen grup: $GRUP"; exit 1 ;;

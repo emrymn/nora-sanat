@@ -30,6 +30,7 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
     /// Kayıt çalıyorsa (ya da duraklatılmışsa) içindeki an (sn)
     var kayitAni: Double? { calar?.currentTime }
 
+
     /// Telefondaki en iyi Türkçe ses (premium > gelişmiş > varsayılan).
     static var turkceSes: AVSpeechSynthesisVoice? {
         let tr = AVSpeechSynthesisVoice.speechVoices().filter { $0.language.lowercased().hasPrefix("tr") }
@@ -54,13 +55,15 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
     }
 
     /// Kaydı çalar; bitince (ya da durdurulunca) true döner. Dosya açılamazsa hemen false (o adımı telefon okur).
-    func cal(_ url: URL) async -> Bool {
+    /// Z4b: `bas` kaydın içinden başlama anı (sn; ±15 sn ve kalınan yer), hız `hiz`.
+    func cal(_ url: URL, bas: Double = 0) async -> Bool {
         durdur()
         guard let c = try? AVAudioPlayer(contentsOf: url) else { return false }
         c.delegate = self
         c.enableRate = true
-        c.rate = Float(hiz)
         c.prepareToPlay()
+        c.rate = Float(hiz)
+        if bas > 0 { c.currentTime = min(bas, max(0, c.duration - 0.05)) }
         calar = c
         await withTaskCancellationHandler {
             await withCheckedContinuation { (k: CheckedContinuation<Void, Never>) in

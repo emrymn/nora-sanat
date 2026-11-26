@@ -10,8 +10,13 @@
 import Foundation
 
 public enum SekmeCubugu {
-    /// Sitenin çubuğundaki sekmeler, sırasıyla (`SEKMELER`). Ben sitede sekme değil (Bugün'ün sağ üstündeki düğme).
-    public static let sekmeler: [Sekme] = [.bugun, .yolculuk, .galeri, .calis]
+    /// Uygulamanın çubuğundaki sekmeler, sırasıyla. Z4b (Emre'nin isteği): Bugün · Hikâyeler · Çalış · Galeri · Yolculuk.
+    /// Sitenin çubuğu (`SEKMELER`) dört sekme ve başka sırada: `siteSekmeleri`. Ben çubukta değil (ana ekranların sağ
+    /// üstündeki kişi düğmesi).
+    public static let sekmeler: [Sekme] = [.bugun, .hikayeler, .calis, .galeri, .yolculuk]
+
+    /// Sitenin çubuğundaki sekmeler, sırasıyla (`SEKMELER`); kâhinin ölçtüğü yerleşim bu dördüyle
+    public static let siteSekmeleri: [Sekme] = [.bugun, .yolculuk, .galeri, .calis]
 
     /// Seçili uygulama sekmesinin çubuktaki yeri. Ben (İlerleme, Ayarlar) sitede Bugün seçili görünür.
     public static func sira(_ s: Sekme) -> Int { sekmeler.firstIndex(of: s) ?? 0 }
@@ -28,6 +33,8 @@ public enum SekmeCubugu {
         case eksi = "eksi"
         case arti = "arti"
         case ileri = "ileri"
+        /// Z4b: Hikâyeler (sitede yok; Neon'un tasarımındaki açık kitap, hikayeler-3/hikaye-verisi.js `IKONLAR`)
+        case hikayeler = "hikayeler"
 
         /// js/tasarim.js `YOLLAR[ad]`, olduğu gibi
         public var isaretleme: String {
@@ -45,6 +52,8 @@ public enum SekmeCubugu {
             case .eksi: return #"<path d="M5 12h14"/>"#
             case .arti: return #"<path d="M12 5v14M5 12h14"/>"#
             case .ileri: return #"<path d="m9 18 6-6-6-6"/>"#
+            case .hikayeler:
+                return #"<path d="M4.5 6.5c2.5-1.2 5-.8 7.5 1 2.5-1.8 5-2.2 7.5-1v11.8c-2.5-1.1-5-.7-7.5 1-2.5-1.7-5-2.1-7.5-1Z"/><path d="M12 7.5v11.8"/>"#
             }
         }
 
@@ -53,6 +62,7 @@ public enum SekmeCubugu {
         public init(_ s: Sekme) {
             switch s {
             case .bugun, .ben: self = .bugun
+            case .hikayeler: self = .hikayeler
             case .yolculuk: self = .yolculuk
             case .galeri: self = .galeri
             case .calis: self = .calis
@@ -111,18 +121,24 @@ public enum SekmeCubugu {
         /// Çubuğun alttan uzaklığı (--sekme-alt)
         public var alt: Double
 
+        /// Çalış rozetinin sekmesi
+        public var rozetSira: Int
+
+        /// `sayi`: çubuktaki sekme sayısı (kâhin sitenin dördüyle sınar); `rozetSira`: Çalış'ın yeri
         public init(ekranGenisligi g: Double, ekranYuksekligi h: Double,
-                    solGuvenli: Double = 0, sagGuvenli: Double = 0, altGuvenli: Double = 0) {
+                    solGuvenli: Double = 0, sagGuvenli: Double = 0, altGuvenli: Double = 0,
+                    sayi: Int = SekmeCubugu.sekmeler.count, rozetSira: Int = SekmeCubugu.sira(.calis)) {
+            self.rozetSira = rozetSira
             alt = max(Olcu.enAzAlt, altGuvenli)
             let sol = solGuvenli + Olcu.yan, sag = sagGuvenli + Olcu.yan
             let alan = max(0, g - sol - sag)
             let gen = min(Olcu.enGenis, alan)
             cubuk = Kutu(x: sol + (alan - gen) / 2, y: h - alt - Olcu.yukseklik, genislik: gen, yukseklik: Olcu.yukseklik)
             let ic = Olcu.kenar + Olcu.ic
-            let n = Double(SekmeCubugu.sekmeler.count)
+            let n = Double(max(1, sayi))
             let sg = (gen - 2 * ic) / n
             let c = cubuk
-            sekmeler = (0..<SekmeCubugu.sekmeler.count).map {
+            sekmeler = (0..<max(1, sayi)).map {
                 Kutu(x: c.x + ic + Double($0) * sg, y: c.y + ic, genislik: sg, yukseklik: Olcu.yukseklik - 2 * ic)
             }
             // left: 50% (ekranın ortası, çubuğun değil)
@@ -133,7 +149,7 @@ public enum SekmeCubugu {
 
         /// Çalış rozetinin sol üst köşesi (genişliği sayıya göre değişir)
         public var rozet: Nokta {
-            let s = sekmeler[SekmeCubugu.sira(.calis)]
+            let s = sekmeler[min(rozetSira, sekmeler.count - 1)]
             return Nokta(s.ortaX + Olcu.rozetSag, s.y + Olcu.rozetUst)
         }
 
