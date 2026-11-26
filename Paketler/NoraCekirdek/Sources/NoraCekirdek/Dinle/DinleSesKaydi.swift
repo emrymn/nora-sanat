@@ -124,18 +124,19 @@ public struct SesDizini: Equatable, Sendable {
     public func adresler(_ anahtar: String, kok: String) -> (mp3: URL, json: URL)? {
         var k = kok
         while k.hasSuffix("/") { k.removeLast() }
-        let v = parcalar[anahtar].map { "?v=" + String(format: "%.3f", $0) } ?? ""
+        let v = parcalar[anahtar] != nil ? "?v=" + surum(anahtar) : ""
         guard k.hasPrefix("https://"),
               let mp3 = URL(string: "\(k)/\(klasor)/\(anahtar).mp3\(v)"),
               let json = URL(string: "\(k)/\(klasor)/\(anahtar).json\(v)") else { return nil }
         return (mp3, json)
     }
 
-    /// Telefondaki kayıt eskimiş mi: indirilen zamanlamanın süresi dizindekinden farklıysa kayıt sonradan yeniden
-    /// üretilmiştir (ör. cızırtı kırpıldı), yenisi indirilmeli. Süre bilinmiyorsa (zamanlama yok) eskimiş sayılmaz.
-    public func eskimis(_ anahtar: String, yerelSure: Double?) -> Bool {
-        guard let y = yerelSure, let d = parcalar[anahtar] else { return false }
-        return abs(y - d) > 0.01
+    /// Kaydın sürümü: dizindeki süresi ("42.381"); dizinde yoksa "0". Telefondaki dosya adı da bununla kurulur
+    /// (`<anahtar>-<sürüm>.mp3`): kayıt yeniden üretilip süresi değişince eski dosya kullanılmaz, yenisi iner.
+    /// Z4e: önce indirilen dosyanın süresi dizinle karşılaştırılıp eskiyse siliniyordu; uygulamadaki dizin sitedekinden
+    /// eskiyken (SiteVerisi 6 saat saklar) yeni dosya hep "eski" sayılıp silindi, hikâyeler telefonun sesine düştü.
+    public func surum(_ anahtar: String) -> String {
+        parcalar[anahtar].map { String(format: "%.3f", $0) } ?? "0"
     }
 }
 
