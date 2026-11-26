@@ -29,7 +29,8 @@ struct DinleEkrani: View {
     @Environment(\.accessibilityReduceMotion) private var sistemHareketAz
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
     @Environment(\.displayScale) private var ekranOlcegi
-    @AppStorage("dinleSuresi") private var sureDegeri = DinlemeSuresi.bes.rawValue
+    /// Z4c: dinleme hızı (1×, 1,5×, 2×); süre seçimi kalktı, eserin bütün içeriği okunur
+    @AppStorage("dinleHizi") private var hiz = 1.0
     @AppStorage("dinleSessiz") private var sessiz = false
 
     @State private var kaynak: DinlemeKaynagi?
@@ -51,8 +52,7 @@ struct DinleEkrani: View {
 
     private var tema: TemaDeposu { TemaDeposu.shared }
     private var r: TemaRenkleri { tema.renkler }
-    private var sure: DinlemeSuresi { DinlemeSuresi(rawValue: sureDegeri) ?? .bes }
-    private var plan: DinlemePlani? { kaynak.map { DinlemePlani.kur($0, sure: sure, dizin: dizin) } }
+    private var plan: DinlemePlani? { kaynak.map { DinlemePlani.tam($0, dizin: dizin) } }
     private var sanatciAdi: String { baglam.katalog?.harita[eser.sid]?.ad ?? "" }
     /// Hareket azaltılmışsa (sistem ya da uygulama ayarı) ya da VoiceOver açıksa kamera kaymaz, yakınlaşmaz
     private var duragan: Bool { sistemHareketAz || tema.ayar.hareketAzaltilmis || voiceOver }
@@ -105,9 +105,7 @@ struct DinleEkrani: View {
         .onChange(of: oynatici?.kameraSayac) { _, _ in kamerayiGotur() }
         .onChange(of: oynatici?.durum) { _, yeni in durumDegisti(yeni) }
         .onChange(of: resim == nil) { eski, _ in if eski { yerlestir() } }
-        .onChange(of: sureDegeri) { _, _ in
-            if let o = oynatici, let p = plan { o.planiDegistir(p) }
-        }
+        .onChange(of: hiz) { _, yeni in oynatici?.hiziDegistir(yeni) }
         .onChange(of: dizin) { _, _ in
             // Dizin başladıktan sonra geldiyse (yavaş ağ) sıradaki adımlar doğal sesi bulsun
             if let o = oynatici, o.durum != .bitti, let p = plan { o.planiDegistir(p) }
@@ -352,8 +350,8 @@ struct DinleEkrani: View {
                 }
             }
             .padding(.horizontal, 18)
-            .padding(.top, 6)
-            .safeAreaPadding(.top)
+            // Z4c: ekran güvenli alanı yok saydığı için `safeAreaPadding` 0 veriyordu; × durum çubuğunun üstüne biniyordu
+            .padding(.top, Self.ustBosluk + 6)
             Spacer()
         }
         .opacity(gizli ? 0 : 1)
@@ -422,7 +420,7 @@ struct DinleEkrani: View {
                     .frame(maxWidth: 316)
             }
             HStack(spacing: 8) {
-                sureSecici(kucuk: false)
+                hizSecici(kucuk: false)
                 Button {
                     sessiz.toggle()
                 } label: {
@@ -460,6 +458,12 @@ struct DinleEkrani: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
 
+    /// Pencerenin üst güvenli alanı (durum çubuğu / çentik); bulunamazsa 47
+    static var ustBosluk: CGFloat {
+        UIApplication.shared.connectedScenes.compactMap { ($0 as? UIWindowScene)?.keyWindow }.first?
+            .safeAreaInsets.top ?? 47
+    }
+
     /// Tek satır tanıtım
     static func tanitim(_ p: DinlemePlani) -> String {
         let n = p.adimlar.filter { $0.tur == .nokta }.count
@@ -476,16 +480,17 @@ struct DinleEkrani: View {
             .overlay(Capsule().strokeBorder(vurgulu ? Color(r.pirinc).opacity(0.55) : Color(r.kenar), lineWidth: 1))
     }
 
-    /// 3 / 5 / 10 dk: başlangıçta "3 dk", denetimlerde yalnız sayı
-    private func sureSecici(kucuk: Bool) -> some View {
+    /// Z4c · 1× / 1,5× / 2× (süre seçicinin yerinde)
+    private func hizSecici(kucuk: Bool) -> some View {
         HStack(spacing: 0) {
-            ForEach(DinlemeSuresi.allCases) { s in
-                let secili = s == sure
+            ForEach(DinlemeKurallari.hizlar, id: \.self) { s in
+                let secili = abs(s - hiz) < 0.01
+                let yazi = s == 1.5 ? "1,5×" : "\(Int(s))×"
                 Button {
                     etkilesim()
-                    sureDegeri = s.rawValue
+                    hiz = s
                 } label: {
-                    Text(kucuk ? "\(s.rawValue)" : s.yazi)
+                    Text(yazi)
                         .font(Yazi.sans(kucuk ? 12 : 13.5, agirlik: 600, stil: .footnote))
                         .foregroundStyle(Color(secili ? r.zemin : r.murekkep2))
                         .padding(.horizontal, kucuk ? 7 : 12)
@@ -494,7 +499,7 @@ struct DinleEkrani: View {
                         .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("\(s.rawValue) dakika")
+                .accessibilityLabel("\(yazi) hız")
                 .accessibilityAddTraits(secili ? .isSelected : [])
             }
         }
@@ -610,7 +615,7 @@ struct DinleEkrani: View {
         VStack(spacing: 12) {
             Spacer()
             HStack(spacing: 0) {
-                sureSecici(kucuk: true)
+                hizSecici(kucuk: true)
                 Spacer(minLength: 6)
                 HStack(spacing: 12) {
                     tasi("backward.end.fill", "Önceki adım") { o.onceki() }
@@ -723,7 +728,8 @@ struct DinleEkrani: View {
     private func bitis(_ o: DinleOynatici) -> some View {
         let n = o.plan.adimlar.filter { $0.tur == .nokta }.count
         let tur = o.sesli ? "sesli bakış" : "altyazılı bakış"
-        let ozet = n > 0 ? "\(n) ayrıntı · \(sure.rawValue) dakikalık \(tur)" : "\(sure.rawValue) dakikalık \(tur)"
+        let dk = max(1, Int((o.plan.toplam / 60).rounded()))
+        let ozet = n > 0 ? "\(n) ayrıntı · \(dk) dakikalık \(tur)" : "\(dk) dakikalık \(tur)"
         return VStack(spacing: 14) {
             VStack(spacing: 4) {
                 Text("Tur tamamlandı")
@@ -814,6 +820,7 @@ struct DinleEkrani: View {
         guard let plan, oynatici == nil else { return }
         let o = DinleOynatici(plan: plan, sesli: sesli ?? !sessiz, baslik: eser.gorunenAd, sanatci: sanatciAdi,
                               kunye: kaynak?.kunye ?? "", sesKoku: baglam.gorselAdresleri.adres, kapak: resim)
+        o.hiziDegistir(hiz)
         withAnimation(.easeInOut(duration: 0.45)) { oynatici = o }
         o.baslat(adim: min(max(0, adim), plan.adimlar.count - 1))
     }

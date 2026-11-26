@@ -14,6 +14,10 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
     private var motor: AVAudioEngine?
     private var sessizCalar: AVAudioPlayerNode?
     private var calar: AVAudioPlayer?
+    /// Z4c: hız (1, 1,5, 2); kayıtta `AVAudioPlayer.rate` (perdeyi korur), telefonun sesinde konuşma hızı
+    var hiz = 1.0 {
+        didSet { calar?.rate = Float(hiz) }
+    }
 
     /// Sentezin şu an söylediği yerin UTF-16 konumu (kelime kelime altyazı için); söz yoksa nil
     private(set) var sozKonumu: Int?
@@ -54,6 +58,8 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
         durdur()
         guard let c = try? AVAudioPlayer(contentsOf: url) else { return false }
         c.delegate = self
+        c.enableRate = true
+        c.rate = Float(hiz)
         c.prepareToPlay()
         calar = c
         await withTaskCancellationHandler {
@@ -75,7 +81,7 @@ final class DinleSesi: NSObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDeleg
         let soz = AVSpeechUtterance(string: metin)
         soz.voice = Self.turkceSes
         // Yavaş bakışa uygun, olağandan biraz yavaş (AVSpeech'te olağan hız 0,5)
-        soz.rate = AVSpeechUtteranceDefaultSpeechRate * 0.9
+        soz.rate = min(AVSpeechUtteranceMaximumSpeechRate, AVSpeechUtteranceDefaultSpeechRate * 0.9 * Float(hiz))
         soz.prefersAssistiveTechnologySettings = false
         sozKonumu = 0
         await withTaskCancellationHandler {

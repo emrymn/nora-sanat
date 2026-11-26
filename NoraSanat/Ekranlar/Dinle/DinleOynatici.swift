@@ -34,6 +34,8 @@ final class DinleOynatici {
     /// Kameranın hedefi (nil: tablonun tamamı) ve her yeni hedefte artan sayaç
     private(set) var kamera: DinlemeKutusu?
     private(set) var kameraSayac = 0
+    /// Z4c: dinleme hızı (1, 1,5, 2): kayıt ve telefonun sesi bu hızda okur, aralar ve kamera saati de bu hızda işler
+    private(set) var hiz = 1.0
 
     @ObservationIgnored private let ses = DinleSesi()
     @ObservationIgnored private var akisIsi: Task<Void, Never>?
@@ -68,7 +70,7 @@ final class DinleOynatici {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .milliseconds(100))
                 guard let self else { return }
-                if self.durum == .oynuyor { self.adimGecen += 0.1 }
+                if self.durum == .oynuyor { self.adimGecen += 0.1 * self.hiz }
             }
         }
         kayitlariIndir()
@@ -129,6 +131,15 @@ final class DinleOynatici {
         plan = yeni
         kayitlariIndir()
         if durum != .bitti { git(min(sira, yeni.adimlar.count - 1)) }
+    }
+
+    /// Z4c: hız değişti; çalan kayıt hemen yeni hızda sürer, telefonun sesi sonraki sözden itibaren
+    func hiziDegistir(_ yeni: Double) {
+        let h = min(2, max(0.5, yeni))
+        guard abs(h - hiz) > 0.001 else { return }
+        hiz = h
+        ses.hiz = h
+        simdiCalan()
     }
 
     /// Ses ↔ yalnız altyazı: adım baştan, yeni seçenekle
@@ -355,7 +366,7 @@ final class DinleOynatici {
             MPMediaItemPropertyAlbumTitle: "Dinleyerek bak",
             MPMediaItemPropertyPlaybackDuration: plan.toplam,
             MPNowPlayingInfoPropertyElapsedPlaybackTime: min(plan.toplam, plan.baslangic(sira) + adimGecen),
-            MPNowPlayingInfoPropertyPlaybackRate: durum == .oynuyor ? 1.0 : 0.0,
+            MPNowPlayingInfoPropertyPlaybackRate: durum == .oynuyor ? hiz : 0.0,
             MPNowPlayingInfoPropertyChapterNumber: sira,
             MPNowPlayingInfoPropertyChapterCount: plan.adimlar.count,
         ]
