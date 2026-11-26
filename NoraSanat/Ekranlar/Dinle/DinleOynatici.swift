@@ -64,7 +64,8 @@ final class DinleOynatici {
     var simdikiAdim: DinlemeAdimi? { plan.adimlar.indices.contains(sira) ? plan.adimlar[sira] : nil }
 
     func baslat(adim: Int = 0) {
-        if sesli { sesiAc() }
+        // Z4b: hikâye çalıyorsa iki ses üst üste binmesin; hikâyenin yeri kaydedilir, kilit ekranı komutları bırakılır
+        if sesli { HikayeCalari.shared.kapat(); sesiAc() }
         saatIsi?.cancel()
         saatIsi = Task { [weak self] in
             while !Task.isCancelled {

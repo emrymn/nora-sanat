@@ -107,15 +107,15 @@ public enum HikayeSesi {
         return yer(sureler, gecen: hedef)
     }
 
-    /// Dinleme hızları (`1×` düğmesi sırayla dolaşır)
-    public static let hizlar: [Double] = [1, 1.25, 1.5, 0.85]
+    /// Dinleme hızları (`1×` düğmesi sırayla dolaşır): "Dinleyerek bak"ınkiyle aynı (Z4c, Emre: 1× / 1,5× / 2×)
+    public static var hizlar: [Double] { DinlemeKurallari.hizlar }
 
     public static func sonrakiHiz(_ h: Double) -> Double {
         let i = hizlar.firstIndex { abs($0 - h) < 0.001 } ?? -1
         return hizlar[(i + 1) % hizlar.count]
     }
 
-    /// "1×", "1,25×", "0,85×"
+    /// "1×", "1,5×", "2×"
     public static func hizYazisi(_ h: Double) -> String {
         var s = String(format: "%.2f", h)
         while s.hasSuffix("0") { s.removeLast() }

@@ -185,14 +185,15 @@ final class HikayelerTests: XCTestCase {
     }
 
     func testHizVeSaat() {
-        XCTAssertEqual(HikayeSesi.sonrakiHiz(1), 1.25)
-        XCTAssertEqual(HikayeSesi.sonrakiHiz(1.5), 0.85)
-        XCTAssertEqual(HikayeSesi.sonrakiHiz(0.85), 1)
+        XCTAssertEqual(HikayeSesi.hizlar, [1, 1.5, 2])
+        XCTAssertEqual(HikayeSesi.sonrakiHiz(1), 1.5)
+        XCTAssertEqual(HikayeSesi.sonrakiHiz(1.5), 2)
+        XCTAssertEqual(HikayeSesi.sonrakiHiz(2), 1)
         XCTAssertEqual(HikayeSesi.sonrakiHiz(3), 1)
         XCTAssertEqual(HikayeSesi.hizYazisi(1), "1×")
         XCTAssertEqual(HikayeSesi.hizYazisi(1.25), "1,25×")
         XCTAssertEqual(HikayeSesi.hizYazisi(1.5), "1,5×")
-        XCTAssertEqual(HikayeSesi.hizYazisi(0.85), "0,85×")
+        XCTAssertEqual(HikayeSesi.hizYazisi(2), "2×")
         XCTAssertEqual(HikayeSesi.saat(0), "0:00")
         XCTAssertEqual(HikayeSesi.saat(247.9), "4:07")
         XCTAssertEqual(HikayeSesi.saat(3725), "1:02:05")
