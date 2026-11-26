@@ -191,7 +191,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | PR açık (#68) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 | Z4a | Dinleyerek bak (Y1) yeniden: Neon'un "Yön 3 · Canlı Ses · Kelime Akışı" tasarımı (dal `neon/dinle-tasarim`, PR #70), nefesli yay kamera, doğal ses (Gemini "Fola", R2) + kelime kelime altyazı | K | Y1 | 1 | bitti (#71) |
-| Z4b | Hikâyeler sekmesi (yeni, sitede yok): Neon'un "Yön 2 · Substack Minimal" tasarımı (dal `neon/hikayeler-tasarim-3`, PR #75); çubuk 5 sekme (Bugün · Hikâyeler · Çalış · Galeri · Yolculuk), Ben sağ üstteki kişi düğmesinde; okuma içinde dinleme (Z4a'nın sesi) | K | Z4a | 1 | sürüyor (Claude, 2026-11-26) |
+| Z4b | Hikâyeler sekmesi (yeni, sitede yok): Neon'un "Yön 2 · Substack Minimal" tasarımı (dal `neon/hikayeler-tasarim-3`, PR #75); çubuk 5 sekme (Bugün · Hikâyeler · Çalış · Galeri · Yolculuk), Ben sağ üstteki kişi düğmesinde; okuma içinde dinleme (Z4a'nın sesi) | K | Z4a | 1 | PR açık (#77) |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
@@ -1269,7 +1269,7 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Kalan / tuzaklar:** ilk commit'in iletisinde model adı kaldı (force-push yasak, düzeltilemedi). Zamanlama "tahmini" (betik süreyi harflere paylaştırıyor): ses ile vurgu arasında kayma olursa betikte düzeltilmeli. Zemin deseni ve hale (tasarımda) yok. Linux'ta Swift yok: derleme ve testler yalnız CI'da.
 
 ### Z4b · Hikâyeler sekmesi (Claude)
-**Devir notu:** Claude, 2026-11-26 · PR_YERI · dal `claude/gifted-archimedes-lpubr8` (oturumun dalı). Sitede bu sekme yok: kâhin yerine davranış testi.
+**Devir notu:** Claude, 2026-11-26 · [PR #77](https://github.com/emrymn/nora-sanat/pull/77) · dal `claude/gifted-archimedes-lpubr8` (oturumun dalı). Sitede bu sekme yok: kâhin yerine davranış testi.
 - **Kaynak:** tasarım Neon'un "Yön 2 · Substack Minimal"i (Emre seçti; dal `neon/hikayeler-tasarim-3`, PR #75, birleştirilmeyecek): `tasarim/hikayeler-3/yon-2.html`, `ortak.css`, `BENIOKU.md` "Yön 2", `goruntuler/yon-2-*.png`. Veri sanat-atlasi @ `1f54a6c`: `data/sanatci_hikayeleri.json` (13 hikâye; 55'e çıkacak, uygulama değişmeden alır), `eserler_onbellek` + `eser_adlari_tr` (katalog), `ses_dizini.json` (513 hikâye parçası R2'de). Ses sözleşmesi `scripts/ses_uret.py` `hikaye_parcalari`.
 - **Emre'nin değişikliği:** sekme çubuğu 5 sekme: Bugün · Hikâyeler · Çalış · Galeri · Yolculuk (sıra değişti). Ben çubukta değil; Yön 2'deki ayrı yuvarlak Ben kapsülü yapılmadı. Hikâyeler'in ana ekranının sağ üstünde arama ve kişi düğmesi (`BenDugmesi`). Ben'in açıldığı sekme `KabukDurumu.benOncesi`'nde: çubuğun hapı orada kalır, Ben'in geri düğmesi oraya döner (önceden hep Bugün). **Not:** Galeri'de bugün kişi düğmesi yok (Ben yalnız Bugün'ün "BEN" düğmesinden ve Hikâyeler'den açılıyor); Galeri/Çalış/Yolculuk'a da konacaksa ayrı iş.
 - **Çekirdek** (`NoraCekirdek/Hikayeler/`, testler `HikayelerTests`, örnekler `Ornekler/hikayeler/`):
