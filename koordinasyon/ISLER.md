@@ -192,6 +192,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | PR açık (#68) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 | Z4a | Dinleyerek bak (Y1) yeniden: Neon'un "Yön 3 · Canlı Ses · Kelime Akışı" tasarımı (dal `neon/dinle-tasarim`, PR #70), nefesli yay kamera, doğal ses (Gemini "Fola", R2) + kelime kelime altyazı | K | Y1 | 1 | PR açık (#71) |
+| Z4c | Dinleyerek bak sade: süre seçimi yok (bütün içerik), kısa aralar, 1× / 1,5× / 2× hız; × durum çubuğunun altında (Emre) | K | Z4a | 1 | PR açık |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
@@ -1260,6 +1261,13 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Yapılmayanlar (sonraki iş):** widget ve Siri girişi ("günün tablosuna bak": App Intent + `norasanat://dinle`), StandBy ve AirPlay için özel düzen (tam ekran örtü olduğu için yansıtmada da tam ekran; ayrıca denenmedi), bitişte sanatçının tekrar kartı. Planın konuşma süresi tahmin; gerçek sesle süre ±%15 kayabilir (söz bitmeden adım geçmez, yalnız toplam uzar/kısalır).
 - **Tuzaklar:** `Ornekler/yuruyus.json` eski biçim (noktalarda koordinat yok); testler `Ornekler/site_verisi/yuruyus.json`'ı kullanır. Söz durdurulunca gelen geç "bitti" haberi yeni sözü bitirmesin diye `DinleSesi` sözün kimliğini tutar.
 - **CI:** yeşil (iOS derleme #249, `13581b6`: derleme, çekirdek testleri, 7 ekran grubu). `9d-dinle-kurulum` OCR'da: "DİNLEYEREK BAK · Assisi'li Aziz Franciscus ve Yaşamından Sahneler · Bonaventura Berlinghieri · 1235 · 3 dk 5 dk 10 dk · Sesli / Yalnız altyazı · 8 ayrıntı · yaklaşık 5 dk · Başla" (ayrıntılar + yürüyüş birleşti). `9e-dinle-ayrinti` (sessiz, 1. adımdan) arşivde; oturumdan indirilemedi, denetçi baksın. Gerçek ses, kilit ekranı ve kulaklık denetimleri simülatörde sınanmadı: telefonda denenmeli.
+
+### Z4c · Dinleyerek bak sade: tek tip, kısa aralar, hız (Claude)
+**Devir notu:** Claude, 2026-11-26 · dal `claude/Z4c-dinle-sade`. Emre: "3/5/10 dk tek tip olsun, metinler arası bekleme uzun olmasın, 2× ekleyelim"; "× çok yukarıda".
+- **Çekirdek:** `DinlemePlani.tam(_:dizin:)`: açılış, bütün "Ne oluyor?", bütün noktalar, ressamla bağı ve gözden kaçanlar, kapanış; sessiz bakış ve noktada 20 sn kuralı yok. Aralar `DinlemeKurallari.Tam` (söz arası 0,8 sn, nokta gecikmesi 1,2 sn, en az 4 sn; kapanış 2,5 sn). `hizlar` = [1, 1,5, 2]. Testler `DinlemeTamTests`. Eski `kur(_:sure:)` ve `DinlemeSuresi` duruyor (testli), ekranda kullanılmıyor.
+- **Oynatıcı:** `hiz`; kayıt `AVAudioPlayer.enableRate/rate` (perde korunur, çalarken değişir), telefonun sesi `rate × hiz` (sonraki sözden), adım saati `0,1 × hiz` (aralar ve tahmini süreler de hızlanır); Now Playing hızı.
+- **Ekran:** süre seçicinin yerinde hız seçici (başlangıçta ve denetimlerde; `@AppStorage("dinleHizi")`). Bitiş özeti planın gerçek süresinden.
+- **×:** ekran `ignoresSafeArea` içinde olduğu için `safeAreaPadding(.top)` 0 veriyordu; üst çubuk pencerenin üst güvenli alanı kadar aşağıda (`ustBosluk`).
 
 ### Z4a · Dinleyerek bak yeniden: Yön 3 + doğal ses (Claude)
 **Devir notu:** Claude, 2026-11-25 · [PR #71](https://github.com/emrymn/nora-sanat/pull/71) · dal `claude/Z4a-dinle`. Emre Y1'in ekranını, kamera hareketini ve robotik sesi beğenmedi.

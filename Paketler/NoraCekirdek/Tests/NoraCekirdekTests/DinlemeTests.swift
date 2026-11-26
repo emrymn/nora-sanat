@@ -167,3 +167,41 @@ final class DinlemeTests: XCTestCase {
         XCTAssertGreaterThan(yuruyusBulunan, 10)
     }
 }
+
+/// Z4c · tek tip akış (süre seçimi yok), kısa aralar
+final class DinlemeTamTests: XCTestCase {
+    private func kaynak(noktalar: Int, olay: [String] = [], ek: [String] = []) -> DinlemeKaynagi {
+        DinlemeKaynagi(baslik: "Arnolfini Portresi", sanatci: "Jan van Eyck", tarih: "1434",
+                       notMetni: String(repeating: "n", count: 180), olay: olay, ek: ek,
+                       noktalar: (0..<noktalar).map {
+                           DinlemeNoktasi(ad: "Ayrıntı \($0)", metin: String(repeating: "a", count: 149) + ".",
+                                          kutu: DinlemeKutusu(x: 0.1, y: 0.1, w: 0.2, h: 0.2))
+                       })
+    }
+
+    func testHepsiOkunur() {
+        let p = DinlemePlani.tam(kaynak(noktalar: 30, olay: ["o1", "o2"], ek: ["e1", "e2", "e3"]))
+        XCTAssertEqual(p.adimlar.first?.tur, .acilis)
+        XCTAssertEqual(p.adimlar.last?.tur, .kapanis)
+        XCTAssertEqual(p.adimlar.filter { $0.tur == .nokta }.count, 30)
+        XCTAssertEqual(p.adimlar.filter { $0.tur == .anlati }.count, 5)
+        XCTAssertFalse(p.adimlar.contains { $0.tur == .sessiz })
+    }
+
+    func testAralarKisa() {
+        let p = DinlemePlani.tam(kaynak(noktalar: 3, olay: ["Ne oluyor"]))
+        for a in p.adimlar {
+            // söz bittikten sonra en çok ~3 sn (kapanışta 2,5 sn bekleme dahil)
+            XCTAssertLessThanOrEqual(a.sure - (a.gecikme + a.konusma), 3.0, "\(a.tur)")
+            XCTAssertLessThanOrEqual(a.gecikme, 1.5)
+        }
+        // Eski 5 dk planına göre noktada bekleme kısalır
+        let eski = DinlemePlani.kur(kaynak(noktalar: 3), sure: .on).adimlar.first { $0.tur == .nokta }!
+        let yeni = p.adimlar.first { $0.tur == .nokta }!
+        XCTAssertLessThan(yeni.sure, eski.sure)
+    }
+
+    func testHizlar() {
+        XCTAssertEqual(DinlemeKurallari.hizlar, [1, 1.5, 2])
+    }
+}

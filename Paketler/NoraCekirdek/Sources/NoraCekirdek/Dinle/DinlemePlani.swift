@@ -242,6 +242,52 @@ public struct DinlemePlani: Equatable, Sendable {
 
         return DinlemePlani(adimlar: [acilis] + olay + noktalar + ek + sessiz + [kapanis])
     }
+
+    /// Z4c (Emre: "tek tip olsun, metinler arası bekleme uzun olmasın"): süre seçimi yok, eserin bütün içeriği okunur
+    /// (açılış, "Ne oluyor?", bütün noktalar, ressamla bağı ve gözden kaçanlar, kapanış). Aralar kısa
+    /// (`DinlemeKurallari.Tam`); noktada en az 20 sn kuralı ve sessiz bakış yok. Kamera söz sürerken yerine varır.
+    public static func tam(_ k: DinlemeKaynagi, dizin: SesDizini? = nil) -> DinlemePlani {
+        typealias K = DinlemeKurallari
+        typealias T = DinlemeKurallari.Tam
+
+        let acilis: DinlemeAdimi
+        if let d = dizin, let a = d.anahtar(k.notMetni), let soz = d.parcalar[a] {
+            acilis = DinlemeAdimi(tur: .acilis, metin: SesAnahtari.metin(k.notMetni), kutu: nil,
+                                  yaklasma: T.acilisGecikmesi + soz, gecikme: T.acilisGecikmesi,
+                                  konusma: soz, sessizlik: T.ara, kayit: a)
+        } else {
+            let metin = [k.kunye, K.noktala(k.notMetni)].filter { !$0.isEmpty }.joined(separator: " ")
+            let soz = K.okumaSuresi(metin)
+            acilis = DinlemeAdimi(tur: .acilis, metin: metin, kutu: nil,
+                                  yaklasma: T.acilisGecikmesi + soz, gecikme: T.acilisGecikmesi,
+                                  konusma: soz, sessizlik: T.ara)
+        }
+
+        var gezinti = 0
+        func anlati(_ metin: String) -> DinlemeAdimi {
+            let ses = K.soz(metin, dizin)
+            let kutu = K.gezintiKutusu(gezinti)
+            gezinti += 1
+            return DinlemeAdimi(tur: .anlati, metin: ses.metin, kutu: kutu,
+                                yaklasma: T.anlatiGecikmesi + ses.sure, gecikme: T.anlatiGecikmesi,
+                                konusma: ses.sure, sessizlik: T.ara, kayit: ses.kayit)
+        }
+        let olay = k.olay.map(anlati)
+        let noktalar = k.noktalar.map { n -> DinlemeAdimi in
+            let ses = K.soz(n.metin, dizin)
+            // Kamera geçişi en az ~3 sn: kısa sözde de yaklaşma bitsin
+            return DinlemeAdimi(tur: .nokta, baslik: n.ad, metin: ses.metin, kutu: n.kutu,
+                                yaklasma: max(T.noktaEnAz, T.noktaGecikmesi + ses.sure), gecikme: T.noktaGecikmesi,
+                                konusma: ses.sure, sessizlik: T.ara, kayit: ses.kayit)
+        }
+        let ek = k.ek.map(anlati)
+
+        let kapanisSesi = K.soz(K.kapanisMetni, dizin)
+        let kapanis = DinlemeAdimi(tur: .kapanis, metin: kapanisSesi.metin, kutu: nil,
+                                   yaklasma: T.kapanisYaklasmasi + kapanisSesi.sure, gecikme: T.kapanisYaklasmasi,
+                                   konusma: kapanisSesi.sure, sessizlik: T.kapanisSessizligi, kayit: kapanisSesi.kayit)
+        return DinlemePlani(adimlar: [acilis] + olay + noktalar + ek + [kapanis])
+    }
 }
 
 /// Akışın sabitleri ve yardımcıları.
@@ -262,6 +308,23 @@ public enum DinlemeKurallari {
     public static let kapanisSessizligi = 6.0
     public static let sessizEnAz = 15.0
     public static let sessizEnCok = 60.0
+
+    /// Z4c · `DinlemePlani.tam`'ın kısa araları (sn)
+    public enum Tam {
+        public static let acilisGecikmesi = 1.0
+        public static let anlatiGecikmesi = 0.5
+        /// Kamera ayrıntıya yönelirken sözün başlaması
+        public static let noktaGecikmesi = 1.2
+        /// Ayrıntının ekranda en az kalışı (kamera geçişi bitsin)
+        public static let noktaEnAz = 4.0
+        public static let kapanisYaklasmasi = 1.5
+        public static let kapanisSessizligi = 2.5
+        /// İki söz arası
+        public static let ara = 0.8
+    }
+
+    /// Z4c · dinleme hızları (kayıt `AVAudioPlayer.rate`, telefonun sesi `AVSpeechUtterance.rate`)
+    public static let hizlar: [Double] = [1, 1.5, 2]
 
     public static let kapanisMetni = "Şimdi tablonun tamamına bir kez daha bak."
     public static let sessizMetni = "Bir süre yalnız bak."
