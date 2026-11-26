@@ -119,13 +119,23 @@ public struct SesDizini: Equatable, Sendable {
     public func sure(_ ham: String) -> Double? { anahtar(ham).flatMap { parcalar[$0] } }
 
     /// Ses ve zamanlama adresleri. `kok`: görsellerin R2 adresi (`gorsel_kaynagi.json` `adres`).
+    /// Dizinde süresi olan parçanın adresine `?v=<süre>` eklenir: kayıt yeniden üretilince (ör. `ses_uret.py --duzelt`
+    /// sondaki cızırtıyı kırpınca süre değişir) Cloudflare'in bir yıllık önbelleği eski dosyayı vermesin.
     public func adresler(_ anahtar: String, kok: String) -> (mp3: URL, json: URL)? {
         var k = kok
         while k.hasSuffix("/") { k.removeLast() }
+        let v = parcalar[anahtar].map { "?v=" + String(format: "%.3f", $0) } ?? ""
         guard k.hasPrefix("https://"),
-              let mp3 = URL(string: "\(k)/\(klasor)/\(anahtar).mp3"),
-              let json = URL(string: "\(k)/\(klasor)/\(anahtar).json") else { return nil }
+              let mp3 = URL(string: "\(k)/\(klasor)/\(anahtar).mp3\(v)"),
+              let json = URL(string: "\(k)/\(klasor)/\(anahtar).json\(v)") else { return nil }
         return (mp3, json)
+    }
+
+    /// Telefondaki kayıt eskimiş mi: indirilen zamanlamanın süresi dizindekinden farklıysa kayıt sonradan yeniden
+    /// üretilmiştir (ör. cızırtı kırpıldı), yenisi indirilmeli. Süre bilinmiyorsa (zamanlama yok) eskimiş sayılmaz.
+    public func eskimis(_ anahtar: String, yerelSure: Double?) -> Bool {
+        guard let y = yerelSure, let d = parcalar[anahtar] else { return false }
+        return abs(y - d) > 0.01
     }
 }
 

@@ -52,7 +52,14 @@ actor DinleSesKaynagi {
         let mp3 = k.appendingPathComponent("\(anahtar).mp3")
         let json = k.appendingPathComponent("\(anahtar).json")
         guard FileManager.default.fileExists(atPath: mp3.path) else { return nil }
-        return SesKaydi(mp3: mp3, akis: AltyaziAkisi(veri: try? Data(contentsOf: json)))
+        let akis = AltyaziAkisi(veri: try? Data(contentsOf: json))
+        // Kayıt sonradan yeniden üretildiyse (cızırtı kırpıldı: süre değişti) eskisi silinir, yenisi indirilir
+        if d.eskimis(anahtar, yerelSure: akis?.sure) {
+            try? FileManager.default.removeItem(at: mp3)
+            try? FileManager.default.removeItem(at: json)
+            return nil
+        }
+        return SesKaydi(mp3: mp3, akis: akis)
     }
 
     /// Planın bütün kayıtlarını arka planda indirir (aynı anda en çok üç). Diskte olanlara dokunmaz.
@@ -97,7 +104,8 @@ actor DinleSesKaynagi {
         let k = klasor(d)
         let mp3 = k.appendingPathComponent("\(anahtar).mp3")
         let json = k.appendingPathComponent("\(anahtar).json")
-        if FileManager.default.fileExists(atPath: mp3.path) { return true }
+        // Diskte güncel kayıt varsa iş yok (eskimişse `yerel` onu siler, yenisi iner)
+        if await yerel(anahtar) != nil { return true }
         let oturum = self.oturum
         let t = Task<Bool, Never> {
             func getir(_ u: URL) async -> Data? {
