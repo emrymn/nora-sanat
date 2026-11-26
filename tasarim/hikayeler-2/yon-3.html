@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gece">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nora Sanat · Yön 3 — Bugünün Kapısı & Portre Duvarı</title>
+<link rel="stylesheet" href="ortak.css">
+<style>
+/* ===== YÖN 3 · BUGÜNÜN KAPISI & PORTRE DUVARI ===== */
+
+.ana3-kaydir {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 112px;
+}
+.ana3-kaydir::-webkit-scrollbar { display: none; }
+
+/* Üst Sahne: Bugünün Kapısı (kenardan kenara) */
+.kapi-sahne {
+  position: relative;
+  width: 390px;
+  height: 454px;
+  overflow: hidden;
+}
+.kapi-gorsel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  transition: opacity 0.35s ease;
+}
+.kapi-perde {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 17, 16, 0.56) 0%,
+    rgba(18, 17, 16, 0.08) 28%,
+    rgba(18, 17, 16, 0.34) 56%,
+    var(--bg) 98%
+  );
+}
+[data-tema='gunduz'] .kapi-perde {
+  background: linear-gradient(
+    to bottom,
+    rgba(236, 232, 225, 0.66) 0%,
+    rgba(236, 232, 225, 0.06) 26%,
+    rgba(236, 232, 225, 0.48) 52%,
+    rgba(236, 232, 225, 0.86) 68%,
+    var(--bg) 96%
+  );
+}
+
+.kapi-ust-bar {
+  position: absolute;
+  top: 50px;
+  left: 18px;
+  right: 16px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kapi-etiket {
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+.kapi-ust-sag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kapi-ic {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 14px;
+  z-index: 8;
+}
+.kapi-ad-satir {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+.kapi-ad {
+  font-family: var(--serif);
+  font-size: 35px;
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin: 4px 0 6px;
+  color: var(--ink);
+}
+.kapi-baslik {
+  font-family: var(--okuma);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kapi-eylemler {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kapi-eylemler .btn-dolu {
+  flex: 1;
+  height: 46px;
+}
+
+/* 55 Sanatçılık Çerçevesiz Portre Duvarı */
+.duvar-bolum {
+  padding: 14px 12px 0;
+}
+.duvar-baslik-satir {
+  padding: 0 10px 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.duvar-baslik {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0;
+}
+.duvar-bilgi {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.portre-duvari {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.portre-karo {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background: var(--surface);
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  transition: transform 0.18s ease, box-shadow 0.25s ease;
+}
+.portre-karo:active { transform: scale(0.94); }
+.portre-karo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.25s ease, transform 0.35s ease;
+}
+.portre-karo.yakinda img {
+  filter: grayscale(0.85) contrast(0.92) opacity(0.54);
+}
+.portre-karo.secili {
+  box-shadow: 0 0 0 2px var(--pirinc), 0 6px 18px var(--golge);
+  z-index: 3;
+}
+.portre-karo.secili img {
+  filter: none;
+  transform: scale(1.05);
+}
+
+/* Portre üzeri ince durum izleri (yarım kalan pirinç çizgi, biten yeşil damla) */
+.portre-perde {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(12, 11, 10, 0.72) 0%, transparent 45%);
+  pointer-events: none;
+}
+.portre-ad {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 5px;
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #f4efe6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  pointer-events: none;
+}
+.portre-karo.yakinda .portre-ad {
+  opacity: 0.72;
+}
+.portre-cizgi {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.portre-cizgi > i {
+  display: block;
+  height: 100%;
+  background: var(--pirinc);
+}
+.portre-damla {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px rgba(18, 17, 16, 0.6);
+}
+.portre-damla.yarim { background: var(--pirinc); }
+.portre-damla.biten { background: var(--right); }
+
+/* ===== OKUMA EKRANI (Sergi Kataloğu) ===== */
+.o3-ust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 26;
+  padding: 52px 14px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.o3-ust.yapiskan {
+  background: var(--tab-bg);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border-bottom: 1px solid var(--notr-kenar);
+}
+.o3-iz-ust {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5px;
+  background: transparent;
+}
+.o3-iz-ust > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--pirinc);
+}
+.o3-ic {
+  padding: 102px 24px 124px;
+}
+.o3-paspartu {
+  padding: 12px;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid var(--notr-kenar);
+  box-shadow: 0 16px 38px var(--golge);
+  margin-bottom: 24px;
+}
+.o3-paspartu img {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  display: block;
+}
+.o3-baslik {
+  font-family: var(--serif);
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 8px 0 12px;
+}
+.o3-p {
+  font-family: var(--okuma);
+  font-size: 18px;
+  line-height: 1.64;
+  margin: 0 0 18px;
+}
+.o3-bolum {
+  margin-top: 44px;
+  padding-top: 26px;
+  border-top: 1px solid var(--notr-kenar);
+}
+.o3-bolum-baslik {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.16;
+  margin: 6px 0 16px;
+}
+.o3-yuzen-dinle {
+  position: absolute;
+  right: 20px;
+  bottom: 26px;
+  z-index: 26;
+}
+.o3-yuzen-dinle .btn-dolu {
+  box-shadow: 0 12px 32px var(--golge);
+}
+
+/* ===== DİNLEME EKRANI (Tam Ekran Tablo + Dokununca Sadeleşen Sahne) ===== */
+.d3-ekran {
+  background: #0c0b0a;
+  color: #f4efe6;
+}
+[data-tema='gunduz'] .d3-ekran {
+  background: #ece8e1;
+  color: #1f1b17;
+}
+.d3-gorsel-sar {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+.d3-gorsel {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transform: scale(1.03);
+  transition: transform 14s ease-out;
+}
+.d3-ekran.oynuyor .d3-gorsel { transform: scale(1.10); }
+.d3-perde {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 11, 10, 0.68) 0%,
+    rgba(12, 11, 10, 0.08) 25%,
+    rgba(12, 11, 10, 0.22) 50%,
+    rgba(12, 11, 10, 0.88) 75%,
+    rgba(12, 11, 10, 0.96) 100%
+  );
+}
+[data-tema='gunduz'] .d3-perde {
+  background: linear-gradient(
+    to bottom,
+    rgba(236, 232, 225, 0.82) 0%,
+    rgba(236, 232, 225, 0.06) 26%,
+    rgba(236, 232, 225, 0.24) 52%,
+    rgba(236, 232, 225, 0.92) 76%,
+    rgba(236, 232, 225, 0.98) 100%
+  );
+}
+.d3-katman {
+  position: relative;
+  z-index: 6;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 54px 18px 26px;
+}
+.d3-gizlenebilir {
+  transition: opacity 0.28s ease;
+}
+.d3-ekran.sade .d3-gizlenebilir {
+  opacity: 0;
+  pointer-events: none;
+}
+.d3-altyazi {
+  font-family: var(--okuma);
+  font-size: 23.5px;
+  line-height: 1.44;
+  min-height: 136px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 4px;
+}
+.d3-kapsul {
+  margin-top: 14px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(24, 22, 20, 0.78);
+  border: 1px solid rgba(244, 239, 230, 0.16);
+  backdrop-filter: blur(26px) saturate(1.7);
+  -webkit-backdrop-filter: blur(26px) saturate(1.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+[data-tema='gunduz'] .d3-kapsul {
+  background: rgba(247, 245, 241, 0.90);
+  border-color: rgba(31, 27, 23, 0.14);
+}
+.d3-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.d3-btn.oynat {
+  width: 54px;
+  height: 54px;
+  background: #f4efe6;
+  color: #121110;
+}
+[data-tema='gunduz'] .d3-btn.oynat {
+  background: #1f1b17;
+  color: #f7f5f1;
+}
+
+/* ===== BAĞLANTILAR EKRANI (Yüzden Yüze Geçiş) ===== */
+.b3-sahne {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.b3-portre-ust {
+  position: relative;
+  width: 390px;
+  height: 398px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.b3-portre-ust img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+}
+.b3-portre-yedek {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 92px;
+  color: var(--ink-soluk);
+}
+.b3-portre-perde {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(18,17,16,0.5) 0%, transparent 28%, var(--bg) 98%);
+}
+[data-tema='gunduz'] .b3-portre-perde {
+  background: linear-gradient(to bottom, rgba(236,232,225,0.6) 0%, transparent 28%, var(--bg) 98%);
+}
+.b3-alt-ic {
+  flex: 1;
+  padding: 0 22px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.b3-ad {
+  font-family: var(--serif);
+  font-size: 31px;
+  font-weight: 500;
+  line-height: 1.08;
+  margin: 4px 0 10px;
+}
+.b3-metin {
+  font-family: var(--okuma);
+  font-size: 16.5px;
+  line-height: 1.54;
+  color: var(--ink-2);
+  margin: 0 0 18px;
+}
+.b3-yuz-serit {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 14px;
+  scrollbar-width: none;
+}
+.b3-yuz-serit::-webkit-scrollbar { display: none; }
+.b3-yuz-btn {
+  flex-shrink: 0;
+  width: 56px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.b3-yuz-kare {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid var(--notr-kenar);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink-2);
+}
+.b3-yuz-btn.secili .b3-yuz-kare {
+  border: 2px solid var(--pirinc);
+  transform: scale(1.06);
+}
+.b3-yuz-kare img { width: 100%; height: 100%; object-fit: cover; }
+.b3-yuz-btn span {
+  font-size: 10.5px;
+  color: var(--ink-2);
+  max-width: 56px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.b3-yuz-btn.secili span { color: var(--pirinc); font-weight: 600; }
+
+/* Yolculuk bağlam sahnesi (Küçük çalar için) */
+.yol-durak {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--notr-kenar);
+  margin-bottom: 12px;
+}
+.yol-durak img {
+  width: 56px; height: 56px; border-radius: 14px; object-fit: cover; flex-shrink: 0;
+}
+</style>
+</head>
+<body class="vitrin-mod">
+
+<div class="vitrin-bar">
+  <span class="vitrin-etiket">Yön 3 · Bugünün Kapısı & Portre Duvarı</span>
+  <div class="vitrin-grup">
+    <button class="vitrin-btn aktif" data-ekran="ana">Ana ekran</button>
+    <button class="vitrin-btn" data-ekran="okuma">Okuma</button>
+    <button class="vitrin-btn" data-ekran="dinleme">Dinleme</button>
+    <button class="vitrin-btn" data-ekran="baglantilar">Bağlantılar</button>
+    <button class="vitrin-btn" data-ekran="mini">Küçük çalar</button>
+  </div>
+  <div class="vitrin-grup">
+    <button class="vitrin-btn aktif" data-tema-sec="gece">Gece</button>
+    <button class="vitrin-btn" data-tema-sec="gunduz">Gündüz</button>
+  </div>
+</div>
+
+<div class="telefon">
+  <div class="zemin-katman">
+    <div class="zemin-doku"></div>
+    <div class="zemin-hale"></div>
+    <div class="zemin-desen" id="zemin-desen"></div>
+  </div>
+
+  <div class="durum-cubugu" id="durum-cubugu">
+    <span>9:41</span>
+    <div class="durum-simgeler">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="5" width="3" height="7" rx="1"/><rect x="9" y="2.5" width="3" height="9.5" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0M4.2 7a5.6 5.6 0 0 1 7.6 0"/><circle cx="8" cy="10.2" r="1.2" fill="currentColor" stroke="none"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.8" y="1" width="20.5" height="10" rx="2.6" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2"/><rect x="2.6" y="2.8" width="15.5" height="6.4" rx="1.4" fill="currentColor"/><path d="M23 4.2v3.6" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <!-- 1. ANA EKRAN: BUGÜNÜN KAPISI + 55 PORTRE DUVARI -->
+  <section class="ekran acik" id="ekran-ana" aria-label="Bugünün hikâyesi ve portre duvarı">
+    <div class="ana3-kaydir" id="ana3-kaydir">
+      <div class="kapi-sahne" id="kapi-sahne">
+        <img class="kapi-gorsel" id="kapi-gorsel" alt="">
+        <div class="kapi-perde"></div>
+        <div class="kapi-ust-bar">
+          <span class="kapi-etiket">Hikâyeler</span>
+          <div class="kapi-ust-sag">
+            <button class="btn-cam kare" id="btn-kapi-onceki" aria-label="Önceki yüz"></button>
+            <button class="btn-cam kare" id="btn-kapi-sonraki" aria-label="Sonraki yüz"></button>
+            <button class="btn-cam kare" id="btn-ara-ac" aria-label="Sanatçı ara"></button>
+          </div>
+        </div>
+        <div class="kapi-ic" id="kapi-ic"></div>
+      </div>
+
+      <div class="duvar-bolum">
+        <div class="duvar-baslik-satir">
+          <h2 class="duvar-baslik">55 yüz, tek duvar</h2>
+          <span class="duvar-bilgi">13 sesli hikâye hazır</span>
+        </div>
+        <div class="portre-duvari" id="portre-duvari"></div>
+      </div>
+    </div>
+
+    <!-- Yön 3 Sekme Çubuğu: 6 sekme tek cam çubukta (390px kıyaslaması için) -->
+    <nav class="sekme-sarici" aria-label="Ana gezinme">
+      <div class="sekme-cubuk alti" id="sekme-ana"></div>
+    </nav>
+  </section>
+
+  <!-- 2. OKUMA EKRANI -->
+  <section class="ekran" id="ekran-okuma" aria-label="Hikâye okuma">
+    <div class="o3-ust" id="o3-ust">
+      <button class="btn-cam kare" id="btn-o3-geri" aria-label="Duvara dön"></button>
+      <div style="font-family:var(--serif);font-size:16px;font-weight:500;" id="o3-ust-ad"></div>
+      <button class="btn-cam kare" id="btn-o3-bag" aria-label="Yüzden yüze"></button>
+      <div class="o3-iz-ust"><i id="o3-iz-dol"></i></div>
+    </div>
+    <div class="kaydir" id="o3-kaydir">
+      <div class="o3-ic" id="o3-ic"></div>
+    </div>
+    <div class="o3-yuzen-dinle">
+      <button class="btn-dolu" id="btn-o3-dinle"></button>
+    </div>
+  </section>
+
+  <!-- 3. DİNLEME EKRANI -->
+  <section class="ekran d3-ekran dinleme-acik-tema" id="ekran-dinleme" aria-label="Fola ile dinle">
+    <div class="d3-gorsel-sar"><img class="d3-gorsel" id="d3-gorsel" alt=""></div>
+    <div class="d3-perde"></div>
+    <div class="d3-katman" id="d3-katman">
+      <div class="d3-gizlenebilir">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <button class="btn-cam kare" id="btn-d3-geri" aria-label="Geri"></button>
+          <div style="text-align:center;flex:1;min-width:0;">
+            <div style="font-size:12.5px;font-weight:600;color:var(--pirinc);" id="d3-sanatci"></div>
+            <div style="font-family:var(--serif);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="d3-bolum"></div>
+          </div>
+          <button class="btn-cam" id="btn-d3-oku" style="height:44px;padding:0 14px;">Oku</button>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;opacity:0.78;margin-bottom:8px;">
+          <span id="d3-eser-ad"></span>
+          <span id="d3-eser-yil"></span>
+        </div>
+        <div class="d3-altyazi" id="d3-altyazi"></div>
+
+        <div class="d3-gizlenebilir">
+          <div style="margin-top:14px;">
+            <div class="cizgi-iz"><div class="cizgi-dol" id="d3-ilerleme" style="width:32%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;opacity:0.7;margin-top:5px;font-variant-numeric:tabular-nums;">
+              <span id="d3-gecen">6:20</span>
+              <span id="d3-kalan">−13:40</span>
+            </div>
+          </div>
+
+          <div class="d3-kapsul">
+            <button class="d3-btn" id="btn-d3-onceki" aria-label="Önceki bölüm"></button>
+            <button class="d3-btn" id="btn-d3-geri15" aria-label="15 saniye geri"></button>
+            <button class="d3-btn oynat" id="btn-d3-oynat" aria-label="Oynat veya duraklat"></button>
+            <button class="d3-btn" id="btn-d3-ileri15" aria-label="15 saniye ileri"></button>
+            <button class="d3-btn" id="btn-d3-sonraki" aria-label="Sonraki bölüm"></button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:12px;">
+            <button class="btn-cam" id="btn-d3-hiz" style="height:44px;padding:0 14px;">1×</button>
+            <button class="btn-cam" id="btn-d3-bag" style="height:44px;padding:0 15px;">Yüzden yüze</button>
+            <button class="btn-cam" id="btn-d3-mini" style="height:44px;padding:0 14px;">Küçült</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. BAĞLANTILAR EKRANI (Yüzden Yüze Geçiş) -->
+  <section class="ekran" id="ekran-baglantilar" aria-label="Yüzden yüze bağlantılar">
+    <div class="b3-sahne">
+      <div class="b3-portre-ust" id="b3-portre-ust"></div>
+      <div style="position:absolute;top:52px;left:14px;right:14px;z-index:10;display:flex;align-items:center;justify-content:space-between;">
+        <button class="btn-cam kare" id="btn-b3-geri" aria-label="Hikâyeye dön"></button>
+        <span class="btn-cam" style="pointer-events:none;height:38px;min-height:38px;font-size:12.5px;" id="b3-kaynak-etiket"></span>
+        <button class="btn-cam kare" id="btn-b3-duvar" aria-label="Portre duvarı"></button>
+      </div>
+      <div class="b3-alt-ic" id="b3-alt-ic"></div>
+    </div>
+  </section>
+
+  <!-- 5. BAŞKA SEKMDE KÜÇÜK ÇALAR (Yolculuk üstünde) -->
+  <section class="ekran" id="ekran-mini" aria-label="Yolculuk ve küçük çalar">
+    <div class="diger-sekme-sahne">
+      <div class="ust-yazi">Sanat tarihi yolu</div>
+      <h2 class="diger-sekme-baslik">Yolculuk</h2>
+      <div class="yol-durak">
+        <img src="gorseller/kapak-caravaggio.jpg" alt="Caravaggio">
+        <div>
+          <div class="ust-yazi" style="color:var(--right);">Tamamlandı</div>
+          <div style="font-family:var(--serif);font-size:20px;">Karanlıktan Fırlayan Işık</div>
+          <div style="font-size:12.5px;color:var(--ink-3);">Roma ve Napoli · 6 durak</div>
+        </div>
+      </div>
+      <div class="yol-durak">
+        <img src="gorseller/kapak-johannes-vermeer.jpg" alt="Vermeer">
+        <div>
+          <div class="ust-yazi">Sıradaki durak</div>
+          <div style="font-family:var(--serif);font-size:20px;">Delft’in Sessiz Penceresi</div>
+          <div style="font-size:12.5px;color:var(--ink-3);">Hollanda · 5 durak</div>
+        </div>
+      </div>
+      <div class="yol-durak">
+        <img src="gorseller/kapak-vincent-van-gogh.jpg" alt="Van Gogh">
+        <div>
+          <div class="ust-yazi" style="color:var(--ink-3);">Yaklaşan</div>
+          <div style="font-family:var(--serif);font-size:20px;">Güneyin Yakıcı Sarıları</div>
+          <div style="font-size:12.5px;color:var(--ink-3);">Arles ve Auvers · 6 durak</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mini-calar" id="mini-calar-kutu" role="button" tabindex="0">
+      <div class="mini-ust">
+        <img class="mini-kapak" id="mini-kapak" alt="">
+        <div class="mini-metin">
+          <div class="mini-baslik" id="mini-baslik"></div>
+          <div class="mini-cumle" id="mini-cumle"></div>
+        </div>
+        <div class="mini-eylemler">
+          <button class="mini-btn oynat" id="btn-mini-oynat" aria-label="Oynat veya duraklat"></button>
+          <button class="mini-btn" id="btn-mini-kapat" aria-label="Kapat"></button>
+        </div>
+      </div>
+      <div class="mini-cizgi"><i id="mini-cizgi-dol" style="width:32%"></i></div>
+    </div>
+
+    <nav class="sekme-sarici" aria-label="Ana gezinme">
+      <div class="sekme-cubuk alti" id="sekme-mini"></div>
+    </nav>
+  </section>
+
+  <!-- KATEGORİSİZ ARAMA -->
+  <div class="arama-katman" id="arama-katman">
+    <div class="arama-giris-satir">
+      <div class="arama-kutu">
+        <span id="arama-ikon"></span>
+        <input type="text" id="arama-giris" placeholder="55 yüz içinde ara…">
+      </div>
+      <button class="btn-cam" id="btn-ara-kapat" style="padding:0 14px;">Vazgeç</button>
+    </div>
+    <div class="arama-liste" id="arama-liste"></div>
+  </div>
+
+  <div class="home-bar" id="home-bar"></div>
+</div>
+
+<script src="hikaye-verisi.js"></script>
+<script>
+(() => {
+  const Y = window.NORA_YARDIMCI;
+  const EVREN = window.NORA_EVREN;
+  const BUGUN_ID = 'johannes-vermeer';
+
+  let aktifEkran = Y.urlParam('ekran', 'ana');
+  let aktifTema = Y.urlParam('tema', 'gece');
+  let aktifSanatciId = Y.urlParam('sanatci', BUGUN_ID);
+  let kapiSanatciId = aktifSanatciId;
+  let aktifBolumIdx = 1;
+  let bagIdx = 0;
+
+  // Fola durumu
+  let oynuyor = false;
+  let hizlar = [0.85, 1, 1.25, 1.5];
+  let hizIdx = 1;
+  let cumleler = [];
+  let cumleIdx = 0;
+  let kelimeIdx = 3;
+  let timer = null;
+
+  function zeminGuncelle(id) {
+    const s = Y.evrenBul(id);
+    document.documentElement.style.setProperty('--hale-rgb', s.hale || '74, 128, 178');
+    document.getElementById('zemin-desen').style.backgroundImage = `url('../../NoraSanat/Ekranlar/Galeri/Desenler/${s.desen}')`;
+  }
+
+  function durumGuncelle() {
+    const dc = document.getElementById('durum-cubugu');
+    const hb = document.getElementById('home-bar');
+    const acik = (aktifEkran === 'dinleme' || aktifEkran === 'ana' || aktifEkran === 'baglantilar') && aktifTema === 'gece';
+    dc.classList.toggle('acik-yazi', acik);
+    hb.classList.toggle('acik-yazi', aktifEkran === 'dinleme' && aktifTema === 'gece');
+  }
+
+  function temaUygula(t) {
+    aktifTema = t;
+    document.documentElement.setAttribute('data-tema', t);
+    document.querySelectorAll('[data-tema-sec]').forEach(b => b.classList.toggle('aktif', b.dataset.temaSec === t));
+    durumGuncelle();
+  }
+
+  // Yön 3 Sekme Çubuğu: 6 sekme tek yüzen çubukta (390px gerçek yoğunluk kıyası)
+  function sekmeCiz(elId, secili) {
+    const liste = [
+      { id: 'bugun', ad: 'Bugün', ikon: 'bugun' },
+      { id: 'hikayeler', ad: 'Hikâyeler', ikon: 'hikayeler' },
+      { id: 'calis', ad: 'Çalış', ikon: 'calis' },
+      { id: 'galeri', ad: 'Galeri', ikon: 'galeri' },
+      { id: 'yolculuk', ad: 'Yolculuk', ikon: 'yolculuk' },
+      { id: 'ben', ad: 'Ben', ikon: 'ben' },
+    ];
+    const el = document.getElementById(elId);
+    el.innerHTML = liste.map(s => `
+      <button class="sekme-oge ${s.id === secili ? 'secili' : ''}" data-s="${s.id}">
+        ${Y.svg(s.ikon, 19, s.id === secili ? 1.8 : 1.5)}
+        <span>${s.ad}</span>
+      </button>
+    `).join('');
+    el.querySelectorAll('.sekme-oge').forEach(b => {
+      b.onclick = () => {
+        if (b.dataset.s === 'hikayeler') ekranAc('ana');
+        else ekranAc('mini');
+      };
+    });
+  }
+
+  // ===== BUGÜNÜN KAPISI + 55 PORTRE DUVARI =====
+  function kapiCiz() {
+    const s = Y.evrenBul(kapiSanatciId);
+    zeminGuncelle(s.id);
+    document.getElementById('kapi-gorsel').src = s.kapak;
+
+    const ustMetin = s.id === BUGUN_ID
+      ? `Bugünün hikâyesi · ${s.yillar} · ${s.dakika} dk`
+      : s.durum === 'yarim'
+        ? `${s.yillar} · ${s.kalanDk} dk kaldı`
+        : s.durum === 'biten'
+          ? `${s.yillar} · Tamamlandı`
+          : s.hazir
+            ? `${s.yillar} · ${s.dakika} dk`
+            : `${s.yillar} · Yakında`;
+
+    const iz = (s.durum === 'yarim' || s.durum === 'biten')
+      ? `<div style="margin-bottom:12px;"><div class="cizgi-iz"><div class="cizgi-dol ${s.durum === 'biten' ? 'biten' : ''}" style="width:${Math.round(s.ilerleme * 100)}%"></div></div></div>`
+      : '';
+
+    const eylem = s.hazir
+      ? `<div class="kapi-eylemler">
+          <button class="btn-dolu" id="btn-kapi-dinle">${Y.svg('kulaklik', 17, 1.8)}<span>${s.durum === 'yarim' ? 'Dinlemeyi sürdür' : 'Fola ile dinle'}</span></button>
+          <button class="btn-cam" id="btn-kapi-oku">Oku</button>
+          <button class="btn-cam kare" id="btn-kapi-bag" aria-label="Yüzden yüze">${Y.svg('ag', 18, 1.6)}</button>
+        </div>`
+      : `<div class="kapi-eylemler">
+          <button class="btn-cam" id="btn-kapi-bugun" style="flex:1;justify-content:center;">Bugünün hikâyesine dön · Vermeer</button>
+        </div>`;
+
+    document.getElementById('kapi-ic').innerHTML = `
+      <div class="ust-yazi">${ustMetin}</div>
+      <h1 class="kapi-ad">${s.ad}</h1>
+      <p class="kapi-baslik">${s.baslik}</p>
+      ${iz}
+      ${eylem}
+    `;
+
+    const d = document.getElementById('btn-kapi-dinle');
+    if (d) d.onclick = () => { aktifSanatciId = s.id; aktifBolumIdx = s.aktifBolum || 0; ekranAc('dinleme'); };
+    const o = document.getElementById('btn-kapi-oku');
+    if (o) o.onclick = () => { aktifSanatciId = s.id; ekranAc('okuma'); };
+    const b = document.getElementById('btn-kapi-bag');
+    if (b) b.onclick = () => { aktifSanatciId = s.id; bagIdx = 0; ekranAc('baglantilar'); };
+    const bg = document.getElementById('btn-kapi-bugun');
+    if (bg) bg.onclick = () => { kapiSanatciId = BUGUN_ID; kapiCiz(); duvarCiz(); };
+  }
+
+  function duvarCiz() {
+    // 55 sanatçıyı tek kesintisiz duvarda diz (önce 13 hazır üst sıralarda parlasın mı? Hayır, kronolojik doğal akış + hazır olanlar canlı renkte!)
+    // Not: İlk 20'de hemen birkaç hazır sanatçının görünmesi için kronolojik sırayı korurken 13 hazırın her birini gerçek yerinde canlı tutalım;
+    // ayrıca ilk görünümde duvarın üst 2 satırında hazır + yaklaşan zenginliği dengeli görünür (Giotto'dan Bosch/Leonardo/Michelangelo zaten 11-14. sırada!).
+    const duvar = document.getElementById('portre-duvari');
+    // Portre duvarı 55 yüzü tek akışta sunar; hazır 13 yüz en üstte kronolojik sırayla değil, doğal karışımda:
+    // Kullanıcı 55 içinde hazırları hemen yakalasın diye hazır olanlar canlı renkte ve belirgin; diğer 42 yüz gravür tonunda!
+    // Ayrıca 55 yüzü "bugünün yüzü + bağlı çevre + 1267–1863" doğal akışında değil, doğrudan kronolojik dizelim ama üst sırada Vermeer/Rembrandt/Goya/Van Gogh da hemen görünmesi için
+    // 13 hazır hikâye duvarın ilk 13 gözünde (kronolojik Bosch→Munch), hemen ardından kalan 42 yüz (kronolojik Giotto→Seurat) kesintisiz aksın — HİÇBİR BAŞLIK, AYRAÇ, RAF YOK! Tek bir 55'lik duvar!
+    const hazirlar = EVREN.filter(s => s.hazir);
+    const digerleri = EVREN.filter(s => !s.hazir);
+    const sirali55 = [...hazirlar, ...digerleri];
+
+    duvar.innerHTML = sirali55.map(s => {
+      const sec = s.id === kapiSanatciId;
+      const damla = (s.durum === 'yarim' || s.durum === 'biten')
+        ? `<span class="portre-damla ${s.durum}"></span>`
+        : '';
+      const cizgi = s.durum === 'yarim'
+        ? `<span class="portre-cizgi"><i style="width:${Math.round(s.ilerleme * 100)}%"></i></span>`
+        : '';
+      return `
+        <button class="portre-karo ${s.hazir ? 'hazir' : 'yakinda'} ${sec ? 'secili' : ''}" data-id="${s.id}" aria-label="${s.ad}">
+          <img src="${s.kapak}" alt="${s.ad}" loading="lazy">
+          <span class="portre-perde"></span>
+          ${damla}
+          <span class="portre-ad">${s.kisaAd}</span>
+          ${cizgi}
+        </button>
+      `;
+    }).join('');
+
+    duvar.querySelectorAll('.portre-karo').forEach(btn => {
+      btn.onclick = () => {
+        kapiSanatciId = btn.dataset.id;
+        if (Y.evrenBul(kapiSanatciId).hazir) aktifSanatciId = kapiSanatciId;
+        kapiCiz();
+        duvarCiz();
+        document.getElementById('ana3-kaydir').scrollTo({ top: 0, behavior: 'smooth' });
+      };
+    });
+  }
+
+  // ===== OKUMA EKRANI =====
+  function okumaCiz() {
+    const h = Y.hikayeBul(aktifSanatciId);
+    zeminGuncelle(h.id);
+    document.getElementById('o3-ust-ad').textContent = h.ad;
+    document.getElementById('btn-o3-dinle').innerHTML = `${Y.svg('kulaklik', 17, 1.8)}<span>Fola ile dinle</span>`;
+
+    const bolHtml = h.bolumler.map(b => {
+      const pHtml = b.paragraflar.map((p, pi) => {
+        let out = `<p class="o3-p">${p}</p>`;
+        const es = b.eserler[pi];
+        if (es) {
+          out += `
+            <figure class="eser-levha">
+              <div class="eser-cerceve">
+                <img src="${es.gorsel}" alt="${es.ad}">
+              </div>
+              <figcaption class="eser-kunye">
+                <div class="eser-ad-satir">
+                  <span class="eser-ad">${es.ad}</span>
+                  <span class="eser-yil">${es.yil}</span>
+                </div>
+                ${es.muze ? `<div class="eser-muze">${es.muze}</div>` : ''}
+                ${es.bag ? `<p class="eser-bag"><strong>Bu dönemle bağı</strong>${es.bag}</p>` : ''}
+              </figcaption>
+            </figure>
+          `;
+        }
+        return out;
+      }).join('');
+      return `
+        <article class="o3-bolum">
+          <div class="ust-yazi">${b.yillar}</div>
+          <h2 class="o3-bolum-baslik">${b.baslik}</h2>
+          ${pHtml}
+        </article>
+      `;
+    }).join('');
+
+    const kaynaklar = (h.kaynaklar || []).slice(0, 4).map(k => `<li>${k.baslik}</li>`).join('');
+    const girisHtml = (Array.isArray(h.giris) ? h.giris : [h.giris]).map(p => `<p class="o3-p">${p}</p>`).join('');
+    const kapanisHtml = (Array.isArray(h.kapanis) ? h.kapanis : [h.kapanis]).map(p => `<p class="o3-p">${p}</p>`).join('');
+    document.getElementById('o3-ic').innerHTML = `
+      <div class="o3-paspartu"><img src="${h.kapak}" alt="${h.ad}"></div>
+      <div class="ust-yazi">${h.ad} · ${h.yillar} · ${h.dakika} dk</div>
+      <h1 class="o3-baslik">${h.baslik}</h1>
+      <p style="font-family:var(--okuma);font-style:italic;font-size:17.5px;line-height:1.5;color:var(--ink-2);margin:0 0 22px;">${h.alt_baslik}</p>
+      ${girisHtml}
+      ${bolHtml}
+      <div class="o3-bolum">
+        <div class="ust-yazi">Kapanış</div>
+        <div style="margin-top:10px;">${kapanisHtml}</div>
+        <button class="btn-cam" id="btn-o3-son-bag" style="width:100%;justify-content:center;margin-top:14px;">${Y.svg('ag', 17, 1.6)}<span>Yüzden yüze bağlantılara geç</span></button>
+        ${kaynaklar ? `<div style="margin-top:26px;"><div class="ust-yazi">Kaynaklar</div><ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--ink-2);">${kaynaklar}</ul></div>` : ''}
+      </div>
+    `;
+    document.getElementById('btn-o3-son-bag').onclick = () => { bagIdx = 0; ekranAc('baglantilar'); };
+
+    const kay = document.getElementById('o3-kaydir');
+    kay.scrollTop = 0;
+    const ust = document.getElementById('o3-ust');
+    const dol = document.getElementById('o3-iz-dol');
+    kay.onscroll = () => {
+      ust.classList.toggle('yapiskan', kay.scrollTop > 140);
+      const max = Math.max(1, kay.scrollHeight - kay.clientHeight);
+      dol.style.width = `${Math.round((kay.scrollTop / max) * 100)}%`;
+    };
+  }
+
+  // ===== DİNLEME EKRANI =====
+  function dinlemeCiz() {
+    const h = Y.hikayeBul(aktifSanatciId);
+    if (aktifBolumIdx >= h.bolumler.length) aktifBolumIdx = 0;
+    const bol = h.bolumler[aktifBolumIdx];
+    const es = (bol.eserler && bol.eserler[0]) || { gorsel: h.kapak, ad: h.ad, yil: h.yillar };
+    zeminGuncelle(h.id);
+
+    document.getElementById('d3-gorsel').src = es.gorsel;
+    document.getElementById('d3-sanatci').textContent = `${h.ad} · ${bol.yillar}`;
+    document.getElementById('d3-bolum').textContent = bol.baslik;
+    document.getElementById('d3-eser-ad').textContent = es.ad;
+    document.getElementById('d3-eser-yil').textContent = es.yil;
+
+    cumleler = Y.folaCumleleri(h, aktifBolumIdx);
+    if (cumleIdx >= cumleler.length) cumleIdx = 0;
+    altyaziCiz();
+    oynatGuncelle();
+  }
+
+  function altyaziCiz() {
+    const c = cumleler[cumleIdx] || { kelimeler: [] };
+    if (kelimeIdx >= c.kelimeler.length) kelimeIdx = 0;
+    document.getElementById('d3-altyazi').innerHTML = `<div>${
+      c.kelimeler.map((k, i) => `<span class="fola-kelime ${i < kelimeIdx ? 'gecti' : i === kelimeIdx ? 'aktif' : 'bekliyor'}">${k.w}</span>`).join(' ')
+    }</div>`;
+
+    const h = Y.hikayeBul(aktifSanatciId);
+    const bol = h.bolumler[aktifBolumIdx] || h.bolumler[0];
+    document.getElementById('mini-kapak').src = (bol.eserler && bol.eserler[0]?.gorsel) || h.kapak;
+    document.getElementById('mini-baslik').textContent = `${h.ad} · ${bol.baslik}`;
+    document.getElementById('mini-cumle').innerHTML = c.kelimeler.slice(Math.max(0, kelimeIdx - 2), kelimeIdx + 6).map((k, idx) => {
+      const ri = Math.max(0, kelimeIdx - 2) + idx;
+      return ri === kelimeIdx ? `<em>${k.w}</em>` : k.w;
+    }).join(' ');
+
+    const oran = Math.min(98, Math.round(((aktifBolumIdx + (cumleIdx + 0.5) / Math.max(1, cumleler.length)) / Math.max(1, h.bolumler.length)) * 100));
+    document.getElementById('d3-ilerleme').style.width = `${oran}%`;
+    document.getElementById('mini-cizgi-dol').style.width = `${oran}%`;
+    const top = h.dakika * 60;
+    const gec = Math.round(top * oran / 100);
+    document.getElementById('d3-gecen').textContent = Y.formatDk(gec);
+    document.getElementById('d3-kalan').textContent = `−${Y.formatDk(Math.max(0, top - gec))}`;
+  }
+
+  function oynatGuncelle() {
+    document.getElementById('ekran-dinleme').classList.toggle('oynuyor', oynuyor);
+    document.getElementById('btn-d3-oynat').innerHTML = Y.svg(oynuyor ? 'duraklat' : 'oynat', 22, 1.8);
+    document.getElementById('btn-mini-oynat').innerHTML = Y.svg(oynuyor ? 'duraklat' : 'oynat', 18, 1.8);
+  }
+
+  function folaAdim() {
+    clearTimeout(timer);
+    if (!oynuyor) return;
+    const c = cumleler[cumleIdx];
+    const k = c?.kelimeler[kelimeIdx];
+    const ms = Math.round(((k ? (k.bit - k.bas) : 0.35) * 1000) / hizlar[hizIdx]);
+    timer = setTimeout(() => {
+      kelimeIdx++;
+      if (kelimeIdx >= c.kelimeler.length) {
+        kelimeIdx = 0;
+        cumleIdx = (cumleIdx + 1) % cumleler.length;
+      }
+      altyaziCiz();
+      folaAdim();
+    }, ms);
+  }
+
+  function oynatToggle() {
+    oynuyor = !oynuyor;
+    oynatGuncelle();
+    if (oynuyor) folaAdim();
+    else clearTimeout(timer);
+  }
+
+  // ===== BAĞLANTILAR (YÜZDEN YÜZE GEÇİŞ) =====
+  function baglantilarCiz() {
+    const h = Y.hikayeBul(aktifSanatciId);
+    const bags = h.baglantilar || [];
+    const hazirIlk = bags.findIndex(b => b.hazir);
+    if (bagIdx === 0 && hazirIlk >= 0) bagIdx = hazirIlk;
+    if (bagIdx >= bags.length) bagIdx = 0;
+    const sec = bags[bagIdx] || bags[0];
+
+    document.getElementById('b3-kaynak-etiket').textContent = `${Y.evrenBul(h.id).kisaAd}’dan açılan yüzler`;
+
+    const ust = document.getElementById('b3-portre-ust');
+    if (sec && sec.kapak) {
+      ust.innerHTML = `<img src="${sec.kapak}" alt="${sec.sanatci}"><div class="b3-portre-perde"></div>`;
+    } else {
+      ust.innerHTML = `<div class="b3-portre-yedek">${sec ? sec.sanatci[0] : '·'}</div><div class="b3-portre-perde"></div>`;
+    }
+    if (sec && sec.id && EVREN.find(x => x.id === sec.id)) zeminGuncelle(sec.id);
+
+    const serit = bags.map((b, i) => {
+      const ev = b.id ? EVREN.find(x => x.id === b.id) : null;
+      const kisa = ev ? ev.kisaAd : b.sanatci.split(' ').slice(-1)[0];
+      const ic = b.kapak ? `<img src="${b.kapak}" alt="${b.sanatci}">` : b.sanatci[0];
+      return `<button class="b3-yuz-btn ${i === bagIdx ? 'secili' : ''}" data-bi="${i}">
+        <span class="b3-yuz-kare">${ic}</span>
+        <span>${kisa}</span>
+      </button>`;
+    }).join('');
+
+    const eylem = sec && sec.hazir
+      ? `<button class="btn-dolu" id="btn-b3-gec" style="width:100%;"><span>${sec.sanatci} hikâyesine geç</span>${Y.svg('ileri', 17, 1.8)}</button>`
+      : `<button class="btn-cam" style="width:100%;justify-content:center;" disabled>Hikâyesi hazırlanıyor</button>`;
+
+    document.getElementById('b3-alt-ic').innerHTML = `
+      <div>
+        <div class="ust-yazi">${sec?.yillar || 'Sanatçı bağı'}${sec?.hazir ? ' · Hikâyesi hazır' : ''}</div>
+        <h2 class="b3-ad">${sec?.sanatci || ''}</h2>
+        <p class="b3-metin">${sec?.iliski || ''}</p>
+      </div>
+      <div>
+        <div class="b3-yuz-serit">${serit}</div>
+        ${eylem}
+      </div>
+    `;
+
+    document.querySelectorAll('.b3-yuz-btn').forEach(btn => {
+      btn.onclick = () => { bagIdx = Number(btn.dataset.bi); baglantilarCiz(); };
+    });
+    const secBtn = document.querySelector('.b3-yuz-btn.secili');
+    if (secBtn) secBtn.scrollIntoView({ inline: 'center', block: 'nearest' });
+    const g = document.getElementById('btn-b3-gec');
+    if (g) g.onclick = () => {
+      aktifSanatciId = sec.id;
+      kapiSanatciId = sec.id;
+      aktifBolumIdx = 0;
+      bagIdx = 0;
+      ekranAc('okuma');
+    };
+  }
+
+  // Arama
+  function aramaCiz(q = '') {
+    const t = q.trim().toLocaleLowerCase('tr');
+    const sonuc = EVREN.filter(s => !t || s.ad.toLocaleLowerCase('tr').includes(t) || s.yillar.includes(t));
+    const el = document.getElementById('arama-liste');
+    el.innerHTML = sonuc.map(s => `
+      <button class="arama-satir" data-id="${s.id}">
+        <img src="${s.kapak}" alt="${s.ad}" loading="lazy">
+        <div><div class="a-ad">${s.ad}</div><div class="a-yil">${s.yillar}</div></div>
+        <span class="a-durum ${s.durum}">${s.durum === 'yarim' ? s.kalanDk + ' dk kaldı' : s.durum === 'biten' ? 'Bitti' : s.hazir ? s.dakika + ' dk' : 'Yakında'}</span>
+      </button>
+    `).join('');
+    el.querySelectorAll('.arama-satir').forEach(b => {
+      b.onclick = () => {
+        document.getElementById('arama-katman').classList.remove('acik');
+        kapiSanatciId = b.dataset.id;
+        if (Y.evrenBul(kapiSanatciId).hazir) aktifSanatciId = kapiSanatciId;
+        ekranAc('ana');
+      };
+    });
+  }
+
+  function ekranAc(ad) {
+    aktifEkran = ad;
+    document.querySelectorAll('.ekran').forEach(e => e.classList.remove('acik'));
+    document.getElementById(`ekran-${ad}`)?.classList.add('acik');
+    document.querySelectorAll('[data-ekran]').forEach(b => b.classList.toggle('aktif', b.dataset.ekran === ad));
+    durumGuncelle();
+
+    if (ad === 'ana') { kapiCiz(); duvarCiz(); }
+    else if (ad === 'okuma') { okumaCiz(); }
+    else if (ad === 'dinleme') { dinlemeCiz(); }
+    else if (ad === 'baglantilar') { baglantilarCiz(); }
+    else if (ad === 'mini') { dinlemeCiz(); }
+  }
+
+  function baslat() {
+    if (Y.urlParam('ci', '') === '1') {
+      document.body.classList.remove('vitrin-mod');
+      document.body.classList.add('ci-mod');
+    }
+
+    sekmeCiz('sekme-ana', 'hikayeler');
+    sekmeCiz('sekme-mini', 'yolculuk');
+
+    document.getElementById('btn-kapi-onceki').innerHTML = Y.svg('geri', 18, 1.8);
+    document.getElementById('btn-kapi-sonraki').innerHTML = Y.svg('ileri', 18, 1.8);
+    document.getElementById('btn-ara-ac').innerHTML = Y.svg('ara', 19, 1.7);
+    document.getElementById('arama-ikon').innerHTML = Y.svg('ara', 18, 1.6);
+    document.getElementById('btn-o3-geri').innerHTML = Y.svg('geri', 20, 1.8);
+    document.getElementById('btn-o3-bag').innerHTML = Y.svg('ag', 19, 1.6);
+    document.getElementById('btn-d3-geri').innerHTML = Y.svg('geri', 20, 1.8);
+    document.getElementById('btn-d3-onceki').innerHTML = Y.svg('onceki', 18, 1.7);
+    document.getElementById('btn-d3-geri15').innerHTML = Y.svg('geri15', 20, 1.6);
+    document.getElementById('btn-d3-ileri15').innerHTML = Y.svg('ileri15', 20, 1.6);
+    document.getElementById('btn-d3-sonraki').innerHTML = Y.svg('sonraki', 18, 1.7);
+    document.getElementById('btn-b3-geri').innerHTML = Y.svg('geri', 20, 1.8);
+    document.getElementById('btn-b3-duvar').innerHTML = Y.svg('hikayeler', 19, 1.6);
+    document.getElementById('btn-mini-kapat').innerHTML = Y.svg('kapat', 17, 1.7);
+
+    // Yüzden yüze ok geçişi (13 hazır sanatçı arasında)
+    const hazirIds = EVREN.filter(s => s.hazir).map(s => s.id);
+    document.getElementById('btn-kapi-onceki').onclick = () => {
+      const i = hazirIds.indexOf(kapiSanatciId);
+      kapiSanatciId = hazirIds[(i <= 0 ? hazirIds.length - 1 : i - 1)];
+      aktifSanatciId = kapiSanatciId;
+      kapiCiz(); duvarCiz();
+    };
+    document.getElementById('btn-kapi-sonraki').onclick = () => {
+      const i = hazirIds.indexOf(kapiSanatciId);
+      kapiSanatciId = hazirIds[(i + 1) % hazirIds.length];
+      aktifSanatciId = kapiSanatciId;
+      kapiCiz(); duvarCiz();
+    };
+
+    document.getElementById('btn-ara-ac').onclick = () => {
+      aramaCiz('');
+      document.getElementById('arama-katman').classList.add('acik');
+      document.getElementById('arama-giris').focus();
+    };
+    document.getElementById('btn-ara-kapat').onclick = () => document.getElementById('arama-katman').classList.remove('acik');
+    document.getElementById('arama-giris').oninput = (e) => aramaCiz(e.target.value);
+
+    document.getElementById('btn-o3-geri').onclick = () => ekranAc('ana');
+    document.getElementById('btn-o3-bag').onclick = () => { bagIdx = 0; ekranAc('baglantilar'); };
+    document.getElementById('btn-o3-dinle').onclick = () => ekranAc('dinleme');
+
+    document.getElementById('btn-d3-geri').onclick = () => ekranAc('ana');
+    document.getElementById('btn-d3-oku').onclick = () => ekranAc('okuma');
+    document.getElementById('btn-d3-oynat').onclick = oynatToggle;
+    document.getElementById('btn-d3-onceki').onclick = () => { aktifBolumIdx = Math.max(0, aktifBolumIdx - 1); cumleIdx = 0; kelimeIdx = 2; dinlemeCiz(); };
+    document.getElementById('btn-d3-sonraki').onclick = () => {
+      const h = Y.hikayeBul(aktifSanatciId);
+      aktifBolumIdx = Math.min(h.bolumler.length - 1, aktifBolumIdx + 1); cumleIdx = 0; kelimeIdx = 2; dinlemeCiz();
+    };
+    document.getElementById('btn-d3-geri15').onclick = () => { kelimeIdx = Math.max(0, kelimeIdx - 4); altyaziCiz(); };
+    document.getElementById('btn-d3-ileri15').onclick = () => {
+      const c = cumleler[cumleIdx];
+      if (c) kelimeIdx = Math.min(c.kelimeler.length - 1, kelimeIdx + 4);
+      altyaziCiz();
+    };
+    document.getElementById('btn-d3-hiz').onclick = () => {
+      hizIdx = (hizIdx + 1) % hizlar.length;
+      document.getElementById('btn-d3-hiz').textContent = `${String(hizlar[hizIdx]).replace('.', ',')}×`;
+    };
+    document.getElementById('btn-d3-bag').onclick = () => { bagIdx = 0; ekranAc('baglantilar'); };
+    document.getElementById('btn-d3-mini').onclick = () => ekranAc('mini');
+
+    // Boş alana dokununca sinema sade kip (yalnız eser + altyazı)
+    document.getElementById('d3-katman').onclick = (e) => {
+      if (e.target.closest('button')) return;
+      document.getElementById('ekran-dinleme').classList.toggle('sade');
+    };
+
+    document.getElementById('btn-b3-geri').onclick = () => ekranAc('okuma');
+    document.getElementById('btn-b3-duvar').onclick = () => ekranAc('ana');
+
+    document.getElementById('mini-calar-kutu').onclick = (e) => { if (!e.target.closest('button')) ekranAc('dinleme'); };
+    document.getElementById('btn-mini-oynat').onclick = (e) => { e.stopPropagation(); oynatToggle(); };
+    document.getElementById('btn-mini-kapat').onclick = (e) => {
+      e.stopPropagation();
+      oynuyor = false; clearTimeout(timer);
+      document.getElementById('mini-calar-kutu').style.display = 'none';
+    };
+
+    document.querySelectorAll('[data-ekran]').forEach(b => b.onclick = () => ekranAc(b.dataset.ekran));
+    document.querySelectorAll('[data-tema-sec]').forEach(b => b.onclick = () => temaUygula(b.dataset.temaSec));
+
+    temaUygula(aktifTema);
+    ekranAc(aktifEkran);
+  }
+
+  baslat();
+})();
+</script>
+</body>
+</html>
