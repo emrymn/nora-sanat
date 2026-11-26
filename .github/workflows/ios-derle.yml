@@ -100,7 +100,7 @@ jobs:
       fail-fast: false
       matrix:
         # en uzun gruplar önce (aynı anda çalışan macOS makinesi sınırlı)
-        grup: [galeri-1, galeri-2, calis, yolculuk, genel, ben, bugun]
+        grup: [galeri-1, galeri-2, calis, yolculuk, genel, ben, bugun, hikayeler]
     steps:
       - uses: actions/checkout@v4
 

@@ -14,8 +14,9 @@ enum Gecis {
     /// Swift'e taşınmış sekmeler. Ben: C4 + C4b; Galeri: G1 + G2 + G2b + G3; Çalış: C1 + C2 + C3 (T6);
     /// Bugün: G4 + G4b, Yolculuk: G5 + G5b (T7). Hepsi yerli: site artık görünmez (yalnız ilerleme köprüsü, Z2'ye kadar).
     /// DEBUG `-yalnizSite` ile site; bkz. `BenGecisi`, `GaleriGecisi`, `CalisGecisi`, `BugunGecisi`, `YolculukGecisi`.
+    /// Z4b: Hikâyeler sitede yok, hep yerli (`HikayelerGecisi`).
     static let tasinanlar: Set<Sekme> = BenGecisi.sekmeler.union(GaleriGecisi.sekmeler).union(CalisGecisi.sekmeler)
-        .union(BugunGecisi.sekmeler).union(YolculukGecisi.sekmeler)
+        .union(BugunGecisi.sekmeler).union(YolculukGecisi.sekmeler).union(HikayelerGecisi.sekmeler)
 
     /// Bu açılışta yerli olan sekmeler. DEBUG'da `-yerliSekme galeri,ben` ile yarım ekranlar da denenebilir.
     static let yerliSekmeler: Set<Sekme> = {
@@ -78,6 +79,17 @@ final class KabukDurumu {
 
     /// Seçili sekme (yerli ya da site)
     private(set) var secili: Sekme = .bugun
+    /// Z4b: Ben çubukta değil, ana ekranların sağ üstündeki kişi düğmesiyle açılır. Açıldığı sekme: çubuğun hapı orada
+    /// kalır, Ben'in geri düğmesi oraya döner.
+    private(set) var benOncesi: Sekme = .bugun
+
+    /// Çubukta seçili görünen sekmenin sırası (Ben açıkken açıldığı sekme)
+    var cubukSirasi: Int { SekmeCubugu.sira(secili == .ben ? benOncesi : secili) }
+
+    private func secimiYaz(_ s: Sekme) {
+        if s == .ben, secili != .ben { benOncesi = secili }
+        secili = s
+    }
     /// Sitenin son bildirdiği adres
     private(set) var siteAdresi = "#/"
     /// Yerli sekmenin açması istenen adres (sitenin bağlantısı, widget, bildirim): ör. Galeri yerliyken
@@ -92,7 +104,7 @@ final class KabukDurumu {
         let onceki = siteAdresi
         siteAdresi = SiteRotalari.hash(adres)
         if siteAdresi != onceki, let s = SiteRotalari.yerliSekme(siteAdresi), Gecis.yerli(s) { yerliAdres[s] = siteAdresi }
-        if let s = SiteRotalari.secim(onceki: onceki, yeni: siteAdresi, secili: secili, yerli: Gecis.yerli) { secili = s }
+        if let s = SiteRotalari.secim(onceki: onceki, yeni: siteAdresi, secili: secili, yerli: Gecis.yerli) { secimiYaz(s) }
         rozetiYenile()   // sitenin rozeti de her sayfa çiziminde yenilenir (sekmeleriCiz)
     }
 
@@ -100,15 +112,15 @@ final class KabukDurumu {
     func yerliyeGit(_ adres: String) -> Bool {
         guard let s = SiteRotalari.yerliSekme(adres), Gecis.yerli(s) else { return false }
         yerliAdres[s] = SiteRotalari.hash(adres)
-        secili = s
+        secimiYaz(s)
         return true
     }
 
     /// Yerli sekme çubuğunda dokunuş
     func sec(_ s: Sekme) {
         guard s != secili else { return yenidenDokunma[s, default: 0] += 1 }
-        let onceki = SekmeCubugu.sira(secili)
-        secili = s
+        let onceki = cubukSirasi
+        secimiYaz(s)
         guard !Gecis.yerli(s) else { return }
         // Site o sekmeye zaten geçmediyse sitenin kendi sekme düğmesine basılır: site sekmenin ana ekranını kalınan
         // kaydırma yerinde açar (kullanıcı sitenin çubuğuna dokunmuş gibi)

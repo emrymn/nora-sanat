@@ -1,0 +1,407 @@
+// Z4b · Hikâye okuma ve okuma içinde dinleme (yeni; sitede yok). Tasarım: Neon "Yön 2 · Substack Minimal"
+// (dal neon/hikayeler-tasarim-3, PR #75): yon-2.html `makaleCiz`, `.sub-makale`, `.sub-m-baslik`, `.sub-yazar-satir`,
+// `.sub-ara-baslik`; ortak.css `.okuma-ust`, `.p-blok` (dinlerken `.okunan`), `.eser-fig`, `.ic-calar`, `.son-bolum`,
+// `.bag-kart`, `.kaynak-liste`; goruntuler/yon-2-{okuma-basi,okuma-eser,dinleme,son}-*.png.
+import NoraCekirdek
+import SwiftUI
+
+struct HikayeOkuma: View {
+    let hikaye: SanatciHikayesi
+    /// Bağlantılı yazıyı açar
+    let ac: (String) -> Void
+
+    @Environment(TemaDeposu.self) private var tema
+    @Environment(\.dismiss) private var kapat
+    @Environment(\.openURL) private var adresAc
+    @Environment(\.accessibilityReduceMotion) private var hareketAz
+    @State private var depo = HikayeDeposu.shared
+    @State private var calar = HikayeCalari.shared
+    /// Ekranın üstündeki blok (`scrollPosition`)
+    @State private var gorunen: String?
+    @State private var hazir = false
+    /// Okuma içi çalar açık (bu yazı dinleniyor)
+    private var dinleme: Bool { calar.hikaye?.id == hikaye.id }
+
+    private var bloklar: [HikayeBlogu] { hikaye.bloklar }
+    private var kapak: HikayeEseri? { hikaye.bolumler.first?.eserler.first }
+
+    var body: some View {
+        let c = HikayeRenk(r: tema.renkler)
+        ScrollViewReader { kaydir in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    bas(c).id("ust")
+                    ForEach(bloklar.map { (kimlik($0), $0) }, id: \.0) { k, b in
+                        blok(b, c).id(k)
+                    }
+                    son(c).id("son")
+                        .onAppear { yeriYaz(sonda: true) }
+                }
+                .scrollTargetLayout()
+                .padding(.horizontal, 22)
+                .padding(.bottom, dinleme ? 140 : 60)
+            }
+            .scrollPosition(id: $gorunen, anchor: .top)
+            .scrollIndicators(.hidden)
+            .onChange(of: gorunen) { _, _ in if hazir { yeriYaz(sonda: false) } }
+            // Dinlerken ekran okunan paragrafı izler (paragraf değişince)
+            .onChange(of: calar.paragraf) { _, p in
+                guard dinleme, let p else { return }
+                withAnimation(hareketAz || tema.ayar.hareketAzaltilmis ? nil : .easeInOut(duration: 0.5)) {
+                    kaydir.scrollTo("p\(p)", anchor: UnitPoint(x: 0.5, y: 0.24))
+                }
+            }
+            .task(id: hikaye.id) {
+                // Kalınan yer: dinleniyorsa okunan paragraf, değilse en son okunan paragraf
+                #if DEBUG
+                HikayeProva.okumaAcildi(hikaye)
+                #endif
+                try? await Task.sleep(for: .milliseconds(120))
+                if dinleme, let p = calar.paragraf {
+                    kaydir.scrollTo("p\(p)", anchor: UnitPoint(x: 0.5, y: 0.24))
+                } else if let y = depo.yer(hikaye.id), y.yarim, y.paragraf > 0 {
+                    kaydir.scrollTo("p\(min(y.paragraf, hikaye.paragraflar.count - 1))", anchor: .top)
+                }
+                #if DEBUG
+                if let hedef = HikayeProva.kaydir() { kaydir.scrollTo(hedef, anchor: .top) }
+                #endif
+                try? await Task.sleep(for: .milliseconds(400))
+                hazir = true
+            }
+        }
+        .background(c.zemin.ignoresSafeArea())
+        .overlay(alignment: .top) { ustCubuk(c) }
+        .overlay(alignment: .bottom) {
+            if dinleme {
+                HikayeIcCalar()
+                    .padding(.horizontal, 14)
+                    .padding(.bottom, 8)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.36, dampingFraction: 0.88), value: dinleme)
+        .onDisappear { yeriYaz(sonda: false) }
+    }
+
+    // MARK: Üst
+
+    /// Yapışkan üst: geri, (kayınca) sanatçının adı, kulaklık. `.okuma-ust.yapiskan`: cam zemin ve alt çizgi.
+    private func ustCubuk(_ c: HikayeRenk) -> some View {
+        let yapiskan = gorunen != nil && gorunen != "ust"
+        return HStack(spacing: 8) {
+            Button { kapat() } label: { HikayeIkon(simge: .geri, boyut: 20, kalinlik: 1.8) }
+                .buttonStyle(HikayeCamDugme())
+                .accessibilityLabel("Yazılara dön")
+            Text(depo.sanatciAdi(hikaye.id))
+                .font(Yazi.serif(16, agirlik: 500))
+                .foregroundStyle(c.yazi)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity)
+                .opacity(yapiskan ? 1 : 0)
+                .accessibilityHidden(!yapiskan)
+            Button {
+                if dinleme { calar.kapat() } else { dinleDugmesi() }
+            } label: { HikayeIkon(simge: .kulaklik, boyut: 19, kalinlik: 1.6) }
+                .buttonStyle(HikayeCamDugme())
+                .accessibilityLabel(dinleme ? "Dinlemeyi kapat" : "Dinle")
+        }
+        .padding(.horizontal, 14)
+        .padding(.top, 4)
+        .padding(.bottom, 10)
+        .background {
+            ZStack(alignment: .bottom) {
+                Rectangle().fill(.ultraThinMaterial)
+                Rectangle().fill(c.cam)
+                Rectangle().fill(c.kenar).frame(height: 1)
+            }
+            .ignoresSafeArea(edges: .top)
+            .opacity(yapiskan ? 1 : 0)
+        }
+        .animation(.easeOut(duration: 0.22), value: yapiskan)
+    }
+
+    // MARK: Baş
+
+    /// `.sub-m-baslik` (Newsreader 31/600), `.sub-m-alt` (Archivo 16), `.sub-yazar-satir` (sanatçı · yıllar, süreler,
+    /// sağda "Dinle"), kapak (ilk bölümün ilk eseri, künyesiyle)
+    private func bas(_ c: HikayeRenk) -> some View {
+        let s = depo.satir(hikaye)
+        return VStack(alignment: .leading, spacing: 0) {
+            Text(hikaye.baslik)
+                .font(Yazi.okuma(31, agirlik: 600, stil: .largeTitle))
+                .tracking(-0.62)
+                .cssSatir(.okuma, 31, 31 * 1.16)
+                .foregroundStyle(c.yazi)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.bottom, 12)
+                .accessibilityAddTraits(.isHeader)
+            if !hikaye.altBaslik.isEmpty {
+                Text(hikaye.altBaslik)
+                    .font(Yazi.sans(16))
+                    .cssSatir(.sans, 16, 24)
+                    .foregroundStyle(c.yazi2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 20)
+            }
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text([s.sanatci, s.yillar].filter { !$0.isEmpty }.joined(separator: " · "))
+                        .font(Yazi.sans(14, agirlik: 600)).foregroundStyle(c.yazi)
+                    Text("\(s.okumaDk) dk okuma · \(s.dinlemeDk) dk dinleme")
+                        .font(Yazi.sans(12.5)).foregroundStyle(c.yazi3)
+                }
+                Spacer(minLength: 4)
+                dinleHapi(c)
+            }
+            .padding(.vertical, 14)
+            .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
+            .overlay(alignment: .bottom) { Rectangle().fill(c.kenar).frame(height: 1) }
+            .padding(.bottom, 24)
+            if let k = kapak { eser(k, c, kapakMi: true) }
+        }
+        .padding(.top, 60)
+    }
+
+    /// Yazının başındaki "Dinle" (`.btn-dolu`); dinlerken "Dinleniyor" (`.btn-cam`)
+    private func dinleHapi(_ c: HikayeRenk) -> some View {
+        Button { dinleDugmesi() } label: {
+            HStack(spacing: 7) {
+                HikayeIkon(simge: .kulaklik, boyut: 16, kalinlik: 1.8)
+                Text(dinleme ? "Dinleniyor" : "Dinle").font(Yazi.sans(14, agirlik: 600))
+            }
+            .padding(.horizontal, 16)
+            .frame(height: 44)
+            .foregroundStyle(dinleme ? c.yazi : c.zemin)
+            .background {
+                if dinleme {
+                    Capsule().fill(Color(tema.renkler.ustDugme)).overlay(Capsule().strokeBorder(c.kenar, lineWidth: 1))
+                } else {
+                    Capsule().fill(c.yazi)
+                }
+            }
+            .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("hikaye-dinle")
+    }
+
+    private func dinleDugmesi() {
+        Titresim.dokunus()
+        if dinleme {
+            calar.degistir()
+        } else {
+            // Okunan yerden: ekranın üstündeki paragraf (yazının başındaysa baştan ya da dinlemede kalınan yerden)
+            let p = ekrandakiParagraf()
+            calar.baslat(hikaye, paragraf: p > 0 ? p : nil)
+        }
+    }
+
+    // MARK: Bloklar
+
+    private func kimlik(_ b: HikayeBlogu) -> String {
+        switch b {
+        case .paragraf(let no, _): return "p\(no)"
+        case .araBaslik(let bolum, _, _): return "h\(bolum)"
+        case .eser(let bolum, let sira, _): return "e\(bolum)-\(sira)"
+        case .kapanis: return "k"
+        }
+    }
+
+    @ViewBuilder
+    private func blok(_ b: HikayeBlogu, _ c: HikayeRenk) -> some View {
+        switch b {
+        case .paragraf(let no, let metin):
+            paragraf(no, metin, c)
+        case .araBaslik(_, let baslik, let yillar):
+            araBaslik(ust: yillar, baslik: baslik, c)
+        case .eser(let bolum, let sira, let e):
+            // Kapak yazının başında künyesiyle gösterildi
+            if !(bolum == 0 && sira == 0) { eser(e, c, kapakMi: false) }
+        case .kapanis:
+            araBaslik(ust: "Kapanış", baslik: nil, c)
+        }
+    }
+
+    /// `.p-blok`: Newsreader 19 / 1,74. Dinlerken öbür paragraflar geri çekilir (%44), okunan öne çıkar (`--aktif-p-bg`,
+    /// 13×15 iç pay, sol kenarlı kutu yok). Dinlerken paragrafa dokunmak sesi oraya atlatır.
+    private func paragraf(_ no: Int, _ metin: String, _ c: HikayeRenk) -> some View {
+        let okunan = dinleme && calar.paragraf == no
+        return Text(metin)
+            .font(Yazi.okuma(19))
+            .cssSatir(.okuma, 19, 19 * 1.74)
+            .foregroundStyle(c.yazi)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, okunan ? 13 : 0)
+            .padding(.horizontal, okunan ? 15 : 0)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(okunan ? c.okunan : .clear))
+            .padding(.horizontal, okunan ? -15 : 0)
+            .opacity(dinleme && !okunan ? 0.44 : 1)
+            .padding(.bottom, 20)
+            .animation(.easeOut(duration: 0.35), value: okunan)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard dinleme else { return }
+                Titresim.secim()
+                calar.paragrafaGit(no)
+            }
+            .accessibilityAction(named: "Buradan dinle") { calar.baslat(hikaye, paragraf: no) }
+    }
+
+    /// `.sub-ara-baslik`: üstte pirinç yıllar (`.ust-yazi`), altında Newsreader 24/600 başlık
+    private func araBaslik(ust: String, baslik: String?, _ c: HikayeRenk) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if !ust.isEmpty {
+                Text(ust).font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc)
+            }
+            if let baslik {
+                Text(baslik)
+                    .font(Yazi.okuma(24, agirlik: 600))
+                    .tracking(-0.36)
+                    .cssSatir(.okuma, 24, 24 * 1.24)
+                    .foregroundStyle(c.yazi)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 38).padding(.bottom, 14)
+    }
+
+    /// `.eser-fig`: kırpılmamış, tam genişlikte (12 köşe); altında Türkçe ad (Bodoni 17,5) ve yıl, müze, "Bu dönemle bağı"
+    @ViewBuilder
+    private func eser(_ e: HikayeEseri, _ c: HikayeRenk, kapakMi: Bool) -> some View {
+        if let b = depo.eser(e.qid, sanatci: hikaye.id) {
+            VStack(alignment: .leading, spacing: 0) {
+                TamGorsel(url: b.url, yedek: b.yedek, oran: b.oran, kose: kapakMi ? 14 : 12)
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Text(b.eser.gorunenAd)
+                            .font(Yazi.serif(17.5, agirlik: 500))
+                            .foregroundStyle(c.yazi)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                        if let y = b.eser.yil {
+                            Text(SiteYazisi.yilYaz(y)).font(Yazi.sans(12.5)).monospacedDigit().foregroundStyle(c.yazi3)
+                        }
+                    }
+                    if !b.eser.muze.isEmpty {
+                        Text(b.eser.muze).font(Yazi.sans(12.5)).foregroundStyle(c.yazi3).padding(.top, 2)
+                    }
+                    if !e.bag.isEmpty {
+                        (Text("Bu dönemle bağı  ").font(Yazi.sans(12.5, agirlik: 600)).foregroundColor(c.pirinc)
+                            + Text(e.bag).font(Yazi.okuma(15.5)).foregroundColor(c.yazi2))
+                            .cssSatir(.okuma, 15.5, 15.5 * 1.55)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 8)
+                    }
+                }
+                .padding(.top, 12)
+            }
+            .padding(.top, kapakMi ? 0 : 30)
+            .padding(.bottom, kapakMi ? 26 : 32)
+            .accessibilityElement(children: .combine)
+        }
+    }
+
+    // MARK: Son
+
+    /// `.son-bolum`: bağlantılı yazılar (id'si olan ve hikâyesi bulunan, 2–4) ve kaynaklar (alan adı; dokununca Safari)
+    private func son(_ c: HikayeRenk) -> some View {
+        let baglar = depo.baglantilar(hikaye)
+        return VStack(alignment: .leading, spacing: 0) {
+            if !baglar.isEmpty {
+                Text("Bağlantılı yazılar")
+                    .font(Yazi.serif(23, agirlik: 500))
+                    .foregroundStyle(c.yazi)
+                    .padding(.bottom, 16)
+                    .accessibilityAddTraits(.isHeader)
+                VStack(spacing: 12) {
+                    ForEach(baglar, id: \.sanatci) { b in
+                        if let id = b.id, let h = depo.hikaye(id) { bagKarti(h, c) }
+                    }
+                }
+                .padding(.bottom, 34)
+            }
+            if !hikaye.kaynaklar.isEmpty {
+                Text("Kaynaklar").font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc)
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(Array(hikaye.kaynaklar.enumerated()), id: \.offset) { i, k in
+                        Button {
+                            if let u = URL(string: k.adres) { adresAc(u) }
+                        } label: {
+                            Text(k.baslik)
+                                .font(Yazi.sans(13.5))
+                                .foregroundStyle(c.yazi2)
+                                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .overlay(alignment: .bottom) {
+                            if i < hikaye.kaynaklar.count - 1 { Rectangle().fill(c.kenar).frame(height: 1) }
+                        }
+                        .accessibilityHint("Safari'de açılır")
+                    }
+                }
+                .padding(.top, 4)
+            }
+        }
+        .padding(.top, 30)
+        .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
+        .padding(.top, 44)
+    }
+
+    /// `.bag-kart`: 68'lik kare kapak, pirinç sanatçı adı, Bodoni başlık, yıllar · okuma süresi
+    private func bagKarti(_ h: SanatciHikayesi, _ c: HikayeRenk) -> some View {
+        let s = depo.satir(h)
+        return Button {
+            ac(h.id)
+        } label: {
+            HStack(spacing: 13) {
+                UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 30])
+                    .frame(width: 68, height: 68)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(s.sanatci).font(Yazi.sans(12, agirlik: 600)).foregroundStyle(c.pirinc)
+                    Text(h.baslik)
+                        .font(Yazi.serif(17, agirlik: 500))
+                        .foregroundStyle(c.yazi)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 2).padding(.bottom, 3)
+                    Text([s.yillar, "\(s.okumaDk) dk okuma"].filter { !$0.isEmpty }.joined(separator: " · "))
+                        .font(Yazi.sans(12)).foregroundStyle(c.yazi3)
+                }
+                .multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+            }
+            .padding(12)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(c.yuzey))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(c.kenar, lineWidth: 1))
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("bag-\(h.id)")
+    }
+
+    // MARK: Okuma yeri
+
+    /// Ekranın üstündeki bloğa göre okunan paragraf (o bloğun ya da ondan önceki son paragrafın numarası)
+    private func ekrandakiParagraf() -> Int {
+        guard let g = gorunen else { return 0 }
+        if g == "son" { return max(0, hikaye.paragraflar.count - 1) }
+        var son = 0
+        for b in bloklar {
+            if case .paragraf(let no, _) = b { son = no }
+            if kimlik(b) == g { return son }
+        }
+        return 0
+    }
+
+    private func yeriYaz(sonda: Bool) {
+        let p = ekrandakiParagraf()
+        let onceki = depo.yer(hikaye.id)
+        let y = HikayeAkisi.ilerle(onceki, paragraf: p, toplam: hikaye.paragraflar.count, sonda: sonda)
+        if sonda && onceki?.bitti != true { Titresim.dogru() }
+        depo.yerYaz(hikaye.id, y)
+    }
+}

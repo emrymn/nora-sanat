@@ -76,7 +76,7 @@ struct YerliSekmeCubugu: View {
 
     private func cubuk(_ y: SekmeCubugu.Yerlesim) -> some View {
         let r = tema.renkler
-        let sira = SekmeCubugu.sira(durum.secili)
+        let sira = durum.cubukSirasi
         let sg = y.sekmeler[0].genislik
         let ic = SekmeCubugu.Olcu.kenar + SekmeCubugu.Olcu.ic
         return ZStack(alignment: .topLeading) {

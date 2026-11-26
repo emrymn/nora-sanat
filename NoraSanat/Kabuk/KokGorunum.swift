@@ -38,6 +38,13 @@ struct KokGorunum: View {
                     .accessibilityHidden(!durum.siteGorunur)
             }
             if !Gecis.yerliSekmeler.isEmpty {
+                // Z4b: Hikâye dinlenirken (okuma ekranı dışında) çubuğun hemen üstünde küçük çalar
+                HikayeMiniCalar()
+                    .opacity(durum.cubukGorunur && !durum.hizliAcik ? 1 : 0)
+                    .allowsHitTesting(durum.cubukGorunur && !durum.hizliAcik)
+                    .accessibilityHidden(!durum.cubukGorunur)
+            }
+            if !Gecis.yerliSekmeler.isEmpty {
                 // Site görünürken de kurulu (saydam): hap sitenin seçimini izler, yerliye geçince oradan kayar
                 YerliSekmeCubugu()
                     .opacity(durum.cubukGorunur ? 1 : 0)
@@ -90,6 +97,7 @@ struct KokGorunum: View {
         if Gecis.yerli(s) {
             switch s {
             case .bugun: BugunSekmesi()
+            case .hikayeler: HikayelerSekmesi()
             case .yolculuk: YolculukSekmesi()
             case .galeri: GaleriSekmesi()
             case .calis: CalisSekmesi()

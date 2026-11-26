@@ -44,7 +44,10 @@ final class SekmeCubuguTests: XCTestCase {
 
     /// Simgeler sitenin `YOLLAR`'ıyla birebir aynı ve okuyucu onları tarayıcının çizdiği kutuya çiziyor
     func testSimgelerSiteyleAyni() {
-        XCTAssertEqual(Set(CubukOrnek.cevap.simgeler.keys), Set(SekmeCubugu.Simge.allCases.map(\.rawValue)))
+        // Z4b: Hikâyeler'in simgesi sitede yok (Neon'un tasarımından)
+        XCTAssertEqual(Set(CubukOrnek.cevap.simgeler.keys),
+                       Set(SekmeCubugu.Simge.allCases.filter { $0 != .hikayeler }.map(\.rawValue)))
+        XCTAssertNotNil(SVGYolu.sinirKutusu(SekmeCubugu.Simge.hikayeler.komutlar))
         for s in SekmeCubugu.Simge.allCases {
             guard let o = CubukOrnek.cevap.simgeler[s.rawValue] else { continue }
             XCTAssertEqual(s.isaretleme, o.isaretleme, "\(s.rawValue) sitede değişmiş: örnekleri yeniden al, yolu kopyala")
@@ -57,11 +60,14 @@ final class SekmeCubuguTests: XCTestCase {
         }
     }
 
-    /// Çubuk, sekmeler, simge, dil ve rozet sitenin ölçülen yerlerinde (dört ekran boyu, iPad'de en çok 520)
+    /// Çubuk, sekmeler, simge, dil ve rozet sitenin ölçülen yerlerinde (dört ekran boyu, iPad'de en çok 520). Sitenin
+    /// çubuğu dört sekme (Çalış sonda); uygulamanınki Z4b'den beri beş, aynı hesapla.
     func testYerlesimSiteyleAyni() {
         XCTAssertEqual(CubukOrnek.cevap.yerlesim.count, 4)
         for o in CubukOrnek.cevap.yerlesim {
-            let y = SekmeCubugu.Yerlesim(ekranGenisligi: o.ekran[0], ekranYuksekligi: o.ekran[1])
+            let y = SekmeCubugu.Yerlesim(ekranGenisligi: o.ekran[0], ekranYuksekligi: o.ekran[1],
+                                         sayi: SekmeCubugu.siteSekmeleri.count,
+                                         rozetSira: SekmeCubugu.siteSekmeleri.firstIndex(of: .calis)!)
             let ad = "\(Int(o.ekran[0]))×\(Int(o.ekran[1]))"
             ayni(y.cubuk, o.cubuk, "\(ad) çubuk")
             XCTAssertEqual(y.sekmeler.count, o.sekmeler.count)
@@ -91,7 +97,7 @@ final class SekmeCubuguTests: XCTestCase {
     }
 
     func testSurukleVeDokunus() {
-        let y = SekmeCubugu.Yerlesim(ekranGenisligi: 393, ekranYuksekligi: 852)
+        let y = SekmeCubugu.Yerlesim(ekranGenisligi: 393, ekranYuksekligi: 852, sayi: 4)
         XCTAssertEqual(y.enYakin(0), 0)
         XCTAssertEqual(y.enYakin(150), 1)
         XCTAssertEqual(y.enYakin(241), 2)
@@ -103,9 +109,30 @@ final class SekmeCubuguTests: XCTestCase {
         XCTAssertFalse(y.yakin(200, 700))
     }
 
+    /// Z4b: uygulamanın beş sekmeli çubuğu (sekme 70,2 geniş, ortaları 56,1 · 126,3 · 196,5 · 266,7 · 336,9)
+    func testBesSekme() {
+        let y = SekmeCubugu.Yerlesim(ekranGenisligi: 393, ekranYuksekligi: 852)
+        XCTAssertEqual(y.sekmeler.count, 5)
+        XCTAssertEqual(y.sekmeler[0].genislik, 70.2, accuracy: 0.001)
+        XCTAssertEqual(y.sekmeler[2].ortaX, 196.5, accuracy: 0.001)
+        XCTAssertEqual(y.enYakin(150), 1)
+        XCTAssertEqual(y.enYakin(241), 3)
+        XCTAssertEqual(y.enYakin(500), 4)
+        XCTAssertEqual(y.surukle(14 + 365), 4)
+        XCTAssertEqual(y.surukle(196.5), 2, accuracy: 0.001)
+        // Rozet Çalış'ta (üçüncü sekme)
+        XCTAssertEqual(y.rozet.x, 196.5 + 6, accuracy: 0.001)
+        // Hızlı ayar dili ekranın ortasında: Çalış'ın üstünde
+        XCTAssertEqual(y.dil.ortaX, y.sekmeler[2].ortaX, accuracy: 0.001)
+    }
+
     func testCubuktakiSira() {
-        XCTAssertEqual(SekmeCubugu.sekmeler.map(\.siteKimligi), ["bugun", "harita", "gozat", "pekistir"])
-        XCTAssertEqual(SekmeCubugu.sira(.galeri), 2)
+        XCTAssertEqual(SekmeCubugu.siteSekmeleri.map(\.siteKimligi), ["bugun", "harita", "gozat", "pekistir"])
+        // Z4b (Emre): Bugün · Hikâyeler · Çalış · Galeri · Yolculuk; Ben çubukta değil
+        XCTAssertEqual(SekmeCubugu.sekmeler, [.bugun, .hikayeler, .calis, .galeri, .yolculuk])
+        XCTAssertFalse(SekmeCubugu.sekmeler.contains(.ben))
+        XCTAssertEqual(SekmeCubugu.sira(.galeri), 3)
+        XCTAssertEqual(SekmeCubugu.Simge(.hikayeler), .hikayeler)
         // Sitede İlerleme ve Ayarlar'da Bugün seçili
         XCTAssertEqual(SekmeCubugu.sira(.ben), SekmeCubugu.sira(.bugun))
         XCTAssertEqual(SekmeCubugu.Simge(.ben), .bugun)
