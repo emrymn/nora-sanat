@@ -188,11 +188,12 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | bitti (#64) |
 | Z3z | Akımlar şeridi akıcılık: kaydırırken her karede değişen bulanıklık/parlaklık/gölge yarıçapı ve katalog taraması kalktı (Emre: "kasıyor") | K | Z3w | 1 | bitti (#69) |
 | Z3z2 | Akımlar şeridi akıcılık 2: kartın kapağı her karede aranıyordu; kaydırmaya bağlı görünüş `visualEffect` ile (Emre: "hala kasıyor") | K | Z3z | 1 | bitti (#72) |
-| Z3z3 | Akımlar şeridi akıcılık 3: kaydırırken üst Galeri sayfası (zemin, renk geçişi) yeniden kurulmasın; `sira` şerit durunca (Emre: "hâlâ kasıyor") | K | Z3z2 | 1 | PR açık |
+| Z3z3 | Akımlar şeridi akıcılık 3: kaydırırken üst Galeri sayfası (zemin, renk geçişi) yeniden kurulmasın; `sira` şerit durunca (Emre: "hâlâ kasıyor") | K | Z3z2 | 1 | bitti (#76) |
 | Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | PR açık (#68) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 | Z4a | Dinleyerek bak (Y1) yeniden: Neon'un "Yön 3 · Canlı Ses · Kelime Akışı" tasarımı (dal `neon/dinle-tasarim`, PR #70), nefesli yay kamera, doğal ses (Gemini "Fola", R2) + kelime kelime altyazı | K | Y1 | 1 | PR açık (#71) |
-| Z4c | Dinleyerek bak sade: süre seçimi yok (bütün içerik), kısa aralar, 1× / 1,5× / 2× hız; × durum çubuğunun altında (Emre) | K | Z4a | 1 | PR açık |
+| Z4c | Dinleyerek bak sade: süre seçimi yok (bütün içerik), kısa aralar, 1× / 1,5× / 2× hız; × durum çubuğunun altında (Emre) | K | Z4a | 1 | bitti (#78) |
+| Z4d | Xcode Run telefona Release derlesin, hata ayıklayıcı bağlanmasın (Akımlar kasması bundanmış) | K | — | 1 | PR açık |
 
 **Sekmeler ne zaman yerli olur:**
 - Galeri: G1 + G2 + G2b (görünüş) + G3 → **yerli (G3, #19)**
@@ -1261,6 +1262,12 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Yapılmayanlar (sonraki iş):** widget ve Siri girişi ("günün tablosuna bak": App Intent + `norasanat://dinle`), StandBy ve AirPlay için özel düzen (tam ekran örtü olduğu için yansıtmada da tam ekran; ayrıca denenmedi), bitişte sanatçının tekrar kartı. Planın konuşma süresi tahmin; gerçek sesle süre ±%15 kayabilir (söz bitmeden adım geçmez, yalnız toplam uzar/kısalır).
 - **Tuzaklar:** `Ornekler/yuruyus.json` eski biçim (noktalarda koordinat yok); testler `Ornekler/site_verisi/yuruyus.json`'ı kullanır. Söz durdurulunca gelen geç "bitti" haberi yeni sözü bitirmesin diye `DinleSesi` sözün kimliğini tutar.
 - **CI:** yeşil (iOS derleme #249, `13581b6`: derleme, çekirdek testleri, 7 ekran grubu). `9d-dinle-kurulum` OCR'da: "DİNLEYEREK BAK · Assisi'li Aziz Franciscus ve Yaşamından Sahneler · Bonaventura Berlinghieri · 1235 · 3 dk 5 dk 10 dk · Sesli / Yalnız altyazı · 8 ayrıntı · yaklaşık 5 dk · Başla" (ayrıntılar + yürüyüş birleşti). `9e-dinle-ayrinti` (sessiz, 1. adımdan) arşivde; oturumdan indirilemedi, denetçi baksın. Gerçek ses, kilit ekranı ve kulaklık denetimleri simülatörde sınanmadı: telefonda denenmeli.
+
+### Z4d · Run Release derlesin (Claude)
+**Devir notu:** Claude, 2026-11-26 · dal `claude/Z4d-release-calistir`. Üç akıcılık düzeltmesinden (Z3z, Z3z2, Z3z3) sonra da Emre "kasma geçmedi" dedi.
+- **Neden:** paylaşılan şemanın Run'ı Debug derliyordu (`-Onone`) ve LLDB bağlıydı; telefondaki uygulama hep böyle kuruluyordu. Emre şemayı elle Release + "Debug executable" kapalı yapınca kasma geçti (telefonda doğrulandı).
+- **Değişiklik:** `NoraSanat.xcscheme` → `LaunchAction` Release, hata ayıklayıcı yok (PosixSpawn). Test ve CI etkilenmez (CI `-configuration Debug` verir; `#if DEBUG` açılış argümanları yalnız CI/simülatör içindir).
+- **Not:** Xcode'da hata ayıklamak gerekirse Edit Scheme → Run → Debug + Debug executable geçici açılır.
 
 ### Z4c · Dinleyerek bak sade: tek tip, kısa aralar, hız (Claude)
 **Devir notu:** Claude, 2026-11-26 · dal `claude/Z4c-dinle-sade`. Emre: "3/5/10 dk tek tip olsun, metinler arası bekleme uzun olmasın, 2× ekleyelim"; "× çok yukarıda".
