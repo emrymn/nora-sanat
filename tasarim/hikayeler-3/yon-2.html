@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gece">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nora Sanat · Yön 2 — Substack Minimal</title>
+<link rel="stylesheet" href="ortak.css">
+<style>
+/* ===== YÖN 2 · SUBSTACK MİNİMAL (Pürüzsüz Bülten Okuma Akışı) ===== */
+
+/* Okumada desen ve hale neredeyse görünmez — kâğıt/kömür saflığı */
+.zemin-desen { opacity: 0.018 !important; }
+.zemin-hale { opacity: 0.55; }
+
+.sub-ust {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 54px 18px 12px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+}
+.sub-ad {
+  font-family: var(--okuma);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.sub-akis {
+  padding: 8px 22px 118px;
+}
+
+/* Sola yaslı, kutusuz, ultra-temiz bülten maddesi */
+.sub-yazi {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 20px 0 28px;
+  border-bottom: 1px solid var(--notr-kenar);
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+.sub-yazi:first-child { padding-top: 8px; }
+.sub-yazi:last-child { border-bottom: 0; }
+
+.sub-meta-ust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.sub-yazar {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.sub-yazar span {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.sub-durum {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pirinc);
+}
+.sub-durum.biten { color: var(--right); }
+
+.sub-kapak {
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: var(--surface);
+}
+.sub-kapak img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+}
+.sub-baslik {
+  font-family: var(--okuma);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  margin: 0 0 7px;
+  color: var(--ink);
+}
+.sub-yazi:first-child .sub-baslik {
+  font-size: 27px;
+}
+.sub-alt {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0 0 12px;
+}
+.sub-sure {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* Okuma Ekranı: Substack bülten disiplini */
+.sub-makale {
+  padding: 106px 22px 124px;
+}
+.sub-m-baslik {
+  font-family: var(--okuma);
+  font-size: 31px;
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.sub-m-alt {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0 0 20px;
+}
+.sub-yazar-satir {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid var(--notr-kenar);
+  border-bottom: 1px solid var(--notr-kenar);
+  margin-bottom: 24px;
+}
+.sub-yazar-sol { min-width: 0; }
+.sub-yazar-ad {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.sub-yazar-sure {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.sub-m-kapak {
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 0 0 26px;
+  background: var(--surface);
+}
+.sub-m-kapak img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.sub-makale .p-blok {
+  font-size: 19px;
+  line-height: 1.74;
+}
+.sub-ara-baslik {
+  margin: 38px 0 14px;
+}
+.sub-ara-baslik h2 {
+  font-family: var(--okuma);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.015em;
+  margin: 4px 0 0;
+  color: var(--ink);
+}
+.sub-makale .eser-fig img {
+  border-radius: 12px;
+}
+
+/* Bugün bağlamı (küçük çalar için) */
+.bugun-sahne {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+.bugun-sahne img { width: 100%; height: 100%; object-fit: cover; }
+.bugun-perde {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(18,17,16,0.4) 0%, transparent 30%, rgba(18,17,16,0.75) 68%, rgba(18,17,16,0.95) 100%);
+}
+[data-tema='gunduz'] .bugun-perde {
+  background: linear-gradient(to bottom, rgba(236,232,225,0.5) 0%, transparent 30%, rgba(236,232,225,0.82) 68%, rgba(236,232,225,0.96) 100%);
+}
+.bugun-metin {
+  position: absolute;
+  left: 22px; right: 22px; bottom: 184px;
+  z-index: 4;
+}
+</style>
+</head>
+<body class="vitrin-mod">
+
+<div class="vitrin-bar">
+  <span class="vitrin-etiket">Yön 2 · Substack Minimal</span>
+  <div class="vitrin-grup">
+    <button class="vitrin-btn aktif" data-ekran="ana">Ana ekran</button>
+    <button class="vitrin-btn" data-ekran="okuma-basi">Okuma (başı)</button>
+    <button class="vitrin-btn" data-ekran="okuma-eser">Okuma (eser)</button>
+    <button class="vitrin-btn" data-ekran="dinleme">Dinleme</button>
+    <button class="vitrin-btn" data-ekran="son">Yazının sonu</button>
+    <button class="vitrin-btn" data-ekran="mini">Küçük çalar</button>
+  </div>
+  <div class="vitrin-grup">
+    <button class="vitrin-btn aktif" data-tema-sec="gece">Gece</button>
+    <button class="vitrin-btn" data-tema-sec="gunduz">Gündüz</button>
+  </div>
+</div>
+
+<div class="telefon">
+  <div class="zemin-katman">
+    <div class="zemin-doku"></div>
+    <div class="zemin-hale"></div>
+    <div class="zemin-desen" id="zemin-desen"></div>
+  </div>
+
+  <div class="durum-cubugu" id="durum-cubugu">
+    <span>9:41</span>
+    <div class="durum-simgeler">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="5" width="3" height="7" rx="1"/><rect x="9" y="2.5" width="3" height="9.5" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0M4.2 7a5.6 5.6 0 0 1 7.6 0"/><circle cx="8" cy="10.2" r="1.2" fill="currentColor" stroke="none"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.8" y="1" width="20.5" height="10" rx="2.6" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2"/><rect x="2.6" y="2.8" width="15.5" height="6.4" rx="1.4" fill="currentColor"/><path d="M23 4.2v3.6" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <!-- 1. ANA EKRAN: SUBSTACK MİNİMAL AKIŞ -->
+  <section class="ekran acik" id="ekran-ana" aria-label="Hikâyeler akışı">
+    <div class="kaydir">
+      <header class="sub-ust">
+        <h1 class="sub-ad">Hikâyeler</h1>
+        <button class="btn-cam kare" id="btn-ara-ac" aria-label="Ara"></button>
+      </header>
+      <div class="sub-akis" id="sub-akis"></div>
+    </div>
+
+    <!-- Yön 2 Sekme Çubuğu: 5 + 1 ayrık cam kapsül -->
+    <nav class="sekme-sarici" aria-label="Ana gezinme">
+      <div class="sekme-cubuk" id="sekme-ana"></div>
+      <button class="sekme-ayrik-ben" id="ben-ana" aria-label="Ben"></button>
+    </nav>
+  </section>
+
+  <!-- 2. OKUMA + OKUMA İÇİ DİNLEME + YAZININ SONU -->
+  <section class="ekran" id="ekran-okuma" aria-label="Hikâye okuma">
+    <div class="okuma-ust" id="okuma-ust">
+      <button class="btn-cam kare" id="btn-geri" aria-label="Yazılara dön"></button>
+      <div class="okuma-ust-ad" id="okuma-ust-ad"></div>
+      <button class="btn-cam kare" id="btn-ust-dinle" aria-label="Dinle"></button>
+    </div>
+    <div class="kaydir" id="okuma-kaydir">
+      <article class="sub-makale" id="makale-ic"></article>
+    </div>
+
+    <!-- Okuma İçi İnce Çalar Çubuğu -->
+    <div class="ic-calar" id="ic-calar" aria-label="Fola ses çaları">
+      <div class="ic-calar-iz"><i id="ic-calar-dol" style="width:24%"></i></div>
+      <div class="ic-calar-ust">
+        <span class="ic-calar-bolum" id="ic-calar-bolum"></span>
+        <span class="ic-calar-sure" id="ic-calar-sure">5:02 / 21:00</span>
+      </div>
+      <div class="ic-calar-alt">
+        <button class="c-btn" id="c-hiz">1×</button>
+        <button class="c-btn" id="c-geri15" aria-label="15 saniye geri"></button>
+        <button class="c-btn oynat" id="c-oynat" aria-label="Oynat veya duraklat"></button>
+        <button class="c-btn" id="c-ileri15" aria-label="15 saniye ileri"></button>
+        <button class="c-btn" id="c-kapat" aria-label="Çaları kapat"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. BAŞKA SEKMDE KÜÇÜK ÇALAR (Bugün üstünde) -->
+  <section class="ekran" id="ekran-mini" aria-label="Bugün ve küçük çalar">
+    <div class="bugun-sahne">
+      <img src="gorseller/kapak-rembrandt-van-rijn.jpg" alt="Günün tablosu">
+      <div class="bugun-perde"></div>
+      <div class="bugun-metin">
+        <div class="ust-yazi">Bugünün tablosu · 1642</div>
+        <h2 style="font-family:var(--serif);font-size:33px;font-weight:500;margin:4px 0 6px;">Gece Devriyesi</h2>
+        <p style="font-size:14.5px;color:var(--ink-2);margin:0;">Rembrandt van Rijn · Rijksmuseum</p>
+      </div>
+    </div>
+
+    <div class="mini-calar" id="mini-calar" role="button" tabindex="0">
+      <div class="mini-ust">
+        <img class="mini-kapak" id="mini-kapak" alt="">
+        <div class="mini-metin">
+          <div class="mini-baslik" id="mini-baslik"></div>
+          <div class="mini-alt" id="mini-alt"></div>
+        </div>
+        <div class="mini-eylem">
+          <button class="mini-btn" id="mini-geri15" aria-label="15 saniye geri"></button>
+          <button class="mini-btn oynat" id="mini-oynat" aria-label="Oynat veya duraklat"></button>
+        </div>
+      </div>
+      <div class="mini-iz"><i id="mini-dol" style="width:24%"></i></div>
+    </div>
+
+    <nav class="sekme-sarici" aria-label="Ana gezinme">
+      <div class="sekme-cubuk" id="sekme-mini"></div>
+      <button class="sekme-ayrik-ben" id="ben-mini" aria-label="Ben"></button>
+    </nav>
+  </section>
+
+  <!-- SADE ARAMA -->
+  <div class="arama-katman" id="arama-katman">
+    <div class="arama-satir-ust">
+      <div class="arama-kutu">
+        <span id="arama-ikon"></span>
+        <input type="text" id="arama-giris" placeholder="Yazı veya sanatçı ara…">
+      </div>
+      <button class="btn-cam" id="btn-ara-kapat" style="padding:0 14px;">Vazgeç</button>
+    </div>
+    <div class="arama-liste" id="arama-liste"></div>
+  </div>
+
+  <div class="home-bar"></div>
+</div>
+
+<script src="hikaye-verisi.js"></script>
+<script>
+(() => {
+  const B = window.NORA_BLOG;
+  const YAZILAR = window.NORA_YAZILAR;
+
+  let aktifYaziId = B.urlParam('yazi', 'johannes-vermeer');
+  let aktifTema = B.urlParam('tema', 'gece');
+  let aktifGorunum = B.urlParam('ekran', 'ana');
+
+  let dinlemeAcik = false;
+  let oynuyor = false;
+  let aktifPIdx = 3;
+  let hizlar = [0.85, 1, 1.25, 1.5];
+  let hizIdx = 1;
+  let pListesi = [];
+  let timer = null;
+
+  function zeminGuncelle(y) {
+    document.documentElement.style.setProperty('--hale-rgb', y.hale);
+    document.getElementById('zemin-desen').style.backgroundImage = `url('../../NoraSanat/Ekranlar/Galeri/Desenler/${y.desen}')`;
+  }
+
+  function durumCubuguGuncelle() {
+    const dc = document.getElementById('durum-cubugu');
+    dc.classList.toggle('acik-yazi', aktifGorunum === 'mini' && aktifTema === 'gece');
+  }
+
+  function temaUygula(t) {
+    aktifTema = t;
+    document.documentElement.setAttribute('data-tema', t);
+    document.querySelectorAll('[data-tema-sec]').forEach(b => b.classList.toggle('aktif', b.dataset.temaSec === t));
+    durumCubuguGuncelle();
+  }
+
+  function sekmeCiz(elId, benId, secili) {
+    const sekmeler = [
+      { id: 'bugun', ad: 'Bugün', ikon: 'bugun' },
+      { id: 'hikayeler', ad: 'Hikâyeler', ikon: 'hikayeler' },
+      { id: 'calis', ad: 'Çalış', ikon: 'calis' },
+      { id: 'galeri', ad: 'Galeri', ikon: 'galeri' },
+      { id: 'yolculuk', ad: 'Yolculuk', ikon: 'yolculuk' },
+    ];
+    const el = document.getElementById(elId);
+    el.innerHTML = sekmeler.map(s => `
+      <button class="sekme-oge ${s.id === secili ? 'secili' : ''}" data-s="${s.id}">
+        ${B.svg(s.ikon, 20, s.id === secili ? 1.8 : 1.5)}
+        <span>${s.ad}</span>
+      </button>
+    `).join('');
+    el.querySelectorAll('.sekme-oge').forEach(b => {
+      b.onclick = () => b.dataset.s === 'hikayeler' ? gorunumAc('ana') : gorunumAc('mini');
+    });
+    document.getElementById(benId).innerHTML = `${B.svg('ben', 20, 1.5)}<span>Ben</span>`;
+  }
+
+  function anaCiz() {
+    // Yön 2'de en son eklenen Vermeer en üstte veya yarım kalan Rembrandt en üstte — doğal blog akışı:
+    const sira = [B.bul('johannes-vermeer'), ...YAZILAR.filter(x => x.id !== 'johannes-vermeer')];
+    const akis = document.getElementById('sub-akis');
+    akis.innerHTML = sira.map((y, idx) => {
+      const durum = idx === 0
+        ? `<span class="sub-durum">Yeni</span>`
+        : y.durum === 'yarim'
+          ? `<span class="sub-durum">${y.kalanDk} dk kaldı</span>`
+          : y.durum === 'biten'
+            ? `<span class="sub-durum biten">Okundu</span>`
+            : '';
+      const iz = y.durum === 'yarim'
+        ? `<div style="margin-top:11px;"><div class="cizgi-iz"><div class="cizgi-dol" style="width:${Math.round(y.ilerleme * 100)}%"></div></div></div>`
+        : '';
+      return `
+        <button class="sub-yazi" data-id="${y.id}">
+          <div class="sub-meta-ust">
+            <div class="sub-yazar">${y.sanatci} <span>· ${y.yillar}</span></div>
+            ${durum}
+          </div>
+          <div class="sub-kapak"><img src="${y.kapak}" alt="${y.sanatci}"></div>
+          <h2 class="sub-baslik">${y.baslik}</h2>
+          <p class="sub-alt">${y.altBaslik}</p>
+          <div class="sub-sure">${y.okumaDk} dk okuma · ${y.dinlemeDk} dk dinleme</div>
+          ${iz}
+        </button>
+      `;
+    }).join('');
+    akis.querySelectorAll('.sub-yazi').forEach(btn => {
+      btn.onclick = () => {
+        aktifYaziId = btn.dataset.id;
+        aktifPIdx = 2;
+        dinlemeKapat();
+        gorunumAc('okuma-basi');
+      };
+    });
+  }
+
+  function makaleCiz() {
+    const y = B.bul(aktifYaziId);
+    zeminGuncelle(y);
+    document.getElementById('okuma-ust-ad').textContent = y.sanatci;
+    pListesi = B.paragraflar(y);
+
+    let pSayac = 0;
+    const pHtml = (metin) => {
+      const idx = pSayac++;
+      const cumleler = metin.match(/[^.!?]+[.!?]+/g) || [metin];
+      const ic = cumleler.map((c, ci) => `<span class="${ci === 0 ? 'cumle-aktif' : ''}">${c}</span>`).join(' ');
+      return `<p class="p-blok" data-pidx="${idx}">${ic}</p>`;
+    };
+
+    const girisHtml = y.giris.map(p => pHtml(p)).join('');
+    const bolHtml = y.bolumler.map(b => {
+      const pVeE = b.paragraflar.map((p, pi) => {
+        let out = pHtml(p);
+        const es = b.eserler[pi];
+        if (es) {
+          out += `
+            <figure class="eser-fig">
+              <img src="${es.gorsel}" alt="${es.ad}">
+              <figcaption class="eser-aciklama">
+                <div class="eser-baslik-satir">
+                  <span class="eser-tr-ad">${es.ad}</span>
+                  <span class="eser-yil">${es.yil}</span>
+                </div>
+                ${es.muze ? `<div class="eser-muze">${es.muze}</div>` : ''}
+                ${es.bag ? `<p class="eser-bag"><b>Bu dönemle bağı</b>${es.bag}</p>` : ''}
+              </figcaption>
+            </figure>
+          `;
+        }
+        return out;
+      }).join('');
+      return `
+        <div class="sub-ara-baslik">
+          <div class="ust-yazi">${b.yillar}</div>
+          <h2>${b.baslik}</h2>
+        </div>
+        ${pVeE}
+      `;
+    }).join('');
+
+    const kapanisHtml = y.kapanis.map(p => pHtml(p)).join('');
+    const bagHtml = y.baglantili.map(b => `
+      <button class="bag-kart" data-gec="${b.id}">
+        <img src="${b.kapak}" alt="${b.sanatci}">
+        <div class="bag-kart-ic">
+          <div class="bag-kart-rol">${b.rol} · ${b.sanatci}</div>
+          <div class="bag-kart-baslik">${b.baslik}</div>
+          <div class="bag-kart-meta">${b.yillar} · ${b.okumaDk} dk okuma</div>
+        </div>
+      </button>
+    `).join('');
+    const kaynakHtml = (y.kaynaklar || []).slice(0, 5).map(k => `<li>${k.baslik}</li>`).join('');
+
+    document.getElementById('makale-ic').innerHTML = `
+      <h1 class="sub-m-baslik">${y.baslik}</h1>
+      <p class="sub-m-alt">${y.altBaslik}</p>
+      <div class="sub-yazar-satir">
+        <div class="sub-yazar-sol">
+          <div class="sub-yazar-ad">${y.sanatci} · ${y.yillar}</div>
+          <div class="sub-yazar-sure">${y.okumaDk} dk okuma · ${y.dinlemeDk} dk dinleme</div>
+        </div>
+        <button class="btn-dolu" id="btn-yazi-dinle" style="padding:0 16px;">${B.svg('kulaklik', 16, 1.8)}<span>Dinle</span></button>
+      </div>
+      <div class="sub-m-kapak"><img src="${y.kapak}" alt="${y.sanatci}"></div>
+      ${girisHtml}
+      ${bolHtml}
+      <div class="sub-ara-baslik"><div class="ust-yazi">Kapanış</div></div>
+      ${kapanisHtml}
+      <section class="son-bolum" id="yazi-sonu">
+        <h3 class="son-baslik">Bağlantılı yazılar</h3>
+        <div class="bag-kart-liste">${bagHtml}</div>
+        <div style="margin-top:34px;">
+          <div class="ust-yazi">Kaynaklar</div>
+          <ul class="kaynak-liste">${kaynakHtml}</ul>
+        </div>
+      </section>
+    `;
+
+    document.getElementById('btn-yazi-dinle').onclick = () => dinlemeAc(true);
+    document.querySelectorAll('[data-gec]').forEach(btn => {
+      btn.onclick = () => { aktifYaziId = btn.dataset.gec; aktifPIdx = 2; dinlemeKapat(); gorunumAc('okuma-basi'); };
+    });
+    document.querySelectorAll('.p-blok').forEach(p => {
+      p.onclick = () => { if (!dinlemeAcik) return; aktifPIdx = Number(p.dataset.pidx); dinlemeDurumCiz(true); };
+    });
+
+    const kay = document.getElementById('okuma-kaydir');
+    const ust = document.getElementById('okuma-ust');
+    kay.onscroll = () => ust.classList.toggle('yapiskan', kay.scrollTop > 110);
+    miniVeriGuncelle();
+  }
+
+  function dinlemeDurumCiz(kaydirilsin = false) {
+    const y = B.bul(aktifYaziId);
+    document.getElementById('makale-ic').classList.toggle('dinleme-acik', dinlemeAcik);
+    document.getElementById('ic-calar').classList.toggle('gorunur', dinlemeAcik);
+
+    const basDinle = document.getElementById('btn-yazi-dinle');
+    if (basDinle) {
+      basDinle.className = dinlemeAcik ? 'btn-cam' : 'btn-dolu';
+      basDinle.innerHTML = `${B.svg('kulaklik', 16, 1.8)}<span>${dinlemeAcik ? 'Dinleniyor' : 'Dinle'}</span>`;
+    }
+
+    document.querySelectorAll('.p-blok').forEach(el => {
+      el.classList.toggle('okunan', dinlemeAcik && Number(el.dataset.pidx) === aktifPIdx);
+    });
+
+    const aktifP = pListesi[aktifPIdx] || pListesi[0];
+    const oran = Math.min(98, Math.max(6, Math.round(((aktifPIdx + 1) / Math.max(1, pListesi.length)) * 100)));
+    const topSn = y.dinlemeDk * 60;
+    const gecen = Math.round(topSn * oran / 100);
+    document.getElementById('ic-calar-bolum').textContent = aktifP ? aktifP.bolum : y.baslik;
+    document.getElementById('ic-calar-sure').textContent = `${B.formatDk(gecen)} / ${B.formatDk(topSn)}`;
+    document.getElementById('ic-calar-dol').style.width = `${oran}%`;
+    document.getElementById('c-oynat').innerHTML = B.svg(oynuyor ? 'duraklat' : 'oynat', 19, 1.8);
+    document.getElementById('mini-oynat').innerHTML = B.svg(oynuyor ? 'duraklat' : 'oynat', 18, 1.8);
+
+    if (dinlemeAcik && kaydirilsin) {
+      const hedef = document.querySelector(`.p-blok[data-pidx="${aktifPIdx}"]`);
+      const kap = document.getElementById('okuma-kaydir');
+      if (hedef && kap) {
+        const rel = hedef.getBoundingClientRect().top - kap.getBoundingClientRect().top + kap.scrollTop;
+        kap.scrollTop = Math.max(0, rel - 220);
+      }
+    }
+    miniVeriGuncelle();
+  }
+
+  function dinlemeAc(oynat = false) {
+    dinlemeAcik = true;
+    if (oynat) oynuyor = true;
+    dinlemeDurumCiz(true);
+    if (oynuyor) zamanlayiciKur();
+  }
+  function dinlemeKapat() {
+    dinlemeAcik = false; oynuyor = false; clearInterval(timer); dinlemeDurumCiz(false);
+  }
+  function zamanlayiciKur() {
+    clearInterval(timer);
+    if (!oynuyor) return;
+    timer = setInterval(() => {
+      aktifPIdx = (aktifPIdx + 1) % Math.max(1, pListesi.length);
+      dinlemeDurumCiz(true);
+    }, Math.round(4500 / hizlar[hizIdx]));
+  }
+  function miniVeriGuncelle() {
+    const y = B.bul(aktifYaziId);
+    const aktifP = pListesi[aktifPIdx] || { bolum: y.bolumler[0]?.baslik || '', metin: y.altBaslik };
+    const oran = Math.min(98, Math.max(12, Math.round(((aktifPIdx + 1) / Math.max(1, pListesi.length)) * 100)));
+    document.getElementById('mini-kapak').src = y.kapak;
+    document.getElementById('mini-baslik').textContent = `${y.sanatci} · ${aktifP.bolum}`;
+    document.getElementById('mini-alt').textContent = aktifP.metin.slice(0, 62) + '…';
+    document.getElementById('mini-dol').style.width = `${oran}%`;
+  }
+
+  function aramaCiz(q = '') {
+    const t = q.trim().toLocaleLowerCase('tr');
+    const sonuc = YAZILAR.filter(y => !t || y.sanatci.toLocaleLowerCase('tr').includes(t) || y.baslik.toLocaleLowerCase('tr').includes(t));
+    const el = document.getElementById('arama-liste');
+    el.innerHTML = sonuc.map(y => `
+      <button class="arama-oge" data-id="${y.id}">
+        <img src="${y.kapak}" alt="${y.sanatci}">
+        <div>
+          <div class="arama-oge-baslik">${y.baslik}</div>
+          <div class="arama-oge-meta">${y.sanatci} · ${y.yillar} · ${y.okumaDk} dk okuma</div>
+        </div>
+      </button>
+    `).join('');
+    el.querySelectorAll('.arama-oge').forEach(b => {
+      b.onclick = () => {
+        document.getElementById('arama-katman').classList.remove('acik');
+        aktifYaziId = b.dataset.id; aktifPIdx = 2; dinlemeKapat(); gorunumAc('okuma-basi');
+      };
+    });
+  }
+
+  function gorunumAc(ad) {
+    aktifGorunum = ad;
+    document.querySelectorAll('[data-ekran]').forEach(b => b.classList.toggle('aktif', b.dataset.ekran === ad));
+    document.querySelectorAll('.ekran').forEach(e => e.classList.remove('acik'));
+    durumCubuguGuncelle();
+
+    if (ad === 'ana') {
+      document.getElementById('ekran-ana').classList.add('acik');
+      zeminGuncelle(B.bul('johannes-vermeer'));
+      anaCiz();
+    } else if (ad === 'mini') {
+      document.getElementById('ekran-mini').classList.add('acik');
+      makaleCiz();
+    } else {
+      document.getElementById('ekran-okuma').classList.add('acik');
+      makaleCiz();
+      const kap = document.getElementById('okuma-kaydir');
+      if (ad === 'okuma-basi') {
+        dinlemeKapat(); kap.scrollTop = 0; document.getElementById('okuma-ust').classList.remove('yapiskan');
+      } else if (ad === 'okuma-eser') {
+        dinlemeKapat();
+        requestAnimationFrame(() => {
+          const fig = document.querySelector('#makale-ic .eser-fig');
+          if (fig) kap.scrollTop = Math.max(0, fig.getBoundingClientRect().top - kap.getBoundingClientRect().top + kap.scrollTop - 135);
+          document.getElementById('okuma-ust').classList.add('yapiskan');
+        });
+      } else if (ad === 'dinleme') {
+        aktifPIdx = 3; dinlemeAc(false); document.getElementById('okuma-ust').classList.add('yapiskan');
+      } else if (ad === 'son') {
+        dinlemeKapat();
+        requestAnimationFrame(() => {
+          const son = document.getElementById('yazi-sonu');
+          if (son) kap.scrollTop = Math.max(0, son.getBoundingClientRect().top - kap.getBoundingClientRect().top + kap.scrollTop - 108);
+          document.getElementById('okuma-ust').classList.add('yapiskan');
+        });
+      }
+    }
+  }
+
+  function baslat() {
+    if (B.urlParam('ci', '') === '1') {
+      document.body.classList.remove('vitrin-mod');
+      document.body.classList.add('ci-mod');
+    }
+    sekmeCiz('sekme-ana', 'ben-ana', 'hikayeler');
+    sekmeCiz('sekme-mini', 'ben-mini', 'bugun');
+
+    document.getElementById('btn-ara-ac').innerHTML = B.svg('ara', 19, 1.7);
+    document.getElementById('btn-geri').innerHTML = B.svg('geri', 20, 1.8);
+    document.getElementById('btn-ust-dinle').innerHTML = B.svg('kulaklik', 19, 1.6);
+    document.getElementById('c-geri15').innerHTML = B.svg('geri15', 19, 1.6);
+    document.getElementById('c-ileri15').innerHTML = B.svg('ileri15', 19, 1.6);
+    document.getElementById('c-kapat').innerHTML = B.svg('kapat', 17, 1.7);
+    document.getElementById('c-oynat').innerHTML = B.svg('oynat', 19, 1.8);
+    document.getElementById('mini-oynat').innerHTML = B.svg('oynat', 18, 1.8);
+    document.getElementById('mini-geri15').innerHTML = B.svg('geri15', 19, 1.6);
+    document.getElementById('arama-ikon').innerHTML = B.svg('ara', 18, 1.6);
+
+    document.getElementById('btn-ara-ac').onclick = () => { aramaCiz(''); document.getElementById('arama-katman').classList.add('acik'); document.getElementById('arama-giris').focus(); };
+    document.getElementById('btn-ara-kapat').onclick = () => document.getElementById('arama-katman').classList.remove('acik');
+    document.getElementById('arama-giris').oninput = e => aramaCiz(e.target.value);
+
+    document.getElementById('btn-geri').onclick = () => gorunumAc('ana');
+    document.getElementById('btn-ust-dinle').onclick = () => dinlemeAcik ? dinlemeKapat() : dinlemeAc(true);
+    document.getElementById('c-oynat').onclick = () => { oynuyor = !oynuyor; dinlemeDurumCiz(false); oynuyor ? zamanlayiciKur() : clearInterval(timer); };
+    document.getElementById('c-geri15').onclick = () => { aktifPIdx = Math.max(0, aktifPIdx - 1); dinlemeDurumCiz(true); };
+    document.getElementById('c-ileri15').onclick = () => { aktifPIdx = Math.min(pListesi.length - 1, aktifPIdx + 1); dinlemeDurumCiz(true); };
+    document.getElementById('c-hiz').onclick = () => { hizIdx = (hizIdx + 1) % hizlar.length; document.getElementById('c-hiz').textContent = `${String(hizlar[hizIdx]).replace('.', ',')}×`; if (oynuyor) zamanlayiciKur(); };
+    document.getElementById('c-kapat').onclick = () => dinlemeKapat();
+
+    document.getElementById('mini-calar').onclick = e => { if (!e.target.closest('button')) gorunumAc('dinleme'); };
+    document.getElementById('mini-oynat').onclick = e => { e.stopPropagation(); oynuyor = !oynuyor; dinlemeDurumCiz(false); };
+    document.getElementById('mini-geri15').onclick = e => { e.stopPropagation(); aktifPIdx = Math.max(0, aktifPIdx - 1); dinlemeDurumCiz(false); };
+
+    document.querySelectorAll('[data-ekran]').forEach(b => b.onclick = () => gorunumAc(b.dataset.ekran));
+    document.querySelectorAll('[data-tema-sec]').forEach(b => b.onclick = () => temaUygula(b.dataset.temaSec));
+
+    temaUygula(aktifTema);
+    gorunumAc(aktifGorunum);
+  }
+
+  baslat();
+})();
+</script>
+</body>
+</html>
