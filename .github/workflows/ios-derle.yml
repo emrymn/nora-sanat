@@ -1,9 +1,11 @@
-# Her PR'da ve main'e her gönderimde: uygulamayı iOS Simulator için derler,
-# sonra simülatörde açıp Sanat Atlası'nın gerçekten yüklendiğini ekran görüntüsüyle gösterir.
+# Her PR'da ve main'e her gönderimde: çekirdek testleri + uygulamayı iOS Simulator için derler (derle, ~6 dk).
+# Ekran görüntüleri (ekran, 8 macOS işi, makine kuyruğuyla 1–2 saat) yalnız main'e gönderimde, elle çalıştırmada
+# ya da "ekran" etiketli PR'da. PR'ın birleşme şartı derle'nin yeşil olması.
 name: iOS derleme
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
   push:
     branches: [main]
   workflow_dispatch:
@@ -94,6 +96,7 @@ jobs:
   # Gruplar ve adımları: Testler/ci/ekran.sh. Görüntüler ekranlar-<grup> arşivinde.
   ekran:
     needs: derle
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ekran')
     runs-on: macos-15
     timeout-minutes: 45
     strategy:
