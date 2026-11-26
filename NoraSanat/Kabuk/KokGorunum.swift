@@ -16,8 +16,10 @@ struct KokGorunum: View {
         ZStack {
             if !Gecis.yerliSekmeler.isEmpty {
                 // Sistemin sekme çubuğu gizli; yerine sitenin çubuğunun aynısı (T4) en üstte durur
-                TabView(selection: Binding(get: { durum.secili }, set: { durum.sec($0) })) {
-                    ForEach(Sekme.allCases) { s in
+                // Z4b (Emre): Ben sekme değil; açıkken altta açıldığı sekme durur, Ben onun üstünde sayfa olarak açılır
+                TabView(selection: Binding(get: { durum.secili == .ben ? durum.benOncesi : durum.secili },
+                                           set: { durum.sec($0) })) {
+                    ForEach(Sekme.allCases.filter { $0 != .ben }) { s in
                         yerliEkran(s)
                             // Bugün tam ekran resim: yalnız belirir (kayınca üstte boşluk açılırdı)
                             .girisHareketi(girisSayaci[s] ?? 0, kayma: s == .bugun ? 0 : 12)
@@ -29,6 +31,13 @@ struct KokGorunum: View {
                             .tag(s)
                     }
                 }
+            }
+            // Z4b: Ben, kişi düğmesiyle bulunduğun sekmenin üstünde tam ekran sayfa; geri ya da kenardan kaydırma
+            // açıldığı sekmeye döner. Çubuk ve küçük çalar Ben açıkken görünmez (`KabukDurumu.cubukGorunur`).
+            if Gecis.yerli(.ben) && durum.secili == .ben {
+                BenSayfasi()
+                    .transition(.move(edge: .trailing))
+                    .zIndex(1)
             }
             // Z2c-3b: site yalnız gerektiğinde (taşıma, DEBUG karşılaştırma); bkz. `WebKabugu.gerekli`
             if WebKabugu.gerekli {
@@ -52,6 +61,8 @@ struct KokGorunum: View {
                     .accessibilityHidden(!durum.cubukGorunur)
             }
         }
+        .animation(tema.ayar.hareketAzaltilmis ? .easeOut(duration: 0.15) : .timingCurve(0.2, 0.8, 0.2, 1, duration: 0.4),
+                   value: durum.secili == .ben)
         .environment(tema)
         .environment(durum)
         // Saat/pil çubuğu sitenin rengine uysun (koyu zeminde açık yazı)
@@ -101,7 +112,7 @@ struct KokGorunum: View {
             case .yolculuk: YolculukSekmesi()
             case .galeri: GaleriSekmesi()
             case .calis: CalisSekmesi()
-            case .ben: BenSekmesi()
+            case .ben: EmptyView()   // Ben sekme değil: `BenSayfasi`
             }
         } else {
             // Taşınmamış sekme seçilince site bunun üstüne gelir
@@ -127,5 +138,35 @@ struct SekmeYeri: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(tema.renkler.zemin).ignoresSafeArea())
         .foregroundStyle(Color(tema.renkler.murekkep))
+    }
+}
+
+/// Z4b: Ben sayfası (sekme değil). Sol kenardan sağa kaydırınca açıldığı sekmeye döner.
+private struct BenSayfasi: View {
+    @Environment(KabukDurumu.self) private var kabuk
+    @Environment(TemaDeposu.self) private var tema
+    @State private var surukle: CGFloat = 0
+
+    var body: some View {
+        GeometryReader { g in
+            BenSekmesi()
+                .background(Color(tema.renkler.zemin).ignoresSafeArea())
+                .offset(x: surukle)
+                .overlay(alignment: .leading) {
+                    // Kenardan geri: UIKit'in geri hareketi gibi, 20 pt'lik şeritten
+                    Color.clear.frame(width: 20).contentShape(Rectangle())
+                        .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .global)
+                            .onChanged { d in surukle = max(0, d.translation.width) }
+                            .onEnded { d in
+                                if d.translation.width > g.size.width * 0.3 || d.predictedEndTranslation.width > g.size.width * 0.6 {
+                                    kabuk.sec(kabuk.benOncesi)
+                                } else {
+                                    withAnimation(.easeOut(duration: 0.2)) { surukle = 0 }
+                                }
+                            })
+                        .accessibilityHidden(true)
+                }
+        }
+        .ignoresSafeArea(.keyboard)
     }
 }

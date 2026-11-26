@@ -62,8 +62,8 @@ struct HikayeCamDugme: ButtonStyle {
     }
 }
 
-/// Z4b (Emre): Ben sekme çubuğunda değil; ana ekranların sağ üstündeki kişi düğmesi açar. Açıldığı sekme hatırlanır
-/// (`KabukDurumu.benOncesi`): çubuğun hapı orada kalır, Ben'in geri düğmesi oraya döner.
+/// Z4b (Emre): Ben sekme değil; ana ekranların sağ üstündeki kişi düğmesi onu bulunduğun sekmenin üstünde sayfa olarak
+/// açar (`KabukDurumu.benOncesi`: geri oraya döner).
 struct BenDugmesi: View {
     @Environment(KabukDurumu.self) private var kabuk
 

@@ -79,8 +79,8 @@ final class KabukDurumu {
 
     /// Seçili sekme (yerli ya da site)
     private(set) var secili: Sekme = .bugun
-    /// Z4b: Ben çubukta değil, ana ekranların sağ üstündeki kişi düğmesiyle açılır. Açıldığı sekme: çubuğun hapı orada
-    /// kalır, Ben'in geri düğmesi oraya döner.
+    /// Z4b: Ben sekme değil; kişi düğmesiyle bulunduğun sekmenin üstünde sayfa olarak açılır (`KokGorunum`). Açıldığı
+    /// sekme: altta o durur, Ben'in geri düğmesi ve kenardan kaydırma oraya döner.
     private(set) var benOncesi: Sekme = .bugun
 
     /// Çubukta seçili görünen sekmenin sırası (Ben açıkken açıldığı sekme)
@@ -152,7 +152,8 @@ final class KabukDurumu {
     }()
 
     /// Yerli çubuk görünür mü: seçili sekme yerli ve onu gizleyen yok
-    var cubukGorunur: Bool { !siteGorunur && !gizleyenler.contains(secili) }
+    /// Z4b: Ben açıkken (sayfa) görünmez
+    var cubukGorunur: Bool { !siteGorunur && secili != .ben && !gizleyenler.contains(secili) }
 
     /// Yerli ekran, sitedeki sekmesiz sayfalar gibi çubuğu gizlemek isterse: `.sekmeCubuguGizli(true, sekme: .calis)`
     func cubuguGizle(_ gizli: Bool, sekme: Sekme) {
