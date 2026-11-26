@@ -202,6 +202,15 @@ Testler/                Kâhinler (Testler/kahin: sitenin kurallarından örnek 
   - Kurs rozetine dokun: "n / 57 konu işlendi", sıradaki konunun Türkçe adı, "k sanatçı açılacak", **İşlendi yap**. Resimdeki saklı bir motife dokun: çerçeveli eser, hikâye, "… sayfası".
   - Kartta "1. grupla tanış" ya da "Kolay'a başla": tanışma ve sorular Çalış'taki turun aynısı. Grup bitince "Grup tamam" ve "2. grupla tanış"; seviye bitince sergi duvarı, madalyon, yıldızlar, skor, salonlar ve "Orta salonuna geç".
 - [ ] (Z3z2) Galeri → Akımlar: şeridi hızlıca sağa sola, sonra yavaşça kaydır; kartlar parmağı takılmadan izliyor mu? Eğilme, küçülme ve yazının sönmesi eskisi gibi mi?
+- [ ] (Z3y) Yolculuk → bir durakta tura başla, soru ekranı (Neon'un "Yön 3 · Geniş Tuval" + "Şık 5 · El Yelpazesi"):
+  - Üstte solda cam ×, ortada tek hapta noktalar ve "3 / 8", sağda pirinç "Kolay / Orta / Zor". Eser kırpılmadan ekranın en büyük öğesi; dikey, yatay ve kareye yakın bir eserde bak.
+  - Esere dokun: tam ekran büyütme, adı gizli. Görsel açılmazsa eskisi gibi başka eser geliyor.
+  - "Bu eser kimin?" solda, "Bilmiyorum" aynı satırın sağında. Altta dört dikey kart yelpaze gibi; kartta yalnız ad, elmas süs, ince pirinç çerçeve. **"Rogier van der Weyden" gibi uzun ad kırpılmadan en çok 2 satırda mı?**
+  - Bir kartın üstüne parmağını bastır, kaldırmadan bekle: kart yukarı sıyrılıp düzleşiyor, büyüyor, çerçevesi parlıyor; ötekiler sönüyor; hafif tık titreşimi. Parmağını karttan kaydırıp çekersen seçilmiyor.
+  - Bırak: elenen iki kart çekiliyor, doğru ve seçtiğin kart yan yana dönüyor (yeşil "Doğrusu", mercan "Seçtiğin"); doğruysa yalnız doğru kart kalıyor. Doğruda tek, yanlışta çift titreşim. Altta "Doğru" / "Yanlış" ve tek koyu düğme ("Hangi akım?" / "Sonraki"); "Tekrar" yok.
+  - **Eser cevaptan önce ve sonra aynı boyda mı?** Kartlar döndükten sonra cevap yaprağı alttan geliyor ve ekran yaprağın başını gösterecek kadar kayıyor (doğru sanatçı, ipucu, "Yan yana bak", Ayrıntılar, Sanatçı). Kayma miktarı rahat mı, yoksa hiç kaymasın mı?
+  - Karışık turda "Hangi akım?"a geç: eser yerinde, kartlar çift pirinç çizgili, başlığın yanında "Soru 2 / 2".
+  - Ayarlar'da hareketi azalt: sallanma, sıyrılma ve dönüş yok; seçince doğrudan sonuç. Gece ve Gündüz'de (keten karton) bak; küçük telefonda (SE boyu) de sığıyor mu?
 - [ ] (Z3z) Galeri → Akımlar akıcılık: şeridi hızlı hızlı sağa sola kaydır, kartlar takılmadan akıyor mu? Kilitli kapaklar hâlâ bulanık ve ortasında kilit mührü var mı? Gece ve Gündüz'de bak.
 - [ ] (Z3w) Galeri → Akımlar (Neon'un "Yön 2 · Kemerlerin yayı"):
   - Üstte eskisi gibi "Galeri", arama, kalp ve bölüm sekmeleri; altında ortada büyük kemerli kart, iki yanda komşular küçük ve soluk. Kartın altında dönem sembolüyle yıllar (ör. "1582–1682"), akım adı ve "N / M sanatçı açık" ya da kilit + "Konu N'de açılır".

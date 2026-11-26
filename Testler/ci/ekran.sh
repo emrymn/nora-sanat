@@ -516,6 +516,14 @@ yolculuk() {
     done
     "$RUNNER_TEMP/yan-yana" "ekranlar/site-yolculuk-$AD.png" "ekranlar/yerli-yolculuk-$AD.png" "ekranlar/yan-yana-yolculuk-$AD.png"
   done
+  # Z3y: yanlış cevapta yelpazenin iki kartı döner (yalnız yerli; sitede bu tasarım yok)
+  xcrun simctl terminate "$UDID" "$PAKET" || true
+  rm -f "$VERI/tmp/yolculuk-hazir" "$VERI/tmp/yolculuk-hata"
+  xcrun simctl launch "$UDID" "$PAKET" -yerliSekme yolculuk -adres "#/harita" -yolculukProva cevap-yanlis -izinSorma
+  hazir_yolculuk cevap-yanlis
+  sleep 3
+  xcrun simctl io "$UDID" screenshot "ekranlar/yerli-yolculuk-cevap-yanlis.png"
+  "$RUNNER_TEMP/ben-ekran" ekranlar/yerli-yolculuk-cevap-yanlis.png "Seçtiğin"
   xcrun simctl terminate "$UDID" "$PAKET"
   rm -f "$VERI/tmp/yolculuk-hazir"
   xcrun simctl launch "$UDID" "$PAKET" -yalnizSite -adres "#/harita" -yolculukProva geri-yukle -izinSorma
