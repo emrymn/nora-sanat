@@ -196,6 +196,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z4c | Dinleyerek bak sade: süre seçimi yok (bütün içerik), kısa aralar, 1× / 1,5× / 2× hız; × durum çubuğunun altında (Emre) | K | Z4a | 1 | bitti (#78) |
 | Z4e | Hikâyeler 4. tur: Neon PR #83'ün karışığı (Yön 2 ana ekran: öne çıkanlar, devam et, sonra oku; arşiv: en yeni · dönem · beğendiklerim; beğeni/sonra oku; Yön 1 tam ekran çalar: bölümler, uyku, metin, hız, sıradaki/otomatik) + dinlerken arka planda bölümün eseri, daha fazla eser | K | Z4b | 1 | bitti (#84) |
 | Z4f | Emre'nin düzeltmeleri: çubuk Bugün · Hikâyeler · Yolculuk · Çalış · Galeri; Hikâyeler ana ekranı bütün hikâyelerin kapak ızgarası (süzgeç: Tümü · Dönem · Beğendiklerim · Sonra oku; üstte Devam et); dinleme büyük eser + altyazı (kelime kelime); okurken dinlenen paragraf renkle ilerler | K | Z4e | 1 | bitti (#85) |
+| Z4g | Hikâyeler öne çıkanlar (Neon): üstte Çalış'taki gibi tam ekran öne çıkanlar (5 sayfa, Oku/Dinle, 8 sn otomatik geçiş, kaydırınca buzlu cam üst çubuk), altta Devam et + Bütün hikâyeler ızgarası | — | Z4f | 1 | PR açık |
 | Z4d | Xcode Run telefona Release derlesin, hata ayıklayıcı bağlanmasın (Akımlar kasması bundanmış) | K | — | 1 | bitti (#79) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1346,6 +1347,14 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Renkler (Emre seçti):** "pirinç rengi olmasın, çok Claude duruyor … ben seçeyim". Renk seçme sayfasında (claude.ai artifact, Gece/Gündüz önizlemeli) Emre'nin seçtiği zemin, yüzey, kenar, üç yazı tonu, vurgu (eski `--pirinc`), doğru, yanlış: `TemaRenkleri.gece`/`.gunduz` artık bunlar (sitenin sabitlerinin üstüne yazılır; türevler — saydam zeminler, `--notr-*`, `--tab-bg` — aynı oranlarla yeni renklerden). Sitenin kendi sabitleri `siteGece`/`siteGunduz` (kâhin testi onlarla). Emre: "günün resmiyle uyumluluğu ve arkaplandaki renk halesini kaldırma": günün tablosundan gelen vurgu (`ekran`/`hesapla`) ve renkli Gündüz eskisi gibi üstte; `zeminHex` yeni zeminleri verir (vurgu kontrastı onlara göre). Görüntüleyicinin ve başyapıt listesinin sabit pirinci de yeni Gece vurgusu.
 - **Sonra:** Emre görüntüleri görüp "güzel" dedi; ana ekranın yeniden tasarımı (üstte Çalış'taki gibi kenardan kenara Öne çıkanlar, altında devamı) Neon'a verildi.
 - **CI** (`hikayeler`): OCR'lar başlıktan bağımsız (başlıklar değişecek): `okuma` "1632", `dinleme` "1653", `ana` "Sonra oku", `donem` "XIII", `begendiklerim` "Vermeer", `calar` "Bölümler"; `-hikayeSuzgec` (yerine `-hikayeArsiv` kalktı).
+
+### Z4g · Hikâyeler öne çıkanlar (Neon)
+**Devir notu:** 2026-11-27 · dal `neon/hikayeler-one-cikanlar`. Emre: "Üstte öne çıkanlar olacak, altta da devamı olacak. Öne çıkanlar kısmı Çalış kısmındaki gibi üstü tüm ekran olacak."
+- **Öne çıkanlar (`HikayeAna.oneCikanSahne`):** durum çubuğunun altına kadar uzanan kenardan kenara eser görseli (`KapakYuruyusu` yakınlaşması, üstte `KapakUstu.golge` hafif gölge, altta Çalış'ın 140 pt eğrisiyle `SayfaZemini` halesi ve dönem desenine pürüzsüz erime). `depo.oneCikanlar` (en yeni bitirilmemiş 5 yazı) yatay sayfalama (`scrollTargetBehavior(.paging)`), her sayfada sanatçı · yıllar, Newsreader başlık, en çok 2 satır alt başlık, "Oku" (dolu) ve "Dinle" (`calar.baslat(h); calar.tamEkran = true`) düğmeleri. Sayfa noktaları (dokunulabilir, VoiceOver ayarlanabilir); hareket azaltılmamışsa 8 sn'de bir kendiliğinden sonraki sayfa, kullanıcı dokununca/kaydırınca durur.
+- **Üst çubuk:** görselin üstünde "Hikâyeler" (`KapakUstu.yazi`), arama ve Ben düğmeleri; aşağı kaydırınca (`onGeometryChange`) buzlu cam ince üst çubuk açılır ("Hikâyeler", arama, Ben).
+- **Devamı:** varsa Devam et şeridi, "Bütün hikâyeler" ara başlığı (+ yazı sayısı), süzgeç hapları (Tümü · Dönem · Beğendiklerim · Sonra oku) ve iki sütunlu `HikayeKutusu` ızgarası (Tümü'nde öne çıkanlar da kalır). Arka planda `SayfaZemini` (aktif öne çıkan yazının kapağı ve dönemi) korundu.
+- **Dokunulan dosyalar:** `NoraSanat/Ekranlar/Hikayeler/HikayelerSekmesi.swift`, `NoraSanat/Ekranlar/Calis/CalisAnaGorunumu.swift` (yalnız `KapakUstu` ve `KapakYuruyusu`'ndan `private` kaldırıldı), `koordinasyon/ISLER.md`.
+- **Doğrulama:** iPhone 17 simülatöründe derlendi ve Gece / Gündüz (üst ve aşağı kaydırılmış) dört ekran görüntüsüyle doğrulandı.
 
 ### Fikir havuzu (henüz iş değil)
 - Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
