@@ -179,7 +179,10 @@ public struct TemaRenkleri: Hashable, Sendable {
         "--pirinc": "#8a651c", "--pirinc-yazi": "#f7f5f1",
     ])
 
-    public static func sabit(_ t: TemaAdi) -> TemaRenkleri { t == .gece ? gece : gunduz }
+    /// `site`: sitenin kendi sabitleri (kâhin testleri); yoksa Emre'nin renkleri (Z4f)
+    public static func sabit(_ t: TemaAdi, site: Bool = false) -> TemaRenkleri {
+        site ? (t == .gece ? siteGece : siteGunduz) : (t == .gece ? gece : gunduz)
+    }
 
     private init(sabit d: [String: String]) {
         self.init(degiskenler: d, yedek: nil)!
@@ -212,11 +215,12 @@ public struct TemaRenkleri: Hashable, Sendable {
 
     /// Z2c-2: sitenin `temaUygula` + `gunduzYaz` + `renkleriYaz`'ı (js/ekranlar/ortak.js). Renkli Gündüz'de paletin
     /// değişkenleri, sonra ekranın vurgusu sabit temanın önüne geçer.
-    public static func hesapla(_ tema: TemaAdi, gunduz: GunduzPaleti?, vurgu: ResimRengi.VurguTemasi?) -> TemaRenkleri {
+    public static func hesapla(_ tema: TemaAdi, gunduz: GunduzPaleti?, vurgu: ResimRengi.VurguTemasi?,
+                               site: Bool = false) -> TemaRenkleri {
         var d: [String: String] = [:]
         if tema == .gunduz, let gunduz { d.merge(gunduz.degiskenler) { $1 } }
         if let vurgu { d.merge(vurgu.degiskenler) { $1 } }
-        return TemaRenkleri(degiskenler: d, yedek: sabit(tema)) ?? sabit(tema)
+        return TemaRenkleri(degiskenler: d, yedek: sabit(tema, site: site)) ?? sabit(tema, site: site)
     }
 
     /// Z3m: sitenin `renkleriYaz(palet)`'ı (js/ekranlar/ortak.js @ cca62eb): bir ekranın renkleri, vurgu o ekranın
@@ -228,10 +232,10 @@ public struct TemaRenkleri: Hashable, Sendable {
     }
 
     /// Sitenin `temaZemini()`'i: vurgunun kontrast hesabı ve pencerenin rengi (`theme-color`)
-    public static func zeminHex(_ tema: TemaAdi, gunduz: GunduzPaleti?) -> String {
+    public static func zeminHex(_ tema: TemaAdi, gunduz: GunduzPaleti?, site: Bool = false) -> String {
         if tema == .gunduz, let gunduz { return gunduz.bg }
-        // Z4f: Emre'nin zeminleri (önce sitenin #121110 / #ECE8E1'i); vurgu bu zemine göre seçilir
-        return sabit(tema).zemin.hex.uppercased()
+        // Z4f: Emre'nin zeminleri (sitede #121110 / #ECE8E1); vurgu bu zemine göre seçilir
+        return sabit(tema, site: site).zemin.hex.uppercased()
     }
 }
 
