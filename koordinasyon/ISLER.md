@@ -196,7 +196,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z4c | Dinleyerek bak sade: süre seçimi yok (bütün içerik), kısa aralar, 1× / 1,5× / 2× hız; × durum çubuğunun altında (Emre) | K | Z4a | 1 | bitti (#78) |
 | Z4e | Hikâyeler 4. tur: Neon PR #83'ün karışığı (Yön 2 ana ekran: öne çıkanlar, devam et, sonra oku; arşiv: en yeni · dönem · beğendiklerim; beğeni/sonra oku; Yön 1 tam ekran çalar: bölümler, uyku, metin, hız, sıradaki/otomatik) + dinlerken arka planda bölümün eseri, daha fazla eser | K | Z4b | 1 | bitti (#84) |
 | Z4f | Emre'nin düzeltmeleri: çubuk Bugün · Hikâyeler · Yolculuk · Çalış · Galeri; Hikâyeler ana ekranı bütün hikâyelerin kapak ızgarası (süzgeç: Tümü · Dönem · Beğendiklerim · Sonra oku; üstte Devam et); dinleme büyük eser + altyazı (kelime kelime); okurken dinlenen paragraf renkle ilerler | K | Z4e | 1 | bitti (#85) |
-| Z4g | Hikâyeler öne çıkanlar (Neon): üstte Çalış'taki gibi tam ekran öne çıkanlar (5 sayfa, Oku/Dinle, 8 sn otomatik geçiş, kaydırınca buzlu cam üst çubuk), altta Devam et + Bütün hikâyeler ızgarası | — | Z4f | 1 | PR açık |
+| Z4g | Hikâyeler öne çıkanlar (Neon): üstte Çalış'taki gibi tam ekran öne çıkanlar (5 sayfa, Oku/Dinle, 8 sn otomatik geçiş, kaydırınca buzlu cam üst çubuk), altta Devam et + Bütün hikâyeler ızgarası | — | Z4f | 1 | bitti (#86) |
 | Z4d | Xcode Run telefona Release derlesin, hata ayıklayıcı bağlanmasın (Akımlar kasması bundanmış) | K | — | 1 | bitti (#79) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1355,6 +1355,7 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Devamı:** varsa Devam et şeridi, "Bütün hikâyeler" ara başlığı (+ yazı sayısı), süzgeç hapları (Tümü · Dönem · Beğendiklerim · Sonra oku) ve iki sütunlu `HikayeKutusu` ızgarası (Tümü'nde öne çıkanlar da kalır). Arka planda `SayfaZemini` (aktif öne çıkan yazının kapağı ve dönemi) korundu.
 - **Dokunulan dosyalar:** `NoraSanat/Ekranlar/Hikayeler/HikayelerSekmesi.swift`, `NoraSanat/Ekranlar/Calis/CalisAnaGorunumu.swift` (yalnız `KapakUstu` ve `KapakYuruyusu`'ndan `private` kaldırıldı), `koordinasyon/ISLER.md`.
 - **Doğrulama:** iPhone 17 simülatöründe derlendi ve Gece / Gündüz (üst ve aşağı kaydırılmış) dört ekran görüntüsüyle doğrulandı.
+- **Sonra:** Claude denetledi (derle yeşil), Emre ekran görüntülerine bakıp "güzel olmuş" dedi; birleştirildi (#86).
 
 ### Fikir havuzu (henüz iş değil)
 - Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
