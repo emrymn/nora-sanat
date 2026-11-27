@@ -341,7 +341,7 @@ struct EserRozetleri: View {
 
     private func rozet(_ simge: GaleriSimge, _ ad: String, _ etiket: String) -> some View {
         HStack(spacing: 5) {
-            if !uzun { GaleriIkon(simge: simge, boyut: 14, kalinlik: 1.8).foregroundStyle(Color(RGBA(css: "#c9a45c")!)) }
+            if !uzun { GaleriIkon(simge: simge, boyut: 14, kalinlik: 1.8).foregroundStyle(Color(TemaRenkleri.gece.pirinc)) }
             if uzun { Text(ad).font(Yazi.sans(12, agirlik: 500, stil: .caption1)) }
         }
         .foregroundStyle(Color(RGBA(css: "#ebe5da")!))

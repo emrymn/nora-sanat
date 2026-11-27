@@ -182,6 +182,12 @@ final class HikayeDeposu {
         }
     }
 
+    /// Z4f: sanatçının döneminin deseni (`SayfaZemini`, Galeri'deki gibi; Emre: arkadaki hale ve semboller)
+    func donem(_ id: String) -> String? {
+        guard let k = katalog, let s = sanatci(id) else { return nil }
+        return GaleriDonem.akimin(k, s.akim)
+    }
+
     func gorselAdresi(_ e: Eser, genislik: Int) -> URL? { katalog?.gorselAdresi(e, genislik: genislik, kotuler: kotuler) }
 
     #if DEBUG

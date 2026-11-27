@@ -136,8 +136,9 @@ final class TemaHesabiTests: XCTestCase {
         let t = try XCTUnwrap(JSONDeger.coz(Data(contentsOf: url))["tema"])
         for (ad, tema, palet) in [("gece", TemaAdi.gece, nil), ("gunduz", .gunduz, nil), ("gunduzLapis", .gunduz, GunduzPaleti.hazir["lapis"])] {
             let b = try XCTUnwrap(t[ad])
-            XCTAssertEqual(TemaRenkleri.zeminHex(tema, gunduz: palet).lowercased(), b["themeColor"]!.metin!.lowercased(), ad)
-            let r = TemaRenkleri.hesapla(tema, gunduz: palet, vurgu: nil)
+            // Z4f: uygulama Emre'nin renklerini kullanır; sitenin kuralı sitenin sabitleriyle sınanır
+            XCTAssertEqual(TemaRenkleri.zeminHex(tema, gunduz: palet, site: true).lowercased(), b["themeColor"]!.metin!.lowercased(), ad)
+            let r = TemaRenkleri.hesapla(tema, gunduz: palet, vurgu: nil, site: true)
             for (css, yol) in TemaRenkleri.degiskenler where !css.hasPrefix("--vurgu") {
                 XCTAssertEqual(r[keyPath: yol], RGBA(css: b["degiskenler"]![css]!.metin!), "\(ad) \(css)")
             }

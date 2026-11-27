@@ -78,7 +78,7 @@ enum GoruntuleyiciTema {
     static let murekkep = Color(red: 235 / 255.0, green: 229 / 255.0, blue: 218 / 255.0)    // #ebe5da
     static let ikincilMurekkep = Color(red: 172 / 255.0, green: 164 / 255.0, blue: 152 / 255.0) // #aca498
     static let ucunculMurekkep = Color(red: 138 / 255.0, green: 131 / 255.0, blue: 121 / 255.0) // #8a8379
-    static let vurgu = Color(red: 201 / 255.0, green: 164 / 255.0, blue: 92 / 255.0)        // #c9a45c (pirinç)
+    static let vurgu = Color(TemaRenkleri.gece.pirinc)                                     // Z4f: Emre'nin Gece vurgusu (önce #c9a45c pirinç)
     static let vurguYazi = Color(red: 18 / 255.0, green: 17 / 255.0, blue: 16 / 255.0)      // #121110
     static let yanlisIkon = Color(red: 240 / 255.0, green: 154 / 255.0, blue: 134 / 255.0)  // #f09a86
     static let yuvarlakDugmeZemini = Color(red: 18 / 255.0, green: 17 / 255.0, blue: 16 / 255.0).opacity(0.6)
