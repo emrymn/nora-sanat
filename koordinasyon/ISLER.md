@@ -163,36 +163,36 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | T6 | Çalış yerli sekme | K | C3 | 1 | bitti (#23) |
 | T7 | Bugün + Yolculuk yerli; sekmesiz adresler yerli ekrana | K | G4b, G5 | 1 | bitti (#26) |
 | T8 | CI'ı paralel makinelere böl (ekran görüntüleri) | K | T7 | 1 | bitti (#28) |
-| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | Z2a (#30), Z2b (#31), Z2c-1 (#34), Z2c-2 (#35) birleşti; Z2c-3 (#36) |
+| Z2 | İlerlemeyi Swift'e al, WKWebView'i kaldır | K | hepsi | 1 | bitti (#36) |
 | Z3 | Cila + sitedeki son değişikliklere yetişme | K | Z2 | 1 | bekliyor |
-| Z3b | Ders ve yazı cilası | C | C3 | 1 | birleşti (#29) |
-| Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | birleşti (#32) |
-| Z3d | Süzme telefonda görünmüyordu: renkler canlı, süzme güçlü | K | Z3c | 1 | PR açık |
-| Z3e | Telefonda görülen iki hata: Galeri çarkı (iOS 18 kaydırma), Yolculuk dönem köprüsü | K | G2b, Z3a | 1 | PR açık |
-| Z3f | Dönemin harfi: akım başlığı ve harita dönem adları (js/harfler.js, İş 48) | K | G2b, Z3a | 1 | birleşti (#38) |
-| Z3o | Kilit ekranı ve StandBy widget'ı, Spotlight (sanatçı ve akım), Siri ve Kısayollar (dört eylem) | K | Z3n | 1 | PR açık |
-| Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | birleşti (#41) |
-| Z3r | Bugün: yarının tablosunun büyük kopyası bugünden iner; telefonda varsa açılışta doğrudan büyük kopya | K | Z3n | 1 | PR açık |
-| Z3t | Bugün: yürüyüş kaydında `"bugun": false` olan sanatçı günün havuzuna girmez (sitenin `yuruyusHavuzu`; Berlinghieri) | K | Z3r | 1 | PR açık |
-| Z3v | Bugün → "Paylaş": günün tablosu tek görsel (hikâye 1080×1920, gönderi 1080×1350), tasarım Yön 4 (PR #54; yeni, sitede yok) | K | Z3t | 1 | PR açık (#57) |
+| Z3b | Ders ve yazı cilası | C | C3 | 1 | bitti (#29) |
+| Z3c | Galeri ve Çalış zemininde tablonun iki renginden süzme | K | G3, C2 | 1 | bitti (#32) |
+| Z3d | Süzme telefonda görünmüyordu: renkler canlı, süzme güçlü | K | Z3c | 1 | bitti (#33) |
+| Z3e | Telefonda görülen iki hata: Galeri çarkı (iOS 18 kaydırma), Yolculuk dönem köprüsü | K | G2b, Z3a | 1 | bitti (#37) |
+| Z3f | Dönemin harfi: akım başlığı ve harita dönem adları (js/harfler.js, İş 48) | K | G2b, Z3a | 1 | bitti (#38) |
+| Z3o | Kilit ekranı ve StandBy widget'ı, Spotlight (sanatçı ve akım), Siri ve Kısayollar (dört eylem) | K | Z3n | 1 | bitti (#48) |
+| Z3i | Bugün cilası: sekmeye yeniden dokununca süzülerek başa dönüş (kullanıcı isteği; sitede yok), eğimin yumuşatması ve ışığı (js/egim.js TABLO_IZ, .egim-isik), "Yeni sürüm var mı?" bütün veriyi yeniler | K | T7 | 1 | bitti (#41) |
+| Z3r | Bugün: yarının tablosunun büyük kopyası bugünden iner; telefonda varsa açılışta doğrudan büyük kopya | K | Z3n | 1 | bitti (#50) |
+| Z3t | Bugün: yürüyüş kaydında `"bugun": false` olan sanatçı günün havuzuna girmez (sitenin `yuruyusHavuzu`; Berlinghieri) | K | Z3r | 1 | bitti (#53) |
+| Z3v | Bugün → "Paylaş": günün tablosu tek görsel (hikâye 1080×1920, gönderi 1080×1350), tasarım Yön 4 (PR #54; yeni, sitede yok) | K | Z3t | 1 | bitti (#57) |
 | Z3j | Telefon geri bildirimi: çark ışığı ve alt payı, Galeri bölüm geçişi, arama büyüyerek, sekme girişi, Çalış kapak yürüyüşü (İş 191), Bugün açılış sırası, Gündüz süzmesi | K | Z3i | 1 | bitti (#42) |
 | Z3k | Çark ışığı kutuda kesilmiyor (üst kenarda düz bant kalıyordu) | K | Z3j | 1 | bitti (#43) |
-| Z3s | Çevrimdışı indirme telefonu kasmasın: parça hazırlığı arka planda, `tahminiBayt` düzenli ifadesiz | K | Z3n | 1 | PR açık |
+| Z3s | Çevrimdışı indirme telefonu kasmasın: parça hazırlığı arka planda, `tahminiBayt` düzenli ifadesiz | K | Z3n | 1 | bitti (#51) |
 | Z3l | Galeri akım sayfası: renk şeridi (`paletBirlestir`) ve eğik yazılar (Archivo eğilerek, Newsreader'ın italiği) | K | Z3k | 1 | bitti (#44) |
-| Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | PR açık (#46) |
-| Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | PR açık |
-| Z3p | İncele yeniden (İş 180) | K | Z3o | 1 | PR açık (#52) |
-| Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | PR açık |
-| Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | PR açık (#58) |
+| Z3m | Ekran rengi (ekranRengi) ve Başyapıtlar odaklı kırpma | K | Z3l | 1–2 | bitti (#46) |
+| Z3n | Ben panosu sahnenin dibinde (sitede padding-top 16; uygulama eski 120'yi koyuyordu), Yolculuk hapının yanındaki madalyon kalktı (sitede yok) | K | Z3k | 1 | bitti (#45) |
+| Z3p | İncele yeniden (İş 180) | K | Z3o | 1 | bitti (#52) |
+| Z3q | Karşılaştırma kartları: başyapıt kaydı olmayan öneriye sanatçının katalogundan birebir tutan eserin görseli (kullanıcı isteği; sitede yok) | K | Z3n | 1 | bitti (#49) |
+| Z3u | Çalış ana ekranı Neon'un "Yön 4 · Bugünün oturumu" tasarımıyla (kullanıcı onayladı; dal `neon/calis-tasarim`, PR #55) | K | Z3t | 1 | bitti (#58) |
 | Z3w | Galeri › Akımlar Neon'un "Yön 2 · Kemerlerin yayı" tasarımıyla (Emre seçti; dal `neon/galeri-akimlar-2`, PR #60) | K | Z3u | 1 | bitti (#61) |
 | Z3x | Ayarlar Neon'un "Yön 2 · Kompakt fihrist ve yapışkan bölüm şeridi" tasarımıyla (kullanıcı seçti; dal `neon/ayarlar-tasarim`, PR #63); uygulama içinde Hatırlatma ve Yenilikler | K | Z3p | 1 | bitti (#64) |
 | Z3z | Akımlar şeridi akıcılık: kaydırırken her karede değişen bulanıklık/parlaklık/gölge yarıçapı ve katalog taraması kalktı (Emre: "kasıyor") | K | Z3w | 1 | bitti (#69) |
 | Z3z2 | Akımlar şeridi akıcılık 2: kartın kapağı her karede aranıyordu; kaydırmaya bağlı görünüş `visualEffect` ile (Emre: "hala kasıyor") | K | Z3z | 1 | bitti (#72) |
 | Z3z3 | Akımlar şeridi akıcılık 3: kaydırırken üst Galeri sayfası (zemin, renk geçişi) yeniden kurulmasın; `sira` şerit durunca (Emre: "hâlâ kasıyor") | K | Z3z2 | 1 | bitti (#76) |
-| Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | PR açık (#68) |
+| Z3y | Yolculuk bölüm turu › soru ekranı Neon'un "Yön 3 · Geniş Tuval" üstü ve "Şık 5 · El Yelpazesi" şıklarıyla (Emre seçti; dal `neon/soru-tasarim`, PR #67) | K | Z3w | 1 | bitti (#68) |
 | Y1 | Sesli rehberli bakış (yeni özellik) | K | G1, G4 | 1 | bitti (#47) |
 | Z4a | Dinleyerek bak (Y1) yeniden: Neon'un "Yön 3 · Canlı Ses · Kelime Akışı" tasarımı (dal `neon/dinle-tasarim`, PR #70), nefesli yay kamera, doğal ses (Gemini "Fola", R2) + kelime kelime altyazı | K | Y1 | 1 | bitti (#71) |
-| Z4b | Hikâyeler sekmesi (yeni, sitede yok): Neon'un "Yön 2 · Substack Minimal" tasarımı (dal `neon/hikayeler-tasarim-3`, PR #75); çubuk 5 sekme (Bugün · Hikâyeler · Çalış · Galeri · Yolculuk), Ben sağ üstteki kişi düğmesinde; okuma içinde dinleme (Z4a'nın sesi) | K | Z4a | 1 | PR açık (#77) |
+| Z4b | Hikâyeler sekmesi (yeni, sitede yok): Neon'un "Yön 2 · Substack Minimal" tasarımı (dal `neon/hikayeler-tasarim-3`, PR #75); çubuk 5 sekme (Bugün · Hikâyeler · Çalış · Galeri · Yolculuk), Ben sağ üstteki kişi düğmesinde; okuma içinde dinleme (Z4a'nın sesi) | K | Z4a | 1 | bitti (#77) |
 | Z4c | Dinleyerek bak sade: süre seçimi yok (bütün içerik), kısa aralar, 1× / 1,5× / 2× hız; × durum çubuğunun altında (Emre) | K | Z4a | 1 | bitti (#78) |
 | Z4e | Hikâyeler 4. tur: Neon PR #83'ün karışığı (Yön 2 ana ekran: öne çıkanlar, devam et, sonra oku; arşiv: en yeni · dönem · beğendiklerim; beğeni/sonra oku; Yön 1 tam ekran çalar: bölümler, uyku, metin, hız, sıradaki/otomatik) + dinlerken arka planda bölümün eseri, daha fazla eser | K | Z4b | 1 | bitti (#84) |
 | Z4f | Emre'nin düzeltmeleri: çubuk Bugün · Hikâyeler · Yolculuk · Çalış · Galeri; Hikâyeler ana ekranı bütün hikâyelerin kapak ızgarası (süzgeç: Tümü · Dönem · Beğendiklerim · Sonra oku; üstte Devam et); dinleme büyük eser + altyazı (kelime kelime); okurken dinlenen paragraf renkle ilerler | K | Z4e | 1 | bitti (#85) |
