@@ -126,8 +126,34 @@ public struct TemaRenkleri: Hashable, Sendable {
         ("--pirinc", \.pirinc), ("--pirinc-yazi", \.pirincYazi),
     ]
 
-    /// css/app.css `:root[data-tema='gece']`
-    public static let gece = TemaRenkleri(sabit: [
+    /// Z4f · Emre'nin kendi seçtiği renkler (renk seçme sayfası, 27 Kasım; "pirinç rengi olmasın, çok Claude duruyor …
+    /// ben seçeyim"). Sitenin sabit tablolarının üstüne yazılır; günün tablosundan gelen vurgu ve renkli Gündüz
+    /// (Emre: "günün resmiyle uyumluluğu ve arkaplandaki renk halesini kaldırma") bunların üstüne eskisi gibi gelir.
+    /// "Vurgu" eski pirincin yerindedir (`--pirinc`); sitenin nötr `--vurgu` ailesi değişmedi.
+    public static let gece = TemaRenkleri(degiskenler: [
+        "--bg": "#111111", "--surface": "#1b1b1b", "--border": "#2c2c2c",
+        "--ink": "#ffffff", "--ink-2": "#b29999", "--ink-3": "#d1bdbd", "--ink-soluk": "#8a7f7f",
+        "--right": "#74b48c", "--right-bg": "rgba(116, 180, 140, 0.14)",
+        "--wrong": "#d66d5b", "--wrong-bg": "rgba(214, 109, 91, 0.14)",
+        "--tab-bg": "rgba(27, 27, 27, 0.8)", "--overlay-btn": "rgba(17, 17, 17, 0.6)",
+        "--vurgu-yazi": "#111111", "--vurgu-acik-yazi": "#111111",
+        "--notr-kenar": "rgba(255, 255, 255, 0.14)", "--notr-yuzey": "rgba(255, 255, 255, 0.05)",
+        "--pirinc": "#b8a8a8", "--pirinc-yazi": "#111111",
+    ], yedek: siteGece)!
+
+    public static let gunduz = TemaRenkleri(degiskenler: [
+        "--bg": "#dfe2e1", "--surface": "#ffffff", "--border": "#cfcfcf",
+        "--ink": "#000000", "--ink-2": "#4d525b", "--ink-3": "#5b6474", "--ink-soluk": "#8a909a",
+        "--right": "#2a6a48", "--right-ikon": "#2a6a48", "--right-bg": "rgba(42, 106, 72, 0.12)",
+        "--wrong": "#a03a2a", "--wrong-ikon": "#a03a2a", "--wrong-bg": "rgba(160, 58, 42, 0.1)",
+        "--tab-bg": "rgba(255, 255, 255, 0.84)", "--overlay-btn": "rgba(255, 255, 255, 0.85)",
+        "--vurgu-yazi": "#ffffff", "--vurgu-acik-yazi": "#ffffff", "--vurgu-koyu": "#cfcfcf",
+        "--notr-kenar": "rgba(0, 0, 0, 0.14)", "--notr-yuzey": "rgba(0, 0, 0, 0.035)",
+        "--pirinc": "#a5785f", "--pirinc-yazi": "#ffffff",
+    ], yedek: siteGunduz)!
+
+    /// css/app.css `:root[data-tema='gece']` (sitenin kendi sabiti; kâhin testi bununla)
+    public static let siteGece = TemaRenkleri(sabit: [
         "--bg": "#121110", "--surface": "#1c1a18", "--border": "#2e2b28",
         "--ink": "#ebe5da", "--ink-2": "#aca498", "--ink-3": "#8a8379", "--ink-soluk": "#645e57",
         "--right": "#6fb487", "--right-ikon": "#8fd0a2", "--right-bg": "rgba(111, 180, 135, 0.14)",
@@ -140,7 +166,7 @@ public struct TemaRenkleri: Hashable, Sendable {
     ])
 
     /// css/app.css `:root[data-tema='gunduz']` (nötr; renkli Gündüz'de site bunları paletle değiştirir)
-    public static let gunduz = TemaRenkleri(sabit: [
+    public static let siteGunduz = TemaRenkleri(sabit: [
         "--bg": "#ece8e1", "--surface": "#f7f5f1", "--border": "#d6d0c6",
         "--ink": "#1f1b17", "--ink-2": "#4c463f", "--ink-3": "#5f5850", "--ink-soluk": "#8e867c",
         "--right": "#2a6644", "--right-ikon": "#2a6644", "--right-bg": "rgba(42, 102, 68, 0.12)",
@@ -204,7 +230,8 @@ public struct TemaRenkleri: Hashable, Sendable {
     /// Sitenin `temaZemini()`'i: vurgunun kontrast hesabı ve pencerenin rengi (`theme-color`)
     public static func zeminHex(_ tema: TemaAdi, gunduz: GunduzPaleti?) -> String {
         if tema == .gunduz, let gunduz { return gunduz.bg }
-        return tema == .gece ? "#121110" : "#ECE8E1"
+        // Z4f: Emre'nin zeminleri (önce sitenin #121110 / #ECE8E1'i); vurgu bu zemine göre seçilir
+        return sabit(tema).zemin.hex.uppercased()
     }
 }
 

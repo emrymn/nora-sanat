@@ -110,10 +110,20 @@ final class TemaTests: XCTestCase {
         XCTAssertFalse(TemaRenkleri.gunduz.koyu)
     }
 
+    /// Z4f: Emre'nin renkleri sitenin sabitlerinin üstüne yazılır; yazılmayanlar (vurgu ailesi, doğru ikonu) sitedeki gibi
+    func testEmreninRenkleri() {
+        XCTAssertEqual(TemaRenkleri.gece.zemin.hex, "#111111")
+        XCTAssertEqual(TemaRenkleri.gece.pirinc.hex, "#b8a8a8")
+        XCTAssertEqual(TemaRenkleri.gunduz.zemin.hex, "#dfe2e1")
+        XCTAssertEqual(TemaRenkleri.gunduz.pirinc.hex, "#a5785f")
+        XCTAssertEqual(TemaRenkleri.gece.vurgu, TemaRenkleri.siteGece.vurgu)
+        XCTAssertEqual(TemaRenkleri.gece.dogruIkon, TemaRenkleri.siteGece.dogruIkon)
+    }
+
     /// Sabit tablolar sitenin hesapladığı değişkenlerle aynı (vurgu ailesi hariç: site onu tablonun renginden üretir)
     func testSabitTablolarSiteyleAyni() throws {
         let vurgu: Set<String> = ["--vurgu", "--vurgu-yazi", "--vurgu-acik", "--vurgu-acik-yazi", "--vurgu-koyu"]
-        for (ad, sabit) in [("gece", TemaRenkleri.gece), ("gunduz", TemaRenkleri.gunduz)] {
+        for (ad, sabit) in [("gece", TemaRenkleri.siteGece), ("gunduz", TemaRenkleri.siteGunduz)] {
             let t = try XCTUnwrap(KabukOrnek.cevap.tema[ad])
             XCTAssertEqual(t.dataTema, ad)
             XCTAssertEqual(RGBA(css: t.themeColor), sabit.zemin, "\(ad) theme-color")

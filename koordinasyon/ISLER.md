@@ -1342,6 +1342,7 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Okuma:** dinlenen paragrafta söylenmiş kelimeler pirinç, kalanı mürekkep (`HikayeOkuma.paragrafYazisi`).
 - **Çalar:** `HikayeCalari.akis` (kayıtta kaydın kelime zamanlaması, yoksa tahmini), `gecerliAkis`, `kelime`; saat 120 ms (önce 250).
 - **Çekirdek:** `AltyaziAkisi.ayir(kelime:aralik:)` (okunan/kalan; boşluk ve noktalama korunur), test `AltyaziAyirmaTests`.
+- **Renkler (Emre seçti):** "pirinç rengi olmasın, çok Claude duruyor … ben seçeyim". Renk seçme sayfasında (claude.ai artifact, Gece/Gündüz önizlemeli) Emre'nin seçtiği zemin, yüzey, kenar, üç yazı tonu, vurgu (eski `--pirinc`), doğru, yanlış: `TemaRenkleri.gece`/`.gunduz` artık bunlar (sitenin sabitlerinin üstüne yazılır; türevler — saydam zeminler, `--notr-*`, `--tab-bg` — aynı oranlarla yeni renklerden). Sitenin kendi sabitleri `siteGece`/`siteGunduz` (kâhin testi onlarla). Emre: "günün resmiyle uyumluluğu ve arkaplandaki renk halesini kaldırma": günün tablosundan gelen vurgu (`ekran`/`hesapla`) ve renkli Gündüz eskisi gibi üstte; `zeminHex` yeni zeminleri verir (vurgu kontrastı onlara göre). Görüntüleyicinin ve başyapıt listesinin sabit pirinci de yeni Gece vurgusu.
 - **CI** (`hikayeler`): OCR'lar başlıktan bağımsız (başlıklar değişecek): `okuma` "1632", `dinleme` "1653", `ana` "Sonra oku", `donem` "XIII", `begendiklerim` "Vermeer", `calar` "Bölümler"; `-hikayeSuzgec` (yerine `-hikayeArsiv` kalktı).
 
 ### Fikir havuzu (henüz iş değil)
