@@ -71,7 +71,11 @@ struct HikayeOkuma: View {
                 hazir = true
             }
         }
-        .background(c.zemin.ignoresSafeArea())
+        // Z4f (Emre: "arkadaki renk halesi … ve semboller hiçbirinde yok"): Galeri'nin zemini: kapak tablosunun
+        // renklerinden hale ve sanatçının döneminin sembol deseni
+        .background(SayfaZemini(donem: depo.donem(hikaye.id),
+                                tablo: depo.kucukAdres(hikaye.kapakQid, sanatci: hikaye.id, genislik: 400),
+                                alan: .hikayeler))
         .overlay(alignment: .top) { ustCubuk(c) }
         .overlay(alignment: .bottom) {
             if dinleme {

@@ -131,8 +131,10 @@ struct HikayeAna: View {
             .scrollIndicators(.hidden)
             .onChange(of: basaDon) { _, _ in withAnimation(.easeOut(duration: 0.35)) { kaydir.scrollTo("ust", anchor: .top) } }
         }
-        .background(c.zemin.ignoresSafeArea())
-        .overlay(alignment: .top) { c.zemin.frame(height: 0).ignoresSafeArea(edges: .top) }
+        // Z4f: Galeri'deki gibi hale ve dönem deseni (en yeni yazının kapağından ve sanatçısının döneminden)
+        .background(SayfaZemini(donem: depo.enYeni.first.flatMap { depo.donem($0.id) },
+                                tablo: depo.enYeni.first.flatMap { depo.kucukAdres($0.kapakQid, sanatci: $0.id, genislik: 400) },
+                                alan: .hikayeler))
         .overlay {
             if aramaAcik {
                 HikayeArama(kapat: { withAnimation(.easeOut(duration: 0.2)) { aramaAcik = false } }) { id in
@@ -165,7 +167,8 @@ struct HikayeAna: View {
         }
         .padding(.leading, 22).padding(.trailing, 18)
         .padding(.top, 8).padding(.bottom, 10)
-        .background(c.zemin)
+        // Hale görünsün: yapışkan başlık buzlu cam (önce düz zemin)
+        .background { Rectangle().fill(.ultraThinMaterial).ignoresSafeArea(edges: .top) }
     }
 
     // MARK: Devam et

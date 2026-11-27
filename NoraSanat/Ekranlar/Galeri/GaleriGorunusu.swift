@@ -556,7 +556,7 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
 /// bundan alır, geçişte renk kopmaz
 @MainActor @Observable
 final class ZeminTablosu {
-    enum Alan: Hashable { case galeri, calis }
+    enum Alan: Hashable { case galeri, calis, hikayeler }
     static let shared = ZeminTablosu()
     var son: [Alan: URL] = [:]
 }
