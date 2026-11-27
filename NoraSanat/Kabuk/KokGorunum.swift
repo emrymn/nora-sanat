@@ -8,6 +8,8 @@ import SwiftUI
 struct KokGorunum: View {
     @State private var durum = KabukDurumu.shared
     @State private var tema = TemaDeposu.shared
+    /// Z4e: hikâye çalarının tam ekranı (küçük çalara ya da okumadaki çalara dokununca)
+    @State private var hikayeCalari = HikayeCalari.shared
     @Environment(\.scenePhase) private var evre
     /// Z3j: sekme seçilince içeriği sitedeki gibi yükselerek belirir (`GirisHareketi`)
     @State private var girisSayaci: [Sekme: Int] = [:]
@@ -63,6 +65,9 @@ struct KokGorunum: View {
         }
         .animation(tema.ayar.hareketAzaltilmis ? .easeOut(duration: 0.15) : .timingCurve(0.2, 0.8, 0.2, 1, duration: 0.4),
                    value: durum.secili == .ben)
+        .fullScreenCover(isPresented: $hikayeCalari.tamEkran) {
+            HikayeTamCalar().environment(tema).environment(durum)
+        }
         .environment(tema)
         .environment(durum)
         // Saat/pil çubuğu sitenin rengine uysun (koyu zeminde açık yazı)

@@ -568,16 +568,24 @@ yolculuk() {
 }
 
 # Z4b: Hikâyeler (yeni sekme; sitede yok: yan yana yok). Ana ekran, okuma (baş, eser, son), okuma içinde dinleme,
-# başka sekmede küçük çalar; sonra ses: dizin yokken telefonun sesi (AVSpeech), R2'yle Fola (yalnız yazdırılır).
+# başka sekmede küçük çalar, arşiv, tam ekran çalar (Z4e); sonra ses: dizin yokken telefonun sesi (AVSpeech), R2'yle Fola (yalnız yazdırılır).
 hikayeler() {
   ilk_acilis
-  for IS in "ana|Karanl|-adres #/hikayeler" \
+  # Z4e: ana ekran öne çıkanlarla; arşiv (en yeni, dönem); tam ekran çalar. Okuma yeri ve beğeni yazan çekimler
+  # (-hikayeDevam, -hikayeCalar) en sonda: öncekiler temiz telefonla (Vermeer baştan açılsın).
+  for IS in "ana|kanlar|-adres #/hikayeler" \
             "okuma|Sessizlik|-adres #/hikaye/johannes-vermeer" \
             "okuma-eser|nemle ba|-adres #/hikaye/johannes-vermeer -hikayeKaydir eser" \
             "dinleme|Han Duman|-adres #/hikaye/johannes-vermeer -hikayeDinle 5" \
             "dinleme-gunduz|Han Duman|-adres #/hikaye/johannes-vermeer -hikayeDinle 5 -hikayeTema gunduz" \
-            "son|Kaynaklar|-adres #/hikaye/johannes-vermeer -hikayeKaydir son" \
-            "mini|Johannes Vermeer|-adres #/hikayeler -hikayeMini johannes-vermeer"; do
+            "son|Daha fazla|-adres #/hikaye/johannes-vermeer -hikayeKaydir son" \
+            "mini|Johannes Vermeer|-adres #/hikayeler -hikayeMini johannes-vermeer" \
+            "arsiv|En yeni|-adres #/hikayeler -hikayeArsiv enYeni" \
+            "arsiv-donem|XIII|-adres #/hikayeler -hikayeArsiv donem" \
+            "ana-devam|Devam et|-adres #/hikayeler -hikayeDevam" \
+            "arsiv-begendiklerim|Evde Kurulan|-adres #/hikayeler -hikayeArsiv begendiklerim" \
+            "calar|Otomatik|-adres #/hikayeler -hikayeCalar johannes-vermeer" \
+            "calar-gunduz|Otomatik|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz"; do
     AD="${IS%%|*}"; GERI="${IS#*|}"; SOZ="${GERI%%|*}"; ARGS="${GERI#*|}"
     xcrun simctl terminate "$UDID" "$PAKET" || true
     # shellcheck disable=SC2086

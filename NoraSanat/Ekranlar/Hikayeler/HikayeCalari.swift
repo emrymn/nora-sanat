@@ -24,6 +24,33 @@ final class HikayeCalari {
     private(set) var hiz = 1.0
     /// Küçük çalardaki ve kilit ekranındaki kapak
     var kapak: UIImage? { didSet { simdiCalan() } }
+    /// Z4e: tam ekran çalar açık (küçük çalara ya da okumadaki çalara dokununca)
+    var tamEkran = false
+    /// Z4e: bölüm işaretleri (ilerleme çubuğundaki çentikler, "Bölümler" listesi)
+    private(set) var isaretler: [HikayeBolumIsareti] = []
+    /// Z4e: uyku zamanlayıcı
+    enum Uyku: Equatable {
+        case bitis(Date)
+        case bolumSonu
+    }
+    private(set) var uyku: Uyku?
+    /// Z4e: yazı bitince sıradakine geç (telefonda saklanır; ilk açılışta açık)
+    var otomatik: Bool = UserDefaults.standard.object(forKey: "hikayeOtomatik") as? Bool ?? true {
+        didSet { UserDefaults.standard.set(otomatik, forKey: "hikayeOtomatik") }
+    }
+
+    /// Şu anki bölüm işaretinin sırası
+    var isaretSirasi: Int { HikayeSesi.isaret(isaretler, gecen: gecen) }
+    var simdikiIsaret: HikayeBolumIsareti? {
+        isaretler.indices.contains(isaretSirasi) ? isaretler[isaretSirasi] : nil
+    }
+
+    /// Sıradaki yazılar ("En yeni" sırasında bundan sonrakiler, bitirilmemiş)
+    var siradaki: [SanatciHikayesi] {
+        guard let h = hikaye else { return [] }
+        let d = HikayeDeposu.shared
+        return HikayeVitrini.siradaki(d.hikayeler, simdiki: h.id, yerler: d.yerler)
+    }
 
     /// Okunan paragraf (vurgu ve ekranın izlediği yer); başlık okunurken nil
     var paragraf: Int? { HikayeSesi.paragraf(parca: sira, parcalar) }
@@ -73,6 +100,7 @@ final class HikayeCalari {
             kok = depo.katalog?.gorsel.adres ?? ""
             parcalar = HikayeSesi.parcalar(h)
             sureler = HikayeSesi.sureler(parcalar, dizin: dizin)
+            isaretler = HikayeSesi.bolumIsaretleri(h, parcalar: parcalar, sureler: sureler)
             bitti = false
             kapak = nil
             kayitlariIndir()
@@ -109,6 +137,9 @@ final class HikayeCalari {
         hikaye = nil
         parcalar = []
         sureler = []
+        isaretler = []
+        uyku = nil
+        tamEkran = false
         sira = 0
         an = 0
         kapak = nil
@@ -161,10 +192,67 @@ final class HikayeCalari {
         calmaya(sira, an)
     }
 
-    func hiziDegistir() {
-        hiz = HikayeSesi.sonrakiHiz(hiz)
+    func hiziDegistir() { hizSec(HikayeSesi.sonrakiHiz(hiz)) }
+
+    func hizSec(_ h: Double) {
+        hiz = h
         ses.hiz = hiz
         simdiCalan()
+    }
+
+    // MARK: Z4e · tam ekran çaların denetimleri
+
+    /// Dinlemenin içindeki bir ana (sn) git (ilerleme çubuğu, kilit ekranında sürükleme)
+    func git(_ sn: Double) {
+        guard hikaye != nil, !sureler.isEmpty else { return }
+        let y = HikayeSesi.yer(sureler, gecen: min(max(0, sn), max(0, toplam - 0.5)))
+        let oynuyordu = caliyor
+        sira = y.sira
+        an = y.an
+        bitti = false
+        if oynuyordu { calmaya(sira, an) } else { akisIsi?.cancel(); akisIsi = nil; ses.durdur(); yeriKaydet(); simdiCalan() }
+    }
+
+    func bolumeGit(_ i: Int) {
+        guard isaretler.indices.contains(i) else { return }
+        git(isaretler[i].bas)
+    }
+
+    /// Bölümün başından 3 sn'den fazla geçtiyse bölümün başına, değilse önceki bölüme
+    func oncekiBolum() {
+        let i = isaretSirasi
+        guard isaretler.indices.contains(i) else { return }
+        bolumeGit(gecen - isaretler[i].bas > 3 || i == 0 ? i : i - 1)
+    }
+
+    func sonrakiBolum() {
+        let i = isaretSirasi + 1
+        if isaretler.indices.contains(i) { bolumeGit(i) }
+    }
+
+    /// Uyku zamanlayıcı: `dakika` sonra ya da bölüm sonunda duraklar; nil: kapalı
+    func uykuKur(dakika: Int?) {
+        uyku = dakika.map { .bitis(Date().addingTimeInterval(Double($0) * 60)) }
+    }
+
+    func uykuBolumSonu() { uyku = .bolumSonu }
+
+    /// "Uyku · 23 dk", "Uyku · bölüm sonunda"
+    var uykuYazisi: String? {
+        switch uyku {
+        case .bitis(let d): return "Uyku · \(max(1, Int((d.timeIntervalSinceNow / 60).rounded(.up)))) dk"
+        case .bolumSonu: return "Uyku · bölüm sonunda"
+        case nil: return nil
+        }
+    }
+
+    /// Sıradaki yazıya geç (çalarak; tam ekran açıksa açık kalır)
+    func siradakineGec(_ h: SanatciHikayesi? = nil) {
+        guard let s = h ?? siradaki.first else { return }
+        let tam = tamEkran
+        // Kalınan yerden (hiç başlanmadıysa baştan)
+        baslat(s)
+        tamEkran = tam
     }
 
     // MARK: Akış
@@ -184,6 +272,17 @@ final class HikayeCalari {
             var i = bas
             var a = basAn
             while let self, i < self.parcalar.count, !Task.isCancelled {
+                // Z4e: uyku zamanlayıcı "bölüm sonunda": yeni bölüm başlarken durur (sürdürünce oradan)
+                if self.uyku == .bolumSonu, i != bas, self.isaretler.contains(where: { $0.parca == i }) {
+                    self.sira = i
+                    self.an = 0
+                    self.uyku = nil
+                    self.caliyor = false
+                    self.akisIsi = nil
+                    self.yeriKaydet()
+                    self.simdiCalan()
+                    return
+                }
                 self.sira = i
                 self.an = a
                 self.yeriKaydet()
@@ -206,6 +305,14 @@ final class HikayeCalari {
             }
             Titresim.dogru()
             self.simdiCalan()
+            // Z4e: otomatik sonraki (uyku zamanlayıcı kurulu değilse)
+            if self.otomatik, self.uyku == nil, let s = self.siradaki.first {
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(for: .seconds(2))
+                    guard let self, self.bitti, self.hikaye != nil else { return }
+                    self.siradakineGec(s)
+                }
+            }
         }
     }
 
@@ -261,6 +368,12 @@ final class HikayeCalari {
                 try? await Task.sleep(for: .milliseconds(250))
                 guard let self else { return }
                 guard self.caliyor else { continue }
+                // Z4e: uyku zamanlayıcının süresi doldu
+                if case .bitis(let d) = self.uyku, Date() >= d {
+                    self.uyku = nil
+                    self.duraklat()
+                    continue
+                }
                 self.anlikAn()
                 if Date().timeIntervalSince(self.sonKayit) > 5 { self.yeriKaydet() }
             }
@@ -325,6 +438,15 @@ final class HikayeCalari {
         m.skipBackwardCommand.preferredIntervals = [15]
         ekle(m.skipForwardCommand) { $0.atla(15) }
         ekle(m.skipBackwardCommand) { $0.atla(-15) }
+        // Z4e: kilit ekranında ilerleme çubuğunu sürükleme
+        m.changePlaybackPositionCommand.isEnabled = true
+        let hedef = m.changePlaybackPositionCommand.addTarget { [weak self] olay in
+            guard let o = olay as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }
+            let sn = o.positionTime
+            Task { @MainActor in self?.git(sn) }
+            return .success
+        }
+        komutlar.append((m.changePlaybackPositionCommand, hedef))
     }
 
     private func simdiCalan() {

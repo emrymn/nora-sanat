@@ -19,6 +19,8 @@ struct HikayeOkuma: View {
     /// Ekranın üstündeki blok (`scrollPosition`)
     @State private var gorunen: String?
     @State private var hazir = false
+    /// Z4e: dokunulan eser tam ekranda (hikâyedeki ya da "Daha fazla eser"deki eserler arasında kaydırılır)
+    @State private var goruntu: GoruntuSecimi?
     /// Okuma içi çalar açık (bu yazı dinleniyor)
     private var dinleme: Bool { calar.hikaye?.id == hikaye.id }
 
@@ -81,6 +83,9 @@ struct HikayeOkuma: View {
         }
         .animation(.spring(response: 0.36, dampingFraction: 0.88), value: dinleme)
         .onDisappear { yeriYaz(sonda: false) }
+        .fullScreenCover(item: $goruntu) { g in
+            Goruntuleyici(eserler: g.eserler, baslangic: g.baslangic).environment(tema)
+        }
     }
 
     // MARK: Üst
@@ -300,7 +305,11 @@ struct HikayeOkuma: View {
             }
             .padding(.top, kapakMi ? 0 : 30)
             .padding(.bottom, kapakMi ? 26 : 32)
+            .contentShape(Rectangle())
+            .onTapGesture { eseriAc(e.qid) }
             .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint("Tam ekranda aç")
         }
     }
 
@@ -310,6 +319,9 @@ struct HikayeOkuma: View {
     private func son(_ c: HikayeRenk) -> some View {
         let baglar = depo.baglantilar(hikaye)
         return VStack(alignment: .leading, spacing: 0) {
+            eylemCubugu(c)
+                .padding(.bottom, 34)
+            dahaFazlaEser(c)
             if !baglar.isEmpty {
                 Text("Bağlantılı yazılar")
                     .font(Yazi.serif(23, agirlik: 500))
@@ -350,6 +362,110 @@ struct HikayeOkuma: View {
         .padding(.top, 30)
         .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
         .padding(.top, 44)
+    }
+
+    // MARK: Z4e · eylem çubuğu, daha fazla eser
+
+    /// Substack'teki gibi yazının sonunda: Beğen · Sonra oku · Paylaş (Neon 4. tur, `yon-*-okuma-eylem-cubugu`)
+    private func eylemCubugu(_ c: HikayeRenk) -> some View {
+        let begendi = depo.begenildi(hikaye.id)
+        let sonra = depo.sonradaMi(hikaye.id)
+        return HStack(spacing: 0) {
+            Button {
+                Titresim.secim()
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { depo.begen(hikaye.id) }
+            } label: {
+                eylem(begendi ? "heart.fill" : "heart", begendi ? "Beğendin" : "Beğen", etkin: begendi, c)
+            }
+            .accessibilityAddTraits(begendi ? .isSelected : [])
+            .accessibilityIdentifier("hikaye-begen")
+            Button {
+                Titresim.secim()
+                withAnimation(.easeOut(duration: 0.2)) { depo.sonraOku(hikaye.id) }
+            } label: {
+                eylem(sonra ? "bookmark.fill" : "bookmark", sonra ? "Listede" : "Sonra oku", etkin: sonra, c)
+            }
+            .accessibilityAddTraits(sonra ? .isSelected : [])
+            ShareLink(item: paylasimMetni) {
+                eylem("square.and.arrow.up", "Paylaş", etkin: false, c)
+            }
+        }
+        .buttonStyle(.plain)
+        .padding(.vertical, 4)
+        .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
+        .overlay(alignment: .bottom) { Rectangle().fill(c.kenar).frame(height: 1) }
+    }
+
+    private func eylem(_ simge: String, _ ad: String, etkin: Bool, _ c: HikayeRenk) -> some View {
+        HStack(spacing: 7) {
+            Image(systemName: simge).font(.system(size: 16))
+            Text(ad).font(Yazi.sans(14, agirlik: 600))
+        }
+        .foregroundStyle(etkin ? c.pirinc : c.yazi2)
+        .frame(maxWidth: .infinity, minHeight: 48)
+        .contentShape(Rectangle())
+    }
+
+    private var paylasimMetni: String {
+        let s = depo.satir(hikaye)
+        return [hikaye.baslik, [s.sanatci, s.yillar].filter { !$0.isEmpty }.joined(separator: " · "), hikaye.altBaslik]
+            .filter { !$0.isEmpty }.joined(separator: "\n")
+    }
+
+    /// Hikâyede anılmayan öbür eserleri (katalogdan): yatay şerit; dokununca tam ekran
+    @ViewBuilder
+    private func dahaFazlaEser(_ c: HikayeRenk) -> some View {
+        let l = depo.digerEserler(hikaye)
+        if !l.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Daha fazla eser")
+                    .font(Yazi.serif(23, agirlik: 500))
+                    .foregroundStyle(c.yazi)
+                    .accessibilityAddTraits(.isHeader)
+                Text("\(depo.sanatciAdi(hikaye.id)): yazıda anılmayan \(l.count) eser")
+                    .font(Yazi.sans(12.5)).foregroundStyle(c.yazi3)
+                    .padding(.top, 3).padding(.bottom, 14)
+                ScrollView(.horizontal) {
+                    LazyHStack(alignment: .top, spacing: 12) {
+                        ForEach(Array(l.enumerated()), id: \.offset) { i, e in
+                            Button {
+                                Titresim.secim()
+                                goruntu = GoruntuSecimi(eserler: l, baslangic: i)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    UzakGorsel(url: depo.gorselAdresi(e, genislik: 400), icerik: .fill)
+                                        .frame(width: 132, height: 164)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    Text(e.gorunenAd).font(Yazi.serif(14, agirlik: 500)).foregroundStyle(c.yazi)
+                                        .lineLimit(2).multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    if let y = e.yil {
+                                        Text(SiteYazisi.yilYaz(y)).font(Yazi.sans(11.5)).foregroundStyle(c.yazi3)
+                                    }
+                                }
+                                .frame(width: 132, alignment: .leading)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityHint("Tam ekranda aç")
+                        }
+                    }
+                    .padding(.horizontal, 22)
+                }
+                .scrollIndicators(.hidden)
+                .padding(.horizontal, -22)
+            }
+            .padding(.bottom, 34)
+        }
+    }
+
+    /// Yazıdaki esere dokununca: hikâyedeki bütün eserler arasında o eserden
+    private func eseriAc(_ qid: String) {
+        let l = depo.hikayeEserleri(hikaye)
+        guard let i = l.firstIndex(where: { $0.qid == qid }) else { return }
+        Titresim.secim()
+        goruntu = GoruntuSecimi(eserler: l, baslangic: i)
     }
 
     /// `.bag-kart`: 68'lik kare kapak, pirinç sanatçı adı, Bodoni başlık, yıllar · okuma süresi
@@ -405,4 +521,12 @@ struct HikayeOkuma: View {
         if sonda && onceki?.bitti != true { Titresim.dogru() }
         depo.yerYaz(hikaye.id, y)
     }
+}
+
+
+/// Z4e: tam ekranda açılacak eserler
+struct GoruntuSecimi: Identifiable {
+    let id = UUID()
+    let eserler: [Eser]
+    let baslangic: Int
 }
