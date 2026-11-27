@@ -37,12 +37,13 @@ struct HikayeTamCalar: View {
                 let e = eserler.isEmpty ? nil : eserler[eserSirasi % eserler.count]
                 ZStack {
                     Color.black.ignoresSafeArea()
+                    hale(e)
                     eser(e)
                     LinearGradient(stops: [.init(color: .black.opacity(0.55), location: 0),
                                            .init(color: .black.opacity(0), location: 0.16),
                                            .init(color: .black.opacity(0), location: 0.46),
-                                           .init(color: .black.opacity(0.88), location: 0.78),
-                                           .init(color: .black.opacity(0.94), location: 1)],
+                                           .init(color: .black.opacity(0.8), location: 0.8),
+                                           .init(color: .black.opacity(0.9), location: 1)],
                                    startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
                         .allowsHitTesting(false)
@@ -100,6 +101,22 @@ struct HikayeTamCalar: View {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { asagi = 0 }
                 }
             }
+    }
+
+    /// Emre: "arkadaki renk halesi gitmiş": eserin renkleri arkada bulanık yayılır (Z4e'deki gibi), net eser önünde
+    @ViewBuilder
+    private func hale(_ e: HikayeEserBilgisi?) -> some View {
+        if let e, let u = depo.gorselAdresi(e.eser, genislik: 400) {
+            UzakGorsel(url: u, icerik: .fill, yedek: e.yedek)
+                .blur(radius: 60, opaque: true)
+                .scaleEffect(1.3)
+                .opacity(0.7)
+                .ignoresSafeArea()
+                .id("hale-\(e.eser.qid ?? u.absoluteString)")
+                .transition(.opacity)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
     }
 
     // MARK: Eser (büyük ekran)
