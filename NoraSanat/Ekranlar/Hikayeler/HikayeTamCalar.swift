@@ -167,33 +167,47 @@ struct HikayeTamCalar: View {
 
     /// Okunan cümle, kelime kelime renklenir (söylenen beyaz, kalan soluk); üstünde bölüm ve eserin adı
     private func altyazi(_ e: HikayeEserBilgisi?, _ i: HikayeBolumIsareti?) -> some View {
-        let a = calar.gecerliAkis
         let k = calar.kelime
-        let parca = a.map { $0.ayir(kelime: k, aralik: $0.cumle(kelime: max(0, k))) } ?? ("", "")
+        let (okunan, kalan) = altyaziParcasi(k)
+        let kunye = eserKunyesi(e)
+        let satir: CGFloat = 22 * 1.42
+        let soz: Text = Text(okunan).foregroundColor(.white) + Text(kalan).foregroundColor(.white.opacity(0.42))
         return VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
                 if let i { Text(i.ad).foregroundStyle(pirinc) }
-                if let e {
-                    Text("· " + [e.eser.gorunenAd, e.eser.yil.map { SiteYazisi.yilYaz($0) } ?? ""]
-                        .filter { !$0.isEmpty }.joined(separator: ", "))
-                        .foregroundStyle(.white.opacity(0.55))
-                }
+                if !kunye.isEmpty { Text("· " + kunye).foregroundStyle(.white.opacity(0.55)) }
             }
             .font(Yazi.sans(12, agirlik: 600))
             .lineLimit(1)
-            (Text(parca.0).foregroundColor(.white) + Text(parca.1).foregroundColor(.white.opacity(0.42)))
+            soz
                 .font(Yazi.okuma(22, agirlik: 500))
-                .cssSatir(.okuma, 22, 22 * 1.42)
+                .cssSatir(.okuma, 22, satir)
                 .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 1)
-                .frame(maxWidth: .infinity, minHeight: 22 * 1.42 * 3, alignment: .bottomLeading)
+                .frame(maxWidth: .infinity, minHeight: satir * 3, alignment: .bottomLeading)
                 .fixedSize(horizontal: false, vertical: true)
                 .animation(nil, value: k)
-                .accessibilityLabel(parca.0 + parca.1)
+                .accessibilityLabel(okunan + kalan)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
         .onTapGesture { arayuz.toggle() }
         .accessibilityIdentifier("hikaye-altyazi")
+    }
+
+    /// Okunan cümlenin söylenmiş ve kalan kısmı
+    private func altyaziParcasi(_ k: Int) -> (String, String) {
+        guard let a = calar.gecerliAkis else { return ("", "") }
+        let r = a.cumle(kelime: max(0, k))
+        let y = a.ayir(kelime: k, aralik: r)
+        return (y.okunan, y.kalan)
+    }
+
+    /// "Küçük Sokak, 1658"
+    private func eserKunyesi(_ e: HikayeEserBilgisi?) -> String {
+        guard let e else { return "" }
+        var l = [e.eser.gorunenAd]
+        if let y = e.eser.yil { l.append(SiteYazisi.yilYaz(y)) }
+        return l.filter { !$0.isEmpty }.joined(separator: ", ")
     }
 
     // MARK: İlerleme
