@@ -22,7 +22,21 @@ struct HikayeIcCalar: View {
             .frame(height: 3)
             .accessibilityHidden(true)
             HStack(spacing: 8) {
-                Text(calar.bolumBasligi).font(Yazi.sans(12.5, agirlik: 600)).foregroundStyle(c.yazi).lineLimit(1)
+                // Z4e: bölüm adına dokununca tam ekran çalar
+                Button {
+                    Titresim.secim()
+                    calar.tamEkran = true
+                } label: {
+                    HStack(spacing: 5) {
+                        Text(calar.bolumBasligi).font(Yazi.sans(12.5, agirlik: 600)).foregroundStyle(c.yazi).lineLimit(1)
+                        Image(systemName: "chevron.up").font(.system(size: 10, weight: .bold)).foregroundStyle(c.yazi3)
+                    }
+                    .frame(minHeight: 30)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Tam ekran çalar: \(calar.bolumBasligi)")
+                .accessibilityIdentifier("hikaye-cal-tam")
                 Spacer(minLength: 4)
                 Text("\(HikayeSesi.saat(calar.gecen)) / \(HikayeSesi.saat(calar.toplam))")
                     .font(Yazi.sans(11.5)).monospacedDigit().foregroundStyle(c.yazi3)
@@ -158,12 +172,14 @@ struct HikayeMiniCalar: View {
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(c.kenar, lineWidth: 1))
         .shadow(color: c.golge, radius: 15, x: 0, y: 12)
         .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        // Z4e: dokununca tam ekran çalar (önce yazının okunan paragrafına dönüyordu; o artık çalardaki "Metin"de)
         .onTapGesture {
             Titresim.secim()
-            Gezgin.shared.git(HikayeAdresi.yazi(h.id))
+            calar.tamEkran = true
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Hikâye çaları: \(h.baslik)")
+        .accessibilityAction(named: "Çaları aç") { calar.tamEkran = true }
         .accessibilityAction(named: "Yazıya dön") { Gezgin.shared.git(HikayeAdresi.yazi(h.id)) }
         .accessibilityIdentifier("hikaye-mini")
     }
@@ -176,7 +192,20 @@ struct HikayeMiniCalar: View {
 /// - `-hikayeDinle <paragraf>`: çalar o paragrafta, duraklatılmış açılır (`-hikayeSesli`: çalarak)
 /// - `-hikayeMini <id>`: çalar o yazıda açılır ve Bugün'e geçilir (küçük çalar)
 /// - `-hikayeTema gunduz`: Gündüz teması
+/// - Z4e: `-hikayeArsiv enYeni|donem|begendiklerim`: arşiv o sekmede açılır
+/// - Z4e: `-hikayeCalar <id>`: çalar o yazıda (duraklatılmış, 2. bölümde) tam ekran açılır
+/// - Z4e: `-hikayeDevam`: Devam et ve Sonra oku dolu (Vermeer dinlemede, Rembrandt okumada yarım; Goya sonra oku,
+///   Vermeer beğenildi)
 enum HikayeProva {
+    static var arsiv: String? { NoraSanatApp.arguman("-hikayeArsiv") }
+    static var arsivSekmesi: HikayeArsiv.Sekme {
+        switch arsiv {
+        case "donem": return .donem
+        case "begendiklerim": return .begendiklerim
+        default: return .enYeni
+        }
+    }
+
     static func kaydir() -> String? {
         switch NoraSanatApp.arguman("-hikayeKaydir") {
         case "eser": return "e0-1"
@@ -200,6 +229,14 @@ enum HikayeProva {
     static func sekmeAcildi() {
         if NoraSanatApp.arguman("-hikayeTema") == "gunduz" {
             TemaDeposu.shared.uygula(TemaRenkleri.gunduz, ayar: TemaAyari(tema: .gunduz), zemin: TemaRenkleri.gunduz.zemin)
+        }
+        if CommandLine.arguments.contains("-hikayeDevam") { HikayeDeposu.shared.provaDoldur() }
+        if let id = NoraSanatApp.arguman("-hikayeCalar"), let h = HikayeDeposu.shared.hikaye(id) {
+            let c = HikayeCalari.shared
+            c.baslat(h, oynat: false)
+            if c.isaretler.count > 2 { c.git(c.isaretler[2].bas + 4) }
+            c.tamEkran = true
+            return
         }
         guard let id = NoraSanatApp.arguman("-hikayeMini"), let h = HikayeDeposu.shared.hikaye(id) else { return }
         HikayeCalari.shared.baslat(h, paragraf: 3, oynat: false)

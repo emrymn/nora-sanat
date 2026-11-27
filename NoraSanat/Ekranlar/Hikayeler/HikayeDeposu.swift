@@ -37,18 +37,28 @@ final class HikayeDeposu {
     private(set) var katalog: SiteKatalogu?
     private(set) var dizin: SesDizini?
     private(set) var yerler: [String: OkumaYeri] = [:]
+    /// Z4e: beğenilenler ve sonra okunacaklar (telefonda; ilerleme kaydına ve yedeğe girmez)
+    private(set) var kitaplik = HikayeKitapligi()
+    /// Z4e: "Yeni" etiketi alan yazılar (son 7 günün en yeni dördü)
+    private(set) var yeniler: Set<String> = []
     private var kotuler: [String: [String]] = [:]
     @ObservationIgnored private var eserBellegi: [String: [String: Eser]] = [:]
     @ObservationIgnored private var satirBellegi: [String: HikayeSatiri] = [:]
+    @ObservationIgnored private var sureBellegi: [String: [Double]] = [:]
     @ObservationIgnored private var yukleme: Task<Void, Never>?
 
     private let site = SiteVerisi()
     private static let yerAnahtari = "hikayeYerleri"
+    private static let kitaplikAnahtari = "hikayeKitapligi"
 
     private init() {
         if let v = UserDefaults.standard.data(forKey: Self.yerAnahtari),
            let y = try? JSONDecoder().decode([String: OkumaYeri].self, from: v) {
             yerler = y
+        }
+        if let v = UserDefaults.standard.data(forKey: Self.kitaplikAnahtari),
+           let k = try? JSONDecoder().decode(HikayeKitapligi.self, from: v) {
+            kitaplik = k
         }
     }
 
@@ -73,10 +83,12 @@ final class HikayeDeposu {
         let il = try? await IlerlemeKoprusu.shared.oku()
         eserBellegi = [:]
         satirBellegi = [:]
+        sureBellegi = [:]
         katalog = k
         dizin = d
         kotuler = il?.kotuGorseller ?? [:]
         hikayeler = l
+        yeniler = HikayeVitrini.yeniler(l)
         durum = l.isEmpty ? .yok : .hazir
     }
 
@@ -89,6 +101,104 @@ final class HikayeDeposu {
         yerler[id] = y
         if let v = try? JSONEncoder().encode(yerler) { UserDefaults.standard.set(v, forKey: Self.yerAnahtari) }
     }
+
+    // MARK: Beğeni, sonra oku (Z4e)
+
+    func begenildi(_ id: String) -> Bool { kitaplik.begenildi(id) }
+    func sonradaMi(_ id: String) -> Bool { kitaplik.sonradaMi(id) }
+
+    func begen(_ id: String) {
+        kitaplik.begen(id)
+        kitapligiYaz()
+    }
+
+    func sonraOku(_ id: String) {
+        kitaplik.sonraOkuDegistir(id)
+        kitapligiYaz()
+    }
+
+    private func kitapligiYaz() {
+        if let v = try? JSONEncoder().encode(kitaplik) { UserDefaults.standard.set(v, forKey: Self.kitaplikAnahtari) }
+    }
+
+    var begenilenler: [SanatciHikayesi] { kitaplik.begenilenler(hikayeler) }
+    var sonraOkunacaklar: [SanatciHikayesi] { kitaplik.sonraOkunacaklar(hikayeler, yerler: yerler) }
+    var oneCikanlar: [SanatciHikayesi] { HikayeVitrini.oneCikanlar(hikayeler, yerler: yerler) }
+    var devamEt: [HikayeVitrini.Devam] { HikayeVitrini.devamEt(hikayeler, yerler: yerler) }
+    var enYeni: [SanatciHikayesi] { HikayeVitrini.enYeni(hikayeler) }
+    var donemler: [HikayeVitrini.DonemGrubu] { HikayeVitrini.donemler(hikayeler) { self.sanatci($0)?.dogum } }
+
+    /// Satırın durumu: "Yeni" yalnız en yeni dört yazıda (Z4e; önce son 7 günün hepsindeydi)
+    func durum(_ h: SanatciHikayesi) -> HikayeAkisi.Durum {
+        let d = HikayeAkisi.durum(h, yer: yer(h.id))
+        if d == .yeni && !yeniler.contains(h.id) { return .yok }
+        return d
+    }
+
+    /// Parçaların süreleri (bir kez hesaplanır)
+    func sureler(_ h: SanatciHikayesi) -> [Double] {
+        if let s = sureBellegi[h.id] { return s }
+        let s = HikayeSesi.sureler(HikayeSesi.parcalar(h), dizin: dizin)
+        sureBellegi[h.id] = s
+        return s
+    }
+
+    /// Devam et'te kalan dakika: dinlemede kalındıysa kalan dinleme, değilse kalan okuma
+    func kalanDakika(_ d: HikayeVitrini.Devam) -> Int {
+        if d.dinleme {
+            let s = sureler(d.hikaye)
+            let gecen = HikayeSesi.gecen(s, sira: d.yer.parca ?? 0, an: d.yer.an ?? 0)
+            return HikayeAkisi.dakika(max(0, s.reduce(0, +) - gecen))
+        }
+        return HikayeAkisi.kalanDakika(okuma: HikayeAkisi.okumaDakikasi(kelime: d.hikaye.kelime), yer: d.yer)
+    }
+
+    /// Çalarda gösterilecek eserler: bölümün eserleri (giriş: ilk bölümünkiler; kapanış: son bölümünkiler)
+    func bolumEserleri(_ h: SanatciHikayesi, _ i: HikayeBolumIsareti?) -> [HikayeEserBilgisi] {
+        let b: HikayeBolumu?
+        if let n = i?.bolum, h.bolumler.indices.contains(n) {
+            b = h.bolumler[n]
+        } else if i?.kapanis == true {
+            b = h.bolumler.last { !$0.eserler.isEmpty }
+        } else {
+            b = h.bolumler.first { !$0.eserler.isEmpty }
+        }
+        return (b?.eserler ?? []).compactMap { eser($0.qid, sanatci: h.id) }
+    }
+
+    /// Hikâyede anılmayan öbür eserleri (katalogdan; görseli olan, en çok `enCok`): yazının sonundaki "Daha fazla eser"
+    func digerEserler(_ h: SanatciHikayesi, enCok: Int = 12) -> [Eser] {
+        guard let k = katalog else { return [] }
+        let anilan = Set(h.bolumler.flatMap(\.eserler).map(\.qid))
+        return Array(k.eserler(h.id).filter { !$0.gorseller.isEmpty && !anilan.contains($0.qid ?? "") }.prefix(enCok))
+    }
+
+    /// Hikâyedeki bütün eserler, sırayla (görüntüleyicide kaydırarak gezilsin)
+    func hikayeEserleri(_ h: SanatciHikayesi) -> [Eser] {
+        var gorulen = Set<String>()
+        return h.bolumler.flatMap(\.eserler).compactMap { e in
+            guard gorulen.insert(e.qid).inserted else { return nil }
+            return eser(e.qid, sanatci: h.id)?.eser
+        }
+    }
+
+    func gorselAdresi(_ e: Eser, genislik: Int) -> URL? { katalog?.gorselAdresi(e, genislik: genislik, kotuler: kotuler) }
+
+    #if DEBUG
+    /// CI (`-hikayeDevam`): Devam et ve Sonra oku dolu görünsün
+    func provaDoldur() {
+        let t = Date()
+        if let v = hikaye("johannes-vermeer") {
+            yerYaz(v.id, OkumaYeri(paragraf: 9, toplam: v.paragraflar.count, parca: 14, an: 6, tarih: t))
+            if !kitaplik.begenildi(v.id) { kitaplik.begen(v.id) }
+        }
+        if let r = hikaye("rembrandt-van-rijn") {
+            yerYaz(r.id, OkumaYeri(paragraf: 24, toplam: r.paragraflar.count, tarih: t.addingTimeInterval(-60)))
+        }
+        if !kitaplik.sonradaMi("francisco-de-goya") { kitaplik.sonraOkuDegistir("francisco-de-goya") }
+        kitapligiYaz()
+    }
+    #endif
 
     // MARK: Katalogdan
 
