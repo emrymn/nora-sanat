@@ -2,8 +2,9 @@
 // Emre'nin seçtiği karışık: Yön 1'in çaları (yon-1.html `.calar-tam`: büyük eser, ilerleme çubuğunda bölüm çentikleri,
 // önceki bölüm · −15 · oynat · +15 · sonraki bölüm, altta Hız · Bölümler · Uyku · Metin şeridi), Yön 2'nin "Sıradaki"
 // satırı ve otomatik geçiş düğmesi; goruntuler/yon-1-calar-{tam,bolumler,uyku,metin}-*.png, yon-2-calar-tam-*.png.
-// Emre'nin eki: "dinleme modunda arkaplanda resim olsun" → arka planda o an dinlenen bölümün eseri (bulanık), bölümde
-// birden çok eser varsa 14 sn'de bir yumuşakça değişir ("resimleri arttırabilir miyiz").
+// Z4f (Emre: "dinleme kısmında resim büyük ekran, altta altyazı gibi hikâye anlatımı olsun"): o an dinlenen bölümün
+// eseri bütün ekranda (kırpılmadan, yavaşça yakınlaşır; bölümde birden çok eser varsa 14 sn'de bir değişir), altta
+// okunan cümle kelime kelime renklenir. Resme dokununca denetimler gizlenir; Sıradaki "Bölümler" yaprağında.
 import AVKit
 import NoraCekirdek
 import SwiftUI
@@ -20,50 +21,64 @@ struct HikayeTamCalar: View {
     /// Bölümün eserlerinden hangisi gösteriliyor
     @State private var eserSirasi = 0
     @State private var asagi: CGFloat = 0
+    /// Denetimler görünür (resme dokununca gizlenir/açılır; altyazı hep görünür)
+    @State private var arayuz = true
+    /// Eserin yavaş yakınlaşması (hareket azaltılmışsa yok)
+    @State private var yakin = false
 
     private var azHareket: Bool { hareketAz || tema.ayar.hareketAzaltilmis }
+    private var pirinc: Color { Color(tema.renkler.pirinc) }
 
     var body: some View {
-        let c = HikayeRenk(r: tema.renkler)
         Group {
             if let h = calar.hikaye {
                 let isaret = calar.simdikiIsaret
                 let eserler = depo.bolumEserleri(h, isaret)
                 let e = eserler.isEmpty ? nil : eserler[eserSirasi % eserler.count]
                 ZStack {
-                    arkaPlan(h, e, c)
+                    Color.black.ignoresSafeArea()
+                    eser(e)
+                    LinearGradient(stops: [.init(color: .black.opacity(0.55), location: 0),
+                                           .init(color: .black.opacity(0), location: 0.16),
+                                           .init(color: .black.opacity(0), location: 0.46),
+                                           .init(color: .black.opacity(0.88), location: 0.78),
+                                           .init(color: .black.opacity(0.94), location: 1)],
+                                   startPoint: .top, endPoint: .bottom)
+                        .ignoresSafeArea()
+                        .allowsHitTesting(false)
                     VStack(spacing: 0) {
-                        VStack(spacing: 0) {
-                            ust(c)
-                            Spacer(minLength: 10)
-                            kapak(e, c)
-                            Spacer(minLength: 14)
+                        ust(h).opacity(arayuz ? 1 : 0).allowsHitTesting(arayuz)
+                        Spacer(minLength: 0)
+                        altyazi(e, isaret)
+                        if arayuz {
+                            VStack(spacing: 0) {
+                                ilerleme().padding(.top, 16)
+                                denetimler().padding(.top, 4)
+                                altSerit().padding(.top, 6)
+                            }
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
                         }
-                        .contentShape(Rectangle())
-                        .gesture(asagiCek)
-                        bilgi(h, isaret, c)
-                        ilerleme(c).padding(.top, 18)
-                        denetimler(c).padding(.top, 8)
-                        siradakiSatiri(c).padding(.top, 10)
-                        altSerit(c).padding(.top, 12)
                     }
                     .padding(.horizontal, 22)
-                    .padding(.bottom, 6)
+                    .padding(.bottom, arayuz ? 4 : 28)
                 }
+                .foregroundStyle(.white)
+                .environment(\.colorScheme, .dark)
                 .offset(y: asagi)
+                .animation(.easeOut(duration: 0.25), value: arayuz)
                 .task(id: "\(h.id)|\(calar.isaretSirasi)") {
                     eserSirasi = 0
                     guard eserler.count > 1 else { return }
                     while !Task.isCancelled {
                         try? await Task.sleep(for: .seconds(14))
                         if Task.isCancelled { return }
-                        withAnimation(azHareket ? nil : .easeInOut(duration: 1.2)) { eserSirasi += 1 }
+                        withAnimation(azHareket ? nil : .easeInOut(duration: 1.4)) { eserSirasi += 1 }
                     }
                 }
                 .sheet(isPresented: $bolumlerAcik) { HikayeBolumlerYapragi().environment(tema) }
                 .sheet(isPresented: $metinAcik) { HikayeMetinYapragi().environment(tema) }
             } else {
-                c.zemin.ignoresSafeArea().onAppear { calar.tamEkran = false }
+                Color.black.ignoresSafeArea().onAppear { calar.tamEkran = false }
             }
         }
         .accessibilityIdentifier("hikaye-tam-calar")
@@ -74,7 +89,7 @@ struct HikayeTamCalar: View {
         calar.tamEkran = false
     }
 
-    /// Aşağı çekince kapanır (Yön 1: "aşağı kaydırınca küçük çalara döner")
+    /// Aşağı çekince kapanır
     private var asagiCek: some Gesture {
         DragGesture(minimumDistance: 16)
             .onChanged { d in asagi = max(0, d.translation.height) }
@@ -87,125 +102,123 @@ struct HikayeTamCalar: View {
             }
     }
 
-    // MARK: Arka plan
+    // MARK: Eser (büyük ekran)
 
-    /// Bölümün eseri, büyük bulanıklıkla ekranı doldurur; üstünde temanın zemini (okunurluk)
-    private func arkaPlan(_ h: SanatciHikayesi, _ e: HikayeEserBilgisi?, _ c: HikayeRenk) -> some View {
-        ZStack {
-            c.zemin
-            if let e, let u = depo.gorselAdresi(e.eser, genislik: 400) {
-                UzakGorsel(url: u, icerik: .fill, yedek: e.yedek)
-                    .blur(radius: 44, opaque: true)
-                    .scaleEffect(1.25)
-                    .opacity(tema.renkler.koyu ? 0.75 : 0.6)
-                    .id(e.eser.qid ?? u.absoluteString)
-                    .transition(.opacity)
+    /// Z4f (Emre: "dinleme kısmında resim büyük ekran, altta altyazı gibi hikâye anlatımı"): bölümün eseri bütün ekranda,
+    /// kırpılmadan; yavaşça yakınlaşır. Dokununca denetimler gizlenir/açılır.
+    private func eser(_ e: HikayeEserBilgisi?) -> some View {
+        GeometryReader { g in
+            ZStack {
+                if let e {
+                    UzakGorsel(url: e.url, icerik: .fit, yedek: e.yedek)
+                        .frame(width: g.size.width, height: g.size.height)
+                        .scaleEffect(yakin && !azHareket ? 1.07 : 1)
+                        .animation(azHareket ? nil : .linear(duration: 14), value: yakin)
+                        .id(e.eser.qid ?? "")
+                        .transition(.opacity)
+                }
             }
-            LinearGradient(colors: [c.zemin.opacity(0.45), c.zemin.opacity(0.72), c.zemin.opacity(0.92)],
-                           startPoint: .top, endPoint: .bottom)
+            .frame(width: g.size.width, height: g.size.height)
+            // Eser altyazının biraz üstünde dursun
+            .offset(y: -g.size.height * 0.08)
         }
         .ignoresSafeArea()
-        .accessibilityHidden(true)
+        .contentShape(Rectangle())
+        .onTapGesture { arayuz.toggle() }
+        .gesture(asagiCek)
+        .onChange(of: e?.eser.qid, initial: true) { _, _ in
+            yakin = false
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(60))
+                yakin = true
+            }
+        }
+        .accessibilityLabel(e.map { "Eser: \($0.eser.gorunenAd)" } ?? "Eser")
+        .accessibilityHint("Denetimleri göster ya da gizle")
+        .accessibilityAddTraits(.isButton)
     }
 
     // MARK: Üst
 
-    private func ust(_ c: HikayeRenk) -> some View {
-        HStack {
+    private func ust(_ h: SanatciHikayesi) -> some View {
+        HStack(spacing: 8) {
             Button { kapat() } label: {
                 Image(systemName: "chevron.down").font(.system(size: 17, weight: .semibold))
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(.black.opacity(0.35)))
             }
-            .buttonStyle(HikayeCamDugme())
+            .buttonStyle(.plain)
             .accessibilityLabel("Çaları küçült")
-            Spacer()
-            Text(calar.uykuYazisi ?? "Şimdi dinleniyor")
-                .font(Yazi.sans(12.5, agirlik: 600))
-                .foregroundStyle(c.pirinc)
-            Spacer()
-            AirPlayDugmesi(renk: UIColor(c.yazi))
+            VStack(spacing: 1) {
+                Text(calar.uykuYazisi ?? depo.sanatciAdi(h.id))
+                    .font(Yazi.sans(12, agirlik: 600)).foregroundStyle(pirinc).lineLimit(1)
+                Text(h.baslik).font(Yazi.sans(13, agirlik: 600)).foregroundStyle(.white.opacity(0.9)).lineLimit(1)
+            }
+            .frame(maxWidth: .infinity)
+            HikayeBegenDugmesi(id: h.id, boyut: 19, beyaz: true)
+            AirPlayDugmesi(renk: .white)
                 .frame(width: 44, height: 44)
-                .background(Circle().fill(Color(tema.renkler.ustDugme)))
-                .overlay(Circle().strokeBorder(c.kenar, lineWidth: 1))
                 .accessibilityLabel("Ses çıkışı")
         }
         .padding(.top, 6)
     }
 
-    // MARK: Eser
+    // MARK: Altyazı
 
-    /// Bölümün eseri, kırpılmadan; altında adı ve yılı
-    private func kapak(_ e: HikayeEserBilgisi?, _ c: HikayeRenk) -> some View {
-        VStack(spacing: 10) {
-            ZStack {
+    /// Okunan cümle, kelime kelime renklenir (söylenen beyaz, kalan soluk); üstünde bölüm ve eserin adı
+    private func altyazi(_ e: HikayeEserBilgisi?, _ i: HikayeBolumIsareti?) -> some View {
+        let a = calar.gecerliAkis
+        let k = calar.kelime
+        let parca = a.map { $0.ayir(kelime: k, aralik: $0.cumle(kelime: max(0, k))) } ?? ("", "")
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                if let i { Text(i.ad).foregroundStyle(pirinc) }
                 if let e {
-                    TamGorsel(url: e.url, yedek: e.yedek, oran: e.oran, kose: 16)
-                        .shadow(color: c.golge, radius: 24, x: 0, y: 16)
-                        .id(e.eser.qid ?? "")
-                        .transition(.opacity)
-                } else {
-                    RoundedRectangle(cornerRadius: 16, style: .continuous).fill(c.yuzey).aspectRatio(1, contentMode: .fit)
+                    Text("· " + [e.eser.gorunenAd, e.eser.yil.map { SiteYazisi.yilYaz($0) } ?? ""]
+                        .filter { !$0.isEmpty }.joined(separator: ", "))
+                        .foregroundStyle(.white.opacity(0.55))
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            if let e {
-                Text([e.eser.gorunenAd, e.eser.yil.map { SiteYazisi.yilYaz($0) } ?? ""].filter { !$0.isEmpty }
-                    .joined(separator: " · "))
-                    .font(Yazi.serif(14, agirlik: 500))
-                    .foregroundStyle(c.yazi2)
-                    .lineLimit(1)
-                    .id("ad-\(e.eser.qid ?? "")")
-                    .transition(.opacity)
-            }
+            .font(Yazi.sans(12, agirlik: 600))
+            .lineLimit(1)
+            (Text(parca.0).foregroundColor(.white) + Text(parca.1).foregroundColor(.white.opacity(0.42)))
+                .font(Yazi.okuma(22, agirlik: 500))
+                .cssSatir(.okuma, 22, 22 * 1.42)
+                .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 1)
+                .frame(maxWidth: .infinity, minHeight: 22 * 1.42 * 3, alignment: .bottomLeading)
+                .fixedSize(horizontal: false, vertical: true)
+                .animation(nil, value: k)
+                .accessibilityLabel(parca.0 + parca.1)
         }
-        .accessibilityElement(children: .combine)
-    }
-
-    // MARK: Bilgi
-
-    private func bilgi(_ h: SanatciHikayesi, _ i: HikayeBolumIsareti?, _ c: HikayeRenk) -> some View {
-        HStack(alignment: .top, spacing: 10) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(h.baslik)
-                    .font(Yazi.okuma(24, agirlik: 600))
-                    .tracking(-0.36)
-                    .foregroundStyle(c.yazi)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text([depo.sanatciAdi(h.id), depo.yillar(h.id)].filter { !$0.isEmpty }.joined(separator: " · "))
-                    .font(Yazi.sans(13.5)).foregroundStyle(c.yazi2).lineLimit(1)
-                if let i {
-                    Text(i.ad).font(Yazi.sans(12.5, agirlik: 600)).foregroundStyle(c.pirinc).lineLimit(1)
-                }
-            }
-            Spacer(minLength: 4)
-            HikayeBegenDugmesi(id: h.id)
-            HikayeSonraDugmesi(id: h.id)
-        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .onTapGesture { arayuz.toggle() }
+        .accessibilityIdentifier("hikaye-altyazi")
     }
 
     // MARK: İlerleme
 
     /// İnce çubuk; bölüm başları çentik. Sürükleyince bırakılan yere gider (sürüklerken o anın bölümü yazar).
-    private func ilerleme(_ c: HikayeRenk) -> some View {
+    private func ilerleme() -> some View {
         let toplam = max(calar.toplam, 0.001)
         let oran = surukle ?? min(1, calar.gecen / toplam)
         let an = oran * toplam
-        return VStack(spacing: 6) {
+        return VStack(spacing: 4) {
             GeometryReader { g in
                 let w = g.size.width
                 ZStack(alignment: .leading) {
-                    Capsule().fill(c.kenar).frame(height: 4)
-                    Capsule().fill(c.pirinc).frame(width: max(0, w * oran), height: 4)
+                    Capsule().fill(.white.opacity(0.22)).frame(height: 3)
+                    Capsule().fill(pirinc).frame(width: max(0, w * oran), height: 3)
                     ForEach(Array(calar.isaretler.dropFirst().enumerated()), id: \.offset) { _, i in
-                        Rectangle().fill(c.zemin.opacity(0.9)).frame(width: 2, height: 4)
+                        Rectangle().fill(.black.opacity(0.85)).frame(width: 2, height: 3)
                             .offset(x: w * i.bas / toplam - 1)
                     }
-                    Circle().fill(c.pirinc)
-                        .frame(width: surukle == nil ? 12 : 20, height: surukle == nil ? 12 : 20)
-                        .offset(x: w * oran - (surukle == nil ? 6 : 10))
+                    Circle().fill(pirinc)
+                        .frame(width: surukle == nil ? 11 : 19, height: surukle == nil ? 11 : 19)
+                        .offset(x: w * oran - (surukle == nil ? 5.5 : 9.5))
                         .animation(.easeOut(duration: 0.15), value: surukle == nil)
                 }
-                .frame(height: 30)
+                .frame(height: 28)
                 .contentShape(Rectangle())
                 .gesture(
                     DragGesture(minimumDistance: 0)
@@ -216,19 +229,19 @@ struct HikayeTamCalar: View {
                             surukle = nil
                         })
             }
-            .frame(height: 30)
+            .frame(height: 28)
             HStack {
                 Text(HikayeSesi.saat(an)).monospacedDigit()
                 Spacer()
-                if surukle != nil {
-                    Text(calar.isaretler.isEmpty ? "" : calar.isaretler[HikayeSesi.isaret(calar.isaretler, gecen: an)].ad)
-                        .foregroundStyle(c.pirinc).lineLimit(1)
+                if surukle != nil, !calar.isaretler.isEmpty {
+                    Text(calar.isaretler[HikayeSesi.isaret(calar.isaretler, gecen: an)].ad)
+                        .foregroundStyle(pirinc).lineLimit(1)
                     Spacer()
                 }
                 Text("-" + HikayeSesi.saat(max(0, toplam - an))).monospacedDigit()
             }
             .font(Yazi.sans(11.5))
-            .foregroundStyle(c.yazi3)
+            .foregroundStyle(.white.opacity(0.6))
         }
         .accessibilityElement()
         .accessibilityLabel("İlerleme")
@@ -244,10 +257,10 @@ struct HikayeTamCalar: View {
 
     // MARK: Denetimler
 
-    private func denetimler(_ c: HikayeRenk) -> some View {
+    private func denetimler() -> some View {
         HStack {
             Button { Titresim.dokunus(); calar.oncekiBolum() } label: {
-                Image(systemName: "backward.end.fill").font(.system(size: 19)).frame(width: 44, height: 44)
+                Image(systemName: "backward.end.fill").font(.system(size: 18)).frame(width: 44, height: 44)
             }
             .accessibilityLabel("Önceki bölüm")
             Spacer()
@@ -258,10 +271,10 @@ struct HikayeTamCalar: View {
             Spacer()
             Button { calar.degistir() } label: {
                 Image(systemName: calar.caliyor ? "pause.fill" : "play.fill")
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(c.zemin)
-                    .frame(width: 66, height: 66)
-                    .background(Circle().fill(c.yazi))
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .frame(width: 62, height: 62)
+                    .background(Circle().fill(.white))
             }
             .accessibilityLabel(calar.caliyor ? "Duraklat" : "Oynat")
             .accessibilityIdentifier("hikaye-tam-oynat")
@@ -272,51 +285,17 @@ struct HikayeTamCalar: View {
             .accessibilityLabel("15 saniye ileri")
             Spacer()
             Button { Titresim.dokunus(); calar.sonrakiBolum() } label: {
-                Image(systemName: "forward.end.fill").font(.system(size: 19)).frame(width: 44, height: 44)
+                Image(systemName: "forward.end.fill").font(.system(size: 18)).frame(width: 44, height: 44)
             }
             .accessibilityLabel("Sonraki bölüm")
             .disabled(calar.isaretSirasi >= calar.isaretler.count - 1)
         }
         .buttonStyle(.plain)
-        .foregroundStyle(c.yazi)
-    }
-
-    // MARK: Sıradaki (Yön 2)
-
-    @ViewBuilder
-    private func siradakiSatiri(_ c: HikayeRenk) -> some View {
-        if let s = calar.siradaki.first {
-            HStack(spacing: 10) {
-                Button {
-                    Titresim.secim()
-                    calar.siradakineGec(s)
-                } label: {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Sıradaki").font(Yazi.sans(11.5, agirlik: 600)).foregroundStyle(c.pirinc)
-                        Text("\(depo.sanatciAdi(s.id)) · \(s.baslik)")
-                            .font(Yazi.serif(15, agirlik: 500)).foregroundStyle(c.yazi).lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityHint("Sıradaki yazıyı dinle")
-                Toggle(isOn: $calar.otomatik) {
-                    Text("Otomatik").font(Yazi.sans(12.5)).foregroundStyle(c.yazi2)
-                }
-                .toggleStyle(.switch)
-                .tint(c.pirinc)
-                .fixedSize()
-                .accessibilityHint("Yazı bitince sıradakine geç")
-            }
-            .padding(.vertical, 4)
-            .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
-        }
     }
 
     // MARK: Alt şerit
 
-    private func altSerit(_ c: HikayeRenk) -> some View {
+    private func altSerit() -> some View {
         HStack(spacing: 0) {
             Menu {
                 ForEach(HikayeSesi.hizlar, id: \.self) { h in
@@ -330,11 +309,11 @@ struct HikayeTamCalar: View {
                 }
             } label: {
                 seritOgesi(ust: AnyView(Text(HikayeSesi.hizYazisi(calar.hiz)).font(Yazi.sans(15, agirlik: 600))
-                    .monospacedDigit()), ad: "Hız", c)
+                    .monospacedDigit()), ad: "Hız")
             }
             .accessibilityLabel("Hız \(HikayeSesi.hizYazisi(calar.hiz))")
             Button { bolumlerAcik = true } label: {
-                seritOgesi(ust: AnyView(Image(systemName: "list.bullet").font(.system(size: 17))), ad: "Bölümler", c)
+                seritOgesi(ust: AnyView(Image(systemName: "list.bullet").font(.system(size: 17))), ad: "Bölümler")
             }
             Menu {
                 Button("15 dakika") { calar.uykuKur(dakika: 15) }
@@ -347,25 +326,23 @@ struct HikayeTamCalar: View {
                 }
             } label: {
                 seritOgesi(ust: AnyView(Image(systemName: calar.uyku == nil ? "moon" : "moon.fill")
-                    .font(.system(size: 17))), ad: "Uyku", c, etkin: calar.uyku != nil)
+                    .font(.system(size: 17))), ad: "Uyku", etkin: calar.uyku != nil)
             }
             .accessibilityLabel(calar.uykuYazisi ?? "Uyku zamanlayıcı")
             Button { metinAcik = true } label: {
-                seritOgesi(ust: AnyView(Image(systemName: "text.alignleft").font(.system(size: 17))), ad: "Metin", c)
+                seritOgesi(ust: AnyView(Image(systemName: "text.alignleft").font(.system(size: 17))), ad: "Metin")
             }
         }
         .buttonStyle(.plain)
-        .padding(.top, 8)
-        .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
     }
 
-    private func seritOgesi(ust: AnyView, ad: String, _ c: HikayeRenk, etkin: Bool = false) -> some View {
-        VStack(spacing: 4) {
+    private func seritOgesi(ust: AnyView, ad: String, etkin: Bool = false) -> some View {
+        VStack(spacing: 3) {
             ust.frame(height: 22)
-            Text(ad).font(Yazi.sans(11.5))
+            Text(ad).font(Yazi.sans(11))
         }
-        .foregroundStyle(etkin ? c.pirinc : c.yazi)
-        .frame(maxWidth: .infinity, minHeight: 52)
+        .foregroundStyle(etkin ? pirinc : .white.opacity(0.85))
+        .frame(maxWidth: .infinity, minHeight: 50)
         .contentShape(Rectangle())
     }
 }
@@ -376,6 +353,8 @@ struct HikayeTamCalar: View {
 struct HikayeBegenDugmesi: View {
     let id: String
     var boyut: CGFloat = 20
+    /// Tam ekran çalarda (koyu sahne) beyaz
+    var beyaz = false
     @Environment(TemaDeposu.self) private var tema
     @State private var depo = HikayeDeposu.shared
 
@@ -388,7 +367,7 @@ struct HikayeBegenDugmesi: View {
         } label: {
             Image(systemName: b ? "heart.fill" : "heart")
                 .font(.system(size: boyut, weight: .regular))
-                .foregroundStyle(b ? c.pirinc : c.yazi2)
+                .foregroundStyle(b ? c.pirinc : (beyaz ? Color.white.opacity(0.85) : c.yazi2))
                 .scaleEffect(b ? 1.08 : 1)
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())

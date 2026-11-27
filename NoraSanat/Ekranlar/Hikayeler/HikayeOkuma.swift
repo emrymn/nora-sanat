@@ -231,7 +231,7 @@ struct HikayeOkuma: View {
     /// 13×15 iç pay, sol kenarlı kutu yok). Dinlerken paragrafa dokunmak sesi oraya atlatır.
     private func paragraf(_ no: Int, _ metin: String, _ c: HikayeRenk) -> some View {
         let okunan = dinleme && calar.paragraf == no
-        return Text(metin)
+        return paragrafYazisi(metin, okunan: okunan, c)
             .font(Yazi.okuma(19))
             .cssSatir(.okuma, 19, 19 * 1.74)
             .foregroundStyle(c.yazi)
@@ -251,6 +251,14 @@ struct HikayeOkuma: View {
                 calar.paragrafaGit(no)
             }
             .accessibilityAction(named: "Buradan dinle") { calar.baslat(hikaye, paragraf: no) }
+    }
+
+    /// Z4f (Emre: "okuma kısmında da okunan yeri belli edecek şekilde renkle ilerlesin"): dinlenen paragrafta
+    /// söylenmiş kelimeler pirinç, kalanı mürekkep; söylenen kelimeyle birlikte ilerler.
+    private func paragrafYazisi(_ metin: String, okunan: Bool, _ c: HikayeRenk) -> Text {
+        guard okunan, let a = calar.gecerliAkis else { return Text(metin) }
+        let y = a.ayir(kelime: calar.kelime)
+        return Text(y.okunan).foregroundColor(c.pirinc) + Text(y.kalan).foregroundColor(c.yazi)
     }
 
     /// `.sub-ara-baslik`: üstte pirinç yıllar (`.ust-yazi`), altında Newsreader 24/600 başlık

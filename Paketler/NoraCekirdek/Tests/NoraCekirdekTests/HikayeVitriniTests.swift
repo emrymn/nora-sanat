@@ -128,3 +128,23 @@ final class HikayeVitriniTests: XCTestCase {
         }
     }
 }
+
+/// Z4f: okurken renkle ilerleyen metin ve dinlemede kelime kelime altyazı
+final class AltyaziAyirmaTests: XCTestCase {
+    func testAyir() {
+        let a = AltyaziAkisi(metin: "Delft'te doğdu. Babası han işletiyordu, borçluydu.", sure: 6)
+        XCTAssertEqual(a.kelimeler.map(\.yazi), ["Delft'te", "doğdu.", "Babası", "han", "işletiyordu,", "borçluydu."])
+        XCTAssertEqual(a.ayir(kelime: -1).okunan, "")
+        XCTAssertEqual(a.ayir(kelime: -1).kalan, a.metin)
+        XCTAssertEqual(a.ayir(kelime: 1).okunan, "Delft'te doğdu.")
+        XCTAssertEqual(a.ayir(kelime: 1).kalan, " Babası han işletiyordu, borçluydu.")
+        XCTAssertEqual(a.ayir(kelime: 5).okunan, a.metin)
+        // Cümle aralığında (altyazı)
+        let c = a.cumle(kelime: 3)
+        XCTAssertEqual(c, 2..<6)
+        XCTAssertEqual(a.ayir(kelime: 3, aralik: c).okunan, "Babası han")
+        XCTAssertEqual(a.ayir(kelime: 3, aralik: c).kalan, " işletiyordu, borçluydu.")
+        XCTAssertEqual(a.ayir(kelime: 0, aralik: c).okunan, "")
+        XCTAssertEqual(a.ayir(kelime: 9, aralik: c).okunan, "Babası han işletiyordu, borçluydu.")
+    }
+}

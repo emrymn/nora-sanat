@@ -10,10 +10,11 @@
 import Foundation
 
 public enum SekmeCubugu {
-    /// Uygulamanın çubuğundaki sekmeler, sırasıyla. Z4b (Emre'nin isteği): Bugün · Hikâyeler · Çalış · Galeri · Yolculuk.
+    /// Uygulamanın çubuğundaki sekmeler, sırasıyla. Z4f (Emre'nin isteği): Bugün · Hikâyeler · Yolculuk · Çalış · Galeri
+    /// (Z4b'de Bugün · Hikâyeler · Çalış · Galeri · Yolculuk idi).
     /// Sitenin çubuğu (`SEKMELER`) dört sekme ve başka sırada: `siteSekmeleri`. Ben çubukta değil (ana ekranların sağ
     /// üstündeki kişi düğmesi).
-    public static let sekmeler: [Sekme] = [.bugun, .hikayeler, .calis, .galeri, .yolculuk]
+    public static let sekmeler: [Sekme] = [.bugun, .hikayeler, .yolculuk, .calis, .galeri]
 
     /// Sitenin çubuğundaki sekmeler, sırasıyla (`SEKMELER`); kâhinin ölçtüğü yerleşim bu dördüyle
     public static let siteSekmeleri: [Sekme] = [.bugun, .yolculuk, .galeri, .calis]

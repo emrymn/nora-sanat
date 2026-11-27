@@ -120,18 +120,19 @@ final class SekmeCubuguTests: XCTestCase {
         XCTAssertEqual(y.enYakin(500), 4)
         XCTAssertEqual(y.surukle(14 + 365), 4)
         XCTAssertEqual(y.surukle(196.5), 2, accuracy: 0.001)
-        // Rozet Çalış'ta (üçüncü sekme)
-        XCTAssertEqual(y.rozet.x, 196.5 + 6, accuracy: 0.001)
+        // Rozet Çalış'ta (Z4f: dördüncü sekme)
+        XCTAssertEqual(y.rozet.x, 266.7 + 6, accuracy: 0.001)
         // Hızlı ayar dili ekranın ortasında: Çalış'ın üstünde
         XCTAssertEqual(y.dil.ortaX, y.sekmeler[2].ortaX, accuracy: 0.001)
     }
 
     func testCubuktakiSira() {
         XCTAssertEqual(SekmeCubugu.siteSekmeleri.map(\.siteKimligi), ["bugun", "harita", "gozat", "pekistir"])
-        // Z4b (Emre): Bugün · Hikâyeler · Çalış · Galeri · Yolculuk; Ben çubukta değil
-        XCTAssertEqual(SekmeCubugu.sekmeler, [.bugun, .hikayeler, .calis, .galeri, .yolculuk])
+        // Z4f (Emre): Bugün · Hikâyeler · Yolculuk · Çalış · Galeri; Ben çubukta değil
+        XCTAssertEqual(SekmeCubugu.sekmeler, [.bugun, .hikayeler, .yolculuk, .calis, .galeri])
         XCTAssertFalse(SekmeCubugu.sekmeler.contains(.ben))
-        XCTAssertEqual(SekmeCubugu.sira(.galeri), 3)
+        XCTAssertEqual(SekmeCubugu.sira(.galeri), 4)
+        XCTAssertEqual(SekmeCubugu.sira(.yolculuk), 2)
         XCTAssertEqual(SekmeCubugu.Simge(.hikayeler), .hikayeler)
         // Sitede İlerleme ve Ayarlar'da Bugün seçili
         XCTAssertEqual(SekmeCubugu.sira(.ben), SekmeCubugu.sira(.bugun))

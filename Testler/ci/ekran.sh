@@ -571,21 +571,20 @@ yolculuk() {
 # başka sekmede küçük çalar, arşiv, tam ekran çalar (Z4e); sonra ses: dizin yokken telefonun sesi (AVSpeech), R2'yle Fola (yalnız yazdırılır).
 hikayeler() {
   ilk_acilis
-  # Z4e: ana ekran öne çıkanlarla; arşiv (en yeni, dönem); tam ekran çalar. Okuma yeri ve beğeni yazan çekimler
+  # Z4f: ana ekran bütün hikâyelerin ızgarası (süzgeç: dönem, beğendiklerim); tam ekran çalar (büyük eser + altyazı). Okuma yeri ve beğeni yazan çekimler
   # (-hikayeDevam, -hikayeCalar) en sonda: öncekiler temiz telefonla (Vermeer baştan açılsın).
-  for IS in "ana|kanlar|-adres #/hikayeler" \
-            "okuma|Sessizlik|-adres #/hikaye/johannes-vermeer" \
+  for IS in "ana|Sonra oku|-adres #/hikayeler" \
+            "okuma|1632|-adres #/hikaye/johannes-vermeer" \
             "okuma-eser|nemle ba|-adres #/hikaye/johannes-vermeer -hikayeKaydir eser" \
-            "dinleme|Han Duman|-adres #/hikaye/johannes-vermeer -hikayeDinle 5" \
-            "dinleme-gunduz|Han Duman|-adres #/hikaye/johannes-vermeer -hikayeDinle 5 -hikayeTema gunduz" \
+            "dinleme|1653|-adres #/hikaye/johannes-vermeer -hikayeDinle 5" \
+            "dinleme-gunduz|1653|-adres #/hikaye/johannes-vermeer -hikayeDinle 5 -hikayeTema gunduz" \
             "son|Daha fazla|-adres #/hikaye/johannes-vermeer -hikayeKaydir son" \
             "mini|Johannes Vermeer|-adres #/hikayeler -hikayeMini johannes-vermeer" \
-            "arsiv|En yeni|-adres #/hikayeler -hikayeArsiv enYeni" \
-            "arsiv-donem|XIII|-adres #/hikayeler -hikayeArsiv donem" \
+            "donem|XIII|-adres #/hikayeler -hikayeSuzgec donem" \
             "ana-devam|Devam et|-adres #/hikayeler -hikayeDevam" \
-            "arsiv-begendiklerim|Evde Kurulan|-adres #/hikayeler -hikayeArsiv begendiklerim" \
-            "calar|Otomatik|-adres #/hikayeler -hikayeCalar johannes-vermeer" \
-            "calar-gunduz|Otomatik|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz"; do
+            "begendiklerim|Vermeer|-adres #/hikayeler -hikayeSuzgec begendiklerim" \
+            "calar|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer" \
+            "calar-gunduz|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz"; do
     AD="${IS%%|*}"; GERI="${IS#*|}"; SOZ="${GERI%%|*}"; ARGS="${GERI#*|}"
     xcrun simctl terminate "$UDID" "$PAKET" || true
     # shellcheck disable=SC2086

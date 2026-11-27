@@ -66,6 +66,20 @@ final class HikayeCalari {
         return h.baslik
     }
 
+    /// Z4f: okunan parçanın kelime akışı (kayıtta kaydın zamanlaması, yoksa tahmini); altyazı ve okumada renkli ilerleme
+    private(set) var akis: AltyaziAkisi?
+    @ObservationIgnored private var akisSira = -1
+
+    /// Şu anki parçanın akışı (o parça henüz çalınmadıysa tahmini)
+    var gecerliAkis: AltyaziAkisi? {
+        guard parcalar.indices.contains(sira) else { return nil }
+        if akisSira == sira, let a = akis { return a }
+        return AltyaziAkisi(metin: parcalar[sira].metin, sure: sureler[sira])
+    }
+
+    /// Şu an söylenen kelimenin sırası (`gecerliAkis` içinde; henüz yoksa -1)
+    var kelime: Int { gecerliAkis?.kelime(sn: an) ?? -1 }
+
     /// Okunan paragrafın metni (küçük çaların ikinci satırı)
     var paragrafMetni: String {
         guard parcalar.indices.contains(sira) else { return "" }
@@ -138,6 +152,8 @@ final class HikayeCalari {
         parcalar = []
         sureler = []
         isaretler = []
+        akis = nil
+        akisSira = -1
         uyku = nil
         tamEkran = false
         sira = 0
@@ -320,7 +336,10 @@ final class HikayeCalari {
     private func parcayiOku(_ i: Int, bas: Double) async {
         let p = parcalar[i]
         sentezAkisi = nil
+        let tahminiAkis = AltyaziAkisi(metin: p.metin, sure: sureler[i])
         if HikayeSesi.kayitli(p, dizin: dizin), let k = await DinleSesKaynagi.shared.kayit(p.anahtar, kok: kok) {
+            akis = k.akis ?? tahminiAkis
+            akisSira = i
             // Kayıt inerken duraklatıldıysa sürdürülene kadar bekle
             await duraklatildiysaBekle()
             if Task.isCancelled { return }
@@ -332,8 +351,10 @@ final class HikayeCalari {
         await duraklatildiysaBekle()
         if Task.isCancelled { return }
         isaretle(i, "AVSpeech")
+        akis = tahminiAkis
+        akisSira = i
         // Parçanın ortasından: o andaki kelimeden başlar (tahmini akış)
-        let tahmin = AltyaziAkisi(metin: p.metin, sure: sureler[i])
+        let tahmin = tahminiAkis
         var metin = p.metin
         sentezBasi = 0
         if bas > 0.5, case let k = tahmin.kelime(sn: bas), k > 0, k < tahmin.kelimeler.count {
@@ -365,7 +386,8 @@ final class HikayeCalari {
         guard saatIsi == nil else { return }
         saatIsi = Task { [weak self] in
             while !Task.isCancelled {
-                try? await Task.sleep(for: .milliseconds(250))
+                // Z4f: kelime kelime altyazı ve renkli ilerleme için sık (önce 250 ms)
+                try? await Task.sleep(for: .milliseconds(120))
                 guard let self else { return }
                 guard self.caliyor else { continue }
                 // Z4e: uyku zamanlayıcının süresi doldu

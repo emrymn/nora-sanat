@@ -198,3 +198,32 @@ public extension HikayeSesi {
         l.lastIndex { $0.bas <= gecen + 0.001 } ?? 0
     }
 }
+
+// MARK: - Z4f · renkle ilerleyen metin ve altyazı
+
+public extension AltyaziAkisi {
+    /// Metnin `aralik` kelimelerini (nil: bütün metin) `kelime`. kelimenin sonundan ikiye böler: okunan ve kalan.
+    /// `kelime` aralıktan önceyse okunan boş, sonrasındaysa kalan boş. Aradaki boşluklar ve noktalama korunur.
+    func ayir(kelime k: Int, aralik: Range<Int>? = nil) -> (okunan: String, kalan: String) {
+        let sk = Array(metin.unicodeScalars)
+        guard !kelimeler.isEmpty else { return ("", metin) }
+        let r = (aralik ?? 0..<kelimeler.count).clamped(to: 0..<kelimeler.count)
+        guard !r.isEmpty else { return ("", "") }
+        let bas = r.lowerBound == 0 && aralik == nil ? 0 : kelimeler[r.lowerBound].harf.lowerBound
+        let son = r.upperBound == kelimeler.count && aralik == nil ? sk.count : kelimeler[r.upperBound - 1].harf.upperBound
+        let kes: Int
+        if k < r.lowerBound {
+            kes = bas
+        } else if k >= r.upperBound - 1 {
+            kes = son
+        } else {
+            kes = kelimeler[k].harf.upperBound
+        }
+        func yazi(_ a: Int, _ b: Int) -> String {
+            var v = String.UnicodeScalarView()
+            if a < b { v.append(contentsOf: sk[a..<b]) }
+            return String(v)
+        }
+        return (yazi(bas, kes), yazi(kes, son))
+    }
+}

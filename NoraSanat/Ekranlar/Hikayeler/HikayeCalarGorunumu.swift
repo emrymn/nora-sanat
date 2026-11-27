@@ -192,17 +192,17 @@ struct HikayeMiniCalar: View {
 /// - `-hikayeDinle <paragraf>`: çalar o paragrafta, duraklatılmış açılır (`-hikayeSesli`: çalarak)
 /// - `-hikayeMini <id>`: çalar o yazıda açılır ve Bugün'e geçilir (küçük çalar)
 /// - `-hikayeTema gunduz`: Gündüz teması
-/// - Z4e: `-hikayeArsiv enYeni|donem|begendiklerim`: arşiv o sekmede açılır
+/// - Z4f: `-hikayeSuzgec tumu|donem|begendiklerim|sonraOku`: ana ekranın süzgeci
 /// - Z4e: `-hikayeCalar <id>`: çalar o yazıda (duraklatılmış, 2. bölümde) tam ekran açılır
 /// - Z4e: `-hikayeDevam`: Devam et ve Sonra oku dolu (Vermeer dinlemede, Rembrandt okumada yarım; Goya sonra oku,
 ///   Vermeer beğenildi)
 enum HikayeProva {
-    static var arsiv: String? { NoraSanatApp.arguman("-hikayeArsiv") }
-    static var arsivSekmesi: HikayeArsiv.Sekme {
-        switch arsiv {
+    static var suzgec: HikayeAna.Suzgec {
+        switch NoraSanatApp.arguman("-hikayeSuzgec") {
         case "donem": return .donem
         case "begendiklerim": return .begendiklerim
-        default: return .enYeni
+        case "sonraOku": return .sonraOku
+        default: return .tumu
         }
     }
 

@@ -1,4 +1,4 @@
-// Z4e: ana ekran Neon 4. turun Yön 2'si (öne çıkanlar, devam et, sonra oku, tüm hikâyeler → `HikayeArsiv`).
+// Z4f: ana ekran bütün hikâyelerin kapak ızgarası (Emre: "bütün hikâyeler gözüksün"); Z4e'nin öne çıkanları ve arşivi kalktı.
 // Z4b · Hikâyeler sekmesi (yeni; sitede yok). Tasarım: Neon "Yön 2 · Substack Minimal" (Emre seçti; dal
 // neon/hikayeler-tasarim-3, PR #75, birleştirilmedi): tasarim/hikayeler-3/yon-2.html (`.sub-ust`, `.sub-akis`,
 // `.sub-yazi`), ortak.css, goruntuler/yon-2-ana-{gece,gunduz}.png. Emre'nin değişikliği: "Ben" çubukta değil, sağ üstteki
@@ -25,7 +25,7 @@ struct HikayelerSekmesi: View {
             Group {
                 switch depo.durum {
                 case .hazir:
-                    HikayeAna(ac: ac, arsiv: { yol.append(HikayeArsiv.kimlik) }, aramaAcik: $aramaAcik, basaDon: basaDon)
+                    HikayeAna(ac: ac, aramaAcik: $aramaAcik, basaDon: basaDon)
                 case .yukleniyor:
                     ProgressView("Hikâyeler hazırlanıyor…")
                         .font(Yazi.sans(15)).foregroundStyle(Color(tema.renkler.murekkep2))
@@ -43,9 +43,7 @@ struct HikayelerSekmesi: View {
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: String.self) { id in
                 Group {
-                    if id == HikayeArsiv.kimlik {
-                        HikayeArsiv(ac: ac)
-                    } else if let h = depo.hikaye(id) {
+                    if let h = depo.hikaye(id) {
                         HikayeOkuma(hikaye: h, ac: ac)
                     } else {
                         Color(tema.renkler.zemin).ignoresSafeArea()
@@ -60,7 +58,6 @@ struct HikayelerSekmesi: View {
             await depo.yukle()
             #if DEBUG
             HikayeProva.sekmeAcildi()
-            if HikayeProva.arsiv != nil, yol.isEmpty { yol = [HikayeArsiv.kimlik] }
             #endif
         }
         .onChange(of: kabuk.yerliAdres[.hikayeler], initial: true) { _, adres in
@@ -86,18 +83,35 @@ struct HikayelerSekmesi: View {
 
 // MARK: - Ana ekran
 
-/// Z4e (Neon 4. tur, Yön 2'nin ana ekranı: tasarim/hikayeler-4/yon-2.html, goruntuler/yon-2-ana-*.png):
-/// Öne çıkanlar (büyük kart + yatay şerit) · Devam et (yarım kalanlar; ilk ekranda görünür) · Sonra oku · Tüm hikâyeler
-/// (arşiv). Sağ üstte arama ve Ben.
+/// Z4f (Emre: "çok sıra sıra olmuş, ben bütün hikâyeler gözüksün istiyorum"): bütün hikâyeler iki sütunlu kapak
+/// ızgarasında; üstte süzgeç (Tümü · Dönem · Beğendiklerim · Sonra oku) ve varsa Devam et şeridi. Öne çıkanlar ve ayrı
+/// arşiv sayfası kalktı (Z4e). Sağ üstte arama ve Ben.
 struct HikayeAna: View {
+    enum Suzgec: String, CaseIterable, Identifiable {
+        case tumu = "Tümü"
+        case donem = "Dönem"
+        case begendiklerim = "Beğendiklerim"
+        case sonraOku = "Sonra oku"
+        var id: String { rawValue }
+    }
+
     let ac: (String) -> Void
-    let arsiv: () -> Void
     @Binding var aramaAcik: Bool
     let basaDon: Int
 
     @Environment(TemaDeposu.self) private var tema
     @State private var depo = HikayeDeposu.shared
     @State private var calar = HikayeCalari.shared
+    @State private var suzgec: Suzgec = {
+        #if DEBUG
+        return HikayeProva.suzgec
+        #else
+        return .tumu
+        #endif
+    }()
+
+    private let sutunlar = [GridItem(.flexible(), spacing: 14, alignment: .top),
+                            GridItem(.flexible(), spacing: 14, alignment: .top)]
 
     var body: some View {
         let c = HikayeRenk(r: tema.renkler)
@@ -105,17 +119,14 @@ struct HikayeAna: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                     Section {
-                        oneCikanlar(c)
                         devamEt(c)
-                        sonraOku(c)
-                        tumu(c)
-                        // Küçük çalar açıkken son satır çaların altında kalmasın
-                        Color.clear.frame(height: calar.acik ? 84 : 12)
+                        suzgecler(c).padding(.top, 6)
+                        izgara(c).padding(.top, 14)
+                        Color.clear.frame(height: calar.acik ? 96 : 24)
                     } header: {
                         ust.id("ust")
                     }
                 }
-                .padding(.bottom, 24)
             }
             .scrollIndicators(.hidden)
             .onChange(of: basaDon) { _, _ in withAnimation(.easeOut(duration: 0.35)) { kaydir.scrollTo("ust", anchor: .top) } }
@@ -133,7 +144,7 @@ struct HikayeAna: View {
         }
     }
 
-    /// `.sub-ust`: yapışkan, zemin renginde; "Hikâyeler" Newsreader 28/600, sağda büyüteç ve Ben
+    /// Yapışkan başlık: "Hikâyeler" Newsreader 28/600, sağda büyüteç ve Ben
     private var ust: some View {
         let c = HikayeRenk(r: tema.renkler)
         return HStack(spacing: 10) {
@@ -153,132 +164,8 @@ struct HikayeAna: View {
             BenDugmesi()
         }
         .padding(.leading, 22).padding(.trailing, 18)
-        .padding(.top, 8).padding(.bottom, 12)
+        .padding(.top, 8).padding(.bottom, 10)
         .background(c.zemin)
-    }
-
-    private func etiket(_ s: String, _ c: HikayeRenk, sag: String? = nil) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(s).font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc).accessibilityAddTraits(.isHeader)
-            Spacer()
-            if let sag { Text(sag).font(Yazi.sans(12)).foregroundStyle(c.yazi3) }
-        }
-        .padding(.horizontal, 22)
-        .padding(.bottom, 12)
-    }
-
-    // MARK: Öne çıkanlar
-
-    @ViewBuilder
-    private func oneCikanlar(_ c: HikayeRenk) -> some View {
-        let l = depo.oneCikanlar
-        if let ilk = l.first {
-            etiket("Öne çıkanlar", c).padding(.top, 4)
-            buyukKart(depo.satir(ilk), c)
-                .padding(.horizontal, 22)
-            if l.count > 1 {
-                ScrollView(.horizontal) {
-                    LazyHStack(spacing: 12) {
-                        ForEach(l.dropFirst()) { h in kucukKart(depo.satir(h), c) }
-                    }
-                    .padding(.horizontal, 22)
-                }
-                .scrollIndicators(.hidden)
-                .padding(.top, 12)
-            }
-        }
-    }
-
-    /// Büyük kart: 16:10 eser, alt kısmı koyu geçişli; üstüne sanatçı · Yeni ve başlık; altında özet, süreler, kalp, yer imi
-    private func buyukKart(_ s: HikayeSatiri, _ c: HikayeRenk) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Button { ac(s.id) } label: {
-                Color.clear
-                    .aspectRatio(16 / 10, contentMode: .fit)
-                    .overlay { UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 28]) }
-                    .overlay(alignment: .bottomLeading) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack(spacing: 6) {
-                                Text(s.sanatci).font(Yazi.sans(12.5, agirlik: 600))
-                                if depo.durum(s.hikaye) == .yeni {
-                                    Text("· Yeni").font(Yazi.sans(12.5, agirlik: 600)).foregroundStyle(Color(tema.renkler.pirinc))
-                                }
-                            }
-                            Text(s.hikaye.baslik)
-                                .font(Yazi.okuma(25, agirlik: 600))
-                                .tracking(-0.36)
-                                .lineLimit(2)
-                                .multilineTextAlignment(.leading)
-                        }
-                        .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.35), radius: 6, x: 0, y: 1)
-                        .padding(.horizontal, 16).padding(.bottom, 14).padding(.top, 40)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(LinearGradient(colors: [.black.opacity(0), .black.opacity(0.68)],
-                                                   startPoint: .top, endPoint: .bottom))
-                    }
-                    .clipped()
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityElement(children: .combine)
-            .accessibilityHint("Yazıyı aç")
-            .accessibilityIdentifier("hikaye-\(s.id)")
-            VStack(alignment: .leading, spacing: 8) {
-                if !s.hikaye.altBaslik.isEmpty {
-                    Text(s.hikaye.altBaslik)
-                        .font(Yazi.sans(14))
-                        .cssSatir(.sans, 14, 14 * 1.45)
-                        .foregroundStyle(c.yazi2)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                HStack(spacing: 0) {
-                    Text("\(s.okumaDk) dk okuma · \(s.dinlemeDk) dk dinleme").font(Yazi.sans(12.5)).foregroundStyle(c.yazi3)
-                    Spacer(minLength: 4)
-                    HikayeBegenDugmesi(id: s.id, boyut: 18)
-                    HikayeSonraDugmesi(id: s.id, boyut: 17)
-                }
-                .padding(.trailing, -6)
-            }
-            .padding(.horizontal, 16).padding(.top, 12).padding(.bottom, 4)
-        }
-        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(c.yuzey))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(c.kenar, lineWidth: 1))
-    }
-
-    /// Şeritteki küçük kart: solda dikey eser, sağda sanatçı, başlık, süreler
-    private func kucukKart(_ s: HikayeSatiri, _ c: HikayeRenk) -> some View {
-        Button { ac(s.id) } label: {
-            HStack(alignment: .top, spacing: 12) {
-                UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 30])
-                    .frame(width: 78, height: 96)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(s.sanatci).font(Yazi.sans(12, agirlik: 600)).foregroundStyle(c.pirinc).lineLimit(1)
-                    Text(s.hikaye.baslik)
-                        .font(Yazi.okuma(16.5, agirlik: 600))
-                        .foregroundStyle(c.yazi)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer(minLength: 0)
-                    Text("\(s.okumaDk) dk · \(s.dinlemeDk) dk dinleme").font(Yazi.sans(11.5)).foregroundStyle(c.yazi3)
-                        .lineLimit(1)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(10)
-            .frame(width: 272, height: 116)
-            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(c.yuzey))
-            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(c.kenar, lineWidth: 1))
-            .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityHint("Yazıyı aç")
-        .accessibilityIdentifier("hikaye-\(s.id)")
     }
 
     // MARK: Devam et
@@ -287,16 +174,22 @@ struct HikayeAna: View {
     private func devamEt(_ c: HikayeRenk) -> some View {
         let l = depo.devamEt
         if !l.isEmpty {
-            etiket("Devam et", c).padding(.top, 30)
-            VStack(spacing: 10) {
-                ForEach(l, id: \.hikaye.id) { d in devamSatiri(d, c) }
+            Text("Devam et").font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc)
+                .accessibilityAddTraits(.isHeader)
+                .padding(.horizontal, 22).padding(.bottom, 10)
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 10) {
+                    ForEach(l, id: \.hikaye.id) { d in devamKarti(d, c) }
+                }
+                .padding(.horizontal, 22)
             }
-            .padding(.horizontal, 22)
+            .scrollIndicators(.hidden)
+            .padding(.bottom, 14)
         }
     }
 
-    /// Yarım kalan yazı: dinlemede kalındıysa dokununca çalar kalınan yerden açılır, değilse yazı kalınan paragraftan
-    private func devamSatiri(_ d: HikayeVitrini.Devam, _ c: HikayeRenk) -> some View {
+    /// Dinlemede kalındıysa dokununca çalar kalınan yerden açılır, okumada kalındıysa yazı kalınan paragraftan
+    private func devamKarti(_ d: HikayeVitrini.Devam, _ c: HikayeRenk) -> some View {
         let s = depo.satir(d.hikaye)
         let kalan = depo.kalanDakika(d)
         return Button {
@@ -308,27 +201,25 @@ struct HikayeAna: View {
                 ac(d.hikaye.id)
             }
         } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: 10) {
                 UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 30])
-                    .frame(width: 58, height: 58)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 5) {
-                        Image(systemName: d.dinleme ? "headphones" : "book").font(.system(size: 11, weight: .semibold))
-                        Text("\(d.dinleme ? "Dinleme" : "Okuma") · \(kalan) dk kaldı")
+                    .frame(width: 50, height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 4) {
+                        Image(systemName: d.dinleme ? "headphones" : "book").font(.system(size: 10, weight: .semibold))
+                        Text("\(kalan) dk kaldı")
                     }
-                    .font(Yazi.sans(12, agirlik: 600)).foregroundStyle(c.pirinc)
-                    Text(d.hikaye.baslik).font(Yazi.okuma(17, agirlik: 600)).foregroundStyle(c.yazi).lineLimit(1)
-                    Text([s.sanatci, s.yillar].filter { !$0.isEmpty }.joined(separator: " · "))
-                        .font(Yazi.sans(12.5)).foregroundStyle(c.yazi3).lineLimit(1)
-                    HikayeCizgi(oran: d.dinleme ? dinlemeOrani(d) : d.yer.oran).padding(.top, 5)
+                    .font(Yazi.sans(11.5, agirlik: 600)).foregroundStyle(c.pirinc)
+                    Text(d.hikaye.baslik).font(Yazi.okuma(15, agirlik: 600)).foregroundStyle(c.yazi).lineLimit(1)
+                    HikayeCizgi(oran: d.dinleme ? dinlemeOrani(d) : d.yer.oran, yukseklik: 2).padding(.top, 4)
                 }
-                HikayeIkon(simge: .ileri, boyut: 16).foregroundStyle(c.yazi3)
+                .frame(width: 168, alignment: .leading)
             }
-            .padding(12)
-            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(c.yuzey))
-            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(c.kenar, lineWidth: 1))
-            .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .padding(9)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(c.yuzey))
+            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(c.kenar, lineWidth: 1))
+            .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
@@ -343,56 +234,84 @@ struct HikayeAna: View {
         return HikayeSesi.gecen(s, sira: d.yer.parca ?? 0, an: d.yer.an ?? 0) / t
     }
 
-    // MARK: Sonra oku
+    // MARK: Süzgeç
 
-    @ViewBuilder
-    private func sonraOku(_ c: HikayeRenk) -> some View {
-        let l = depo.sonraOkunacaklar
-        if !l.isEmpty {
-            etiket("Sonra oku", c, sag: "\(l.count) yazı").padding(.top, 30)
-            VStack(spacing: 0) {
-                ForEach(Array(l.prefix(4).enumerated()), id: \.element.id) { i, h in
-                    HikayeListeSatiri(hikaye: h, ac: ac, son: i == min(l.count, 4) - 1)
+    private func suzgecler(_ c: HikayeRenk) -> some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(Suzgec.allCases) { s in
+                    let secili = s == suzgec
+                    Button {
+                        Titresim.secim()
+                        withAnimation(.easeOut(duration: 0.2)) { suzgec = s }
+                    } label: {
+                        Text(s.rawValue)
+                            .font(Yazi.sans(13.5, agirlik: secili ? 600 : 500))
+                            .foregroundStyle(secili ? c.zemin : c.yazi2)
+                            .padding(.horizontal, 14)
+                            .frame(height: 34)
+                            .background(Capsule().fill(secili ? c.yazi : .clear))
+                            .overlay(Capsule().strokeBorder(secili ? .clear : c.kenar, lineWidth: 1))
+                            .frame(minHeight: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(secili ? .isSelected : [])
+                    .accessibilityIdentifier("suzgec-\(s)")
                 }
             }
             .padding(.horizontal, 22)
         }
+        .scrollIndicators(.hidden)
     }
 
-    // MARK: Tüm hikâyeler
+    // MARK: Izgara
 
-    private func tumu(_ c: HikayeRenk) -> some View {
-        Button {
-            Titresim.secim()
-            arsiv()
-        } label: {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Tüm hikâyeler").font(Yazi.okuma(21, agirlik: 600)).foregroundStyle(c.yazi)
-                    Text("\(depo.hikayeler.count) yazı · En yeni, Dönem, Beğendiklerim")
-                        .font(Yazi.sans(12.5)).foregroundStyle(c.yazi3)
+    @ViewBuilder
+    private func izgara(_ c: HikayeRenk) -> some View {
+        switch suzgec {
+        case .tumu:
+            kutular(depo.enYeni)
+        case .donem:
+            ForEach(depo.donemler, id: \.baslik) { g in
+                HStack(alignment: .firstTextBaseline) {
+                    Text(g.baslik).font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc)
+                        .accessibilityAddTraits(.isHeader)
+                    Spacer()
+                    Text("\(g.hikayeler.count) yazı").font(Yazi.sans(12)).foregroundStyle(c.yazi3)
                 }
-                Spacer(minLength: 0)
-                HikayeIkon(simge: .ileri, boyut: 18).foregroundStyle(c.yazi2)
+                .padding(.horizontal, 22).padding(.top, 10).padding(.bottom, 10)
+                kutular(g.hikayeler).padding(.bottom, 16)
             }
-            .padding(.vertical, 16)
-            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-            .contentShape(Rectangle())
+        case .begendiklerim:
+            let l = depo.begenilenler
+            if l.isEmpty { bos("Henüz beğendiğin yazı yok.", "Yazının sonundaki kalbe dokununca burada toplanır.", c) } else { kutular(l) }
+        case .sonraOku:
+            let l = depo.sonraOkunacaklar
+            if l.isEmpty { bos("Listen boş.", "Yazının sonundaki \"Sonra oku\"ya dokununca burada toplanır.", c) } else { kutular(l) }
         }
-        .buttonStyle(.plain)
-        .overlay(alignment: .top) { Rectangle().fill(c.kenar).frame(height: 1) }
-        .overlay(alignment: .bottom) { Rectangle().fill(c.kenar).frame(height: 1) }
+    }
+
+    private func kutular(_ l: [SanatciHikayesi]) -> some View {
+        LazyVGrid(columns: sutunlar, alignment: .leading, spacing: 22) {
+            ForEach(l) { h in HikayeKutusu(hikaye: h, ac: ac) }
+        }
         .padding(.horizontal, 22)
-        .padding(.top, 30)
-        .accessibilityIdentifier("hikaye-arsiv-ac")
+    }
+
+    private func bos(_ baslik: String, _ alt: String, _ c: HikayeRenk) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(baslik).font(Yazi.okuma(19, agirlik: 600)).foregroundStyle(c.yazi)
+            Text(alt).font(Yazi.sans(14)).foregroundStyle(c.yazi2).fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, 22).padding(.top, 24)
     }
 }
 
-/// Arşivde ve "Sonra oku"da bir satır: küçük kare kapak, başlık, sanatçı · yıllar, süreler ve durum; sağda kalp ve yer imi
-struct HikayeListeSatiri: View {
+/// Izgarada bir hikâye: 4:5 kapak (köşede durum), sanatçı, başlık, süre
+struct HikayeKutusu: View {
     let hikaye: SanatciHikayesi
     let ac: (String) -> Void
-    var son = false
 
     @Environment(TemaDeposu.self) private var tema
     @State private var depo = HikayeDeposu.shared
@@ -400,54 +319,56 @@ struct HikayeListeSatiri: View {
     var body: some View {
         let c = HikayeRenk(r: tema.renkler)
         let s = depo.satir(hikaye)
-        HStack(alignment: .top, spacing: 12) {
-            Button { ac(hikaye.id) } label: {
-                HStack(alignment: .top, spacing: 13) {
-                    UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 30])
-                        .frame(width: 64, height: 64)
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(hikaye.baslik)
-                            .font(Yazi.okuma(17.5, agirlik: 600))
-                            .foregroundStyle(c.yazi)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Text([s.sanatci, s.yillar].filter { !$0.isEmpty }.joined(separator: " · "))
-                            .font(Yazi.sans(13)).foregroundStyle(c.yazi2).lineLimit(1)
-                        HStack(spacing: 0) {
-                            Text("\(s.okumaDk) dk okuma · \(s.dinlemeDk) dk dinleme").foregroundStyle(c.yazi3)
-                            durumYazisi(depo.durum(hikaye), c)
+        let durum = depo.durum(hikaye)
+        Button { ac(hikaye.id) } label: {
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear
+                    .aspectRatio(4 / 5, contentMode: .fit)
+                    .overlay { UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 28]) }
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(alignment: .topLeading) { etiket(durum, c).padding(8) }
+                    .overlay(alignment: .bottom) {
+                        if let y = depo.yer(hikaye.id), y.yarim {
+                            HikayeCizgi(oran: y.oran, yukseklik: 3).padding(.horizontal, 8).padding(.bottom, 8)
                         }
-                        .font(Yazi.sans(12))
-                        .lineLimit(1)
                     }
-                    Spacer(minLength: 0)
-                }
-                .contentShape(Rectangle())
+                Text(s.sanatci).font(Yazi.sans(11.5, agirlik: 600)).foregroundStyle(c.pirinc).lineLimit(1)
+                    .padding(.top, 9)
+                Text(hikaye.baslik)
+                    .font(Yazi.okuma(16, agirlik: 600))
+                    .cssSatir(.okuma, 16, 16 * 1.25)
+                    .foregroundStyle(c.yazi)
+                    .lineLimit(3)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 2)
+                Text("\(s.okumaDk) dk okuma · \(s.dinlemeDk) dk dinleme").font(Yazi.sans(11)).foregroundStyle(c.yazi3)
+                    .lineLimit(1).minimumScaleFactor(0.85)
+                    .padding(.top, 4)
             }
-            .buttonStyle(.plain)
-            .accessibilityElement(children: .combine)
-            .accessibilityHint("Yazıyı aç")
-            .accessibilityIdentifier("hikaye-\(hikaye.id)")
-            VStack(spacing: -6) {
-                HikayeBegenDugmesi(id: hikaye.id, boyut: 17)
-                HikayeSonraDugmesi(id: hikaye.id, boyut: 16)
-            }
-            .padding(.top, -8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
         }
-        .padding(.vertical, 14)
-        .overlay(alignment: .bottom) { if !son { Rectangle().fill(c.kenar).frame(height: 1) } }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Yazıyı aç")
+        .accessibilityIdentifier("hikaye-\(hikaye.id)")
     }
 
     @ViewBuilder
-    private func durumYazisi(_ d: HikayeAkisi.Durum, _ c: HikayeRenk) -> some View {
+    private func etiket(_ d: HikayeAkisi.Durum, _ c: HikayeRenk) -> some View {
         switch d {
-        case .yeni: Text(" · Yeni").font(Yazi.sans(12, agirlik: 600)).foregroundStyle(c.pirinc)
-        case .yarim(let dk): Text(" · \(dk) dk kaldı").font(Yazi.sans(12, agirlik: 600)).foregroundStyle(c.pirinc)
-        case .okundu: Text(" · Okundu").font(Yazi.sans(12, agirlik: 600)).foregroundStyle(c.dogru)
+        case .yeni: hap("Yeni", c.pirinc)
+        case .yarim(let dk): hap("\(dk) dk kaldı", c.pirinc)
+        case .okundu: hap("Okundu", c.dogru)
         case .yok: EmptyView()
         }
+    }
+
+    private func hap(_ s: String, _ renk: Color) -> some View {
+        Text(s).font(Yazi.sans(11, agirlik: 600)).foregroundStyle(.white)
+            .padding(.horizontal, 8).frame(height: 22)
+            .background(Capsule().fill(renk))
     }
 }
 
