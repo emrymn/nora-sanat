@@ -1247,7 +1247,7 @@ private struct CalisBaslikKonumu: PreferenceKey {
 
 /// Kapağın üstündeki yazı ve haplar: tablonun üstünde durdukları için iki temada da aynı (tasarımdaki sabitler;
 /// eski kapak kartı da böyleydi). Tema renkleri değil.
-private enum KapakUstu {
+enum KapakUstu {
     /// `#141210`: görsel yüklenene kadar
     static let zemin = Color(red: 20 / 255, green: 18 / 255, blue: 16 / 255)
     /// `rgba(16, 15, 14, …)` / `rgba(18, 17, 16, …)`
@@ -1486,7 +1486,7 @@ struct CalisDevamKarti: View {
 /// döner, öbür ayrıntıya yakınlaşır. 16 sn döngü; duruşlar 0–8 %, 22–38 % (translate(−10 %, 6 %) scale(1,8)),
 /// 50–58 %, 72–90 % (translate(14 %, −4 %) scale(1,9)); eğri cubic-bezier(0.65, 0, 0.35, 1), merkez 50 % 40 %.
 /// Z3j: Swift'e geçişte eksik kalmıştı. Hareket azaltma ya da Ayarlar'da hareket kapalıysa durur.
-private struct KapakYuruyusu: ViewModifier {
+struct KapakYuruyusu: ViewModifier {
     @Environment(TemaDeposu.self) private var tema
     @Environment(\.accessibilityReduceMotion) private var hareketAz
 
