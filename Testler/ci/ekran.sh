@@ -580,7 +580,7 @@ hikayeler() {
   ilk_acilis
   # Z4f: ana ekran bütün hikâyelerin ızgarası (süzgeç: dönem, beğendiklerim); tam ekran çalar (büyük eser + altyazı). Okuma yeri ve beğeni yazan çekimler
   # (-hikayeDevam, -hikayeCalar) en sonda: öncekiler temiz telefonla (Vermeer baştan açılsın).
-  for IS in "ana|Sonra oku|-adres #/hikayeler" \
+  for IS in "ana|Diziler|-adres #/hikayeler" \
             "okuma|1632|-adres #/hikaye/johannes-vermeer" \
             "okuma-eser|nemle ba|-adres #/hikaye/johannes-vermeer -hikayeKaydir eser" \
             "dinleme|1653|-adres #/hikaye/johannes-vermeer -hikayeDinle 5" \
