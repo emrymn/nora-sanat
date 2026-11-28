@@ -71,6 +71,18 @@ public enum HikayeSesi {
     /// Kaydı olan parça
     public static func kayitli(_ p: HikayeParcasi, dizin: SesDizini?) -> Bool { (dizin?.parcalar[p.anahtar] ?? 0) > 0 }
 
+    /// Z4h: Hikâyenin ya da dizi bölümünün ses dizininde en az bir kaydı var mı?
+    public static func sesVarMi(_ h: SanatciHikayesi, dizin: SesDizini?) -> Bool {
+        guard let dizin, !dizin.parcalar.isEmpty else { return false }
+        return parcalar(h).contains { kayitli($0, dizin: dizin) }
+    }
+
+    /// Z4h: Dinle düğmesi etkin mi? Sanatçı hikâyelerinde ses yoksa telefonun sesi devreye girer;
+    /// dizi bölümlerinde ses kaydı henüz yoksa dinle düğmesi gizlenir.
+    public static func dinlenebilir(_ h: SanatciHikayesi, dizin: SesDizini?) -> Bool {
+        h.dizi == nil || sesVarMi(h, dizin: dizin)
+    }
+
     /// Paragrafın parçası: paragrafın kendisi okunmuyorsa (aynı metin daha önce geçtiyse) sonraki ilk parça
     public static func parca(paragraf no: Int, _ l: [HikayeParcasi]) -> Int? {
         if let i = l.firstIndex(where: { $0.paragraf == no }) { return i }

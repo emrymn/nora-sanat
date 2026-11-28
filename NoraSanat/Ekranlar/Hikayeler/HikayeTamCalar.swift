@@ -167,7 +167,7 @@ struct HikayeTamCalar: View {
             .buttonStyle(.plain)
             .accessibilityLabel("Çaları küçült")
             VStack(spacing: 1) {
-                Text(calar.uykuYazisi ?? depo.sanatciAdi(h.id))
+                Text(calar.uykuYazisi ?? depo.sanatciAdlari(h))
                     .font(Yazi.sans(12, agirlik: 600)).foregroundStyle(pirinc).lineLimit(1)
                 Text(h.baslik).font(Yazi.sans(13, agirlik: 600)).foregroundStyle(.white.opacity(0.9)).lineLimit(1)
             }
@@ -569,7 +569,7 @@ struct HikayeMetinYapragi: View {
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(depo.sanatciAdi(h.id)).font(Yazi.sans(13.5, agirlik: 600)).foregroundStyle(c.yazi)
+                        Text(depo.sanatciAdlari(h)).font(Yazi.sans(13.5, agirlik: 600)).foregroundStyle(c.yazi)
                             .lineLimit(1)
                         Text(calar.simdikiIsaret?.ad ?? h.baslik).font(Yazi.sans(12)).foregroundStyle(c.pirinc)
                             .lineLimit(1)
@@ -579,7 +579,8 @@ struct HikayeMetinYapragi: View {
                         Titresim.secim()
                         kapat()
                         calar.tamEkran = false
-                        Gezgin.shared.git(HikayeAdresi.yazi(h.id))
+                        let adres = h.dizi.map { HikayeAdresi.diziBolumu($0, h.id) } ?? HikayeAdresi.yazi(h.id)
+                        Gezgin.shared.git(adres)
                     } label: {
                         Text("Okumaya dön").font(Yazi.sans(13.5, agirlik: 600)).foregroundStyle(c.yazi)
                             .padding(.horizontal, 14).frame(height: 40)

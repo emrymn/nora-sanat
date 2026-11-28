@@ -45,10 +45,13 @@ final class HikayeCalari {
         isaretler.indices.contains(isaretSirasi) ? isaretler[isaretSirasi] : nil
     }
 
-    /// Sıradaki yazılar ("En yeni" sırasında bundan sonrakiler, bitirilmemiş)
+    /// Sıradaki yazılar (dizi bölümüyse o dizinin sonraki bitirilmemiş bölümleri, yoksa en yeni sırasındaki yazılar)
     var siradaki: [SanatciHikayesi] {
         guard let h = hikaye else { return [] }
         let d = HikayeDeposu.shared
+        if h.dizi != nil {
+            return d.sonrakiBolumler(h).map(\.hikaye).filter { d.dinlenebilir($0) }
+        }
         return HikayeVitrini.siradaki(d.hikayeler, simdiki: h.id, yerler: d.yerler)
     }
 
@@ -437,7 +440,7 @@ final class HikayeCalari {
     }
 
     private func kapagiYukle(_ h: SanatciHikayesi) async {
-        guard let u = HikayeDeposu.shared.kucukAdres(h.kapakQid, sanatci: h.id, genislik: 640) else { return }
+        guard let u = HikayeDeposu.shared.kapakAdresi(h, genislik: 640) else { return }
         let r = await GorselCozucu.shared.resim(u, piksel: 640)
         if hikaye?.id == h.id { kapak = r }
     }
@@ -473,10 +476,11 @@ final class HikayeCalari {
 
     private func simdiCalan() {
         guard let h = hikaye else { return }
+        let depo = HikayeDeposu.shared
         var bilgi: [String: Any] = [
             MPMediaItemPropertyTitle: h.baslik,
-            MPMediaItemPropertyArtist: HikayeDeposu.shared.sanatciAdi(h.id),
-            MPMediaItemPropertyAlbumTitle: "Hikâyeler",
+            MPMediaItemPropertyArtist: depo.sanatciAdlari(h),
+            MPMediaItemPropertyAlbumTitle: depo.diziAdi(h) ?? "Hikâyeler",
             MPMediaItemPropertyPlaybackDuration: toplam,
             MPNowPlayingInfoPropertyElapsedPlaybackTime: gecen,
             MPNowPlayingInfoPropertyPlaybackRate: caliyor ? hiz : 0.0,

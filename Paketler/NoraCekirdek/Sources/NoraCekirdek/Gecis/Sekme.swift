@@ -143,11 +143,14 @@ public enum SiteRotalari {
     }
 }
 
-/// Z4b · Hikâyeler'in adresleri (sitede yok; uygulama içi): "#/hikayeler" ana ekran, "#/hikaye/<sanatçı>" yazı.
+/// Z4b · Hikâyeler'in adresleri (sitede yok; uygulama içi): "#/hikayeler" ana ekran, "#/hikaye/<sanatçı>" yazı,
+/// Z4h: "#/dizi/<dizi>" dizi sayfası, "#/dizi/<dizi>/<bölüm>" dizi bölümü.
 public enum HikayeAdresi {
     public static let kok = "#/hikayeler"
 
     public static func yazi(_ sanatci: String) -> String { "#/hikaye/\(sanatci)" }
+    public static func dizi(_ id: String) -> String { "#/dizi/\(id)" }
+    public static func diziBolumu(_ dizi: String, _ bolum: String) -> String { "#/dizi/\(dizi)/\(bolum)" }
 
     /// Adres bir yazınınsa sanatçının kimliği
     public static func sanatci(_ adres: String) -> String? {
@@ -157,5 +160,20 @@ public enum HikayeAdresi {
         return id.isEmpty || id.contains("/") ? nil : id.removingPercentEncoding ?? id
     }
 
-    static func sekmeninMi(_ h: String) -> Bool { h == kok || sanatci(h) != nil }
+    /// "#/dizi/<dizi>" ya da "#/dizi/<dizi>/<bölüm>" → (dizi, bolum?)
+    public static func diziYolu(_ adres: String) -> (dizi: String, bolum: String?)? {
+        let h = SiteRotalari.hash(adres)
+        guard h.hasPrefix("#/dizi/") else { return nil }
+        let parcalar = String(h.dropFirst("#/dizi/".count))
+            .split(separator: "/", omittingEmptySubsequences: false)
+            .map { String($0).removingPercentEncoding ?? String($0) }
+        guard !parcalar.isEmpty, !parcalar[0].isEmpty, parcalar.count <= 2 else { return nil }
+        if parcalar.count == 2 {
+            guard !parcalar[1].isEmpty else { return nil }
+            return (parcalar[0], parcalar[1])
+        }
+        return (parcalar[0], nil)
+    }
+
+    static func sekmeninMi(_ h: String) -> Bool { h == kok || sanatci(h) != nil || diziYolu(h) != nil }
 }

@@ -34,6 +34,8 @@ final class HikayeDeposu {
 
     private(set) var durum: Durum = .yukleniyor
     private(set) var hikayeler: [SanatciHikayesi] = []
+    /// Z4h: data/diziler.json (K3: SiteVerisi ile iner ve önbelleğe alınır)
+    private(set) var diziKatalogu = DiziKatalogu.bos
     private(set) var katalog: SiteKatalogu?
     private(set) var dizin: SesDizini?
     private(set) var yerler: [String: OkumaYeri] = [:]
@@ -75,9 +77,11 @@ final class HikayeDeposu {
     private func indir(zorla: Bool) async {
         let site = self.site
         async let veri = site.veri(HikayeVerisi.dosya, zorla: zorla)
+        async let diziVeri = site.veri(DiziVerisi.dosya, zorla: zorla)
         async let kat = SayacDeposu.katalogu()
         async let sesDizini = DinleSesKaynagi.shared.dizin()
         let l = HikayeVerisi.coz(await veri)
+        let dz = DiziVerisi.coz(await diziVeri)
         let k = await kat
         let d = await sesDizini
         let il = try? await IlerlemeKoprusu.shared.oku()
@@ -88,8 +92,9 @@ final class HikayeDeposu {
         dizin = d
         kotuler = il?.kotuGorseller ?? [:]
         hikayeler = l
+        diziKatalogu = dz
         yeniler = HikayeVitrini.yeniler(l)
-        durum = l.isEmpty ? .yok : .hazir
+        durum = l.isEmpty && dz.bosMu ? .yok : .hazir
     }
 
     // MARK: Okuma yerleri
@@ -121,12 +126,58 @@ final class HikayeDeposu {
         if let v = try? JSONEncoder().encode(kitaplik) { UserDefaults.standard.set(v, forKey: Self.kitaplikAnahtari) }
     }
 
-    var begenilenler: [SanatciHikayesi] { kitaplik.begenilenler(hikayeler) }
-    var sonraOkunacaklar: [SanatciHikayesi] { kitaplik.sonraOkunacaklar(hikayeler, yerler: yerler) }
+    /// Tüm hikâyeler ve dizi bölümleri (Devam et, Beğendiklerim, Sonra oku için)
+    private var tumYazilar: [SanatciHikayesi] { hikayeler + diziKatalogu.tumBolumler.map(\.hikaye) }
+
+    var begenilenler: [SanatciHikayesi] { kitaplik.begenilenler(tumYazilar) }
+    var sonraOkunacaklar: [SanatciHikayesi] { kitaplik.sonraOkunacaklar(tumYazilar, yerler: yerler) }
     var oneCikanlar: [SanatciHikayesi] { HikayeVitrini.oneCikanlar(hikayeler, yerler: yerler) }
-    var devamEt: [HikayeVitrini.Devam] { HikayeVitrini.devamEt(hikayeler, yerler: yerler) }
+    var devamEt: [HikayeVitrini.Devam] { HikayeVitrini.devamEt(tumYazilar, yerler: yerler) }
     var enYeni: [SanatciHikayesi] { HikayeVitrini.enYeni(hikayeler) }
     var donemler: [HikayeVitrini.DonemGrubu] { HikayeVitrini.donemler(hikayeler) { self.sanatci($0)?.dogum } }
+
+    // MARK: Diziler (Z4h)
+
+    var diziler: [Dizi] { DiziKurallari.sirala(diziKatalogu, yerler: yerler) }
+    func dizi(_ id: String) -> Dizi? { diziKatalogu.dizi(id) }
+    func diziBolumu(_ id: String) -> DiziBolumu? { diziKatalogu.bolum(id) }
+    func diziBolumleri(_ diziId: String) -> [DiziBolumu] { diziKatalogu.bolumleri(diziId) }
+    func diziAdi(_ h: SanatciHikayesi) -> String? { h.dizi.flatMap { dizi($0)?.ad } }
+    func diziIlerleme(_ d: Dizi) -> DiziIlerleme { DiziKurallari.ilerleme(d, katalog: diziKatalogu, yerler: yerler) }
+    func bolumDurumu(_ b: DiziBolumu) -> DiziKurallari.BolumDurumu { DiziKurallari.bolumDurumu(b, yer: yer(b.id)) }
+    func siradakiBolum(_ d: Dizi) -> DiziBolumu? { DiziKurallari.siradakiBolum(d, katalog: diziKatalogu, yerler: yerler) }
+    func diziOkumaDakikasi(_ d: Dizi) -> Int { DiziKurallari.toplamOkumaDakikasi(d, katalog: diziKatalogu) }
+
+    func sonrakiBolumler(_ h: SanatciHikayesi, enCok: Int = 2) -> [DiziBolumu] {
+        guard let did = h.dizi else { return [] }
+        return DiziKurallari.siradaki(diziKatalogu, diziId: did, simdikiBolumId: h.id, yerler: yerler, enCok: enCok)
+    }
+
+    func ilgiliSanatciHikayeleri(_ h: SanatciHikayesi) -> [SanatciHikayesi] {
+        var gorulen = Set<String>()
+        return h.sanatcilar.compactMap { sid in
+            guard gorulen.insert(sid).inserted else { return nil }
+            return hikaye(sid)
+        }
+    }
+
+    func diziKapaklari(_ d: Dizi, enCok: Int = 3, genislik: Int = 800) -> [HikayeEserBilgisi] {
+        DiziKurallari.kapakEserleri(d, katalog: diziKatalogu, enCok: enCok)
+            .compactMap { eser($0, varsayilanSanatci: $0.sanatci ?? "", genislik: genislik) }
+    }
+
+    func diziZeminTablosu(_ d: Dizi) -> URL? {
+        guard let ilk = DiziKurallari.kapakEserleri(d, katalog: diziKatalogu, enCok: 1).first else { return nil }
+        return eser(ilk, varsayilanSanatci: ilk.sanatci ?? "", genislik: 400)?.url
+    }
+
+    func diziDonem(_ d: Dizi) -> String? {
+        DiziKurallari.donemSanatcisi(d, katalog: diziKatalogu).flatMap(donem)
+    }
+
+    func dinlenebilir(_ h: SanatciHikayesi) -> Bool { HikayeSesi.dinlenebilir(h, dizin: dizin) }
+
+    func yaziVeyaBolum(_ id: String) -> SanatciHikayesi? { hikaye(id) ?? diziBolumu(id)?.hikaye }
 
     /// Satırın durumu: "Yeni" yalnız en yeni dört yazıda (Z4e; önce son 7 günün hepsindeydi)
     func durum(_ h: SanatciHikayesi) -> HikayeAkisi.Durum {
@@ -163,12 +214,12 @@ final class HikayeDeposu {
         } else {
             b = h.bolumler.first { !$0.eserler.isEmpty }
         }
-        return (b?.eserler ?? []).compactMap { eser($0.qid, sanatci: h.id) }
+        return (b?.eserler ?? []).compactMap { eser($0, varsayilanSanatci: h.id) }
     }
 
     /// Hikâyede anılmayan öbür eserleri (katalogdan; görseli olan, en çok `enCok`): yazının sonundaki "Daha fazla eser"
     func digerEserler(_ h: SanatciHikayesi, enCok: Int = 12) -> [Eser] {
-        guard let k = katalog else { return [] }
+        guard h.dizi == nil, let k = katalog else { return [] }
         let anilan = Set(h.bolumler.flatMap(\.eserler).map(\.qid))
         return Array(k.eserler(h.id).filter { !$0.gorseller.isEmpty && !anilan.contains($0.qid ?? "") }.prefix(enCok))
     }
@@ -177,8 +228,9 @@ final class HikayeDeposu {
     func hikayeEserleri(_ h: SanatciHikayesi) -> [Eser] {
         var gorulen = Set<String>()
         return h.bolumler.flatMap(\.eserler).compactMap { e in
-            guard gorulen.insert(e.qid).inserted else { return nil }
-            return eser(e.qid, sanatci: h.id)?.eser
+            let k = e.kimlik
+            guard !k.isEmpty, gorulen.insert(k).inserted else { return nil }
+            return eser(e, varsayilanSanatci: h.id)?.eser
         }
     }
 
@@ -186,6 +238,10 @@ final class HikayeDeposu {
     func donem(_ id: String) -> String? {
         guard let k = katalog, let s = sanatci(id) else { return nil }
         return GaleriDonem.akimin(k, s.akim)
+    }
+
+    func donem(_ h: SanatciHikayesi) -> String? {
+        h.ilgiliSanatcilar.lazy.compactMap(donem).first
     }
 
     func gorselAdresi(_ e: Eser, genislik: Int) -> URL? { katalog?.gorselAdresi(e, genislik: genislik, kotuler: kotuler) }
@@ -215,13 +271,21 @@ final class HikayeDeposu {
     /// Sanatçının adı (katalogda yoksa bağlantıdaki ya da kimlikten)
     func sanatciAdi(_ id: String) -> String { sanatci(id)?.ad ?? id.replacingOccurrences(of: "-", with: " ").capitalized }
 
+    /// Yazı ya da dizi bölümünün sanatçı satırı ("Leonardo da Vinci · Michelangelo")
+    func sanatciAdlari(_ h: SanatciHikayesi) -> String {
+        if !h.sanatcilar.isEmpty {
+            return h.sanatcilar.map(sanatciAdi).joined(separator: " · ")
+        }
+        return sanatciAdi(h.id)
+    }
+
     func yillar(_ id: String) -> String {
         guard let s = sanatci(id) else { return "" }
         return SiteYazisi.yillarYaz(dogum: s.dogum, olum: s.olum)
     }
 
     /// Hikâyedeki eser (qid → katalogdaki eser). Hikâyeler eserleri yalnız katalogdan anar; bulunamayan eser gösterilmez.
-    func eser(_ qid: String, sanatci sid: String) -> HikayeEserBilgisi? {
+    func eser(_ qid: String, sanatci sid: String, genislik: Int = 1280) -> HikayeEserBilgisi? {
         if eserBellegi[sid] == nil, let k = katalog {
             var m: [String: Eser] = [:]
             for e in k.eserler(sid) { if let q = e.qid, m[q] == nil { m[q] = e } }
@@ -231,9 +295,52 @@ final class HikayeDeposu {
         let g = GorselAdresleri.secilen(e, kotuler: kotuler) ?? e.gorseller.first
         return HikayeEserBilgisi(
             eser: e,
-            url: k.gorselAdresi(e, genislik: 1280, kotuler: kotuler),
+            url: k.gorselAdresi(e, genislik: genislik, kotuler: kotuler),
             yedek: g.flatMap { GorselAdresleri.url(k.gorsel.yedek($0)) },
             oran: g.flatMap { k.gorsel.oran($0) })
+    }
+
+    /// Z4h: hem `qid` hem `commons` (Wikimedia Commons dosya adı) destekli eser çözücü.
+    func eser(_ e: HikayeEseri, varsayilanSanatci sid: String, genislik: Int = 1280) -> HikayeEserBilgisi? {
+        let s = e.sanatciKimligi(varsayilan: sid)
+        if !e.qid.isEmpty { return eser(e.qid, sanatci: s, genislik: genislik) }
+        guard let dosya = e.commons, !dosya.isEmpty else { return nil }
+        let norm = SiteYazisi.dosyaNormal(dosya)
+        let normKucuk = norm.lowercased()
+        if let k = katalog {
+            if let katalogEseri = k.eserler(s).first(where: { es in
+                es.gorseller.contains { $0.k == "commons" && SiteYazisi.dosyaNormal($0.d).lowercased() == normKucuk }
+            }) {
+                let g = GorselAdresleri.secilen(katalogEseri, kotuler: kotuler) ?? katalogEseri.gorseller.first
+                return HikayeEserBilgisi(
+                    eser: katalogEseri,
+                    url: k.gorselAdresi(katalogEseri, genislik: genislik, kotuler: kotuler),
+                    yedek: g.flatMap { GorselAdresleri.url(k.gorsel.yedek($0)) },
+                    oran: g.flatMap { k.gorsel.oran($0) })
+            }
+            let kurs = sanatci(s)?.kursEserleri.first { SiteYazisi.dosyaNormal($0.commonsDosya).lowercased() == normKucuk }
+            let es = DiziKurallari.commonsEseri(dosya: norm, sanatci: s, kurs: kurs)
+            let g = es.gorseller.first
+            return HikayeEserBilgisi(
+                eser: es,
+                url: g.flatMap { GorselAdresleri.url(k.gorsel.url($0, genislik: genislik)) },
+                yedek: g.flatMap { GorselAdresleri.url(k.gorsel.yedek($0)) },
+                oran: g.flatMap { k.gorsel.oran($0) })
+        }
+        let es = DiziKurallari.commonsEseri(dosya: norm, sanatci: s)
+        return HikayeEserBilgisi(
+            eser: es,
+            url: GorselAdresleri.url(GorselAdresleri.commonsKucuk(norm, genislik: genislik)),
+            yedek: GorselAdresleri.url(SiteYazisi.resimUrl(norm, genislik: 800)),
+            oran: nil)
+    }
+
+    func kapakEseri(_ h: SanatciHikayesi, genislik: Int = 1280) -> HikayeEserBilgisi? {
+        h.kapakEseri.flatMap { eser($0, varsayilanSanatci: h.id, genislik: genislik) }
+    }
+
+    func kapakAdresi(_ h: SanatciHikayesi, genislik: Int = 400) -> URL? {
+        kapakEseri(h, genislik: genislik)?.url
     }
 
     func kucukAdres(_ qid: String?, sanatci sid: String, genislik: Int = 400) -> URL? {
@@ -246,8 +353,8 @@ final class HikayeDeposu {
         if let s = satirBellegi[h.id] { return s }
         let parcalar = HikayeSesi.parcalar(h)
         let sn = HikayeSesi.sureler(parcalar, dizin: dizin).reduce(0, +)
-        let kapak = h.kapakQid.flatMap { eser($0, sanatci: h.id) }
-        let s = HikayeSatiri(hikaye: h, sanatci: sanatciAdi(h.id), yillar: yillar(h.id),
+        let kapak = kapakEseri(h, genislik: 1280)
+        let s = HikayeSatiri(hikaye: h, sanatci: sanatciAdlari(h), yillar: h.dizi == nil ? yillar(h.id) : "",
                              okumaDk: HikayeAkisi.okumaDakikasi(kelime: h.kelime), dinlemeDk: HikayeAkisi.dakika(sn),
                              kapak: kapak?.url, kapakYedek: kapak?.yedek)
         satirBellegi[h.id] = s

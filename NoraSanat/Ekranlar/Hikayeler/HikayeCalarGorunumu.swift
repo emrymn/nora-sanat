@@ -134,7 +134,7 @@ struct HikayeMiniCalar: View {
                 .frame(width: 42, height: 42)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("\(HikayeDeposu.shared.sanatciAdi(h.id)) · \(calar.bolumBasligi)")
+                    Text("\(HikayeDeposu.shared.sanatciAdlari(h)) · \(calar.bolumBasligi)")
                         .font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.yazi).lineLimit(1)
                     Text(calar.paragrafMetni)
                         .font(Yazi.okuma(13)).foregroundStyle(c.yazi2).lineLimit(1)
@@ -180,7 +180,10 @@ struct HikayeMiniCalar: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Hikâye çaları: \(h.baslik)")
         .accessibilityAction(named: "Çaları aç") { calar.tamEkran = true }
-        .accessibilityAction(named: "Yazıya dön") { Gezgin.shared.git(HikayeAdresi.yazi(h.id)) }
+        .accessibilityAction(named: "Yazıya dön") {
+            let adres = h.dizi.map { HikayeAdresi.diziBolumu($0, h.id) } ?? HikayeAdresi.yazi(h.id)
+            Gezgin.shared.git(adres)
+        }
         .accessibilityIdentifier("hikaye-mini")
     }
 }
@@ -209,6 +212,7 @@ enum HikayeProva {
     static func kaydir() -> String? {
         switch NoraSanatApp.arguman("-hikayeKaydir") {
         case "eser": return "e0-1"
+        case "bolum": return "h1"
         case "son": return "son"
         default: return nil
         }

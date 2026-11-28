@@ -197,6 +197,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z4e | Hikâyeler 4. tur: Neon PR #83'ün karışığı (Yön 2 ana ekran: öne çıkanlar, devam et, sonra oku; arşiv: en yeni · dönem · beğendiklerim; beğeni/sonra oku; Yön 1 tam ekran çalar: bölümler, uyku, metin, hız, sıradaki/otomatik) + dinlerken arka planda bölümün eseri, daha fazla eser | K | Z4b | 1 | bitti (#84) |
 | Z4f | Emre'nin düzeltmeleri: çubuk Bugün · Hikâyeler · Yolculuk · Çalış · Galeri; Hikâyeler ana ekranı bütün hikâyelerin kapak ızgarası (süzgeç: Tümü · Dönem · Beğendiklerim · Sonra oku; üstte Devam et); dinleme büyük eser + altyazı (kelime kelime); okurken dinlenen paragraf renkle ilerler | K | Z4e | 1 | bitti (#85) |
 | Z4g | Hikâyeler öne çıkanlar (Neon): üstte Çalış'taki gibi tam ekran öne çıkanlar (5 sayfa, Oku/Dinle, 8 sn otomatik geçiş, kaydırınca buzlu cam üst çubuk), altta Devam et + Bütün hikâyeler ızgarası | — | Z4f | 1 | bitti (#86) |
+| Z4h | Hikâyeler'e "Diziler" rafı (Neon): `data/diziler.json`, öne çıkanlardan sonra yatay dizi rafı (3'lü kapak kolajı), dizi sayfası, mevcut `HikayeOkuma`/`HikayeCalari` ile bölüm okuma ve dinleme (`qid` + `commons`), ses yoksa Dinle gizli | — | Z4g | 1 | PR açık |
 | Z4d | Xcode Run telefona Release derlesin, hata ayıklayıcı bağlanmasın (Akımlar kasması bundanmış) | K | — | 1 | bitti (#79) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1356,6 +1357,22 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Dokunulan dosyalar:** `NoraSanat/Ekranlar/Hikayeler/HikayelerSekmesi.swift`, `NoraSanat/Ekranlar/Calis/CalisAnaGorunumu.swift` (yalnız `KapakUstu` ve `KapakYuruyusu`'ndan `private` kaldırıldı), `koordinasyon/ISLER.md`.
 - **Doğrulama:** iPhone 17 simülatöründe derlendi ve Gece / Gündüz (üst ve aşağı kaydırılmış) dört ekran görüntüsüyle doğrulandı.
 - **Sonra:** Claude denetledi (derle yeşil), Emre ekran görüntülerine bakıp "güzel olmuş" dedi; birleştirildi (#86).
+
+### Z4h · Hikâyeler'e "Diziler" rafı (Neon)
+**Devir notu:** 2026-11-28 · dal `neon/diziler`. Kaynak veri biçimi: `sanat-atlasi` `diziler/PLAN.md` ve `data/diziler.json` (PR #280 `claude/dizi-dueller` @ `57257c3`; `Düellolar`, 3 bölüm).
+- **Veri ve indirme:** `HikayeDeposu.indir` artık `SiteVerisi.veri(DiziVerisi.dosya)` ile `data/diziler.json`'ı `sanatci_hikayeleri.json` ile aynı yoldan indirir ve önbelleğe alır (K3; sitede henüz yayınlanmadıysa ya da dosya yoksa raf sessizce gizlenir).
+- **Çekirdek (`Paketler/NoraCekirdek`):**
+  - `Hikayeler/Dizi.swift`: `Dizi`, `DiziBolumu`, `DiziKatalogu`, `DiziVerisi.coz`, `DiziIlerleme`, `DiziKurallari` (`sirala`: yarım kalanlar en başta, başlanmamışlar dosya sırasında, bitenler sonda; `kapakEserleri`: bölümlerden dönüşümlü en çok 3 tekil eser; `ilerleme` ve `bolumDurumu`; `siradakiBolum` ve `siradaki`; `toplamOkumaDakikasi`; `donemSanatcisi`; `ara`; `commonsEseri`).
+  - `Hikayeler/SanatciHikayesi.swift`: `HikayeEseri`'ne opsiyonel `sanatci` ve `commons` (Wikimedia Commons dosya adı) + `kimlik` eklendi; `SanatciHikayesi`'ne opsiyonel `dizi`, `sanatcilar`, `bolumSirasi`, `kapakEseri` ve `ilgiliSanatcilar` eklendi (mevcut sanatçı hikâyeleriyle tam uyumlu).
+  - `Hikayeler/HikayeSesi.swift`: `sesVarMi` ve `dinlenebilir` (sanatçı hikâyelerinde ses yoksa telefonun sesi sürer; dizi bölümlerinde ses kaydı henüz yoksa `false` → ses eklendiğinde otomatik açılır).
+  - `Gecis/Sekme.swift`: `HikayeAdresi.dizi(_:)`, `diziBolumu(_:_:)`, `diziYolu(_:)` (`#/dizi/<dizi>` ve `#/dizi/<dizi>/<bolum>`).
+  - Testler: `DizilerTests.swift` (5 test grubu) ve `Ornekler/hikayeler/diziler.json`; tüm paket testleri (271 test, 0 hata) geçti.
+- **Ekranlar (`NoraSanat/Ekranlar/Hikayeler/`):**
+  - `DiziSayfasi.swift` (yeni): `DiziKolaj` (3'lü editoryal kolaj / ikili / tek kapak), `DiziKarti` (tek dizide tam genişlik, çok dizide yatay kaydırmalı kart; durum rozeti, bölüm sayısı ve toplam süre, açıklama, ilerleme çizgisi), `DiziSayfasi` (kapak kolajı, başlık, açıklama, ilerleme özeti, başla/devam et düğmesi ve sırayla bölümler: numara, başlık, alt başlık, sanatçı adları, süre, okundu/yarım işareti; `SayfaZemini` halesi ve dönem deseniyle).
+  - `HikayelerSekmesi.swift`: `HikayeRota` (`.yazi`, `.dizi`, `.bolum`), `HikayeAna`'da öne çıkanlar + Devam et'ten sonra, "Bütün hikâyeler"den önce `Diziler` rafı; `HikayeArama` dizi bölümlerini de arar.
+  - `HikayeOkuma.swift`, `HikayeDeposu.swift`, `HikayeCalari.swift`, `HikayeCalarGorunumu.swift`, `HikayeTamCalar.swift`: yeni okuyucu/çalar yazılmadan mevcut yapılar dizi bölümlerini, çoğul sanatçı adlarını, `qid` + `commons` eserlerini (kurs eserinden künye + R2/Commons küçük resim) ve dizi içi sıradaki bölümleri destekleyecek biçimde genişletildi. Ses kaydı olmayan bölümlerde `Dinle` düğmesi (başlık ve üst çubuk) gizlenir.
+- **Doğrulama:** `swift test` (271/271 yeşil), iPhone 17 simülatöründe `CODE_SIGNING_ALLOWED=NO` ile derlendi, Gece ve Gündüz'de 4×2 = 8 ekran görüntüsü (ana ekranda raf, dizi sayfası, bölüm okuma ve kaydırılmış hâli) alındı. `project.pbxproj`'a dokunulmadı.
+- **Not:** `data/diziler.json` canlı sitede henüz yayınlanmadığı için (sanat-atlasi PR #280 birleşmeyi bekliyor) simülatörde `SiteVerisi` önbellek yoluna (`Library/Caches/SiteVerisi/diziler.json`) konularak sınandı.
 
 ### Fikir havuzu (henüz iş değil)
 - Bildirimde soru (tekrar hatırlatmasında resim ve şıklar)
