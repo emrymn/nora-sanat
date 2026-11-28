@@ -51,6 +51,8 @@ struct BugunHayati: View {
     .frame(maxWidth: .infinity, alignment: .leading)
     .buttonStyle(.plain).padding(.horizontal, 24).foregroundStyle(YurRenk.yazi)
     .onDisappear { AdOkuyucu.shared.durdur() }
+    // Z4i: hikâye kartı için (Hikâyeler sekmesi hiç açılmamış olabilir)
+    .task { await HikayeDeposu.shared.yukle() }
   }
 
   /// `.yur-son`: sütun, aralık 14
@@ -61,6 +63,8 @@ struct BugunHayati: View {
       Text("Resmi gezdin.").font(Yazi.serif(40)).cssSatir(.serif, 40, 42).padding(.bottom, 6)
         .accessibilityAddTraits(.isHeader)
       turKarti.id("tur")
+      // Z4i: günün sanatçısının hikâyesi (varsa)
+      SanatciHikayeKarti(sanatci: s.tablo.sanatciId, renk: .bugun)
       HStack(spacing: 12) {
         karo(adres: "#/sanatci/" + s.tablo.sanatciId, baslik: s.ad.son, alt: "Sanatçı sayfası") {
           Text(String(s.ad.son.prefix(1))).font(Yazi.serif(26)).foregroundStyle(pirinc)

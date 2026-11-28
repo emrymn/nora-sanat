@@ -553,6 +553,13 @@ yolculuk() {
     done
     "$RUNNER_TEMP/yan-yana" "ekranlar/site-yolculuk-$AD.png" "ekranlar/yerli-yolculuk-$AD.png" "ekranlar/yan-yana-yolculuk-$AD.png"
   done
+  # Z4i: durak penceresinin altı (konunun hikâyeleri şeridi), yalnız yerli
+  xcrun simctl terminate "$UDID" "$PAKET" || true
+  rm -f "$VERI/tmp/yolculuk-hazir" "$VERI/tmp/yolculuk-hata"
+  xcrun simctl launch "$UDID" "$PAKET" -yerliSekme yolculuk -adres "#/harita" -yolculukProva durak -pencereAlta -izinSorma
+  hazir_yolculuk durak
+  sleep 5
+  xcrun simctl io "$UDID" screenshot "ekranlar/yerli-yolculuk-durak-hikayeler.png"
   # Z3y: yanlış cevapta yelpazenin iki kartı döner (yalnız yerli; sitede bu tasarım yok)
   xcrun simctl terminate "$UDID" "$PAKET" || true
   rm -f "$VERI/tmp/yolculuk-hazir" "$VERI/tmp/yolculuk-hata"
@@ -584,7 +591,10 @@ hikayeler() {
             "ana-devam|Devam et|-adres #/hikayeler -hikayeDevam" \
             "begendiklerim|Vermeer|-adres #/hikayeler -hikayeSuzgec begendiklerim" \
             "calar|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer" \
-            "calar-gunduz|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz"; do
+            "calar-gunduz|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz" \
+            "kopru-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer" \
+            "kopru-sanatci-dizi|dk okuma|-adres #/sanatci/michelangelo" \
+            "kopru-galeride|Sanatçı sayfası|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride"; do
     AD="${IS%%|*}"; GERI="${IS#*|}"; SOZ="${GERI%%|*}"; ARGS="${GERI#*|}"
     xcrun simctl terminate "$UDID" "$PAKET" || true
     # shellcheck disable=SC2086

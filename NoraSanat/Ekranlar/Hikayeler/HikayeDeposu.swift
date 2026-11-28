@@ -142,6 +142,8 @@ final class HikayeDeposu {
     func dizi(_ id: String) -> Dizi? { diziKatalogu.dizi(id) }
     func diziBolumu(_ id: String) -> DiziBolumu? { diziKatalogu.bolum(id) }
     func diziBolumleri(_ diziId: String) -> [DiziBolumu] { diziKatalogu.bolumleri(diziId) }
+    /// Z4i: sanatçının geçtiği dizi bölümleri (sanatçı sayfası, Bugün)
+    func sanatcininBolumleri(_ sanatci: String) -> [DiziBolumu] { diziKatalogu.sanatcininBolumleri(sanatci) }
     func diziAdi(_ h: SanatciHikayesi) -> String? { h.dizi.flatMap { dizi($0)?.ad } }
     func diziIlerleme(_ d: Dizi) -> DiziIlerleme { DiziKurallari.ilerleme(d, katalog: diziKatalogu, yerler: yerler) }
     func bolumDurumu(_ b: DiziBolumu) -> DiziKurallari.BolumDurumu { DiziKurallari.bolumDurumu(b, yer: yer(b.id)) }

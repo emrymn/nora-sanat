@@ -53,6 +53,15 @@ final class DizilerTests: XCTestCase {
         XCTAssertEqual(b1.hikaye.kapakQid, "Q12418")
     }
 
+    /// Z4i: sanatçının geçtiği bölümler
+    func testSanatcininBolumleri() throws {
+        let k = try katalog()
+        XCTAssertEqual(k.sanatcininBolumleri("michelangelo").map(\.id), ["dueller-leonardo-michelangelo"])
+        XCTAssertEqual(k.sanatcininBolumleri("caravaggio").map(\.id), ["dueller-caravaggio-baglione"])
+        XCTAssertEqual(k.sanatcininBolumleri("yok-boyle-biri"), [])
+        XCTAssertEqual(DiziKatalogu.bos.sanatcininBolumleri("michelangelo"), [])
+    }
+
     func testBozukVeEksikVeri() {
         XCTAssertTrue(DiziVerisi.coz(nil).bosMu)
         XCTAssertTrue(DiziVerisi.coz(Data("{".utf8)).bosMu)
