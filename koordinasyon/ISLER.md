@@ -199,6 +199,7 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z4g | Hikâyeler öne çıkanlar (Neon): üstte Çalış'taki gibi tam ekran öne çıkanlar (5 sayfa, Oku/Dinle, 8 sn otomatik geçiş, kaydırınca buzlu cam üst çubuk), altta Devam et + Bütün hikâyeler ızgarası | — | Z4f | 1 | bitti (#86) |
 | Z4h | Hikâyeler'e "Diziler" rafı (Neon): `data/diziler.json`, öne çıkanlardan sonra yatay dizi rafı (3'lü kapak kolajı), dizi sayfası, mevcut `HikayeOkuma`/`HikayeCalari` ile bölüm okuma ve dinleme (`qid` + `commons`), ses yoksa Dinle gizli | — | Z4g | 1 | bitti (#89) |
 | Z4i | Hikâyeler'i uygulamaya bağla (Emre: "daha bütüncül"): sanatçı sayfasında hikâye kartı ve "Dizilerde", Yolculuk durak penceresinde konunun hikâyeleri, Bugün'de günün sanatçısının hikâyesi, okumanın sonunda "Galeride" | K | Z4h | 1 | PR açık (#90) |
+| Z4j | Yazı takımı denemesi (Emre v0'da seçti): Playfair Display · EB Garamond · Outfit ve Syne · EB Garamond · Jost; Ayarlar'da "Yazı takımı", CI'da iki takımın ekran görüntüleri | K | Z4i | 1 | sürüyor (Claude, 2026-11-28) |
 | Z4d | Xcode Run telefona Release derlesin, hata ayıklayıcı bağlanmasın (Akımlar kasması bundanmış) | K | — | 1 | bitti (#79) |
 
 **Sekmeler ne zaman yerli olur:**
