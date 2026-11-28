@@ -594,7 +594,7 @@ hikayeler() {
             "calar-gunduz|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz" \
             "kopru-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer" \
             "kopru-sanatci-dizi|dk okuma|-adres #/sanatci/michelangelo" \
-            "kopru-galeride|Sanatçı sayfası|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride"; do
+            "kopru-galeride|eserleri|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride"; do
     AD="${IS%%|*}"; GERI="${IS#*|}"; SOZ="${GERI%%|*}"; ARGS="${GERI#*|}"
     xcrun simctl terminate "$UDID" "$PAKET" || true
     # shellcheck disable=SC2086
