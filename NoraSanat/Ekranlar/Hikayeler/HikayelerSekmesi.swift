@@ -221,7 +221,7 @@ struct HikayeAna: View {
                         if HikayeProva.suzgec != .tumu {
                             hedef = ("butun-hikayeler", UnitPoint(x: 0.5, y: 0.15))
                         } else if args.contains("-hikayeDevam") {
-                            hedef = ("devam", UnitPoint(x: 0.5, y: 0.12))
+                            hedef = ("devam", UnitPoint(x: 0.5, y: 0.3))
                         } else if args.contains("-hikayeAsagi") {
                             hedef = depo.diziler.isEmpty ? ("butun-hikayeler", UnitPoint(x: 0.5, y: 0.15))
                                 : ("diziler", UnitPoint(x: 0.5, y: 0.26))
