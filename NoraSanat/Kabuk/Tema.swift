@@ -63,28 +63,60 @@ extension UIColor {
 /// Üçü de değişken yazı tipi: ağırlık (`wght`) ve optik boyut (`opsz`, sitedeki `font-optical-sizing: auto` gibi yazı
 /// boyuna eşit) eksenlerle verilir. Boyut Dinamik Yazı'yla ölçeklenir (`stil`). Yazı tipi yüklenemezse sistemin
 /// benzeri (serif / varsayılan) kullanılır.
+/// Z4j · yazı takımı denemesi (Emre v0'da iki takım seçti). Ayarlar'da "Yazı takımı" (`yaziTakimi`), CI'da
+/// `-yaziTakimi playfair|syne`. Açılışta bir kez okunur; değişiklik uygulama yeniden açılınca görünür.
+/// - klasik: Bodoni Moda / Newsreader / Archivo (sitenin)
+/// - playfair: Playfair Display / EB Garamond / Outfit
+/// - syne: Syne / EB Garamond / Jost
+enum YaziTakimi: String, CaseIterable {
+    case klasik, playfair, syne
+
+    static let secili: YaziTakimi =
+        YaziTakimi(rawValue: UserDefaults.standard.string(forKey: "yaziTakimi") ?? "") ?? .klasik
+}
+
 enum Yazi {
     enum Aile {
         case serif, sans, okuma
 
+        private var takim: YaziTakimi { .secili }
+
         func ad(italik: Bool) -> String {
-            switch self {
-            case .serif: return italik ? "BodoniModa-Italic" : "BodoniModa-Regular"
-            case .okuma: return italik ? "Newsreader16pt-Italic" : "Newsreader16pt-Regular"
-            case .sans: return "Archivo-SemiBold"
+            switch (takim, self) {
+            case (.klasik, .serif): return italik ? "BodoniModa-Italic" : "BodoniModa-Regular"
+            case (.klasik, .okuma): return italik ? "Newsreader16pt-Italic" : "Newsreader16pt-Regular"
+            case (.klasik, .sans): return "Archivo-SemiBold"
+            case (.playfair, .serif): return italik ? "PlayfairDisplay-Italic" : "PlayfairDisplay-Regular"
+            case (.playfair, .sans): return "Outfit-Thin"
+            case (.syne, .serif): return "Syne-Regular"
+            case (.syne, .sans): return italik ? "Jost-Italic" : "Jost-Regular"
+            case (_, .okuma): return italik ? "EBGaramond-Italic" : "EBGaramond-Regular"
+            }
+        }
+
+        /// Yazı tipinin kendi eğik hali var mı (yoksa eğilerek üretilir)
+        var italikVar: Bool {
+            switch (takim, self) {
+            case (.klasik, .sans), (.playfair, .sans), (.syne, .serif): return false
+            default: return true
             }
         }
 
         /// Eksenlerin sınırları (fvar)
         var agirlikAraligi: ClosedRange<CGFloat> {
-            switch self {
-            case .serif: return 400...900
-            case .okuma: return 200...800
-            case .sans: return 100...900
+            switch (takim, self) {
+            case (.klasik, .serif): return 400...900
+            case (.klasik, .okuma): return 200...800
+            case (.klasik, .sans): return 100...900
+            case (.playfair, .serif): return 400...900
+            case (.syne, .serif): return 400...800
+            case (_, .okuma): return 400...800
+            case (_, .sans): return 100...900
             }
         }
 
         var optikAraligi: ClosedRange<CGFloat>? {
+            guard takim == .klasik else { return nil }
             switch self {
             case .serif: return 6...96
             case .okuma: return 6...72
@@ -127,7 +159,7 @@ enum Yazi {
         ])
         // Z3l: Archivo'nun eğik hali yok; tarayıcı `<i>`'yi eğerek üretir (WebKit: 14°). Uygulamada `.italic()` özel yazı
         // tipinde hiçbir şey yapmıyordu (Galeri "Arkadaki eser"de eser adı düz kalıyordu).
-        if italik, aile == .sans {
+        if italik, !aile.italikVar {
             let egik = tanim.withMatrix(CGAffineTransform(a: 1, b: 0, c: tan(14 * .pi / 180), d: 1, tx: 0, ty: 0))
             return UIFont(descriptor: egik, size: boyut)
         }

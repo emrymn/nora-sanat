@@ -594,7 +594,15 @@ hikayeler() {
             "calar-gunduz|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz" \
             "kopru-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer" \
             "kopru-sanatci-dizi|dk okuma|-adres #/sanatci/michelangelo" \
-            "kopru-galeride|Sanatçı sayfası|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride"; do
+            "kopru-galeride|Sanatçı sayfası|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride" \
+            "yazi-playfair-ana|Diziler|-adres #/hikayeler -yaziTakimi playfair" \
+            "yazi-playfair-okuma|1632|-adres #/hikaye/johannes-vermeer -yaziTakimi playfair" \
+            "yazi-playfair-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer -yaziTakimi playfair" \
+            "yazi-playfair-bugun|Hikâyeler|-adres #/ -yaziTakimi playfair" \
+            "yazi-syne-ana|Diziler|-adres #/hikayeler -yaziTakimi syne" \
+            "yazi-syne-okuma|1632|-adres #/hikaye/johannes-vermeer -yaziTakimi syne" \
+            "yazi-syne-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer -yaziTakimi syne" \
+            "yazi-syne-bugun|Hikâyeler|-adres #/ -yaziTakimi syne"; do
     AD="${IS%%|*}"; GERI="${IS#*|}"; SOZ="${GERI%%|*}"; ARGS="${GERI#*|}"
     xcrun simctl terminate "$UDID" "$PAKET" || true
     # shellcheck disable=SC2086

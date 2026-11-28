@@ -72,6 +72,36 @@
 				<integer>23</integer>
 			</array>
 		</dict>
+		<dict>
+			<key>FooterText</key>
+			<string>Deneme: uygulamanın yazı tipleri. Değişiklik uygulama yeniden açılınca görünür.</string>
+			<key>Title</key>
+			<string>Görünüm</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>klasik</string>
+			<key>Key</key>
+			<string>yaziTakimi</string>
+			<key>Title</key>
+			<string>Yazı takımı</string>
+			<key>Titles</key>
+			<array>
+				<string>Klasik (Bodoni · Newsreader · Archivo)</string>
+				<string>Playfair · EB Garamond · Outfit</string>
+				<string>Syne · EB Garamond · Jost</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>klasik</string>
+				<string>playfair</string>
+				<string>syne</string>
+			</array>
+		</dict>
 	</array>
 	<key>StringsTable</key>
 	<string>Root</string>
