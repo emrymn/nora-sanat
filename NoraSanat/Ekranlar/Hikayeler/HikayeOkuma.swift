@@ -71,7 +71,17 @@ struct HikayeOkuma: View {
                 }
                 #if DEBUG
                 if let hedef = HikayeProva.kaydir() {
-                    kaydir.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.12))
+                    if hedef == "son" || hedef == "galeride" {
+                        // LazyVStack: sona ilk kaydırma tahmini boylarla yanılabilir ve iç kimlikler ("galeride")
+                        // ancak son blok çizilince bulunur. Önce sona, çizilince yeniden asıl hedefe (başı üstte).
+                        kaydir.scrollTo("son", anchor: .top)
+                        try? await Task.sleep(for: .milliseconds(700))
+                        kaydir.scrollTo("son", anchor: .top)
+                        try? await Task.sleep(for: .milliseconds(500))
+                        if hedef == "galeride" { kaydir.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.08)) }
+                    } else {
+                        kaydir.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.12))
+                    }
                     gorunen = hedef
                 }
                 #endif
