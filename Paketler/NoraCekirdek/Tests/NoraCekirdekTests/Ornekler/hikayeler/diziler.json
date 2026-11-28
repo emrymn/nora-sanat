@@ -1,0 +1,158 @@
+{
+  "surum": 1,
+  "diziler": [
+    {
+      "id": "dueller",
+      "ad": "Düellolar",
+      "aciklama": "Aynı duvara, aynı kapıya ya da aynı mahkemeye düşen iki sanatçı. Kazanan ve kaybeden yok; iki tarafın da hikâyesi.",
+      "bolumler": [
+        "dueller-leonardo-michelangelo",
+        "dueller-ghiberti-brunelleschi",
+        "dueller-caravaggio-baglione"
+      ]
+    }
+  ],
+  "bolumler": {
+    "dueller-leonardo-michelangelo": {
+      "dizi": "dueller",
+      "baslik": "Palazzo Vecchio'nun İki Duvarı",
+      "alt_baslik": "Leonardo da Vinci ile Michelangelo Buonarroti, 1503–1506",
+      "sanatcilar": ["leonardo-da-vinci", "michelangelo"],
+      "giris": [
+        "25 Ocak 1504 günü Floransa'da sanatçılar, marangozlar ve kentin ileri gelenleri tek bir soru için toplandı: Michelangelo'nun dev mermer Davut heykeli nereye konacaktı?"
+      ],
+      "bolumler": [
+        {
+          "baslik": "İki Kuşak, İki Bakış",
+          "yillar": "1503–1504",
+          "paragraflar": [
+            "Ekim 1503'te cumhuriyet ilk sözleşmeyi Leonardo da Vinci ile yaptı; 1504 yılında ikinci büyük duvarı Michelangelo'ya verdi."
+          ],
+          "eserler": [
+            {
+              "sanatci": "michelangelo",
+              "commons": "Michelangelo%27s_David_2015.jpg",
+              "bag": "Ocak 1504'te yerini seçen komitede Leonardo'nun da oy kullandığı bu dev mermer heykel, Michelangelo'nun Floransa'daki yükselişini simgeler."
+            },
+            {
+              "sanatci": "leonardo-da-vinci",
+              "qid": "Q12418",
+              "bag": "Leonardo, Anghiari Savaşı hazırlıklarını yürüttüğü Floransa yıllarında bir yandan da bu portre üzerinde çalışıyordu."
+            }
+          ]
+        },
+        {
+          "baslik": "Sancak Kavgası ve Sudan Fırlayan Askerler",
+          "yillar": "1504–1505",
+          "paragraflar": [
+            "İki sanatçı ayrı atölyelerde tam ölçekli hazırlık kartonlarını çizmeye başladı."
+          ],
+          "eserler": [
+            {
+              "sanatci": "leonardo-da-vinci",
+              "qid": "Q2045726",
+              "bag": "Leonardo'nun kayıp Anghiari Savaşı kompozisyonunun merkezindeki sancak kavgası, en çok Rubens'in bu yorumuyla tanınır."
+            }
+          ]
+        }
+      ],
+      "kapanis": [
+        "Palazzo Vecchio'daki büyük karşılaşmada ne Leonardo kazandı ne de Michelangelo."
+      ],
+      "kaynaklar": [
+        {
+          "baslik": "Musée du Louvre — La lutte pour l'étendard",
+          "adres": "https://collections.louvre.fr/en/ark:/53355/cl020110446"
+        },
+        {
+          "baslik": "Gallerie degli Uffizi — Doni Tondo",
+          "adres": "https://www.uffizi.it/en/artworks/holy-family-known-as-the-doni-tondo"
+        }
+      ],
+      "kelime": 1090,
+      "olusturma": "2026-11-28"
+    },
+    "dueller-ghiberti-brunelleschi": {
+      "dizi": "dueller",
+      "baslik": "Vaftizhane Kapısı ve Kubbedeki Ortaklık",
+      "alt_baslik": "Lorenzo Ghiberti ile Filippo Brunelleschi, 1401–1436",
+      "sanatcilar": ["lorenzo-ghiberti", "filippo-brunelleschi"],
+      "giris": [
+        "1401 yılının Floransa'sında tüccar loncası San Giovanni Vaftizhanesi'nin ikinci bronz kapısı için yedi sanatçıyı yarışmaya çağırdı."
+      ],
+      "bolumler": [
+        {
+          "baslik": "İki Bronz Levha, İki Ayrı Öykü",
+          "yillar": "1401–1402",
+          "paragraflar": [
+            "Bugün Bargello'da yan yana duran o iki yaldızlı bronz levhaya baktığında iki farklı mizaç hemen kendini ele verir."
+          ],
+          "eserler": [
+            {
+              "sanatci": "lorenzo-ghiberti",
+              "commons": "Ghiberti_and_Brunelleschi,_Sacrifice_of_Isaac,_competition_reliefs,_1401-2,_Bargello,_Florence.jpg",
+              "bag": "1401 yarışmasından günümüze kalan bu iki yaldızlı bronz levha bugün Bargello'da yan yana durur."
+            },
+            {
+              "sanatci": "lorenzo-ghiberti",
+              "commons": "Brunelleschi%27s_Competition_Panel.jpg",
+              "bag": "Brunelleschi'nin deneme panosu, onun heykeltıraşlık döneminin en dramatik çözümüdür."
+            }
+          ]
+        }
+      ],
+      "kapanis": [
+        "Floransa meydanı ikisinin birbirini bileyen rekabetiyle bugünkü yüzüne kavuştu."
+      ],
+      "kaynaklar": [
+        {
+          "baslik": "Smarthistory — Sacrifice of Isaac",
+          "adres": "https://smarthistory.org/filippo-brunelleschi-and-lorenzo-ghiberti-sacrifice-of-isaac/"
+        }
+      ],
+      "kelime": 1046,
+      "olusturma": "2026-11-28"
+    },
+    "dueller-caravaggio-baglione": {
+      "dizi": "dueller",
+      "baslik": "1603 Hakaret Davası",
+      "alt_baslik": "Caravaggio ile Giovanni Baglione, Roma 1603",
+      "sanatcilar": ["caravaggio"],
+      "giris": [
+        "13 Eylül 1603 günü Roma'daki Tor di Nona hapishanesinden çıkarılan Caravaggio bir mahkeme kâtibinin karşısına oturdu."
+      ],
+      "bolumler": [
+        {
+          "baslik": "İki Kardeş, İki Aşk Tablosu",
+          "yillar": "1600–1602",
+          "paragraflar": [
+            "Kıvılcım, Roma'nın en güçlü koleksiyoncu ailelerinden Giustiniani kardeşlerin sarayında çaktı."
+          ],
+          "eserler": [
+            {
+              "sanatci": "caravaggio",
+              "qid": "Q969377",
+              "bag": "1600'de sergilenip Roma'da büyük yankı uyandıran bu tablo pek çok ressamı etkiledi."
+            },
+            {
+              "sanatci": "caravaggio",
+              "qid": "Q474024",
+              "bag": "Vincenzo Giustiniani için yapılan Muzaffer Aşk, iki ressam arasındaki savaşın büyümesine yol açtı."
+            }
+          ]
+        }
+      ],
+      "kapanis": [
+        "Bazen bir sanatçının sesi en çok bir düşmanla girdiği mahkeme tutanağında yankılanır."
+      ],
+      "kaynaklar": [
+        {
+          "baslik": "Encyclopaedia Britannica — Caravaggio",
+          "adres": "https://www.britannica.com/biography/Caravaggio/Continued-successes-and-the-murder-of-Tomassoni"
+        }
+      ],
+      "kelime": 1016,
+      "olusturma": "2026-11-28"
+    }
+  }
+}

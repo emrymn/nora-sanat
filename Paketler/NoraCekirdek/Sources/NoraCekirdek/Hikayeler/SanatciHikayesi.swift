@@ -5,15 +5,30 @@
 // Kimlik sanatçının kimliğidir (sanatcilar.json `id`). Eserler yalnız katalogdaki (eserler_onbellek) qid'lerle anılır.
 import Foundation
 
-/// Bir bölümdeki eser: katalogdaki eserin qid'si ve "Bu dönemle bağı" notu.
+/// Bir bölümdeki eser: katalogdaki eserin qid'si (ya da dizi bölümlerinde Wikimedia Commons dosya adı) ve bağ notu.
 public struct HikayeEseri: Equatable, Hashable, Sendable {
     public var qid: String
     public var bag: String
+    /// Z4h: dizi bölümlerinde eserin sanatçısı (tek sanatçı hikâyesinde nil → `hikaye.id`)
+    public var sanatci: String?
+    /// Z4h: katalogda QID'si olmayan heykeltıraş/mimar eserleri için Wikimedia Commons dosya adı
+    public var commons: String?
 
-    public init(qid: String, bag: String) {
+    public init(qid: String = "", bag: String, sanatci: String? = nil, commons: String? = nil) {
         self.qid = qid
         self.bag = bag
+        self.sanatci = sanatci
+        self.commons = commons
     }
+
+    /// Eserin tekil anahtarı (tekrar ayıklama ve tam ekran görüntüleyici eşleştirme için)
+    public var kimlik: String {
+        if !qid.isEmpty { return "q:\(qid)" }
+        if let commons, !commons.isEmpty { return "c:\(SiteYazisi.dosyaNormal(commons).lowercased())" }
+        return ""
+    }
+
+    public func sanatciKimligi(varsayilan: String) -> String { sanatci ?? varsayilan }
 }
 
 public struct HikayeBolumu: Equatable, Sendable {
@@ -70,10 +85,17 @@ public struct SanatciHikayesi: Equatable, Sendable, Identifiable {
     public var kelime: Int
     /// "YYYY-AA-GG"
     public var olusturma: String
+    /// Z4h: dizi bölümüyse dizinin kimliği (sanatçı hikâyesinde nil)
+    public var dizi: String?
+    /// Z4h: dizi bölümündeki sanatçı kimlikleri (sanatçı hikâyesinde boş)
+    public var sanatcilar: [String]
+    /// Z4h: dizi içindeki 1 tabanlı bölüm numarası (sanatçı hikâyesinde nil)
+    public var bolumSirasi: Int?
 
     public init(id: String, baslik: String, altBaslik: String, giris: [String], bolumler: [HikayeBolumu],
                 kapanis: [String], baglantilar: [HikayeBaglantisi] = [], kaynaklar: [HikayeKaynagi] = [],
-                kelime: Int = 0, olusturma: String = "") {
+                kelime: Int = 0, olusturma: String = "", dizi: String? = nil, sanatcilar: [String] = [],
+                bolumSirasi: Int? = nil) {
         self.id = id
         self.baslik = baslik
         self.altBaslik = altBaslik
@@ -84,6 +106,9 @@ public struct SanatciHikayesi: Equatable, Sendable, Identifiable {
         self.kaynaklar = kaynaklar
         self.kelime = kelime
         self.olusturma = olusturma
+        self.dizi = dizi
+        self.sanatcilar = sanatcilar
+        self.bolumSirasi = bolumSirasi
     }
 
     /// JSON kaydından; başlığı ya da hiç paragrafı olmayan kayıt nil.
@@ -122,9 +147,18 @@ public struct SanatciHikayesi: Equatable, Sendable, Identifiable {
     /// dizideki yeridir (okuma yeri ve dinlemede vurgulanan paragraf bununla anılır).
     public var paragraflar: [String] { giris + bolumler.flatMap(\.paragraflar) + kapanis }
 
+    /// İlgili sanatçılar (dizi bölümünde `sanatcilar`, sanatçı hikâyesinde `[id]`)
+    public var ilgiliSanatcilar: [String] { sanatcilar.isEmpty ? [id] : sanatcilar }
+
+    /// Kapak eseri: ilk bölümün ilk eseri (o bölümde eser yoksa eseri olan ilk bölümün ilki)
+    public var kapakEseri: HikayeEseri? {
+        bolumler.first?.eserler.first ?? bolumler.lazy.compactMap(\.eserler.first).first
+    }
+
     /// Kapak: ilk bölümün ilk eseri (o bölümde eser yoksa eseri olan ilk bölümün ilki)
     public var kapakQid: String? {
-        bolumler.first?.eserler.first?.qid ?? bolumler.lazy.compactMap(\.eserler.first).first?.qid
+        if let q = kapakEseri?.qid, !q.isEmpty { return q }
+        return bolumler.lazy.flatMap(\.eserler).first { !$0.qid.isEmpty }?.qid
     }
 
     /// Okuma ekranının blokları, sırayla. Bölümün `i`. eseri bölümün `i`. paragrafının hemen ardından gelir; paragraftan

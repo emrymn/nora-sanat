@@ -13,12 +13,19 @@ enum HikayelerGecisi {
     static var sekmeler: Set<Sekme> { [.hikayeler] }
 }
 
+/// Z4h: Hikâyeler gezinti rotaları (sanatçı yazısı, dizi sayfası, dizi bölümü)
+enum HikayeRota: Hashable {
+    case yazi(String)
+    case dizi(String)
+    case bolum(String)
+}
+
 struct HikayelerSekmesi: View {
     @Environment(KabukDurumu.self) private var kabuk
     @Environment(TemaDeposu.self) private var tema
     @State private var depo = HikayeDeposu.shared
-    /// Açık yazılar (bağlantılı yazıdan yazıya geçilebilir)
-    @State private var yol: [String] = []
+    /// Açık sayfalar (yazı, dizi ya da dizi bölümü)
+    @State private var yol: [HikayeRota] = []
     @State private var aramaAcik = false
     @State private var basaDon = 0
 
@@ -27,7 +34,7 @@ struct HikayelerSekmesi: View {
             Group {
                 switch depo.durum {
                 case .hazir:
-                    HikayeAna(ac: ac, aramaAcik: $aramaAcik, basaDon: basaDon)
+                    HikayeAna(ac: ac, diziAc: diziAc, aramaAcik: $aramaAcik, basaDon: basaDon)
                 case .yukleniyor:
                     ProgressView("Hikâyeler hazırlanıyor…")
                         .font(Yazi.sans(15)).foregroundStyle(Color(tema.renkler.murekkep2))
@@ -43,18 +50,33 @@ struct HikayelerSekmesi: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
-            .navigationDestination(for: String.self) { id in
+            .navigationDestination(for: HikayeRota.self) { rota in
                 Group {
-                    if let h = depo.hikaye(id) {
-                        HikayeOkuma(hikaye: h, ac: ac)
-                    } else {
-                        Color(tema.renkler.zemin).ignoresSafeArea()
+                    switch rota {
+                    case .yazi(let id):
+                        if let h = depo.yaziVeyaBolum(id) {
+                            HikayeOkuma(hikaye: h, ac: ac)
+                        } else {
+                            Color(tema.renkler.zemin).ignoresSafeArea()
+                        }
+                    case .dizi(let id):
+                        if let d = depo.dizi(id) {
+                            DiziSayfasi(dizi: d, bolumAc: bolumAc)
+                        } else {
+                            Color(tema.renkler.zemin).ignoresSafeArea()
+                        }
+                    case .bolum(let id):
+                        if let b = depo.diziBolumu(id) {
+                            HikayeOkuma(hikaye: b.hikaye, ac: ac)
+                        } else {
+                            Color(tema.renkler.zemin).ignoresSafeArea()
+                        }
                     }
                 }
                 .toolbar(.hidden, for: .navigationBar)
             }
         }
-        // Okurken çubuk yok: altta çalar durur (tasarımda okuma ekranı sekmesiz)
+        // Okurken ve dizi sayfasında çubuk yok: altta çalar durur
         .sekmeCubuguGizli(!yol.isEmpty, sekme: .hikayeler)
         .task {
             await depo.yukle()
@@ -65,21 +87,42 @@ struct HikayelerSekmesi: View {
         .onChange(of: kabuk.yerliAdres[.hikayeler], initial: true) { _, adres in
             guard let adres else { return }
             if let id = HikayeAdresi.sanatci(adres) {
-                if yol.last != id { yol = [id] }
+                let hedef = HikayeRota.yazi(id)
+                if yol.last != hedef { yol = [hedef] }
+            } else if let dy = HikayeAdresi.diziYolu(adres) {
+                if let bid = dy.bolum {
+                    yol = [.dizi(dy.dizi), .bolum(bid)]
+                } else {
+                    yol = [.dizi(dy.dizi)]
+                }
             } else {
                 yol = []
             }
             kabuk.adresIslendi(.hikayeler)
         }
         .onChange(of: kabuk.yenidenDokunma[.hikayeler]) { _, _ in
-            // Açık sekmeye yeniden dokunma: yazıdan ana ekrana, ana ekranda en başa
+            // Açık sekmeye yeniden dokunma: alt sayfadan ana ekrana, ana ekranda en başa
             if !yol.isEmpty { yol = [] } else { basaDon += 1 }
         }
     }
 
     private func ac(_ id: String) {
         Titresim.secim()
-        yol.append(id)
+        if depo.diziBolumu(id) != nil {
+            yol.append(.bolum(id))
+        } else {
+            yol.append(.yazi(id))
+        }
+    }
+
+    private func diziAc(_ id: String) {
+        Titresim.secim()
+        yol.append(.dizi(id))
+    }
+
+    private func bolumAc(_ id: String) {
+        Titresim.secim()
+        yol.append(.bolum(id))
     }
 }
 
@@ -98,6 +141,7 @@ struct HikayeAna: View {
     }
 
     let ac: (String) -> Void
+    let diziAc: (String) -> Void
     @Binding var aramaAcik: Bool
     let basaDon: Int
 
@@ -151,6 +195,8 @@ struct HikayeAna: View {
                             oneCikanSahne(ust: ust, genislik: genislik, c: c)
 
                             devamEt(c)
+                            dizilerRafi(c, genislik: genislik)
+                                .id("diziler")
                             butunHikayelerBasi(c)
                                 .id("butun-hikayeler")
                             suzgecler(c)
@@ -170,7 +216,11 @@ struct HikayeAna: View {
                         if CommandLine.arguments.contains("-hikayeAsagi") {
                             try? await Task.sleep(for: .milliseconds(900))
                             withAnimation(.easeOut(duration: 0.25)) {
-                                kaydir.scrollTo("butun-hikayeler", anchor: UnitPoint(x: 0.5, y: 0.15))
+                                if depo.diziler.isEmpty {
+                                    kaydir.scrollTo("butun-hikayeler", anchor: UnitPoint(x: 0.5, y: 0.15))
+                                } else {
+                                    kaydir.scrollTo("diziler", anchor: UnitPoint(x: 0.5, y: 0.26))
+                                }
                             }
                         }
                     }
@@ -535,6 +585,47 @@ struct HikayeAna: View {
         .accessibilityLabel("Ara")
     }
 
+    // MARK: Diziler rafı (Z4h)
+
+    @ViewBuilder
+    private func dizilerRafi(_ c: HikayeRenk, genislik: CGFloat) -> some View {
+        let liste = depo.diziler
+        if !liste.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text("Diziler")
+                        .font(Yazi.okuma(22, agirlik: 600, stil: .title2))
+                        .tracking(-0.3)
+                        .foregroundStyle(c.yazi)
+                        .accessibilityAddTraits(.isHeader)
+                    Spacer(minLength: 8)
+                    Text("\(liste.count) dizi")
+                        .font(Yazi.sans(12.5, stil: .footnote))
+                        .foregroundStyle(c.yazi3)
+                }
+                .padding(.horizontal, 22)
+
+                let kartGenisligi: CGFloat = liste.count == 1
+                    ? max(260, genislik - 44)
+                    : min(312, max(260, genislik - 58))
+
+                ScrollView(.horizontal) {
+                    LazyHStack(alignment: .top, spacing: 14) {
+                        ForEach(liste) { d in
+                            DiziKarti(dizi: d, genislik: kartGenisligi, ac: diziAc)
+                        }
+                    }
+                    .scrollTargetLayout()
+                    .padding(.horizontal, 22)
+                }
+                .scrollTargetBehavior(.viewAligned)
+                .scrollIndicators(.hidden)
+            }
+            .padding(.top, depo.devamEt.isEmpty ? 6 : 2)
+            .padding(.bottom, 22)
+        }
+    }
+
     private func butunHikayelerBasi(_ c: HikayeRenk) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text("Bütün hikâyeler")
@@ -726,7 +817,10 @@ struct HikayeKutusu: View {
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 2)
-                Text("\(s.okumaDk) dk okuma · \(s.dinlemeDk) dk dinleme").font(Yazi.sans(11)).foregroundStyle(c.yazi3)
+                let sureYazisi = depo.dinlenebilir(hikaye)
+                    ? "\(s.okumaDk) dk okuma · \(s.dinlemeDk) dk dinleme"
+                    : "\(s.okumaDk) dk okuma"
+                Text(sureYazisi).font(Yazi.sans(11)).foregroundStyle(c.yazi3)
                     .lineLimit(1).minimumScaleFactor(0.85)
                     .padding(.top, 4)
             }
@@ -771,6 +865,7 @@ struct HikayeArama: View {
     var body: some View {
         let c = HikayeRenk(r: tema.renkler)
         let sonuc = HikayeAkisi.ara(depo.sirali, sorgu: sorgu, sanatciAdi: depo.sanatciAdi)
+        let bolumSonucu = DiziKurallari.ara(depo.diziKatalogu, sorgu: sorgu, sanatciAdi: depo.sanatciAdi)
         VStack(spacing: 0) {
             HStack(spacing: 10) {
                 HStack(spacing: 8) {
@@ -794,6 +889,35 @@ struct HikayeArama: View {
             .padding(.horizontal, 18).padding(.top, 8).padding(.bottom, 10)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
+                    if !bolumSonucu.isEmpty {
+                        Text("Dizi bölümleri")
+                            .font(Yazi.sans(12.5, agirlik: 600))
+                            .foregroundStyle(c.pirinc)
+                            .padding(.top, 10).padding(.bottom, 4)
+                        ForEach(bolumSonucu) { b in
+                            let s = depo.satir(b.hikaye)
+                            Button { sec(b.id) } label: {
+                                HStack(spacing: 12) {
+                                    UzakGorsel(url: s.kapak, icerik: .fill, yedek: s.kapakYedek, odak: [50, 22])
+                                        .frame(width: 56, height: 56)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text("\(depo.dizi(b.dizi)?.ad ?? "Dizi") · \(b.sira). bölüm")
+                                            .font(Yazi.sans(11.5, agirlik: 600)).foregroundStyle(c.pirinc).lineLimit(1)
+                                        Text(b.baslik).font(Yazi.okuma(17, agirlik: 600)).foregroundStyle(c.yazi)
+                                            .lineLimit(2)
+                                        Text("\(s.sanatci) · \(s.okumaDk) dk okuma")
+                                            .font(Yazi.sans(12.5)).foregroundStyle(c.yazi3).lineLimit(1)
+                                    }
+                                    Spacer(minLength: 0)
+                                }
+                                .padding(.vertical, 10)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .overlay(alignment: .bottom) { Rectangle().fill(c.kenar).frame(height: 1) }
+                        }
+                    }
                     ForEach(sonuc) { h in
                         let s = depo.satir(h)
                         Button { sec(h.id) } label: {
@@ -815,7 +939,7 @@ struct HikayeArama: View {
                         .buttonStyle(.plain)
                         .overlay(alignment: .bottom) { Rectangle().fill(c.kenar).frame(height: 1) }
                     }
-                    if sonuc.isEmpty {
+                    if sonuc.isEmpty && bolumSonucu.isEmpty {
                         Text("Bu aramayla yazı yok.").font(Yazi.sans(15)).foregroundStyle(c.yazi2).padding(.top, 24)
                     }
                 }
