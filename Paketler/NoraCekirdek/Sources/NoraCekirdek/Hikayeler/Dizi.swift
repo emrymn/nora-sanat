@@ -84,6 +84,11 @@ public struct DiziKatalogu: Equatable, Sendable {
     public var tumBolumler: [DiziBolumu] {
         diziler.flatMap { d in d.bolumIds.compactMap { bolumler[$0] } }
     }
+
+    /// Z4i: sanatçının geçtiği dizi bölümleri (dizi ve bölüm sırasıyla); sanatçı sayfasının "Dizilerde" satırı
+    public func sanatcininBolumleri(_ sanatci: String) -> [DiziBolumu] {
+        tumBolumler.filter { $0.sanatcilar.contains(sanatci) }
+    }
 }
 
 public enum DiziVerisi {

@@ -17,6 +17,7 @@ struct SanatciSayfasi: View {
     let kirpim: (TanimaKirpimi, [Eser]) -> AnyView
     @Environment(TemaDeposu.self) private var tema
     @State private var karsilastirAcik = false
+    @State private var hikayeDeposu = HikayeDeposu.shared
 
     private var resim: GaleriResim { GaleriResim(galeri: galeri, il: il) }
 
@@ -28,6 +29,14 @@ struct SanatciSayfasi: View {
             VStack(alignment: .leading, spacing: 0) {
                 SanatciUst(etiket: s.akim, geri: eylem.geri) { eylem.git(.akim(s.akim)) }
                 SanatciKunyesi(s: s, g: galeri, il: il)
+                // Z4i: hikâyesi ve geçtiği dizi bölümleri (Hikâyeler'e geçiş)
+                if hikayeDeposu.hikaye(s.id) != nil || !hikayeDeposu.sanatcininBolumleri(s.id).isEmpty {
+                    VStack(alignment: .leading, spacing: 18) {
+                        SanatciHikayeKarti(sanatci: s.id, renk: .tema(r))
+                        SanatciDiziBolumleri(sanatci: s.id, renk: .tema(r))
+                    }
+                    .padding(.top, 22)
+                }
                 if eserler.isEmpty {
                     Text("Bu sanatçı için doğrulanmış görsel bulunamadı.").font(Yazi.sans(13, stil: .footnote))
                         .foregroundStyle(Color(r.murekkep2)).padding(.top, 22)
@@ -121,6 +130,7 @@ struct SanatciSayfasi: View {
             .padding(.bottom, 32)
         }
         .scrollIndicators(.hidden)
+        .task { await hikayeDeposu.yukle() }
         .background(SayfaZemini(donem: nil, ustHale: true,
                                 tablo: Temsil.bilinirlikSirasi(galeri.eserler[s.id] ?? []).first { !$0.gorseller.isEmpty }
                                     .flatMap { resim.url($0, 400) }))

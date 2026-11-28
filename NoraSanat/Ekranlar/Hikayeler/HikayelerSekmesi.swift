@@ -195,6 +195,7 @@ struct HikayeAna: View {
                             oneCikanSahne(ust: ust, genislik: genislik, c: c)
 
                             devamEt(c)
+                                .id("devam")
                             dizilerRafi(c, genislik: genislik)
                                 .id("diziler")
                             butunHikayelerBasi(c)
@@ -213,16 +214,23 @@ struct HikayeAna: View {
                     }
                     #if DEBUG
                     .task {
-                        if CommandLine.arguments.contains("-hikayeAsagi") {
-                            try? await Task.sleep(for: .milliseconds(900))
-                            withAnimation(.easeOut(duration: 0.25)) {
-                                if depo.diziler.isEmpty {
-                                    kaydir.scrollTo("butun-hikayeler", anchor: UnitPoint(x: 0.5, y: 0.15))
-                                } else {
-                                    kaydir.scrollTo("diziler", anchor: UnitPoint(x: 0.5, y: 0.26))
-                                }
-                            }
+                        // CI: süzgeçli çekimler ızgaraya, Devam et çekimi şeride kayar (Z4g'nin tam ekran öne
+                        // çıkanları ve Z4h'nin dizi rafı bunları ilk ekranın altına itti)
+                        let args = CommandLine.arguments
+                        let hedef: (String, UnitPoint)?
+                        if HikayeProva.suzgec != .tumu {
+                            hedef = ("butun-hikayeler", UnitPoint(x: 0.5, y: 0.15))
+                        } else if args.contains("-hikayeDevam") {
+                            hedef = ("devam", UnitPoint(x: 0.5, y: 0.3))
+                        } else if args.contains("-hikayeAsagi") {
+                            hedef = depo.diziler.isEmpty ? ("butun-hikayeler", UnitPoint(x: 0.5, y: 0.15))
+                                : ("diziler", UnitPoint(x: 0.5, y: 0.26))
+                        } else {
+                            hedef = nil
                         }
+                        guard let hedef else { return }
+                        try? await Task.sleep(for: .milliseconds(900))
+                        withAnimation(.easeOut(duration: 0.25)) { kaydir.scrollTo(hedef.0, anchor: hedef.1) }
                     }
                     #endif
                 }
