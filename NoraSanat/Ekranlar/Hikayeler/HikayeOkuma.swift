@@ -71,7 +71,17 @@ struct HikayeOkuma: View {
                 }
                 #if DEBUG
                 if let hedef = HikayeProva.kaydir() {
-                    kaydir.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.12))
+                    if hedef == "son" || hedef == "galeride" {
+                        // LazyVStack: sona ilk kaydırma tahmini boylarla yanılabilir ve iç kimlikler ("galeride")
+                        // ancak son blok çizilince bulunur. Önce sona, çizilince yeniden asıl hedefe (başı üstte).
+                        kaydir.scrollTo("son", anchor: .top)
+                        try? await Task.sleep(for: .milliseconds(700))
+                        kaydir.scrollTo("son", anchor: .top)
+                        try? await Task.sleep(for: .milliseconds(500))
+                        if hedef == "galeride" { kaydir.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.08)) }
+                    } else {
+                        kaydir.scrollTo(hedef, anchor: UnitPoint(x: 0.5, y: 0.12))
+                    }
                     gorunen = hedef
                 }
                 #endif
@@ -414,6 +424,22 @@ struct HikayeOkuma: View {
                 }
                 .padding(.bottom, 34)
             }
+            // Z4i: sanatçının Galeri sayfası (eserleri, notları, dönemi)
+            let galeridekiler = (diziMi ? hikaye.sanatcilar : [hikaye.id]).filter { depo.sanatci($0) != nil }
+            if !galeridekiler.isEmpty {
+                Text("Galeride")
+                    .font(Yazi.serif(23, agirlik: 500))
+                    .foregroundStyle(c.yazi)
+                    .padding(.bottom, 8)
+                    .accessibilityAddTraits(.isHeader)
+                    .id("galeride")
+                VStack(spacing: 0) {
+                    ForEach(Array(galeridekiler.enumerated()), id: \.element) { i, sid in
+                        sanatciSatiri(sid, son: i == galeridekiler.count - 1, c)
+                    }
+                }
+                .padding(.bottom, 34)
+            }
             let kaynaklar = HikayeAkisi.kaynaklar(hikaye)
             if !kaynaklar.isEmpty {
                 Text("Kaynaklar").font(Yazi.sans(13, agirlik: 600)).foregroundStyle(c.pirinc)
@@ -580,6 +606,31 @@ struct HikayeOkuma: View {
     }
 
     /// `.bag-kart`: 68'lik kare kapak, pirinç sanatçı adı, Bodoni başlık, yıllar · okuma süresi
+    /// Z4i: "Galeride" satırı: baş harf halkası, ad, "Sanatçı sayfası"; Galeri sekmesinde açılır
+    private func sanatciSatiri(_ sid: String, son: Bool, _ c: HikayeRenk) -> some View {
+        let ad = depo.sanatciAdi(sid)
+        return Button { HikayeKoprusu.sanatciSayfasi(sid) } label: {
+            HStack(spacing: 13) {
+                Text(String(ad.prefix(1))).font(Yazi.serif(22)).foregroundStyle(c.pirinc)
+                    .frame(width: 44, height: 44)
+                    .overlay(Circle().strokeBorder(c.pirinc, lineWidth: 1.3))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(ad).font(Yazi.serif(17, agirlik: 500)).foregroundStyle(c.yazi)
+                    Text("Sanatçı sayfası · eserleri, notları").font(Yazi.sans(12.5)).foregroundStyle(c.yazi3)
+                }
+                Spacer(minLength: 4)
+                HikayeIkon(simge: .ileri, boyut: 15, kalinlik: 1.8).foregroundStyle(c.yazi3)
+            }
+            .frame(minHeight: 64)
+            .overlay(alignment: .bottom) { if !son { Rectangle().fill(c.kenar).frame(height: 1) } }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Galeri'de açılır")
+        .accessibilityIdentifier("galeride-\(sid)")
+    }
+
     private func bagKarti(_ h: SanatciHikayesi, _ c: HikayeRenk) -> some View {
         let s = depo.satir(h)
         return Button {

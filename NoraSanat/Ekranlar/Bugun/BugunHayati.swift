@@ -51,6 +51,8 @@ struct BugunHayati: View {
     .frame(maxWidth: .infinity, alignment: .leading)
     .buttonStyle(.plain).padding(.horizontal, 24).foregroundStyle(YurRenk.yazi)
     .onDisappear { AdOkuyucu.shared.durdur() }
+    // Z4i: hikâye kartı için (Hikâyeler sekmesi hiç açılmamış olabilir)
+    .task { await HikayeDeposu.shared.yukle() }
   }
 
   /// `.yur-son`: sütun, aralık 14
@@ -70,6 +72,9 @@ struct BugunHayati: View {
           kareler
         }
       }.fixedSize(horizontal: false, vertical: true).id("eserler")
+      // Z4i: günün sanatçısının hikâyesi (varsa). Karoların altında: sitedekiyle yan yana karşılaştırılan tur ve
+      // eserler konumları değişmesin (CI `bugun` grubu)
+      SanatciHikayeKarti(sanatci: s.tablo.sanatciId, renk: .bugun)
       dinle
       basaDon.frame(maxWidth: .infinity).padding(.top, 26)
     }

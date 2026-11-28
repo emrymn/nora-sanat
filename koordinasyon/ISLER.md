@@ -197,7 +197,9 @@ Kullanıcı yeni bir Claude oturumunda şunu yazar: *"koordinasyon/ISLER.md'deki
 | Z4e | Hikâyeler 4. tur: Neon PR #83'ün karışığı (Yön 2 ana ekran: öne çıkanlar, devam et, sonra oku; arşiv: en yeni · dönem · beğendiklerim; beğeni/sonra oku; Yön 1 tam ekran çalar: bölümler, uyku, metin, hız, sıradaki/otomatik) + dinlerken arka planda bölümün eseri, daha fazla eser | K | Z4b | 1 | bitti (#84) |
 | Z4f | Emre'nin düzeltmeleri: çubuk Bugün · Hikâyeler · Yolculuk · Çalış · Galeri; Hikâyeler ana ekranı bütün hikâyelerin kapak ızgarası (süzgeç: Tümü · Dönem · Beğendiklerim · Sonra oku; üstte Devam et); dinleme büyük eser + altyazı (kelime kelime); okurken dinlenen paragraf renkle ilerler | K | Z4e | 1 | bitti (#85) |
 | Z4g | Hikâyeler öne çıkanlar (Neon): üstte Çalış'taki gibi tam ekran öne çıkanlar (5 sayfa, Oku/Dinle, 8 sn otomatik geçiş, kaydırınca buzlu cam üst çubuk), altta Devam et + Bütün hikâyeler ızgarası | — | Z4f | 1 | bitti (#86) |
-| Z4h | Hikâyeler'e "Diziler" rafı (Neon): `data/diziler.json`, öne çıkanlardan sonra yatay dizi rafı (3'lü kapak kolajı), dizi sayfası, mevcut `HikayeOkuma`/`HikayeCalari` ile bölüm okuma ve dinleme (`qid` + `commons`), ses yoksa Dinle gizli | — | Z4g | 1 | PR açık |
+| Z4h | Hikâyeler'e "Diziler" rafı (Neon): `data/diziler.json`, öne çıkanlardan sonra yatay dizi rafı (3'lü kapak kolajı), dizi sayfası, mevcut `HikayeOkuma`/`HikayeCalari` ile bölüm okuma ve dinleme (`qid` + `commons`), ses yoksa Dinle gizli | — | Z4g | 1 | bitti (#89) |
+| Z4i | Hikâyeler'i uygulamaya bağla (Emre: "daha bütüncül"): sanatçı sayfasında hikâye kartı ve "Dizilerde", Yolculuk durak penceresinde konunun hikâyeleri, Bugün'de günün sanatçısının hikâyesi, okumanın sonunda "Galeride" | K | Z4h | 1 | PR açık (#90) |
+| Z4j | Yazı takımı denemesi (Emre v0'da seçti): Playfair Display · EB Garamond · Outfit ve Syne · EB Garamond · Jost; Ayarlar'da "Yazı takımı", CI'da iki takımın ekran görüntüleri | K | Z4i | 1 | sürüyor (Claude, 2026-11-28) |
 | Z4d | Xcode Run telefona Release derlesin, hata ayıklayıcı bağlanmasın (Akımlar kasması bundanmış) | K | — | 1 | bitti (#79) |
 
 **Sekmeler ne zaman yerli olur:**
@@ -1357,6 +1359,14 @@ Taşımadan ayrıdır; sitede karşılığı olmadığı için kâhin yerine dav
 - **Dokunulan dosyalar:** `NoraSanat/Ekranlar/Hikayeler/HikayelerSekmesi.swift`, `NoraSanat/Ekranlar/Calis/CalisAnaGorunumu.swift` (yalnız `KapakUstu` ve `KapakYuruyusu`'ndan `private` kaldırıldı), `koordinasyon/ISLER.md`.
 - **Doğrulama:** iPhone 17 simülatöründe derlendi ve Gece / Gündüz (üst ve aşağı kaydırılmış) dört ekran görüntüsüyle doğrulandı.
 - **Sonra:** Claude denetledi (derle yeşil), Emre ekran görüntülerine bakıp "güzel olmuş" dedi; birleştirildi (#86).
+
+### Z4i · Hikâyeleri uygulamaya bağlamak (Claude)
+**Devir notu:** Claude, 2026-11-28 · [PR #90](https://github.com/emrymn/nora-sanat/pull/90) · dal `claude/Z4i-hikaye-baglari`. Emre: "bu hikâyeleri harita kısmına da bağlamak istiyorum, uygulamayı daha bütüncül hale getirmek istiyorum; ressamın sayfası onun hikâyesi kısmına göndersin". Seçtikleri: sanatçı sayfası, Yolculuk haritası, Bugün, hikâyeden geri bağlantı.
+- Yeni `Hikayeler/HikayeKopruleri.swift`: `HikayeKoprusu` (Oku → `KabukDurumu.yerliyeGit(HikayeAdresi.yazi)` ile Hikâyeler'de açılır; Dinle → bulunduğun yerde tam ekran çalar; dizi bölümü; Galeri'de sanatçı sayfası), `HikayeKopruRengi` (tema / Bugün / harita paletleri), `SanatciHikayeKarti` (kapak, başlık, süreler, Oku · Dinle), `SanatciDiziBolumleri` ("Dizilerde"), `HikayeSeridi` (yatay kapaklar).
+- Yerleri: `SanatciSayfasi` künyenin altı; `DurakPenceresi` en altta "Hikâyeler" şeridi (dokununca pencere kapanır); `BugunHayati` "Resmi gezdin"de sanatçı sayfası/eserler karolarının altı (site ile yan yana çekimlerde tur ve karoların yeri değişmesin); `HikayeOkuma` sonunda "Galeride" (sanatçı ya da dizinin sanatçıları → Galeri). Eserlere dokununca görüntüleyici zaten açılıyordu.
+- Çekirdek: `DiziKatalogu.sanatcininBolumleri` (+ test). `HikayeDeposu` Hikâyeler sekmesi açılmadan da yüklensin diye bu ekranlar `yukle()` çağırır (bir kez iner).
+- CI: hikayeler grubunda `kopru-sanatci` (Vermeer), `kopru-sanatci-dizi` (Michelangelo), `kopru-galeride` (`-hikayeKaydir galeride`); yolculuk grubunda `yerli-yolculuk-durak-hikayeler` (`-pencereAlta`). Z4h'den beri kırmızı olan hikayeler grubu da düzeldi: ana ekran OCR'ı "Diziler", süzgeçli ve Devam et çekimleri ilgili yere kayar, okuma sonu LazyVStack çizildikten sonra yeniden kaydırılır.
+- **Tuzaklar:** boş görünüm `.task`'ı çalıştırmaz: kart yoksa depoyu ebeveyn yükler (sayfa, pencere, Bugün). LazyVStack'te iç kimliğe (`galeride`) ancak blok çizilince kaydırılır.
 
 ### Z4h · Hikâyeler'e "Diziler" rafı (Neon)
 **Devir notu:** 2026-11-28 · dal `neon/diziler`. Kaynak veri biçimi: `sanat-atlasi` `diziler/PLAN.md` ve `data/diziler.json` (PR #280 `claude/dizi-dueller` @ `57257c3`; `Düellolar`, 3 bölüm).

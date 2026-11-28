@@ -96,6 +96,7 @@ struct YuzenPencere<Icerik: View>: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 .scrollIndicators(.hidden)
+                .defaultScrollAnchor(Self.altta ? .bottom : nil)
                 .frame(height: min(max(1, icerikBoyu), enCok))
                 .background { arka }
                 .clipShape(RoundedRectangle(cornerRadius: stil == .hp2 ? 30 : 20, style: .continuous))
@@ -114,6 +115,15 @@ struct YuzenPencere<Icerik: View>: View {
             .padding(.horizontal, 12).padding(.bottom, 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
+    }
+
+    /// CI (`-pencereAlta`): pencere en altı görünerek açılır (Z4i'nin hikâye şeridi)
+    private static var altta: Bool {
+        #if DEBUG
+        return CommandLine.arguments.contains("-pencereAlta")
+        #else
+        return false
+        #endif
     }
 
     @ViewBuilder private var arka: some View {
@@ -177,6 +187,7 @@ struct DurakPenceresi: View {
     let kapat: () -> Void
     let basla: (BolumSeviyesi) -> Void
     let adreseGit: (String, Sekme) -> Void
+    @State private var hikayeDeposu = HikayeDeposu.shared
 
     private var kayit: SiraliNesne { BolumKurallari.kayit(il, durak.id) }
     private var gruplar: [[String]] { durak.gruplar }
@@ -239,11 +250,13 @@ struct DurakPenceresi: View {
                     }
                     akimSatiri
                 }
+                hikayeKismi
             }
             .padding(.horizontal, 20).padding(.bottom, 18)
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(durak.ad)
+        .task { await hikayeDeposu.yukle() }
     }
 
     /// Kilitliyse kilit yazısı (ve "Derse git"); açıksa tek dolu düğme: grup tanışması ya da sıradaki seviye
@@ -336,6 +349,16 @@ struct DurakPenceresi: View {
         return satir(bas: kucuk(g.last ?? "", soluk: tamam), ad: Text("Orta eserleri" + (i < 0 ? "" : " · \(i + 1). grup")),
                      son: tamam ? AnyView(OnayIsareti()) : nil, soluk: tamam,
                      eylem: { basla(.tanitim(orta: true, grup: i < 0 ? nil : i)) })
+    }
+
+    /// Z4i: bu konunun sanatçılarının hikâyeleri (yatay şerit; dokununca pencere kapanır, yazı Hikâyeler'de açılır)
+    @ViewBuilder private var hikayeKismi: some View {
+        if durak.sanatcilar.contains(where: { hikayeDeposu.hikaye($0) != nil }) {
+            YaldizEtiket("Hikâyeler").padding(.top, 22).padding(.bottom, 12)
+            HikayeSeridi(sanatcilar: durak.sanatcilar, renk: .harita, once: kapat)
+                .padding(.horizontal, -20)
+                .contentMargins(.horizontal, 20, for: .scrollContent)
+        }
     }
 
     private var akimSatiri: some View {

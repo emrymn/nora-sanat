@@ -191,7 +191,7 @@ struct HikayeMiniCalar: View {
 #if DEBUG
 /// CI ekran görüntüleri için açılış argümanları (`Testler/ci/ekran.sh`):
 /// - `-adres "#/hikaye/<id>"`: yazı açılır (uygulamanın kendi adresi)
-/// - `-hikayeKaydir eser|son`: yazı ikinci esere ya da sona kayar
+/// - `-hikayeKaydir eser|son|galeride`: yazı ikinci esere, sona ya da Z4i'nin "Galeride" bölümüne kayar
 /// - `-hikayeDinle <paragraf>`: çalar o paragrafta, duraklatılmış açılır (`-hikayeSesli`: çalarak)
 /// - `-hikayeMini <id>`: çalar o yazıda açılır ve Bugün'e geçilir (küçük çalar)
 /// - `-hikayeTema gunduz`: Gündüz teması
@@ -214,6 +214,7 @@ enum HikayeProva {
         case "eser": return "e0-1"
         case "bolum": return "h1"
         case "son": return "son"
+        case "galeride": return "galeride"
         default: return nil
         }
     }
