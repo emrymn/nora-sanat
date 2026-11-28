@@ -63,8 +63,6 @@ struct BugunHayati: View {
       Text("Resmi gezdin.").font(Yazi.serif(40)).cssSatir(.serif, 40, 42).padding(.bottom, 6)
         .accessibilityAddTraits(.isHeader)
       turKarti.id("tur")
-      // Z4i: günün sanatçısının hikâyesi (varsa)
-      SanatciHikayeKarti(sanatci: s.tablo.sanatciId, renk: .bugun)
       HStack(spacing: 12) {
         karo(adres: "#/sanatci/" + s.tablo.sanatciId, baslik: s.ad.son, alt: "Sanatçı sayfası") {
           Text(String(s.ad.son.prefix(1))).font(Yazi.serif(26)).foregroundStyle(pirinc)
@@ -74,6 +72,9 @@ struct BugunHayati: View {
           kareler
         }
       }.fixedSize(horizontal: false, vertical: true).id("eserler")
+      // Z4i: günün sanatçısının hikâyesi (varsa). Karoların altında: sitedekiyle yan yana karşılaştırılan tur ve
+      // eserler konumları değişmesin (CI `bugun` grubu)
+      SanatciHikayeKarti(sanatci: s.tablo.sanatciId, renk: .bugun)
       dinle
       basaDon.frame(maxWidth: .infinity).padding(.top, 26)
     }
