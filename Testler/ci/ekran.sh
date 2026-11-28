@@ -594,7 +594,7 @@ hikayeler() {
             "calar-gunduz|Bölümler|-adres #/hikayeler -hikayeCalar johannes-vermeer -hikayeTema gunduz" \
             "kopru-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer" \
             "kopru-sanatci-dizi|dk okuma|-adres #/sanatci/michelangelo" \
-            "kopru-galeride|Sanatçı sayfası|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride" \
+            "kopru-galeride|eserleri|-adres #/hikaye/johannes-vermeer -hikayeKaydir galeride" \
             "yazi-playfair-ana|Diziler|-adres #/hikayeler -yaziTakimi playfair" \
             "yazi-playfair-okuma|1632|-adres #/hikaye/johannes-vermeer -yaziTakimi playfair" \
             "yazi-playfair-sanatci|dk okuma|-adres #/sanatci/johannes-vermeer -yaziTakimi playfair" \
